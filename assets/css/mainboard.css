@@ -1,0 +1,301 @@
+#mainboard{
+
+}
+
+#devices{
+  flex: 0 1 auto;
+  display: -webkit-flex; /* Safari */
+  display: flex;  
+  -webkit-justify-content: space-around; /* Safari */
+  justify-content:         space-around;
+
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+}
+
+.mainboardItem h1,.mainboardItem h2,.mainboardItem h3{
+	margin:0px;
+	padding:0px;
+	font-size:1.7em;
+}
+.mainboardItem{
+	min-width:12em;
+    display:block;
+	vertical-align: top;
+	height:100%;
+    margin:15px;
+/*     color:white; */
+/*     background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%); */
+/*     background-color:#A9E3FF; */
+	color:white;
+	background-color: #212121;
+/*     border-radius: 10px; */
+    box-shadow: 0px 0px 1px 2px #444444;
+/*     transition: box-shadow 250ms cubic-bezier(0.55, 0.66, 0.85, 0.94) 0s; */
+}
+.mainboardItemPreContainer{
+	 display:block;
+	margin:0px;
+    padding:0px;
+	vertical-align: top;
+    
+}
+.mainboardItemContainer{
+   	margin:0px;
+    padding:0px;
+}
+.mainboardItemHeader{
+	width:100%;
+	margin:0px;
+/* 	background-color: black; */
+	border-bottom: 2px solid #444444;
+	padding:10px 5px;
+	text-align:left;	
+}
+.mainboardItemHeader h2{
+   text-align:left;
+   margin:0em 0.2em;
+}
+.mainboardItemIcon{
+	float:right;
+	height:24px;
+	margin:0em 0.2em;
+	filter: invert(0.9);
+}
+.mainboardItemContent{
+	margin:0px;
+    padding:10px 10px; 
+	overflow-y:auto;
+    
+}
+
+
+
+#cpu,.memory{
+    
+}
+
+.memory {
+}
+
+
+.registersIcon{
+	height:24px;
+	padding-right: 5px;
+}
+
+
+.memoryTable table,.registerTable table{
+	margin:10px;
+    padding: 5px;
+    font-family: 'monospace';
+     margin-left: auto;
+    margin-right: auto;
+}
+.memoryTable table tr td:first-child, .memoryTable table thead th:first-child {
+    border:none;
+    padding-right:1em;
+} 
+.memoryTable table tr td:first-child + td{
+    border: solid thin;
+    border-radius:5px;
+    border-collapse: collapse;  
+}
+.table-hover tbody tr:hover{
+    background-color:#333333;
+    box-shadow: 0px 0px 2px 3px #777777;
+    border:none !important;
+}
+
+#cpu table td, #cpu table th{
+	border-color: white;
+}
+.memoryTable table{
+	table-layout: fixed;
+	border-color: white;
+}
+.memoryTable table td{
+    padding:4px;
+    height:
+}
+.memoryTable{
+    height:100%;
+    overflow-y:scroll;
+}
+
+
+
+.registerTable td, .memoryTable td{
+  border: 1px solid black;
+  text-align: center;
+}
+
+.memoryTable td, .memoryTable th {
+  padding:1px;
+  text-align: center;
+}
+
+.registerTable td, .registerTable th{
+  padding:3px;
+  min-width: 2em;
+  text-align: center;
+}
+.registerTable{
+/* 	padding:1px; */
+    margin: 0px auto;
+}
+
+
+.registerTable th{
+	font-weight: bold;
+	border:none;
+}
+.registerTable  tr th:first-child{
+    padding-right:0.4em;
+}
+
+.cpuElementHeader h3{
+	padding:0px ;
+	
+	font-size:1.3em;
+	margin-left:2em    ;
+	
+}
+.cpuElementHeader{
+	padding-bottom:7px;
+	text-align:left;
+	width:100%;
+}
+.cpuElementHeader i{
+	position:absolute;
+	text-align:left;
+	font-size: 1.4em;
+	
+}
+.cpuElementHeader h3{
+	text-align: right;
+}
+
+.cpuElement:hover,.cpuElement:active{
+	box-shadow: 0px 0px 2px 3px #777777;
+	background-color:#303030;
+}
+.cpuElement{
+
+	box-shadow: 0px 0px 1px 2px #454545;
+	padding: 10px;
+    margin:10px 5px;
+	margin-bottom: 20px;
+	text-align: center;
+	max-width:15em;
+}
+.cpuElement:last-child{
+	margin-bottom: 10px;
+}
+
+
+
+.bitTable{
+	display:inline-block;
+}
+.bitTable td, .bitTable th{
+/*   border: 1px solid black; */
+  padding:1px;
+}
+
+.cpuElementContent{
+	display:flex;
+	flex-direction: column;
+}
+
+.aluComputation{
+	display:flex;
+	flex-direction: row;
+}
+
+.aluOperandB{
+	border-bottom:1px solid white;	
+}
+
+.aluOperation{
+
+	display:flex;
+	align-items: center;
+  	justify-content: center;
+  	padding-right:5px;
+	
+}
+.aluFlags{
+	margin-top:10px;
+	display:flex;
+	flex-direction: row;
+
+align-items: center;
+  justify-content: center;
+}
+
+.flagsTable{
+	margin-left:auto;
+	margin-right:auto;
+}
+.flagsTable td{
+	padding:0px 15px;
+/* 	border:1px solid; */
+}
+.flag{
+	border:1px solid;
+	margin:1px;
+}
+.aluOperation{
+	margin:1px;
+}
+
+.operation{
+	
+}
+.rowWithTooltip{
+    position:relative;
+	
+}
+/* .rowWithTooltip:active span.memoryTooltip{ */
+/*   display:block; */
+/* } */
+
+/* .table-hover tbody tr:hover span.memoryTooltip{ */
+/*     display:block; */
+/* } */
+
+.memoryTooltip{
+  display:none;
+  position:absolute; 
+  z-index:100;
+  border:1px;
+  background-color:black;
+  border-style:solid;
+  border-width:1px;
+  border-color:white;
+  padding:3px;
+  color:white; 
+  top:-20px; 
+  left:-20px;
+}
+
+.addressSearchInput{
+	width: 5em;
+/* 	margin:0px; */
+/* 	padding:0px; */
+	border-radius: 0px;
+	background-color: #EEEEEE;
+	color:black;
+}
+.addressSearchButton{
+	text-align:center;
+/* 	margin:0px; */
+	margin-left:0.2em;
+ 	padding:0.2em;
+	border-radius: 0px;
+}
+
+.addressSearchControls{
+	margin-bottom: 5px;
+}

@@ -1,0 +1,156 @@
+#tutorial{
+/* 	background-color:#272822; */
+	background-color: #212121;
+	box-shadow: 0px 0px 1px 2px #444444;
+	margin:5px 10px;
+	color:white;
+	border-radius:10px;
+	padding-top:0px;	
+
+	height:49%;
+	max-height:49%;
+	overflow-y:scroll;
+    
+    display: flex;
+    align-items: center;
+/*     justify-content: center; */
+/*     justify-content: space-between; */
+      
+    flex-direction:column;
+    text-align:center;
+     
+}
+
+#tutorialControls{
+	display: flex;
+	
+	
+	margin:0px;
+	margin-top: 10px;
+	width:100%;
+}
+
+
+#tutorialControlsInner{
+	display: flex;
+	align-items: center;
+	   justify-content: center;
+	margin:0px;
+	margin-top: 10px;
+	width:100%;
+	align-self:flex-end;
+}
+
+#tutorialHeader{
+	  align-self: flex-start;
+	  width:100%;
+	  display: flex;
+	  flex-direction:column;
+	  
+}
+#tutorialContent{
+	align-self: stretch;
+	
+	width:95%;
+	margin:5px auto ;
+	padding:5px;
+	max-width: 600px;
+	
+}
+#tutorialTitle{
+	align-self:flex-start;
+	margin-left:10px;
+}
+#tutorialStepTitle{
+	margin-right:10px;
+}
+#tutorial h3{
+	display:flex;
+	justify-content: center;
+	margin:0px;
+	margin-top:5px;
+	
+}
+
+#tutorialCount{
+	margin:0px 15px;
+}
+
+.exercise{
+/* 	background-color: #272822; */
+	background-color: #BBB;
+	color: #272822;
+	border-radius:15px;
+	padding: 5px 15px;
+	margin-top: 5px; 
+	
+}
+.answer{
+	border-radius:15px;
+	border:1px solid #BBB;
+	padding: 5px 15px;
+	margin-top: 5px; 
+}
+
+#tutorial pre{
+	text-align: left;
+}
+
+.register{
+  color: navy;
+}
+
+.value{
+  color:#cc0000;
+}
+.type{
+	color:#00CC00;
+}
+
+.instruction{
+    color:#000000;
+}
+.register, .value, .instruction, .type{
+	background-color: white;
+ border-radius:5px;
+  padding: 1px 3px;
+  font-family: 'Fira Code';
+  font-weight: bold;
+}
+
+pre,code{
+	font-family: 'Fira Code';
+	background-color: white;
+	color:black;
+	font-weight: bold;
+}
+.list-group-item{
+	list-style: decimal inside;
+    display: list-item;    
+    color:black;
+}
+#tutorialIndexModal h3{
+	color:black;
+	margin-bottom: 10px;
+}
+#tutorialIndexModal{
+ text-align: left;	
+}
+
+#tutorialIndexModal a{
+	cursor: pointer;
+}
+
+.fullscreenDiv{
+  position:absolute;
+  top: 5%;
+  left:5%;
+  width:90%;
+  min-height:90%;
+  height:90%;
+}
+
+.fullscreenTutorial{
+	height:95% !important;
+}
+

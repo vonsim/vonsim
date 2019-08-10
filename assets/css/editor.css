@@ -1,0 +1,25 @@
+#editor {
+	height:100%;
+	width:100%
+}
+.ace_editor{
+	height:100%;
+	overflow-y:scroll;
+}
+#aceEditor{
+    flex-shrink:0;
+    font-family: 'Fira Mono', monospace;
+    box-sizing: border-box;
+    width : 100%;
+}
+.ace_content{
+/* 	repeat here because the editor overwrites the background */
+	background-image: url(../img/mainboard/circuits.svg);
+    background-repeat: repeat;  
+}
+
+.executedLine{
+	position:absolute;
+	background:rgba(230, 230, 4,0.2);
+    z-index:20
+}

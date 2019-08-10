@@ -1,0 +1,126 @@
+#header{
+    font-size: 2em;
+    background-color: #34bbfc;
+    border-bottom: 5px solid #337ab7;
+    padding:5px;
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
+       
+}
+.fa{
+	margin-right:5px;
+}
+
+.controlSection{
+    padding-left:2px;
+    margin-left:15px;
+}
+.controlSection a{
+	min-width:100px;
+}
+.controlSectionSeparator{
+	margin-left:90px;
+}
+.controlSectionStart{
+    margin-left:20px;
+}
+
+.dropdown-tutoriales{
+	margin-right:100px;
+}
+
+#title{
+    font-size:0.8em;
+    padding:5px;
+}
+
+#icon{
+/*     width:96px; */
+    height:48px;
+    padding:0px;
+    margin:0px;
+    padding:4px 20px;
+    
+}
+
+.simulatorState{
+/* 	pointer-events: none; */
+	pointer-events: auto; 
+	margin-left:20px;
+
+}
+#headerSeparator{
+	margin-left:auto; 
+}
+#languageButtonContainer{
+   display:flex;
+    justify-content:space-between;
+    align-items: center;
+}
+.languageButton{
+	margin-right:10px;
+}
+#help{
+	margin-right:10px;
+}
+
+
+.helpButton{
+	cursor: pointer;
+	font-size: 0.8em;
+}
+#help .fa{
+    margin-right:0px;
+}
+#help h4{
+    font-size: 1em;
+}
+#help p{
+	font-size: 0.5em;
+}
+
+.modal-backdrop {
+/*    background-color: red; */
+}
+body.modal-open .modal {
+    display: flex !important;
+    height: 100%;
+} 
+.modal-body a{
+	margin-right:10px;
+}
+body.modal-open .modal .modal-dialog {
+    margin: auto;
+}
+.modal-header{
+	background-color:#34bbfc;
+	border-bottom: 5px solid #337ab7;
+}
+.modal-header-help{
+	
+	display:flex;
+	justify-content:space-between;
+    align-items: center;
+}
+.modal-header button{
+	
+	margin-left:auto;
+}
+.modal-footer{
+	border-top: 5px solid #337ab7;
+	background-color:#34bbfc;
+}
+
+.modal-content{
+	    overflow:hidden;
+	border-radius: 10px;
+	
+}
+.modal-title{
+	font-family: Lato;
+}
+.modal-icon{
+	margin-right:auto;
+	height:48px;	
+}
