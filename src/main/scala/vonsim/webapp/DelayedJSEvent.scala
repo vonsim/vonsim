@@ -6,7 +6,8 @@ import scala.scalajs.js
 
 class DelayedJSEvent(val response: () => Unit) {
   var keystrokes = 0
-  val listener: js.Function1[js.Any, js.Any] = (a: js.Any) => keyTyped().asInstanceOf[js.Any]
+  val listener: js.Function1[js.Any, js.Any] = (a: js.Any) =>
+    keyTyped().asInstanceOf[js.Any]
 
   def keyTyped() {
     keystrokes += 1

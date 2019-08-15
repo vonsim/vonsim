@@ -3,32 +3,33 @@ package vonsim.webapp.tutorials
 import vonsim.webapp.UIConfig
 
 class CodeTutorial extends Tutorial {
-  val title="Instrucciones y registros de VonSim"
-  
-  val initialCode="""
+  val title = "Instrucciones y registros de VonSim"
+
+  val initialCode = """
 org 2000h
 ; código aquí
 hlt
 end
     """
-  
-  
-  val id="code"
-  
-  val steps=List(
 
-       TutorialStep("Instrucciones y registros de VonSim"
-,"""<p><strong>Objetivos:</strong> Comprender el concepto de registro 
+  val id = "code"
+
+  val steps = List(
+    TutorialStep(
+      "Instrucciones y registros de VonSim",
+      """<p><strong>Objetivos:</strong> Comprender el concepto de registro 
   y las operaciones para manipularlo. </p> 
 
 <p><strong>Conocimientos previos:</strong> Uso del simulador VonSim. Estructura básica de un programa
 en assembly. Conocimientos básicos de organización y arquitectura de computadoras.</p>
   
-""",UIConfig.disableAll,None
-)
-
-,TutorialStep("Introducción"
-,"""<p>Sabiendo ya como escribir y ejecutar programas con VonSim, y la estructura básica de un 
+""",
+      UIConfig.disableAll,
+      None
+    ),
+    TutorialStep(
+      "Introducción",
+      """<p>Sabiendo ya como escribir y ejecutar programas con VonSim, y la estructura básica de un 
   programa en assembly, vamos a comenzar a ver las instrucciones más usuales de assembly y las 
   formas de guardar información.</p> 
 
@@ -37,12 +38,13 @@ en assembly. Conocimientos básicos de organización y arquitectura de computado
    
 </p>A medida que tengamos más conocimiento, vamos a poder hacer programas que sean de utilidad.<p> 
 
-""",UIConfig.disableAll,None
-)
-      
-
-,TutorialStep("Registros"
-,"""
+""",
+      UIConfig.disableAll,
+      None
+    ),
+    TutorialStep(
+      "Registros",
+      """
   
 <p>En VonSim tenemos dos lugares para almacenar información: la memoria y los registros.
 La memoria permite guardar mucha más información, pero el acceso a la misma desde la CPU es 
@@ -53,23 +55,26 @@ más lento; en cambio, los registros son pocos pero su acceso es prácticamente 
 <p> Cuando se comienza a ejecutar un programa, el simulador le pone el valor 0 a ambos bytes de estos registros.</p>
 <p> Puedes observar su valor en la pantalla del simulador.</p>
 
-""",UIConfig.disableAll,None
-)
-
-
-,TutorialStep("Registros y mov (parte 1_)"
-,"""
+""",
+      UIConfig.disableAll,
+      None
+    ),
+    TutorialStep(
+      "Registros y mov (parte 1_)",
+      """
 <p> Se puede asignar un valor a un registro con la instrucción mov.</p>
 
 <p> Dicha instrucción tiene la sintaxis <code>mov registro, valor</code></p>
 <p> Por ejemplo, <code>mov ax,2</code> pone el valor 2 en el registro ax, o <code>mov cx,12</code> pone el valor 12 en el registro cx.</p>
 <p class="exercise"> Ejecuta el código del editor, y verifica que al registro ax se le asigna el valor 5.</p>
 <p class="exercise"> Agrega una instrucción mov al programa para que el registro dx tenga el valor 3.</p>
-""",UIConfig.enableAll,Some("org 2000h\nmov ax,5\nhlt\nend")
-)
-
-,TutorialStep("Registros y mov (parte 2_)"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov ax,5\nhlt\nend")
+    ),
+    TutorialStep(
+      "Registros y mov (parte 2_)",
+      """
 <p class="exercise"> Escribe un programa que le asigne el valor 16 al registro ax,
  el valor 16h al registro bx, el 3A2h al cx 
  y el 120 al registro dx.</p>
@@ -82,11 +87,13 @@ mov cx,3a2h
 mov dx,120 
 </code></pre>
 </div> 
-""",UIConfig.enableAll,Some("org 2000h\n\nhlt\nend")
-)
-
-,TutorialStep("Registros y mov (parte 3_)"
-,"""<p>También se puede mover el valor de un registro a otro registro</p>
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\n\nhlt\nend")
+    ),
+    TutorialStep(
+      "Registros y mov (parte 3_)",
+      """<p>También se puede mover el valor de un registro a otro registro</p>
   
 <p> Por ejemplo, podemos ponerle el valor 5 a bx, y luego pasar el valor de bx a cx para que ambos valgan 5.<p> 
 
@@ -100,13 +107,13 @@ bx al registro dx.</p>
 <p class="answer"> La línea a agregar es <code>mov dx,bx</code></p>
  <p class="exercise"> Ejecuta el programa y verifica que los 
  tres registros (bx, cx y dx) terminan con el mismo valor (5h).</p>
-""",UIConfig.enableAll,Some("org 2000h\nmov bx,5\nmov cx,bx\nhlt\nend")
-)
-
-,TutorialStep("Registros y mov (parte 4)"
-    
-    
-,"""<p> Entonces la instrucción mov también puede usarse con la sintaxis <code>mov registro, registro</code></p>
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov bx,5\nmov cx,bx\nhlt\nend")
+    ),
+    TutorialStep(
+      "Registros y mov (parte 4)",
+      """<p> Entonces la instrucción mov también puede usarse con la sintaxis <code>mov registro, registro</code></p>
   
   <p>Algo que no se puede hacer es mover el valor de un registro hacia un valor</p>
   
@@ -119,12 +126,13 @@ bx al registro dx.</p>
 <p> Entonces, podemos concluir que la sintaxis <code>mov valor, registro</code> es inválida,
 o sea que el orden de los operandos es importante.</p>
 
-""",UIConfig.enableAll,Some("org 2000h\nhlt\nend")
-)
-  
-,TutorialStep("Parte alta y parte baja de un registro."
-       
-,"""<p> Los registros ocupan 2 bytes o 16 bits. Al byte más significativo se lo llama 
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Parte alta y parte baja de un registro.",
+      """<p> Los registros ocupan 2 bytes o 16 bits. Al byte más significativo se lo llama 
 <strong>parte alta</strong>, y al menos significativo, <strong>parte baja</strong>.</p>
 
 <p>Por ejemplo, si ax tiene el valor 3A4Fh, entonces el byte más significativo o parte alta
@@ -143,12 +151,13 @@ vale 3Ah, y el byte menos significativo o parte baja vale 4Fh.</p>
 </p>
 
   
-""",UIConfig.enableAll,Some("org 2000h\nmov ax,3A4Fh\nhlt\nend")
-)
-
-,TutorialStep("Modificando las partes altas y bajas de un registro."
-       
-,"""<p>En ocasiones, queremos manejar datos que sólo ocupan 8_ bits, y no necesitamos
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov ax,3A4Fh\nhlt\nend")
+    ),
+    TutorialStep(
+      "Modificando las partes altas y bajas de un registro.",
+      """<p>En ocasiones, queremos manejar datos que sólo ocupan 8_ bits, y no necesitamos
 toda la capacidad de un registro completo de 16_ bits.</p>
 
 <p>En esos casos podemos acceder o cambiar sólo la parte alta o baja de los registros.</p>
@@ -177,12 +186,13 @@ y de dx con dl y dh.
 </p>
 </div>
 
-""",UIConfig.enableAll,Some("org 2000h\nmov ah,5Ah\nmov al,94h\nhlt\nend")
-)
-
-,TutorialStep("Independencia de los registros bajos y altos."
-       
-,"""<p class="exercise">
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov ah,5Ah\nmov al,94h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Independencia de los registros bajos y altos.",
+      """<p class="exercise">
   El código del editor tiene una instrucción que modifica todo el registro ax de una sola vez,
   y otra que modifica solo su parte baja. Léelo y ejecútalo para ver cuáles
   son los valores finales de los registros.
@@ -202,17 +212,20 @@ podríamos considerar que tenemos 4_ registros de 16_ bits (ax, bx, cx y dx) u 8
  </p>
 </div>
 
-""",UIConfig.enableAll,Some("org 2000h\nmov ax,5AC3h\nmov al,94h\nhlt\nend")
-)
-
-,TutorialStep("Modificando las partes altas y bajas de un registro."
-       
-,"""<p class="exercise">
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov ax,5AC3h\nmov al,94h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Modificando las partes altas y bajas de un registro.",
+      """<p class="exercise">
   Lee el código e intenta determinar cuales serán los valores finales de los registros
   cuando termine el programa. Luego ejecuta el código y comprueba el resultado.
   </p>
 
-""",UIConfig.enableAll,Some("""org 2000h
+""",
+      UIConfig.enableAll,
+      Some("""org 2000h
 mov bx,12
 mov bh,1Ah
 mov ah,5Ah
@@ -224,10 +237,10 @@ mov dh,10
 mov dx,321h
 hlt
 end""")
-)
-
-,TutorialStep("Instrucción add (sumar)"
-,"""<p>Además de la instrucción mov mov, tenemos la instrucción add 
+    ),
+    TutorialStep(
+      "Instrucción add (sumar)",
+      """<p>Además de la instrucción mov mov, tenemos la instrucción add 
   (<em>sumar</em> en inglés) que nos permite sumar dos números.</p>
   
 <p> La sintaxis de dicha instrucción es <code>add registro, valor</code> <p>
@@ -245,11 +258,13 @@ ahora tendrá el valor 7. </p>
 add bx,2</code></pre>
 </div>
 
-""",UIConfig.enableAll,Some("org 2000h\nmov ax,4\nadd ax,3\nhlt\nend")
-)
-
-,TutorialStep("Instrucción add con dos registros"
-,"""<p>La instrucción add también nos permite sumar dos registros</p>
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov ax,4\nadd ax,3\nhlt\nend")
+    ),
+    TutorialStep(
+      "Instrucción add con dos registros",
+      """<p>La instrucción add también nos permite sumar dos registros</p>
  <p> Entonces, <code>mov ax,bx</code> suma el valor de ax y el de bx<p> 
 <p>El resultado queda almacenado en ax.</p>
 <p class="exercise">Lee y ejecuta el código del editor; verifica que ax termina con el valor 7.</p>
@@ -263,11 +278,13 @@ El valor final del registro bx debería ser 5. </p>
 add bx,cx</code></pre>
 </div>
 
-""",UIConfig.enableAll,Some("org 2000h\nmov ax,4\nmov bx,3\nadd ax,bx\nhlt\nend")
-)
-
-,TutorialStep("Otras instrucciones aritméticas y lógicas"
-,"""<p>También hay otras instrucciones aritméticas y lógicas en el simulador.</p>
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov ax,4\nmov bx,3\nadd ax,bx\nhlt\nend")
+    ),
+    TutorialStep(
+      "Otras instrucciones aritméticas y lógicas",
+      """<p>También hay otras instrucciones aritméticas y lógicas en el simulador.</p>
 <p>Las más comunes son sub (por <em>substract</em>, en inglés), para restar o sustraer,
  y or, xor y and que hacen lo mismo que su equivalente lógico.
 <p> 
@@ -280,7 +297,9 @@ Las instrucciones or, xor y and aplican bit a bit las
 operaciones binarias del mismo nombre. La instrucción sub hace lo mismo que el 
 add pero restando. 
 </p>
-""",UIConfig.enableAll,Some("""org 2000h
+""",
+      UIConfig.enableAll,
+      Some("""org 2000h
 ; sub, resta
 mov ax,4
 sub ax,3
@@ -295,12 +314,10 @@ mov dl,11010010b
 and dl,10101010b
 hlt
 end""")
-)
-
-,TutorialStep("La instrucción not:."
-    
-    
-,"""<p> La instrucción not nos permite invertir el patrón de bits de un registro.</p>
+    ),
+    TutorialStep(
+      "La instrucción not:.",
+      """<p> La instrucción not nos permite invertir el patrón de bits de un registro.</p>
 
 <p> Por ejemplo, si al vale 11011001b, aplicando el not pasa a valer 00100110b.
 </p>
@@ -311,12 +328,13 @@ Su sintaxis es simplemente <code>not registro</code>.</p>
 
 <p class="exercise"> Lee y ejecuta el código del editor. Verifica el valor final del registro al.</p>
 
-""",UIConfig.enableAll,Some("org 2000h\nmov al, 11011001b\nnot al\nhlt\nend")
-)
-
-,TutorialStep("La instrucción neg: multiplicar por -1."
-    
-,"""<p> La instrucción neg es similar al not, 
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov al, 11011001b\nnot al\nhlt\nend")
+    ),
+    TutorialStep(
+      "La instrucción neg: multiplicar por -1.",
+      """<p> La instrucción neg es similar al not, 
   ya que también es unaria.</p>
 
 <p>
@@ -329,12 +347,13 @@ Lee y ejecuta el código del editor. Verifica que los resultados finales sean co
 Recuerda que los números negativos se almacenan codificados en CA2. 
   </p>
 
-""",UIConfig.enableAll,Some("org 2000h\nmov bl,-4\nneg bl\nmov ch,7\nneg ch\nhlt\nend")
-)
-
-,TutorialStep("inc y dec" 
-    
-,"""<p> Cuando sumamos y restamos, algo muy común es que sumemos o restemos uno.</p>
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov bl,-4\nneg bl\nmov ch,7\nneg ch\nhlt\nend")
+    ),
+    TutorialStep(
+      "inc y dec",
+      """<p> Cuando sumamos y restamos, algo muy común es que sumemos o restemos uno.</p>
 
 <p>
 Por ejemplo, si queremos sumarle 1 al registro ax y restarle 1 al registro bl, podemos escribir
@@ -351,12 +370,13 @@ y dec que hacen justamente eso. La primera incrementa un registro en uno y la ot
 Lee y ejecuta el código del editor. Verifica que los resultados finales sean correctos. 
 </p> 
 
-""",UIConfig.enableAll,Some("org 2000h\nmov ax,5\ninc ax\nmov bl,20\ndec bl\nhlt\nend\n")
-)
-
-,TutorialStep("Realizando cálculos aritméticos"
-    
-,"""<p> Podemos realizar cálculos con algunas de las instrucciones vistas. </p>
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nmov ax,5\ninc ax\nmov bl,20\ndec bl\nhlt\nend\n")
+    ),
+    TutorialStep(
+      "Realizando cálculos aritméticos",
+      """<p> Podemos realizar cálculos con algunas de las instrucciones vistas. </p>
 
 <p class="exercise">
 Lee y ejecuta el código del editor, que realiza una cuenta que se guarda finalmente
@@ -371,7 +391,9 @@ a ax=28. Luego se pasa el valor de ax a cx, con lo que cx=28, que en hexadecimal
 En resumen, hicimos que cx = (a+12)-(b-1), donde a y b son los valores iniciales de ax y bx.
 </p> 
 
-""",UIConfig.enableAll,Some("""org 2000h
+""",
+      UIConfig.enableAll,
+      Some("""org 2000h
 ; asignacion inicial
 mov ax,30
 mov bx,15
@@ -383,11 +405,10 @@ sub ax,bx
 mov cx,ax
 hlt
 end""")
-)
-
-,TutorialStep("Realizando cálculos aritméticos"
-    
-,"""
+    ),
+    TutorialStep(
+      "Realizando cálculos aritméticos",
+      """
 
 <p class="exercise">
 Escribe un programa en base a los valores iniciales de ax y bx, calcule
@@ -404,7 +425,9 @@ add bx,ax
 mov cx,bx</pre></code>
 </div> 
 
-""",UIConfig.enableAll,Some("""org 2000h
+""",
+      UIConfig.enableAll,
+      Some("""org 2000h
 ; asignacion inicial
 mov ax,21
 mov bx,35
@@ -414,11 +437,10 @@ mov bx,35
 
 hlt
 end""")
-)
-
-,TutorialStep("Aplicando máscaras binarias"
-    
-,"""<p> Podemos aplicar máscaras binarias con algunas de las instrucciones vistas. </p>
+    ),
+    TutorialStep(
+      "Aplicando máscaras binarias",
+      """<p> Podemos aplicar máscaras binarias con algunas de las instrucciones vistas. </p>
 
 <p class="exercise">
 Lee y ejecuta el código del editor, que utiliza instrucciones lógicas para aplicar 
@@ -443,7 +465,9 @@ not 01100011
 </pre>
 </div> 
 
-""",UIConfig.enableAll,Some("""org 2000h
+""",
+      UIConfig.enableAll,
+      Some("""org 2000h
 ; asignacion inicial
 mov al,10010111b
 ;mascaras
@@ -453,11 +477,10 @@ or  al,00000010b
 not al
 hlt
 end""")
-)
-
-,TutorialStep("Aplicando máscaras binarias"
-    
-,"""
+    ),
+    TutorialStep(
+      "Aplicando máscaras binarias",
+      """
 
 <div class="exercise">
 <p>
@@ -486,19 +509,19 @@ xor _al, 11110000b
 </pre>
 </div> 
 
-""",UIConfig.enableAll,Some("""org 2000h
+""",
+      UIConfig.enableAll,
+      Some("""org 2000h
 ; asignacion inicial
 mov al,10101010b
 ;aplicación de máscaras
 
 hlt
 end""")
-)
-
-
-,TutorialStep("Resumen"
-    
-,"""<p> VonSim tiene 4_ registros llamados ax, bx, cx y dx.
+    ),
+    TutorialStep(
+      "Resumen",
+      """<p> VonSim tiene 4_ registros llamados ax, bx, cx y dx.
   Los registros ocupan 2_ bytes o 16_ bits. Al byte más significativo se lo llama 
 <strong>parte alta</strong>, y al menos significativo, <strong>parte baja</strong></p>
 
@@ -524,13 +547,10 @@ Podemos utilizar varias instrucciones aritméticas para realizar cálculos.
 Asimismo podemos utilizar varias instrucciones lógicas para aplicar máscaras de bits.
 </p> 
 
-""",UIConfig.enableAll,Some("org 2000h\nhlt\nend")
-)
-
-
-)
-
-
-
+""",
+      UIConfig.enableAll,
+      Some("org 2000h\nhlt\nend")
+    )
+  )
 
 }

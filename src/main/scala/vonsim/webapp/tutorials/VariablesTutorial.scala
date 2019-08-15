@@ -2,33 +2,33 @@ package vonsim.webapp.tutorials
 
 import vonsim.webapp.UIConfig
 
-
 class VariablesTutorial extends Tutorial {
-  val title="Variables en assembly"
-  
-  val initialCode="""
+  val title = "Variables en assembly"
+
+  val initialCode = """
 org 2000h
 ; código aquí
 hlt
 end
 """
-  
-  
-  val id="variables"
-  
-  val steps=List(
 
-             TutorialStep("Variables en VonSim"
-,"""<p><strong>Objetivos:</strong> Comprender el concepto de variable y su uso en Assembly.</p> 
+  val id = "variables"
+
+  val steps = List(
+    TutorialStep(
+      "Variables en VonSim",
+      """<p><strong>Objetivos:</strong> Comprender el concepto de variable y su uso en Assembly.</p> 
 
 <p><strong>Conocimientos previos:</strong> Uso del simulador VonSim. Estructura básica de un programa
 en assembly. Conocimientos básicos de organización y arquitectura de computadoras.</p>
   
-""",UIConfig.disableAll,None
-)
-
-,TutorialStep("Introducción"
-,"""<p>Sabiendo ya como escribir y ejecutar programas con VonSim, y la estructura básica de un 
+""",
+      UIConfig.disableAll,
+      None
+    ),
+    TutorialStep(
+      "Introducción",
+      """<p>Sabiendo ya como escribir y ejecutar programas con VonSim, y la estructura básica de un 
   programa en assembly, vamos a comenzar a ver funcionan las variables en Assembly.</p> 
 
 <p>Recordemos que como programadores tenemos dos lugares para guardar 
@@ -36,12 +36,13 @@ información: la memoria principal o RAM y los registros.</p>
    
 </p>En este tutorial veremos como definir variables en la memoria e inicializarlas.<p> 
 
-""",UIConfig.disableAll,None
-)
-      
-
-,TutorialStep("Ubicación de las variables"
-,"""
+""",
+      UIConfig.disableAll,
+      None
+    ),
+    TutorialStep(
+      "Ubicación de las variables",
+      """
 <p> Al igual que las instrucciones, las variables también deben ser ubicadas con una sentencia org, como vimos en el tutorial anterior.</p>
 
 <p>Por eso agregamos otra sentencia org al comienzo del programa, en este caso en la dirección 5h de memoria.</p>
@@ -49,11 +50,13 @@ información: la memoria principal o RAM y los registros.</p>
 <p> Esto quiere decir que las variables que ahora declaremos debajo de la línea <code>org 5h</code>
 se ubicarán a partir de la dirección de memoria 5h, es decir 5 en hexadecimal (siempre escribiremos las direcciones en hexadecimal) </p>
 
-""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Declaración de variables"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Declaración de variables",
+      """
 <p> Las variables se declaran en una línea aparte, con  
 la sintaxis</p> 
 <p><code>nombre tipo valor_inicial</code></p>.
@@ -74,11 +77,13 @@ Ejecuta el programa para cargar las variables en la memoria.</p>
 <p> Más tarde veremos como definir variables con valores decimales o binarios, pero por ahora 
 lo haremos con valores hexadecimales</p>
 
-""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Valos hexadecimales"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Valos hexadecimales",
+      """
 <p> Como vimos, los valores hexadecimales requieren una <em>h</em> al final para
 especificar este sistema.</p>
 <p> Recuerda que tanto 5h, 25h, 1Ah, Ah o BCDEh son valores hexadecimales, ya que las letras
@@ -92,11 +97,13 @@ requiere que se anteponga un 0 al valor. Entonces en lugar de escribir Ah o BCDE
 <p class="exercise"> El programa del editor no compila. Agrega el 0 al valor A3h de la variable
 peso para que compile y ejecútalo. ¿Qué valor aparece en la dirección 5h?</p>
 
-""",UIConfig.enableAll,Some("org 5h\npeso db A3h\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Orden de almacenamiento de las variables (parte 1)"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\npeso db A3h\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Orden de almacenamiento de las variables (parte 1)",
+      """
 <p> La variable <code>peso</code> que declaramos se ubicó en la celda con dirección 5h.</p>
 
 <p> ¿Qué sucede si declaramos otra variable, también de un byte, a continuación?</p>
@@ -108,11 +115,13 @@ Ejecuta el programa.</p>
 <p class="exercise"> Busca la celda de memoria con dirección 5. Debería seguir teniendo el valor 25h.
 Mirá la celda siguiente, con dirección 6. ¿Qué valor tiene? </p>
 
-""",UIConfig.enableAll,Some("org 5h\npeso db 25h\n\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Orden de almacenamiento de las variables (parte 2)"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\npeso db 25h\n\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Orden de almacenamiento de las variables (parte 2)",
+      """
 <p> La variable <code>temperatura</code> que declaramos se ubicó 
 en la celda con dirección 6. Esto es porque las variables se ubican una tras de otra 
 a partir de la dirección indicada en la sentencia org </p>
@@ -128,11 +137,13 @@ Ejecuta el programa.</p>
 
 <p class="exercise"> Observa el valor de las celdas de memoria con dirección 7 y 8. ¿Qué valores tienen?</p>
 
-""",UIConfig.enableAll,Some("org 5h\npeso db 25h\ntemperatura db 14h\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Variables de dos bytes (parte 1)"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\npeso db 25h\ntemperatura db 14h\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Variables de dos bytes (parte 1)",
+      """
 <p> Las variables que declaramos ocupaban todas un byte, ya que 
 usaban el tipo db.</p>
 
@@ -150,11 +161,13 @@ en la celda con la dirección más chica (5h). Por otro lado, la parte más sign
 en la celda con la dirección más alta (6h). Este esquema para guardar las variables se llama, por 
 razones históricas, <strong>little-endian</strong>. </p>
 
-""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Variables de dos bytes (parte 2)"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Variables de dos bytes (parte 2)",
+      """
 <p> Podemos definir varias variables de tipo dw también, y también se ubicarán secuencialmente.</p>
 
 <p class="exercise"> Define las variables <code>vida</code>, <code>mana</code> y <code>energía</code>, en ese orden, de tipo dw,
@@ -165,10 +178,13 @@ con valores iniciales 32h, 15Dh y 1A4Bh, respectivamente.</p>
 ¿Cómo se rellena la parte más significativa? </p>
 
 
-""",UIConfig.enableAll,Some("org 5h\n;aca van las variables\norg 2000h\nhlt\nend")
-)
-,TutorialStep("Variables de dos bytes (parte 3)"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;aca van las variables\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Variables de dos bytes (parte 3)",
+      """
 
 <p class="exercise"> El programa del editor declara las variables del paso anterior. Ejecútalo 
 nuevamente y observa en qué dirección comienza cada variable.</p>
@@ -185,12 +201,15 @@ las celdas 9h y 10h.</p>
 <p class="exercise"> Si definieramos una nueva variable debajo de <code>energia</code>,
 ¿en qué dirección de memoria comenzaría?</p>
 
-""",UIConfig.enableAll,Some("org 5h\nvida dw 32h\nmana dw 15Dh\nenergia dw 1A4Bh\norg 2000h\nhlt\nend")
-)
-
-
-,TutorialStep("Ubicación de las variables con db y dw "
-,"""
+""",
+      UIConfig.enableAll,
+      Some(
+        "org 5h\nvida dw 32h\nmana dw 15Dh\nenergia dw 1A4Bh\norg 2000h\nhlt\nend"
+      )
+    ),
+    TutorialStep(
+      "Ubicación de las variables con db y dw ",
+      """
 <p> Hemos definido varias variables de uno y dos bytes por separado. ¿Qué sucede si las combinamos?</p>
 
 
@@ -206,22 +225,30 @@ las celdas 9h y 10h.</p>
 </ul>
 </div>
 
-""",UIConfig.enableAll,Some("org 5h\nprecipitaciones dw 134h\nnubes db 45h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("El rol del org"
-,"""
+""",
+      UIConfig.enableAll,
+      Some(
+        "org 5h\nprecipitaciones dw 134h\nnubes db 45h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend"
+      )
+    ),
+    TutorialStep(
+      "El rol del org",
+      """
 <p> Hasta ahora las variables que definimos se ubicaban a partir de la dirección 5h,
 debido a que estaban debajo de un <code> org 5h</code>.</p>
 
 <p class="exercise"> Cambia el 5h en la línea <code> org 5h</code> por 12h. Ejecuta el programa.
 Verifica que las variables ahora se ubican a partir de la dirección 12h.</p>
 
-""",UIConfig.enableAll,Some("org 5h\nprecipitaciones dw 134h\nnubes db 45h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Utilizando varios org"
-,"""
+""",
+      UIConfig.enableAll,
+      Some(
+        "org 5h\nprecipitaciones dw 134h\nnubes db 45h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend"
+      )
+    ),
+    TutorialStep(
+      "Utilizando varios org",
+      """
 <p>¿Qué podemos hacer si queremos que algunas variables se ubican a partir del 5h, y
 otras a partir del 12h? Utilizamos dos sentencias org.</p>
 
@@ -233,11 +260,15 @@ otras a partir del 12h? Utilizamos dos sentencias org.</p>
 el primero para las variables <code>precipitaciones</code> y <code>nubes</code>, a partir de la dirección 5h, 
 el segundo paralas variables <code>temperatura</code> y <code>viento</code>, a partir de la dirección 12h,
 y el tercero para el código, a partir de la dirección 2000h.</p>
-""",UIConfig.enableAll,Some("org 5h\nprecipitaciones dw 134h\nnubes db 45h\norg 12h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Valores decimales para la dirección del org"
-,"""
+""",
+      UIConfig.enableAll,
+      Some(
+        "org 5h\nprecipitaciones dw 134h\nnubes db 45h\norg 12h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend"
+      )
+    ),
+    TutorialStep(
+      "Valores decimales para la dirección del org",
+      """
 <p>En algunos casos puede ser más fácil especificar la dirección de memoria en decimal.
 Supongamos que queremos ubicar variables a partir de la dirección de memoria 12. En tal caso,
 en lugar de tener que convertirla a hexadecimal, podemos escribir el 12 sin la <em>h</em> en
@@ -249,12 +280,13 @@ de la dirección 12h.</p>
 <p class="exercise"> Quita el <em>h</em> de la sentencia <code>org 12h</code> y ejecuta
 el programa. ¿Dónde se ubican las variables ahora?</p> 
 <p class="answer">Las variables se ubican a partir de la dirección 12, o sea 0Bh.</p>
-""",UIConfig.enableAll,Some("org 12h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend")
-)
-
-
-,TutorialStep("Valores decimales para inicializar las variables"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 12h\ntemperatura dw 2Ah\nviento db 8Ah\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Valores decimales para inicializar las variables",
+      """
 <p> Si bien la memoria muestra los valores de las celdas en formato hexadecimal, debido a
 que es lo más común, en verdad lo que se guarda en cada celda son 8_ bits, un byte,
 que codifican un número utilizando el sistema binario. </p>
@@ -276,11 +308,13 @@ Ejecuta el programa y busca el valor de la celda de memoria donde se cargó</p>
 
 <p class="answer">Se muestra el valor 19h, porque se muestra en hexadecimal <p>
 
-""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Valores máximos"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Valores máximos",
+      """
 
 <p>Las variables de tipo db tienen un rango de 0 a 255 para valores sin signo,
  ya que disponen de 8_ bits.</p>
@@ -295,11 +329,13 @@ Ejecuta el programa y busca el valor de la celda de memoria donde se cargó</p>
 <p> En ambos casos, como son valores positivos, se codifican en el sistema Binario Sin Signo 
 (BSS) al guardarse en la memoria.</p>
 
-""",UIConfig.enableAll,Some("org 5h\nedad db 50\ndistancia dw 1529\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Valores negativos"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\nedad db 50\ndistancia dw 1529\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Valores negativos",
+      """
 
 <p>También se pueden usar valores negativos para inicializar una variable. </p>
 
@@ -311,11 +347,13 @@ en Complemento a 2_ (CA2) del número -10. Hay que tener en cuenta que tanto el 
 119 como el número -10 se codifican como 11110110b. Por ende es el programador quien
 debe saber de antemano como interpretar esa cadena de bits, si en CA2 o en BSS. </p>
 
-""",UIConfig.enableAll,Some("org 5h\ntemperatura db 10\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Valores mínimos"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\ntemperatura db 10\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Valores mínimos",
+      """
 
 <p>Como se utiliza el sistema CA2 para los números negativos, el valor
 mínimo para las variables de tipo db es de -128.</p>
@@ -326,11 +364,13 @@ mínimo para las variables de tipo db es de -128.</p>
 
 <p class="exercise"> Intenta poner un valor menor a -32768 en la variable distancia. ¿Qué sucede? </p>
 
-""",UIConfig.enableAll,Some("org 5h\nedad db -15\ndistancia dw -1234\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Valores binarios para inicializar las variables"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\nedad db -15\ndistancia dw -1234\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Valores binarios para inicializar las variables",
+      """
 
 <p> Podemos también ingresar un byte en formato binario agregando una <em>b</em> al final del mismo.</p>
 
@@ -339,11 +379,13 @@ Ejecuta el programa y verifica que la celda de memoria con dirección 6h tiene e
 
 <p> Recuerda que el valor 00101001b representa el valor 41 en BSS, o 29h en hexadecimal </p>
 
-""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Variables sin valor"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Variables sin valor",
+      """
 
 <p>También podemos declarar variables sin valor. Para ello ponemos <span class="value">?</span> en lugar del valor.</p>
 
@@ -354,12 +396,13 @@ valor tiene ahora esta celda? </p>
 <p class="answer"> La variable se define con el código <code>peso db ?</code>. El valor final
 de la celda debería ser igual al valor anterior de la misma.</p>
 
-""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
-)
-
-
-,TutorialStep("Vectores de db"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Vectores de db",
+      """
 <p>También puedes declarar una variable una variable con varios valores, es decir, un vector.
  En ese caso la sintaxis es <code>nombre tipo valor1, valor2, valor3, ...</code> </p>
 <p> Los valores se guardan uno seguido del otro en la memoria.</p>
@@ -369,11 +412,13 @@ los valores? ¿Cuántas celdas ocupan en total? </p>
 
 <p class="answer"> Ocupan 6_ celdas en total, una celda por número. Sus direcciones son 5h, 6h, 7h, 8h, 9h y 0Ah.</p>
 
-""",UIConfig.enableAll,Some("org 5h\ntabla db 1,3,5,7,9,11\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Vectores de dw"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\ntabla db 1,3,5,7,9,11\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Vectores de dw",
+      """
 <p>Recién definimos un vector donde cada elemento era de tipo db.</p>
 <p> Si ahora los elementos son de tipo dw entonces cada elemento ocupará
 dos bytes de memoria.</p>
@@ -383,11 +428,13 @@ los valores? ¿Cuántas celdas ocupan en total? </p>
 
 <p class="answer"> Ocupan 12_ celdas, dos por cada elemento; de la 5h a la 10h.</p>
 
-""",UIConfig.enableAll,Some("org 5h\ntabla dw 1,3,5,7,9,11\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Cadenas de caracteres"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\ntabla dw 1,3,5,7,9,11\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Cadenas de caracteres",
+      """
 <p>También se pueden declarar strings o cadenas de caracteres. Recuerda que los caracteres en 
 verdad se almacenan como códigos; los mismos se obtienen del 
 <a href="https://es.wikipedia.org_/wiki/ASCII#Caracteres_imprimibles_ASCII">estándar ASCII</a>.</p>
@@ -411,11 +458,13 @@ Verifica que los códigos corresponden a los de los caracteres h, o, l, y a. </p
 </div>
 
 
-""",UIConfig.enableAll,Some("org 5h\ncadena db \"hola\"\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Codificación de caracteres no alfabéticos"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\ncadena db \"hola\"\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Codificación de caracteres no alfabéticos",
+      """
 
 <p class="exercise"> En el editor se encuentra el mismo código que antes.
 Cambia el contenido de la cadena de caracteres de "hola" a "123#!   wubba lubba dub dub" y 
@@ -432,11 +481,13 @@ habrá la misma cantidad de códigos 20h en la memoria.
 </p>
 </div>
 
-""",UIConfig.enableAll,Some("org 5h\ncadena db \"hola\"\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Las cadenas de caracteres son sólo de tipo db"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\ncadena db \"hola\"\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Las cadenas de caracteres son sólo de tipo db",
+      """
 <p>Las cadenas de caracteres sólo pueden ser de tipo db.</p>
 
 <p class="exercise"> Modifica el código del editor, reemplazando el tipo db por dw.
@@ -445,11 +496,13 @@ habrá la misma cantidad de códigos 20h en la memoria.
 <p class="answer"> El compilador detecta el error y no compila el programa.
 </p>
 
-""",UIConfig.enableAll,Some("org 5h\ncadena db \"hola\"\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("Variables vs Etiquetas "
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\ncadena db \"hola\"\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "Variables vs Etiquetas ",
+      """
 <p>Cuando tenemos una variable de tipo dw, reservamos dos celdas de memoria
 para guardar un valor. Por ejemplo, en el programa del editor, las celdas 5h y 6h
 contienen el valor de la variable distancia.</p>
@@ -476,7 +529,9 @@ o varias para un vector).</p>
 </div>
 
 
-""",UIConfig.enableAll,Some("""org 5h
+""",
+      UIConfig.enableAll,
+      Some("""org 5h
 distancia dw 14A3h
 amigos db 4Ah
 mensaje db "Buenas noches."
@@ -485,10 +540,10 @@ androide db "R2D2"
 org 2000h
 hlt
 end""")
-)
-
-,TutorialStep("Variables vs Etiquetas"
-,"""
+    ),
+    TutorialStep(
+      "Variables vs Etiquetas",
+      """
 <p>Pensándolo de ese modo, en assembly <em>declarar una variable</em> es simplemente etiquetar una dirección de memoria.
 Entonces más que una variable, tenemos una <strong>etiqueta</strong> para una celda de memoria. </p>
 
@@ -498,8 +553,10 @@ En cambio, tenemos un mecanismo para <strong>inicializar celdas de memoria</stro
 <strong>etiquetar celdas de memoria</strong> con un nombre. 
 </p>
 
-""",UIConfig.enableAll,Some("org 5h\ndw 1A3Bh\norg 2000h\nhlt\nend")
-)
+""",
+      UIConfig.enableAll,
+      Some("org 5h\ndw 1A3Bh\norg 2000h\nhlt\nend")
+    )
 
 //,TutorialStep("Variables sin etiquetas TODO"
 //,"""
@@ -512,8 +569,6 @@ En cambio, tenemos un mecanismo para <strong>inicializar celdas de memoria</stro
 //
 //""",UIConfig.enableAll,Some("org 5h\ndw 1A3Bh\norg 2000h\nhlt\nend")
 //)
-
-
 //,TutorialStep("Dup TODO"
 //,"""
 //<p>En ocasiones, queremos definir un vector pero con todos los elementos iguales.</p>
@@ -521,9 +576,10 @@ En cambio, tenemos un mecanismo para <strong>inicializar celdas de memoria</stro
 //<p class="exercise"> </p>
 //""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
 //)
-
-,TutorialStep("Autoevaluación (1/6)"
-,"""
+    ,
+    TutorialStep(
+      "Autoevaluación (1/6)",
+      """
 <ol>
 
 <li><p class="exercise">La sentencia org sirve para ubicar las instrucciones en la memoria.
@@ -553,11 +609,13 @@ y ponerle un nombre (<em>etiqueta</em>) a ciertas direcciones de memoria. </p></
 
 
 
-""",UIConfig.enableAll,None
-)
-
-,TutorialStep("Autoevaluación (2/6)"
-,"""
+""",
+      UIConfig.enableAll,
+      None
+    ),
+    TutorialStep(
+      "Autoevaluación (2/6)",
+      """
 <ol>
 
 <li><p class="exercise">¿Qué se le agrega a un valor para que sea considerado 
@@ -586,11 +644,13 @@ para distinguirlo del número decimal 100010.</p></li>
 
 
 
-""",UIConfig.enableAll,None
-)
-
-,TutorialStep("Autoevaluación (3/6)"
-,"""
+""",
+      UIConfig.enableAll,
+      None
+    ),
+    TutorialStep(
+      "Autoevaluación (3/6)",
+      """
 <ol>
 
 <li><div class="exercise"><p>Decidir si es válida la forma de 
@@ -617,11 +677,13 @@ escribir los siguientes valores en Assembly:</p>
 </li>
 
 </ol>
-""",UIConfig.enableAll,None
-)
-
-,TutorialStep("Autoevaluación (4/6)"
-,"""
+""",
+      UIConfig.enableAll,
+      None
+    ),
+    TutorialStep(
+      "Autoevaluación (4/6)",
+      """
 <ol>
 
 <li><p class="exercise">¿Se puede ingresar números negativos en Assembly?.</p>
@@ -645,12 +707,13 @@ CA2, entonces significa que es negativo. Sino, significa que es un número mayor
 </li>
 
 </ol>
-""",UIConfig.enableAll,None
-)
-
-
-,TutorialStep("Autoevaluación (5/6)"
-,"""
+""",
+      UIConfig.enableAll,
+      None
+    ),
+    TutorialStep(
+      "Autoevaluación (5/6)",
+      """
 <ol>
 
 <li><p class="exercise">¿Cuáles son los valores mínimos y máximos para una variable de
@@ -676,11 +739,13 @@ y luego especificar su valor en el programa.</p>
 
 </ol>
 
-""",UIConfig.enableAll,None
-)
-
-,TutorialStep("Autoevaluación (6/6)"
-,"""
+""",
+      UIConfig.enableAll,
+      None
+    ),
+    TutorialStep(
+      "Autoevaluación (6/6)",
+      """
 <ol>
 
 <li><p class="exercise"> ¿Cómo se define un vector de valores en Assembly? </p>
@@ -711,12 +776,13 @@ El 29 en la celda con dirección 6, y el -5 en la celda 7.
 
 </ol>
 
-""",UIConfig.enableAll,None
-)
-
-
-,TutorialStep("Resumen"
-,"""
+""",
+      UIConfig.enableAll,
+      None
+    ),
+    TutorialStep(
+      "Resumen",
+      """
 <p>En Assembly se pueden etiquetar celdas de memoria e inicializar su valor,
 que llamamos <strong>declarar variables</strong> aunque su significado sea algo
 diferente del de otros lenguajes de programación.</p>
@@ -745,17 +811,21 @@ se codifican con el sistema CA2.
 También podemos declarar vectores de caracteres o strings, escribiendo un texto entre comillas.
 </p>
 
-""",UIConfig.enableAll,Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
-)
-
-,TutorialStep("A continuación"
-,"""
+""",
+      UIConfig.enableAll,
+      Some("org 5h\n;las variables van aqui\norg 2000h\nhlt\nend")
+    ),
+    TutorialStep(
+      "A continuación",
+      """
  <p>Ahora que sabes más sobre cómo se codifican los datos en assembly y cómo definir variables,
   puedes avanzar más con el <a href="?tutorial=code">tutorial sobre 
   registros e instrucciones simples</a>.</p>
  
-""",UIConfig.disableAll,Some(""))
-    
-)
+""",
+      UIConfig.disableAll,
+      Some("")
+    )
+  )
 
 }

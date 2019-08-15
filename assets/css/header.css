@@ -1,4 +1,4 @@
-#header{
+#headerControls{
     font-size: 2em;
     background-color: #34bbfc;
     border-bottom: 5px solid #337ab7;
@@ -26,8 +26,18 @@
     margin-left:20px;
 }
 
-.dropdown-tutoriales{
-	margin-right:100px;
+/* .dropdown-tutoriales{
+	margin-right: 20px;
+} */
+#headerOptions{
+    display: flex;
+}
+#dropdownTutorialButton{
+    background-color: #34bbfc;
+}
+
+span.caret {
+    display:none;
 }
 
 #title{
@@ -51,7 +61,7 @@
 
 }
 #headerSeparator{
-	margin-left:auto; 
+	margin-left:auto;
 }
 #languageButtonContainer{
    display:flex;

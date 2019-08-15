@@ -18,11 +18,11 @@ import vonsim.webapp.i18n.UILanguage
 
 abstract class HTMLUI {
   def root: HTMLElement
-  
-  def bindkey(element:HTMLElement,key:String,f:Function0[Boolean]){
-      
-      Mousetrap.bindGlobal(key, f, "keydown")
-    
+
+  def bindkey(element: HTMLElement, key: String, f: Function0[Boolean]) {
+
+    Mousetrap.bindGlobal(key, f, "keydown")
+
 //    element.onkeydown = (e: dom.KeyboardEvent) => {
 //      //println("Pressed " + e.keyCode + " " + e.ctrlKey)
 //      e.key
@@ -37,66 +37,62 @@ abstract class HTMLUI {
 //      }
 //
 //    }
-   
+
   }
-  
+
 }
 
-class VonSimState(var s:Simulator, var c:CompilationResult,var uil:UILanguage){
-  
-  
-  def simulatorStopped()={
-    s.state==SimulatorExecutionFinished || s.state==SimulatorExecutionStopped || s.state.isInstanceOf[SimulatorExecutionError]
+class VonSimState(
+  var s: Simulator,
+  var c: CompilationResult,
+  var uil: UILanguage
+) {
+
+  def simulatorStopped() = {
+    s.state == SimulatorExecutionFinished || s.state == SimulatorExecutionStopped || s.state
+      .isInstanceOf[SimulatorExecutionError]
   }
-  def canLoadOrQuickRun()={
+  def canLoadOrQuickRun() = {
     simulatorStopped() && this.c.isRight
   }
-  def isSimulatorExecuting()={
+  def isSimulatorExecuting() = {
     !simulatorStopped()
   }
-  
+
 }
 
-abstract class VonSimUI(val s: VonSimState) extends HTMLUI{
+abstract class VonSimUI(val s: VonSimState) extends HTMLUI {
 
   def simulatorEvent() // update changes made to the simulator
-  def simulatorEvent(i:InstructionInfo) // update UI after execution of instruction
+  def simulatorEvent(i: InstructionInfo) // update UI after execution of instruction
   def compilationEvent()
-  
-  def disable(){
+
+  def disable() {
     root.classList.add("disabledElement")
   }
-  def enable(){
-    
+  def enable() {
+
     root.classList.remove("disabledElement")
   }
-  def setDisabled(disabled:Boolean){
-    if (disabled){
+  def setDisabled(disabled: Boolean) {
+    if (disabled) {
       disable
-    }else{
+    } else {
       enable
     }
   }
 
-  
-  
-  def formatIOAddress(a:Int)={
+  def formatIOAddress(a: Int) = {
     s.uil.formatIOAddress(a)
     "%02X".format(a)
   }
-  def formatAddress(a:Int)={
+  def formatAddress(a: Int) = {
     "%04X".format(a)
   }
-  def formatWord(a:Word)={
+  def formatWord(a: Word) = {
     "%02X".format(a.toUnsignedInt)
   }
-  def formatDWord(a:DWord)={
+  def formatDWord(a: DWord) = {
     "%04X".format(a.toUnsignedInt)
   }
 }
-
-
-
-
-
-

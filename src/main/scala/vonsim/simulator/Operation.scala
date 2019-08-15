@@ -5,7 +5,6 @@ class ALUOpBinary extends ALUOp
 class ALUOpUnary extends ALUOp
 class ALUOpCompare extends ALUOp
 
-
 class ArithmeticOpBinary extends ALUOpBinary
 case object ADD extends ArithmeticOpBinary
 case object SUB extends ArithmeticOpBinary
@@ -25,4 +24,3 @@ case object AND extends LogicalOpBinary
 class LogicalOpUnary extends ALUOpUnary
 case object NOT extends LogicalOpUnary
 case object NEG extends LogicalOpUnary
-

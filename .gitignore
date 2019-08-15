@@ -29,3 +29,8 @@ node_modules/
 .settings/
 .externalToolBuilders
 /bin/
+
+#vscode stuff
+
+.metals/*
+.scalafmt.conf
