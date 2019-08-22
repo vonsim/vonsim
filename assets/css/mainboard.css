@@ -4,13 +4,46 @@
 
 #devices{
   flex: 0 1 auto;
-  display: -webkit-flex; /* Safari */
-  display: flex;  
+  
+/*   display: -webkit-flex; Safari
+  display: flex;
+ */  
   -webkit-justify-content: space-around; /* Safari */
   justify-content:         space-around;
 
-  flex-wrap: wrap;
   -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+  flex-wrap: wrap;
+}
+
+#cpu{
+  flex: 0 1 auto;
+  
+/*   display: -webkit-flex; Safari
+  display: flex;
+ */  
+  -webkit-justify-content: space-around; /* Safari */
+  justify-content:         space-around;
+
+  -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+  flex-wrap: wrap;
+}
+
+.tab-pane.active{
+  display: -webkit-flex; /* Safari */
+  display: flex;
+}
+
+.nav-tabs{
+  border-bottom: 2px solid #337ab7;
+}
+
+a{
+  color: white;
+}
+
+textarea{
+	resize: none;
+	background-color: rgb(51, 51, 51); 
 }
 
 .mainboardItem h1,.mainboardItem h2,.mainboardItem h3{
@@ -60,7 +93,7 @@
 	float:right;
 	height:24px;
 	margin:0em 0.2em;
-	filter: invert(0.9);
+	/*filter: invert(0.9);*/
 }
 .mainboardItemContent{
 	margin:0px;

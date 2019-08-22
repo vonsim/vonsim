@@ -229,6 +229,7 @@ class Simulator(
 ) {
   var state: SimulatorState = SimulatorExecutionStopped
   var language: SimulatorLanguage = new Spanish()
+  var monitorStrings = new ListBuffer[String]()
   def reset() {
     cpu.reset()
     //memory.reset()
@@ -455,7 +456,41 @@ class Simulator(
         stopExecutionForError(language.instructionNotImplemented("out"))
       }
       case IntN(n) => {
-        stopExecutionForError(language.instructionNotImplemented("int n"))
+      	encodeUnaryOperand(n).last.toInt match {
+      	  case 0 => { finishExecution() }
+      	  case 6 =>	{
+      	  	/*
+      	  	 * Lectura de un caracter
+      	  	 * BX tiene la dirección de donde se almacena el caracter
+      	  	 * 1 - Se tiene que pausar el simulador hasta que se escriba un caracter en la consola
+      	  	 * 2 - Luego de eso, se mueve el valor leído a la dirección apuntada por el registro BX
+      	  	 * 3 - Se reanuda la ejecución del programa
+      	  	 */
+      	  	
+      	  	//pauseExecution()
+      	  	//k = readKey()
+      	  	//writeMemory(BX, k) // Guardar la tecla presionada en la dirección almacenada en BX
+      	  	//resumeExecution()
+      	  }
+      	  case 7 => {
+      	  	/*
+      	  	 * Escritura de una cadena de caracteres:
+      	  	 * BX tiene la dirección donde comienza el string
+      	  	 * AL tiene la cantidad de caracteres a imprimir (longitud del string)
+      	  	 * Se tiene que escribir en la consola AL caracteres desde la dirección BX
+      	  	 */
+      	  	
+						var startAdress = cpu.get(BX).toInt
+						val cant = cpu.get(AL).toInt
+						var toPrint = ""
+						for(i <- 1 to cant){
+							toPrint+=(memory.values(startAdress).toInt.toChar.toString())
+							startAdress = startAdress + 1
+						}
+						monitorStrings += toPrint
+      	  }
+      	}
+        //stopExecutionForError(language.instructionNotImplemented("int n"))
       }
       case other => {
         stopExecutionForError(

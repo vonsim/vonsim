@@ -61,7 +61,7 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
         `type` := "button",
         cls := "close",
         data("dismiss") := "modal",
-        i(cls := "fa fa-close")
+        i(cls := "fas fa-close")
       )
     ).render
   }
@@ -142,7 +142,7 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
       cls := "helpButton",
       data("toggle") := "modal",
       data("target") := "#helpModal",
-      i(cls := s"fa fa-question-circle")
+      i(cls := s"fas fa-question-circle")
     ),
     helpUI.root
   ).render
@@ -163,7 +163,7 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
   val tutorialDropdown = div(
     cls := "dropdown dropdown-tutoriales",
     button(
-      cls := "btn btn-secondary dropdown-toggle fa fa-bars",
+      cls := "btn btn-secondary dropdown-toggle fas fa-bars fa-1x",
       `type` := "button",
       id := "dropdownTutorialButton",
       data("toggle") := "dropdown",

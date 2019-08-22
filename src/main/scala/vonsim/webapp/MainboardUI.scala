@@ -17,6 +17,9 @@ import vonsim.simulator.Word
 import vonsim.simulator.FullRegister
 import scalatags.JsDom.all._
 import vonsim.simulator.Flag
+import vonsim.simulator.WordValue
+import vonsim.simulator.IntN
+
 
 import vonsim.simulator.SimulatorProgramExecuting
 import vonsim.simulator.SimulatorExecutionStopped
@@ -24,29 +27,87 @@ import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 
+
 class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   val cpuUI = new CpuUI(s)
   val memoryUI = new MemoryUI(s)
 //  val ioMemoryUI = new IOMemoryUI(s)
-//  val devicesUI = new DevicesUI(s)
+  val monitorUI = new MonitorUI(s)
 
   val console = pre("").render
   val consoleDir = div(id := "console", h2("Console"), console).render
 
   val root = div(
     id := "mainboard",
-    div(id := "devices", cpuUI.root, memoryUI.root)
+    ul(
+      cls := "nav nav-tabs",
+      role := "tablist",
+      li(
+        role :="presentation",
+        cls:="active",
+        a(
+          href:="#cpu",
+          role:="tab",
+          data("toggle") := "tab",
+          aria.controls := "cpu",
+          "CPU"
+        )
+      ),
+      li(
+        role :="presentation",
+        a(
+          href:="#devices",
+          id:="devices-tab",
+          role:="tab",
+          data("toggle") := "tab",
+          aria.controls := "devices",
+          "Devices"
+        )
+      )
+    ),
+    div(
+      cls := "tab-content",
+      div(
+        role := "tabpanel",
+        cls := "tab-pane fade in active",
+        id := "cpu",
+        cpuUI.root,
+        memoryUI.root
+//        div(cls:="col-md-4", cpuUI.root),
+//        div(cls:="col-md-4", memoryUI.root)
+      ),
+      div(
+        role := "tabpanel",
+        cls := "tab-pane fade",
+        id := "devices",
+        monitorUI.root/*,
+        div(cls:="col-md-6", monitorUI.root),
+        div(cls:="col-md-6", consoleUI.root),
+        div(cls:="col-md-6", pioUI.root),
+        div(cls:="col-md-6", picUI.root),
+        div(cls:="col-md-6", keysUI.root),
+        div(cls:="col-md-6", ledsUI.root),
+        div(cls:="col-md-6", printerUI.root)*/
+      )
+    )
   ).render
 
   def simulatorEvent() {
     memoryUI.simulatorEvent()
     cpuUI.simulatorEvent()
+//    val i = s.s.currentInstruction() 
+//    if(i.isRight) {
+//    	val instruction = i.right.get.instruction
+//			if(instruction == IntN(WordValue(7)))
+				monitorUI.simulatorEvent()
+//		}
 
   }
   def simulatorEvent(i: InstructionInfo) {
     memoryUI.simulatorEvent(i)
     cpuUI.simulatorEvent(i)
-
+//		if(i.instruction == IntN(WordValue(7)))
+			monitorUI.simulatorEvent(i)
   }
 
   def compilationEvent() {}
@@ -70,8 +131,9 @@ abstract class MainboardItemUI(
         id := itemId,
         div(
           cls := "mainboardItemHeader",
-          img(cls := "mainboardItemIcon", src := "assets/"+icon),
-          h2(cls := "mainboardItemHeaderText", title)
+          //img(cls := "mainboardItemIcon", src := "assets/"+icon),
+      		//i(cls := "fas fa-"+icon),
+          h2(cls := "mainboardItemHeaderText fas fa-"+icon, " "+title)
         ),
         contentDiv
       )
@@ -84,7 +146,7 @@ abstract class MainboardItemUI(
 class MemoryUI(s: VonSimState)
     extends MainboardItemUI(
       s,
-      "img/mainboard/ram.png",
+      "memory",
       "memory",
       s.uil.memoryTitle
     ) {

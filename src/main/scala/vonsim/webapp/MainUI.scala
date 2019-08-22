@@ -173,6 +173,7 @@ class MainUI(
     editorUI.simulatorEvent()
     mainboardUI.simulatorEvent()
   }
+  
   def simulatorEvent(i: InstructionInfo) {
     println(s"simulatorEvent instruction $i triggered")
     headerUI.simulatorEvent(i)
@@ -237,6 +238,7 @@ class MainUI(
       case Right(c: SuccessfulCompilation) => {
         println("Loading program... ")
         s.s.load(c)
+        mainboardUI.monitorUI.reset()
         simulatorEvent()
         println("Done")
       }

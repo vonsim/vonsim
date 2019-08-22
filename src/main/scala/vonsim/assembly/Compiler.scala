@@ -143,9 +143,14 @@ object Compiler {
       //      println(s"Instructions $r")
       val firstPassInstructions = firstPassResult.rights
       val warnings = ListBuffer[Warning]()
-      if (firstPassInstructions.filter(_.instruction == Hlt).isEmpty) {
-        val hltWarning = (0, language.noHltInstructionsWarning)
-        warnings += hltWarning
+      val hltFirstPassInstructions = firstPassInstructions.filter(_.instruction == Hlt)
+      if (hltFirstPassInstructions.isEmpty) {
+      	//println("Verificó que no tuviera Hlt")
+      	if(hltFirstPassInstructions.filter(_.instruction == IntN(WordValue(0))).isEmpty) {
+      		//println("Verificó que no tuviera Int 0")
+	        val hltWarning = (0, language.noHltInstructionsWarning)
+	        warnings += hltWarning
+      	}
       }
 
       //Build a db of information after getting correctly parsed instructions

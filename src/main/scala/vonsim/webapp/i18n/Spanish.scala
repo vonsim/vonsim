@@ -73,6 +73,7 @@ Mientras el programa está ejecutándose no se puede modificar el código en el 
   def flags = "Flags"
   def aluTitle = "ALU"
   def cpuTitle = "CPU"
+  def monitorTitle = "Monitor"
   def cpuSpecialRegisters = "Registros Especiales"
   def cpuGeneralPurposeRegisters = "Registros de Propósito General"
   def memoryTitle = "Memoria"

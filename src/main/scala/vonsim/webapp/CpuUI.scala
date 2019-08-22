@@ -66,10 +66,9 @@ class RegistersUI(
   ).render
 
   val registerTable = table(
-    cls := "registerTable"
-//    ,thead(th("Register"), th(colspan := 2, "Value"))
-//    ,thead(th(""), th("H"), th("L")),
-    ,
+    cls := "registerTable",
+//    thead(th("Register"), th(colspan := 2, "Value")),
+//    thead(th(""), th("H"), th("L")),
     namesRow,
     body
   ).render
@@ -199,7 +198,7 @@ class AluUI(s: VonSimState) extends VonSimUI(s) {
 class CpuUI(s: VonSimState)
     extends MainboardItemUI(
       s,
-			"img/mainboard/microchip.png",
+			"microchip",
       "cpu",
       s.uil.cpuTitle
     ) {
