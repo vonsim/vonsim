@@ -5,6 +5,7 @@ import vonsim.utils.CollectionUtils._
 import scalatags.JsDom.all._
 import org.scalajs.dom.html._
 import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom.raw._
 import org.scalajs.dom
 import scala.scalajs.js
 import js.JSConverters._
@@ -27,38 +28,40 @@ import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 
-class MonitorUI(s: VonSimState) extends MainboardItemUI (
+class KeyboardUI(s: VonSimState) extends MainboardItemUI (
       s,
-			"desktop",
-      "monitor",
-      s.uil.monitorTitle
+			"keyboard",
+      "keyboard",
+      s.uil.keyboardTitle
     ) {
-	var text = "".render
-	val monitorArea =
+	val text = "".render
+	val keyboardArea = 
+		textarea(
+//			disabled,
+//			onkeypress:= "keyPressed",
+			cols := "50",
+			rows := "4",
+			id := "keyboardArea",
+			text
+		).render
+	val keyboard =
 		div(
 			id := "",
 			cls := "",
-			textarea(
-				disabled,
-				cols := "50",
-				rows := "4",
-				text
-				)
+			keyboardArea
 		).render
 	
-	contentDiv.appendChild(monitorArea)
+	disableTextArea()
+	
+	contentDiv.appendChild(keyboard)
+	
+	def configKeyboardEvent(){
+		keyboardArea.onkeypress = (event: KeyboardEvent) => { keyPressed(event.keyCode) }
+	}
 	
   def simulatorEvent() {
-		/*var startAdress = s.s.cpu.get(BX).toInt
-		println(startAdress)
-		val cant = s.s.cpu.get(AL).toInt
-		println(cant)
-		for(i <- 1 to cant){
-			monitorArea.firstChild.appendChild((s.s.memory.values(startAdress).toInt.toChar.toString()).render)
-			startAdress = startAdress + 1; 
-		}*/
-		s.s.monitorStrings.foreach(f => text.textContent += (f))
-  	s.s.monitorStrings.clear()
+		if(s.isWaitingKeyPress())
+			enableTextArea()
   }
 	
   def simulatorEvent(i: InstructionInfo) {
@@ -67,6 +70,23 @@ class MonitorUI(s: VonSimState) extends MainboardItemUI (
   
   def reset() {
   	text.textContent = ""
+  	disableTextArea()
+  }
+  
+  def disableTextArea() {
+    keyboardArea.disabled = true
+//    println("Se ha deshabilitado el teclado")
+  }
+  def enableTextArea() {
+    keyboardArea.disabled = false
+    dom.window.alert("Presione una tecla en el teclado para continuar con la ejecución.")
+//    println("Se ha habilitado el teclado")
+  }
+  
+  def keyPressed(key: Int){
+  	disableTextArea()
+  	text.textContent += key.toChar
+  	s.s.resumeExecution(key)
   }
   
   //def compilationEvent() {}

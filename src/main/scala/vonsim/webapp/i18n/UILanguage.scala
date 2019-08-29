@@ -46,7 +46,9 @@ abstract class UILanguage {
   def flags: String
   def aluTitle: String
   def cpuTitle: String
+  def devicesTitle: String
   def monitorTitle: String
+  def keyboardTitle: String
   def cpuSpecialRegisters: String
   def cpuGeneralPurposeRegisters: String
   def memoryTitle: String

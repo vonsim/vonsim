@@ -50,8 +50,8 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
         cls := "modal-icon",
         alt := "Von Sim Icon",
         title := s.uil.iconTitle,
-//        src := "img/icon.png"
-        src := "assets/img/icon.png"
+        src := "img/icon.png"
+//        src := "assets/img/icon.png"
       ),
       h4(
         cls := "modal-title",
@@ -195,8 +195,8 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
           id := "icon",
           alt := "Von Sim Icon",
           title := s.uil.iconTitle,
-//          src := "img/icon.png"
-          src := "assets/img/icon.png"
+          src := "img/icon.png"
+//          src := "assets/img/icon.png"
         )
       ),
       controlsUI.root,

@@ -168,8 +168,10 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
   def updateUI() {
 
     setEnabled(quickButton, s.canLoadOrQuickRun())
-    setEnabled(finishButton, s.isSimulatorExecuting())
-    setEnabled(stepButton, s.isSimulatorExecuting())
+//    setEnabled(finishButton, s.isSimulatorExecuting())
+//    setEnabled(stepButton, s.isSimulatorExecuting())
+    setEnabled(finishButton, ((s.isSimulatorExecuting()) && (!s.isWaitingKeyPress())))
+    setEnabled(stepButton, ((s.isSimulatorExecuting()) && (!s.isWaitingKeyPress())))
 
     if (s.canLoadOrQuickRun()) {
       loadOrStopButton.stateLoad()

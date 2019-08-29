@@ -33,7 +33,8 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   val memoryUI = new MemoryUI(s)
 //  val ioMemoryUI = new IOMemoryUI(s)
   val monitorUI = new MonitorUI(s)
-
+  val keyboardUI = new KeyboardUI(s)
+  
   val console = pre("").render
   val consoleDir = div(id := "console", h2("Console"), console).render
 
@@ -61,7 +62,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
           role:="tab",
           data("toggle") := "tab",
           aria.controls := "devices",
-          "Devices"
+          s.uil.devicesTitle
         )
       )
     ),
@@ -80,7 +81,8 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         role := "tabpanel",
         cls := "tab-pane fade",
         id := "devices",
-        monitorUI.root/*,
+        monitorUI.root,
+        keyboardUI.root/*,
         div(cls:="col-md-6", monitorUI.root),
         div(cls:="col-md-6", consoleUI.root),
         div(cls:="col-md-6", pioUI.root),
@@ -100,6 +102,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 //    	val instruction = i.right.get.instruction
 //			if(instruction == IntN(WordValue(7)))
 				monitorUI.simulatorEvent()
+				keyboardUI.simulatorEvent()
 //		}
 
   }
@@ -108,6 +111,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
     cpuUI.simulatorEvent(i)
 //		if(i.instruction == IntN(WordValue(7)))
 			monitorUI.simulatorEvent(i)
+			keyboardUI.simulatorEvent(i)
   }
 
   def compilationEvent() {}

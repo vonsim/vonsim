@@ -204,12 +204,20 @@ class InstructionInfo(
 class SimulatorState
 
 class SimulatorStoppedState extends SimulatorState
+class SimulatorPausedState extends SimulatorState
+case object SimulatorProgramExecuting extends SimulatorState
+
 case object SimulatorExecutionStopped extends SimulatorStoppedState
 //case object SimulatorProgramLoaded extends SimulatorStoppedState
-case object SimulatorProgramExecuting extends SimulatorState
-case class SimulatorExecutionError(val e: ExecutionError)
-    extends SimulatorStoppedState
+case class SimulatorExecutionError(val e: ExecutionError) extends SimulatorStoppedState
 case object SimulatorExecutionFinished extends SimulatorStoppedState
+
+case object SimulatorWaitingKeyPress extends SimulatorPausedState
+
+class RunType
+case object Run extends RunType
+case object Debug extends RunType
+case object Stop extends RunType
 
 trait ExecutionError {
   def message: String
@@ -230,6 +238,8 @@ class Simulator(
   var state: SimulatorState = SimulatorExecutionStopped
   var language: SimulatorLanguage = new Spanish()
   var monitorStrings = new ListBuffer[String]()
+  var runState: RunType = Stop
+  
   def reset() {
     cpu.reset()
     //memory.reset()
@@ -262,6 +272,16 @@ class Simulator(
     }
   }
 
+  def nextInstruction() = {
+    if (instructions.keySet.contains((cpu.ip)+1)) {
+      val instruction = instructions(cpu.ip)
+      Right(instruction)
+    } else {
+      val message = language.memoryCellAsInstruction
+      Left(GeneralExecutionError(message))
+    }
+  }
+
   def runInstructions() = {
     stepNInstructions(Simulator.maxInstructions)
   }
@@ -271,7 +291,8 @@ class Simulator(
     var instructions = ListBuffer(instruction)
     var counter = 0
 
-    while (counter < n && instruction.isRight && !cpu.halted) {
+//    while (counter < n && instruction.isRight && !cpu.halted) {
+    while (counter < n && instruction.isRight && !cpu.halted && !cpu.paused) {
       val instruction = stepInstruction()
       instructions += instruction
     }
@@ -318,6 +339,21 @@ class Simulator(
     val message = language.modifyingReadOnlyMemory(e.address)
     stopExecutionForError(message, i)
   }
+  
+  def pauseExecutionToWaitKeyPress() {
+  	cpu.paused = true
+  	//state = SimulatorWaitingKeyPress
+  }
+  
+  def resumeExecution(key: Int) {
+  	cpu.paused = false
+  	state = SimulatorProgramExecuting
+  	
+  	// Agregar el char a la memoria
+		val adress = cpu.get(BX).toInt
+		memory.setByte(adress, Word(key.toByte))
+  }
+  
   def setSpecialRegisters(i: Instruction) {
     var encoding = Simulator.encode(i)
     cpu.set(IR, encoding(0).toDWord())
@@ -467,10 +503,7 @@ class Simulator(
       	  	 * 3 - Se reanuda la ejecución del programa
       	  	 */
       	  	
-      	  	//pauseExecution()
-      	  	//k = readKey()
-      	  	//writeMemory(BX, k) // Guardar la tecla presionada en la dirección almacenada en BX
-      	  	//resumeExecution()
+      	  	pauseExecutionToWaitKeyPress()
       	  }
       	  case 7 => {
       	  	/*

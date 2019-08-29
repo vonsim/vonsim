@@ -279,6 +279,7 @@ class ALU {
 class CPU {
 
   var halted = false
+  var paused = false
   val alu = new ALU()
   var generalRegisters = mutable.Map[FullRegister, DWord]()
   var specialRegisters = mutable.Map[SpecialRegister, DWord]()

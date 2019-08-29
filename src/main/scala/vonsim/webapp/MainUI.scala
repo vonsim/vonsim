@@ -3,6 +3,7 @@ import vonsim.utils.CollectionUtils._
 import scalatags.JsDom.all._
 //import org.scalajs.dom.html._
 import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom.raw.KeyboardEvent
 import org.scalajs.dom
 import scala.scalajs.js
 import js.JSConverters._
@@ -21,6 +22,9 @@ import vonsim.simulator.Simulator
 import vonsim.simulator.InstructionInfo
 import vonsim.simulator.DWord
 import vonsim.simulator.Word
+import vonsim.simulator.Run
+import vonsim.simulator.Debug
+import vonsim.simulator.Stop
 import vonsim.assembly.Compiler.CompilationResult
 import vonsim.assembly.Compiler.SuccessfulCompilation
 
@@ -104,6 +108,7 @@ class MainUI(
 
   bindkey(root, s.uil.controlsQuickHotkey, () => {
     if (s.canLoadOrQuickRun()) {
+      s.s.runState = Run
       quickRun()
     }
     false
@@ -111,8 +116,10 @@ class MainUI(
 
   bindkey(root, s.uil.controlsDebugOrAbortHotkey, () => {
     if (s.canLoadOrQuickRun()) {
+      s.s.runState = Debug
       loadProgram()
     } else if (s.isSimulatorExecuting()) {
+      s.s.runState = Stop
       stop()
     }
     false
@@ -120,6 +127,7 @@ class MainUI(
 
   bindkey(root, s.uil.controlsFinishHotkey, () => {
     if (s.isSimulatorExecuting()) {
+      s.s.runState = Run
       runInstructions()
     }
     false
@@ -135,13 +143,19 @@ class MainUI(
   bindkey(root, "ctrl+s", () => {
     false
   })
-
-  headerUI.controlsUI.quickButton.onclick = (e: Any) => { quickRun() }
+  
+  headerUI.controlsUI.quickButton.onclick = (e: Any) => {
+    s.s.runState = Run
+  	quickRun()
+  }
 
   headerUI.controlsUI.loadOrStopButton.loadButton.onclick = (e: Any) => {
+    s.s.runState = Debug
     loadProgram()
   }
+  
   headerUI.controlsUI.loadOrStopButton.stopButton.onclick = (e: Any) => {
+    s.s.runState = Stop
     stop()
   }
 
@@ -152,7 +166,12 @@ class MainUI(
       dom.window.location.reload(false)
     }
   })
-  headerUI.controlsUI.finishButton.onclick = (e: Any) => { runInstructions() }
+  
+  headerUI.controlsUI.finishButton.onclick = (e: Any) => {
+    s.s.runState = Run
+  	runInstructions()
+  }
+  
   headerUI.controlsUI.stepButton.onclick = (e: Any) => { stepInstruction() }
 
   println("UI set up. Updating for the first time..")
@@ -193,15 +212,20 @@ class MainUI(
     s.s.reset()
     simulatorEvent()
   }
+  
   def stop() {
     println("Stopping execution... ")
     s.s.stop()
     simulatorEvent()
   }
+  
   def runInstructions() {
+  	
     println("Running... ")
+    
     editorUI.disableTextArea()
     headerUI.controlsUI.disableControls()
+    
     setTimeout(50)({
       val instructions = s.s.runInstructions()
       simulatorEvent()
@@ -218,16 +242,28 @@ class MainUI(
     val i = s.s.stepInstruction()
     i match {
       case Left(error) => //executionError(error.message)
-      case Right(i)    => simulatorEvent(i)
+      case Right(i)    => {
+      	simulatorEvent(i)
+     	}
     }
 
   }
+  
+  def resumeRun() {
+    s.c match {
+      case Right(c: SuccessfulCompilation) => {
+        runInstructions()
+      }
+      case _ => dom.window.alert(s.uil.alertCompilationFailed)
+    }
+
+  }
+  
   def quickRun() {
     s.c match {
       case Right(c: SuccessfulCompilation) => {
-        loadProgram()
+      	loadProgram()
         runInstructions()
-
       }
       case _ => dom.window.alert(s.uil.alertCompilationFailed)
     }
@@ -239,6 +275,14 @@ class MainUI(
         println("Loading program... ")
         s.s.load(c)
         mainboardUI.monitorUI.reset()
+        mainboardUI.keyboardUI.reset()
+        mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
+        	mainboardUI.keyboardUI.keyPressed(event.keyCode)
+        	if(s.s.runState == Run)
+        		resumeRun
+        	else if(s.s.runState == Debug)
+        		headerUI.controlsUI.updateUI()
+        }
         simulatorEvent()
         println("Done")
       }
