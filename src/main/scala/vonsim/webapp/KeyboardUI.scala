@@ -74,7 +74,7 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
   }
   
   def disableTextArea() {
-    if(keyboardArea.disabled == true){
+    if(keyboardArea.disabled == false){
 	    keyboardArea.disabled = true
 //    	println("Se ha deshabilitado el teclado")
     }
