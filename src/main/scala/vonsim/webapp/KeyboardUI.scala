@@ -74,13 +74,17 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
   }
   
   def disableTextArea() {
-    keyboardArea.disabled = true
-//    println("Se ha deshabilitado el teclado")
+    if(keyboardArea.disabled == true){
+	    keyboardArea.disabled = true
+//    	println("Se ha deshabilitado el teclado")
+    }
   }
   def enableTextArea() {
-    keyboardArea.disabled = false
-    dom.window.alert("Presione una tecla en el teclado para continuar con la ejecución.")
-//    println("Se ha habilitado el teclado")
+    if(keyboardArea.disabled == true){
+	    keyboardArea.disabled = false
+	    dom.window.alert("Presione una tecla en el teclado para continuar con la ejecución.")
+//	    println("Se ha habilitado el teclado")
+    }
   }
   
   def keyPressed(key: Int){

@@ -3,10 +3,9 @@
     background-color: #34bbfc;
     border-bottom: 5px solid #337ab7;
     padding:5px;
-    display:flex;
+/*     display:flex; */
     justify-content:space-between;
     align-items: center;
-       
 }
 .fa{
 	margin-right:5px;
@@ -26,9 +25,46 @@
     margin-left:20px;
 }
 
+.quickButton{
+	margin-right: 90px;
+}
+
 /* .dropdown-tutoriales{
 	margin-right: 20px;
 } */
+
+.navbar{
+	margin-bottom: 0px;
+	border: 0px;
+	z-index: 9999;
+}
+
+@media screen and (max-width: 1150px) {
+	.navbar {
+		margin-bottom: 15px;
+	}
+	@media screen and (min-height: 745px) {
+		.navbar {
+			margin-bottom: 0px;
+		}
+	}
+}
+
+@media screen and (min-width: 1150px) {
+	.navbar {
+		margin-bottom: 23px;
+	}
+	@media screen and (min-height: 750px) {
+		.navbar {
+			margin-bottom: 0px;
+		}
+	}
+}
+
+.navbar-collapse{
+	border-color: #337ab7 !important;
+}
+
 #headerOptions{
     display: flex;
 }
@@ -51,22 +87,30 @@ span.caret {
     padding:0px;
     margin:0px;
     padding:4px 20px;
-    
 }
 
 .simulatorState{
 /* 	pointer-events: none; */
 	pointer-events: auto; 
-	margin-left:20px;
+/* 	margin-left:20px; */
 
 }
 #headerSeparator{
 	margin-left:auto;
 }
 #languageButtonContainer{
-   display:flex;
+/*    display:flex; */
     justify-content:space-between;
     align-items: center;
+}
+
+@media screen and (max-width: 1150px) {
+	#languageButtonContainer{
+	    margin-left: 25px;
+	}
+	.dropdown{
+	    margin-left: 12px;
+	}
 }
 .languageButton{
 	margin-right:10px;

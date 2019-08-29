@@ -50,8 +50,8 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
         cls := "modal-icon",
         alt := "Von Sim Icon",
         title := s.uil.iconTitle,
-        src := "img/icon.png"
-//        src := "assets/img/icon.png"
+//        src := "img/icon.png"
+        src := "assets/img/icon.png"
       ),
       h4(
         cls := "modal-title",
@@ -149,7 +149,9 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
   val currentLanguage = s.uil.code
   val languages = UILanguage.codes.keys.filter(_ != currentLanguage)
 
-  val languageButtonsContainer = div(id := "languageButtonContainer").render
+  val languageButtonsContainer = div(
+		id := "languageButtonContainer"
+  ).render
 
   val languageButtons = languages.map(
     l =>
@@ -186,31 +188,82 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
     )
   ).render
 
-  val root = header(
+//  val nav = nav(
+  val root = div(
+  	cls:= "navbar navbar-default",
   	div(
-      id := "headerControls",
-      a(
-        href := "index.html",
-        img(
-          id := "icon",
-          alt := "Von Sim Icon",
-          title := s.uil.iconTitle,
-          src := "img/icon.png"
-//          src := "assets/img/icon.png"
-        )
-      ),
-      controlsUI.root,
-      span(id := "headerSeparator"),
-      // tutorialDropdown,
-      languageButtonsContainer,
-      //, helpUIButton
-      div(
-        id := "headerOptions",
-        languageButtonsContainer,
-        tutorialDropdown
-      )
+  		cls := "container-fluid",
+  		id := "headerControls",
+	  	div(
+	  		cls := "navbar-header",
+	  		button(
+//	  			type:="button",
+	  			cls:="navbar-toggle collapsed",
+		      data("toggle") := "collapse",
+		      data("target") := "#navbar-collapse",
+	  			attr("aria-expanded") := "false",
+	  			span(cls:="sr-only", "Toggle navigation"),
+	  			span(cls:="icon-bar"),
+	  			span(cls:="icon-bar"),
+	  			span(cls:="icon-bar")
+	  		),
+	  		a(
+	  			href := "index.html",
+	        img(
+	          id := "icon",
+	          alt := "Von Sim Icon",
+	          title := s.uil.iconTitle,
+//	          src := "img/icon.png"
+	          src := "assets/img/icon.png"
+	        )
+	  		)
+	  	),
+	  	
+	  	div(
+	  		cls:= "collapse navbar-collapse",
+	  		id:= "navbar-collapse",
+	  		ul(
+	  			cls:= "nav navbar-nav",
+	  			li(span(cls := "controlSection", controlsUI.quickButton)),
+			    li(span(cls := "controlSection", controlsUI.loadOrStopButton.root)),
+			    li(span(cls := "controlSection", controlsUI.finishButton)),
+			    li(span(cls := "controlSection", controlsUI.stepButton)),
+			    li(span(cls := "controlSection", controlsUI.simulatorStateUI.root))
+	  		),
+	  		ul(
+	  			cls:= "nav navbar-nav navbar-right",
+	  			li(languageButtonsContainer),
+	  			li(tutorialDropdown)
+	  		)
+	  	) 
   	)
   ).render
+  
+//  val root = header(
+//  	div(
+//      id := "headerControls",
+//      a(
+//        href := "index.html",
+//        img(
+//          id := "icon",
+//          alt := "Von Sim Icon",
+//          title := s.uil.iconTitle,
+//          src := "img/icon.png"
+////          src := "assets/img/icon.png"
+//        )
+//      ),
+//      controlsUI.root,
+//      span(id := "headerSeparator"),
+//      // tutorialDropdown,
+//      languageButtonsContainer,
+//      //, helpUIButton
+//      div(
+//        id := "headerOptions",
+//        languageButtonsContainer,
+//        tutorialDropdown
+//      )
+//  	)
+//  ).render
 
   def dropdownItemFactory(tutorialUrl: String, tutorialString: String) = {
     li(
@@ -245,7 +298,6 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 
   def compilationEvent() {
     controlsUI.compilationEvent()
-
   }
 
   def languageButtonBootstrap() = {

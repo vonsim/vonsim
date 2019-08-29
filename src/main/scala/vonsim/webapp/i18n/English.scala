@@ -56,7 +56,7 @@ class English extends UILanguage {
   def flags = "Flags"
   def aluTitle = "ALU"
   def cpuTitle = "CPU"
-  def devicesTitle = "Dispositivos"
+  def devicesTitle = "Devices"
   def monitorTitle = "Monitor"
   def keyboardTitle = "Keyboard"
   def cpuSpecialRegisters = "Special Registers"

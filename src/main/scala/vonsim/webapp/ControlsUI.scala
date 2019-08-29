@@ -41,7 +41,8 @@ class SimulatorStateUI(s: VonSimState) extends VonSimUI(s) {
 
   def simulatorEvent() {
     val color = stateToButtonClass(s.s.state)
-    root.className = "btn " + color + " simulatorState"
+//    root.className = "btn " + color + " simulatorState"
+    root.className = "btn " + color + " navbar-btn simulatorState"
     root.title = s.uil.stateToTooltip(s.s.state)
     stateTitle.textContent = s.uil.stateToMessage(s.s.state)
     stateIcon.className = "fa fa-" + stateToIcon(s.s.state)
@@ -105,14 +106,18 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
   }
 
   def buttonFactory(s: String, t: String, iconClass: String) = {
-    a(
-      cls := "controlButton btn btn-primary"
+    val button = a(
+//      cls := "controlButton btn btn-primary"
+      cls := "controlButton btn btn-primary navbar-btn"
 //        ,img(cls:="",src := imageUrl, alt := s)
       ,
       i(cls := s"fa $iconClass"),
       s,
       title := t
     ).render
+    if(s == "Ejecución Rápida")
+    	button.className += " quickButton"
+    button
   }
 
   val quickButton = buttonFactory(
