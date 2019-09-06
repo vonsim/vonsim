@@ -46,8 +46,6 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
 		).render
 	val keyboard =
 		div(
-			id := "",
-			cls := "",
 			keyboardArea
 		).render
 	
@@ -76,13 +74,15 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
   def disableTextArea() {
     if(keyboardArea.disabled == false){
 	    keyboardArea.disabled = true
+	    keyboardArea.classList.remove("alerts-border")
 //    	println("Se ha deshabilitado el teclado")
     }
   }
   def enableTextArea() {
     if(keyboardArea.disabled == true){
 	    keyboardArea.disabled = false
-	    dom.window.alert("Presione una tecla en el teclado para continuar con la ejecución.")
+	    keyboardArea.classList.add("alerts-border")
+//	    dom.window.alert("Presione una tecla en el teclado para continuar con la ejecución.")
 //	    println("Se ha habilitado el teclado")
     }
   }

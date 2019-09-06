@@ -4,6 +4,7 @@ import scalatags.JsDom.all._
 //import org.scalajs.dom.html._
 import org.scalajs.dom.raw.HTMLElement
 import org.scalajs.dom.raw.KeyboardEvent
+import org.scalajs.dom._
 import org.scalajs.dom
 import scala.scalajs.js
 import js.JSConverters._
@@ -71,6 +72,8 @@ class MainUI(
     compile()
   })
 
+	val $ = js.Dynamic.global.$
+  
   val mainboardUI = new MainboardUI(s)
   val headerUI = new HeaderUI(s)
   val tutorialUI = tutorial.map(t => new TutorialUI(s, t, this))
@@ -216,6 +219,7 @@ class MainUI(
   def stop() {
     println("Stopping execution... ")
     s.s.stop()
+    mainboardUI.keyboardUI.reset()
     simulatorEvent()
   }
   
@@ -233,6 +237,8 @@ class MainUI(
         val error = instructions.last.left.get
         // executionError(error.message)
       }
+      if(s.isWaitingKeyPress())
+      	$("#devices-tab a").tab("show")
     })
 
   }
@@ -244,6 +250,8 @@ class MainUI(
       case Left(error) => //executionError(error.message)
       case Right(i)    => {
       	simulatorEvent(i)
+	      if(s.isWaitingKeyPress())
+	      	$("#devices-tab a").tab("show")
      	}
     }
 

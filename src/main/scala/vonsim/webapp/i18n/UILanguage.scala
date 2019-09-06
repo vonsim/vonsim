@@ -46,11 +46,18 @@ abstract class UILanguage {
   def flags: String
   def aluTitle: String
   def cpuTitle: String
+  def pioTitle: String
+  def keysTitle: String
+  def ledsTitle: String
   def devicesTitle: String
   def monitorTitle: String
   def keyboardTitle: String
   def cpuSpecialRegisters: String
   def cpuGeneralPurposeRegisters: String
+  def pioRegisters: String
+  def port: String
+  def pioAPort: String
+  def pioBPort: String
   def memoryTitle: String
   def addressSearch: String
 

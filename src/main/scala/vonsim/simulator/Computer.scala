@@ -288,6 +288,7 @@ class CPU {
     jump(0x2000)
     setSP(Simulator.maxMemorySize)
     halted = false
+    paused = false
     generalRegisters = mutable.Map[FullRegister, DWord](
       AX -> DWord(),
       BX -> DWord(),

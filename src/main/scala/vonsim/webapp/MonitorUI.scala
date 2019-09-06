@@ -39,11 +39,11 @@ class MonitorUI(s: VonSimState) extends MainboardItemUI (
 			id := "",
 			cls := "",
 			textarea(
-				disabled,
+				readonly,
 				cols := "50",
 				rows := "4",
 				text
-				)
+			)
 		).render
 	
 	contentDiv.appendChild(monitorArea)

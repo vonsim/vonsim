@@ -34,6 +34,9 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 //  val ioMemoryUI = new IOMemoryUI(s)
   val monitorUI = new MonitorUI(s)
   val keyboardUI = new KeyboardUI(s)
+  val pioUI = new PioUI(s)
+  val keysUI = new KeysUI(s)
+  val ledsUI = new LedsUI(s)
   
   val console = pre("").render
   val consoleDir = div(id := "console", h2("Console"), console).render
@@ -46,6 +49,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       li(
         role :="presentation",
         cls:="active",
+        id:="cpu-tab",
         a(
           href:="#cpu",
           role:="tab",
@@ -56,9 +60,10 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       ),
       li(
         role :="presentation",
+        id:="devices-tab",
         a(
           href:="#devices",
-          id:="devices-tab",
+//          id:="devices-tab",
           role:="tab",
           data("toggle") := "tab",
           aria.controls := "devices",
@@ -82,13 +87,11 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         cls := "tab-pane fade",
         id := "devices",
         monitorUI.root,
-        keyboardUI.root/*,
-        div(cls:="col-md-6", monitorUI.root),
-        div(cls:="col-md-6", consoleUI.root),
-        div(cls:="col-md-6", pioUI.root),
-        div(cls:="col-md-6", picUI.root),
-        div(cls:="col-md-6", keysUI.root),
-        div(cls:="col-md-6", ledsUI.root),
+        keyboardUI.root,
+        pioUI.root,
+        keysUI.root,
+        ledsUI.root
+        /*div(cls:="col-md-6", picUI.root),
         div(cls:="col-md-6", printerUI.root)*/
       )
     )
@@ -97,21 +100,22 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   def simulatorEvent() {
     memoryUI.simulatorEvent()
     cpuUI.simulatorEvent()
-//    val i = s.s.currentInstruction() 
-//    if(i.isRight) {
-//    	val instruction = i.right.get.instruction
-//			if(instruction == IntN(WordValue(7)))
-				monitorUI.simulatorEvent()
-				keyboardUI.simulatorEvent()
-//		}
-
+    
+		monitorUI.simulatorEvent()
+		keyboardUI.simulatorEvent()
+		pioUI.simulatorEvent()
+		keysUI.simulatorEvent()
+		ledsUI.simulatorEvent()
   }
   def simulatorEvent(i: InstructionInfo) {
     memoryUI.simulatorEvent(i)
     cpuUI.simulatorEvent(i)
-//		if(i.instruction == IntN(WordValue(7)))
-			monitorUI.simulatorEvent(i)
-			keyboardUI.simulatorEvent(i)
+    
+		monitorUI.simulatorEvent(i)
+		keyboardUI.simulatorEvent(i)
+		pioUI.simulatorEvent(i)
+		keysUI.simulatorEvent(i)
+		ledsUI.simulatorEvent(i)
   }
 
   def compilationEvent() {}

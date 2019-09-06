@@ -489,6 +489,9 @@ class Simulator(
         stopExecutionForError(language.instructionNotImplemented("in"))
       }
       case Out(reg, v) => {
+        
+//        checkUpdateResult(update(memory.getByte(reg), memory.getByte(v)), i)
+        
         stopExecutionForError(language.instructionNotImplemented("out"))
       }
       case IntN(n) => {
