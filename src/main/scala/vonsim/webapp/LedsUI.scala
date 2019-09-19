@@ -36,7 +36,7 @@ class LedsUI (s: VonSimState)
       s.uil.ledsTitle
     ) {
 	
-  val leds = s.s.memory.getByte(51)
+  val leds = Word
 
 	val tableRow = tr().render
 	val ledsByteString = leds.toString()
@@ -53,7 +53,17 @@ class LedsUI (s: VonSimState)
 	ledBitRows.foreach(b => tableRow.appendChild(b.render))
 	
 	val body = tbody(
-	  tableRow
+	  tableRow,
+	  tr(
+			td(7).render,
+	  	td(6).render,
+	  	td(5).render,
+	  	td(4).render,
+	  	td(3).render,
+	  	td(2).render,
+	  	td(1).render,
+	  	td(0).render
+	  )
 	).render
 	
 	val registerTable = table(
@@ -63,22 +73,31 @@ class LedsUI (s: VonSimState)
 	
 	val ledsUI =
 	  div(
-	    registerTable
+	    registerTable,
+		  div(style:="padding-top: 10px", "Verde -> Encendido")
 	  ).render
 	
 	contentDiv.appendChild(ledsUI)
 
+	var previousPB = Word(0).bitString.reverse
+
 	def simulatorEvent() {
-		var ledsByteString = s.s.memory.getByte(49).bitString.reverse
-		
-	//  	println("Puerto " + portLetter + ": " + s.s.memory.getByte(30).toString())
-	//  	println("Control " + portLetter + ": " + s.s.memory.getByte(32).toString())
-		
-	//  	println("Puerto " + portLetter + ": " + dataByteString)
-	//  	println("Control " + portLetter + ": " + controlByteString)
-		
-		for(i <- 0 to 7) {
-			ledBitRows(i).textContent = ledsByteString.charAt(i).toString() 
+  	var PB = s.s.ioMemory.readIO(49).bitString.reverse
+  	println("previousPB: " + previousPB)
+  	println("PB: " + PB)
+  	
+  	if(previousPB != PB){
+  		previousPB = PB
+	  	
+			for(i <- 0 to 7) {
+				
+				if(PB.charAt(i) == '1') // Encendido => Verde
+					ledBitRows(i).classList.add("green")
+				else if(PB.charAt(i) == '0') // Apagado => Sin color
+					ledBitRows(i).classList.remove("green")
+				
+				ledBitRows(i).textContent = PB.charAt(i).toString() 
+  		}
 		}
 	}
 	

@@ -2,7 +2,7 @@
 
 }
 
-#devices{
+#internalDevices{
   flex: 0 1 auto;
   
 /*   display: -webkit-flex; Safari
@@ -14,6 +14,83 @@
   -webkit-flex-wrap: wrap; /* Safari 6.1+ */
   flex-wrap: wrap;
 }
+
+#externalDevices{
+  flex: 0 1 auto;
+  
+/*   display: -webkit-flex; Safari
+  display: flex;
+ */  
+  -webkit-justify-content: space-around; /* Safari */
+  justify-content:         space-around;
+
+  -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+  flex-wrap: wrap;
+}
+
+.green{
+	background-color: rgba(0, 128, 0, 0.541);
+}
+
+.red{
+	background-color: rgba(255, 0, 0, 0.541);
+}
+
+/*---- Keys Toggle Switches ----*/
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 60px;
+}
+
+.switch .slider-box {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+/*   background-color: rgba(255, 0, 0, 0.541); */
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  padding-top: 4px;
+/*   padding-left: 8px; */
+  content: attr(bit);
+  color: black;
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider-box:checked + .slider {
+/*   background-color: rgba(0, 128, 0, 0.541); */
+}
+
+.slider-box:focus + .slider {
+/*   box-shadow: 0 0 1px rgba(0, 128, 0, 0.541); */
+}
+
+.slider-box:checked + .slider:before {
+  -webkit-transform: translateY(-26px);
+  -ms-transform: translateY(-26px);
+  transform: translateY(-26px);
+}
+
 
 #cpu{
   flex: 0 1 auto;

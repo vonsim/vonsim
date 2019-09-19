@@ -20,8 +20,7 @@ case class LabeledInstruction(label: String, i: ExecutableInstruction)
 case class Org(dir: Int) extends NonAddressableInstruction
 case class IntN(n: Int) extends ExecutableInstruction
 
-case class Stack(i: StackInstruction, r: FullRegisterToken)
-    extends ExecutableInstruction
+case class Stack(i: StackInstruction, r: FullRegisterToken) extends ExecutableInstruction
 
 trait ZeroAry
 
@@ -72,7 +71,8 @@ case class UnconditionalJump(label: String) extends Jump
 case class Call(label: String) extends Jump
 case class ConditionalJump(op: ConditionalJumpToken, label: String) extends Jump
 
-case class IO(op: IOToken, r: IORegister, add: IOAddress) extends Instruction
+//case class IO(op: IOToken, r: IORegister, add: IOAddress) extends Instruction
+case class IO(op: IOToken, r: IORegister, add: Expression) extends Instruction
 
 trait Expression extends Operand {
   def labels = List[String]()

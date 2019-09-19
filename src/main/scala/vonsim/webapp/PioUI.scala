@@ -79,8 +79,6 @@ class PIORegistersUI(
 
   val registerTable = table(
     cls := "registerTable",
-//    thead(th("Register"), th(colspan := 2, "Value")),
-//    thead(th(""), th("H"), th("L")),
     body
   ).render
 
@@ -100,21 +98,15 @@ class PIORegistersUI(
   def simulatorEvent() {
   	var dataByteString = ""
   	var controlByteString = ""
+  	
   	if(portLetter == "A") {
-  		dataByteString = s.s.memory.getByte(48).bitString.reverse
-  		controlByteString = s.s.memory.getByte(50).bitString.reverse
-//	  	println("Puerto " + portLetter + ": " + s.s.memory.getByte(30).toString())
-//	  	println("Control " + portLetter + ": " + s.s.memory.getByte(32).toString())
+  		dataByteString = s.s.ioMemory.readIO(48).bitString.reverse
+  		controlByteString = s.s.ioMemory.readIO(50).bitString.reverse
   	}
   	else if (portLetter == "B") {
-  		dataByteString = s.s.memory.getByte(49).bitString.reverse
-  		controlByteString = s.s.memory.getByte(51).bitString.reverse
-//	  	println("Puerto " + portLetter + ": " + s.s.memory.getByte(31).toString())
-//	  	println("Control " + portLetter + ": " + s.s.memory.getByte(33).toString())
+  		dataByteString = s.s.ioMemory.readIO(49).bitString.reverse
+  		controlByteString = s.s.ioMemory.readIO(51).bitString.reverse
   	}
-  	
-//  	println("Puerto " + portLetter + ": " + dataByteString)
-//  	println("Control " + portLetter + ": " + controlByteString)
   	
   	for(i <- 0 to 7) {
   		dataBitRows(i).textContent = dataByteString.charAt(i).toString()
@@ -138,8 +130,8 @@ class PioUI (s: VonSimState)
 	
   val portA = new PIORegistersUI(
     s,
-    s.s.memory.getByte(48),
-    s.s.memory.getByte(50),
+    s.s.ioMemory.readIO(48),
+    s.s.ioMemory.readIO(50),
     s.uil.pioAPort,
     "pio",
     "A"
@@ -147,8 +139,8 @@ class PioUI (s: VonSimState)
 
   val portB = new PIORegistersUI(
     s,
-    s.s.memory.getByte(49),
-    s.s.memory.getByte(51),
+    s.s.ioMemory.readIO(49),
+    s.s.ioMemory.readIO(51),
     s.uil.pioBPort,
     "pio",
     "B"

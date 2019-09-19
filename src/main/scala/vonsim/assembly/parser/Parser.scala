@@ -77,8 +77,9 @@ object Parser extends MyParsers {
   def unary = (Token.unaryArithmetic map tokenAsParser) reduceLeft (_ | _)
 
   def io = positioned {
-    ((IN() | OUT()) ~ (AL() | AX()) ~ COMMA() ~ (ioaddress)) ^^ {
-      case ((o: IOToken) ~ (m: IORegister) ~ _ ~ (a: IOAddress)) => IO(o, m, a)
+    ((IN() ~ (AL() | AX()) ~ COMMA() ~ (expression)) | (OUT() ~ (expression) ~ COMMA() ~ (AL() | AX()))) ^^ {
+      case ((o: IOToken) ~ (m: IORegister) ~ _ ~ (a: Expression)) => IO(o, m, a)
+      case ((o: IOToken) ~ (a: Expression) ~ _ ~ (m: IORegister)) => IO(o, m, a)
     }
   }
 

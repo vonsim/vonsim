@@ -331,8 +331,21 @@ class CPU {
     }
   }
 
+  def getIO(r: IORegister): Word = {
+    r match {
+      case r: LowRegister  => Word(get(r.full).l)
+      case r: HighRegister => Word(get(r.full).h)
+    }
+  }
+
   def set(r: HalfRegister, v: Word) {
 //    println(s"Setting $r to $v")
+    r match {
+      case r: LowRegister  => set(r.full, DWord(v, get(r.high)))
+      case r: HighRegister => set(r.full, DWord(get(r.low), v))
+    }
+  }
+  def set(r: IORegister, v: Word) {
     r match {
       case r: LowRegister  => set(r.full, DWord(v, get(r.high)))
       case r: HighRegister => set(r.full, DWord(get(r.low), v))
@@ -420,4 +433,189 @@ class Memory(
     val bytes = Memory.randomBytes(values.size)
     bytes.indices.foreach(i => values(i) = Word(bytes(i)))
   }
+}
+
+class IOMemory {
+  var values: Array[Word] = randomBytes(28).map(Word(_))
+  /**	PIO:
+	  *		PA: 0
+	  *		PB: 1
+	  * 	CA: 2
+	  * 	CB: 3
+	  * 
+	  * PIC:
+	  * 	EOI: 4
+	  * 	IMR: 5
+	  * 	IRR: 6
+	  * 	ISR: 7
+	  * 	INT0: 8
+	  * 	INT1: 9
+	  * 	INT2: 10
+	  * 	INT3: 11
+	  * 	INT4: 12
+	  * 	INT5: 13
+	  * 	INT6: 14
+	  * 	INT7: 15
+	  * 
+	  * HANDSHAKE:
+	  * 	DATO: 16
+	  * 	ESTADO: 17
+	  * 
+	  * TIMER:
+	  * 	CONT: 18
+	  * 	COMP: 19
+	  * 
+	  * CDMA:
+	  * 	RFL: 20
+	  * 	RFH: 21
+	  * 	CONTL: 22
+	  * 	CONTH: 23
+	  * 	RDL: 24
+	  * 	RDH: 25
+	  * 	CTRL: 26
+	  * 	ARRANQUE: 27
+	  * 
+   	* */
+  
+  def randomBytes(size: Int) = {
+    val values = Array.ofDim[Byte](size)
+    new Random().nextBytes(values)
+    values
+  }
+	
+  def validAddress(address: Int) = address >= 0 && address < values.length
+  def checkAddress(address: Int) {
+    if (!validAddress(address)) {
+      throw new InvalidMemoryAddress(address)
+    }
+  }
+  
+  def update(valuesMap: Map[MemoryAddress, Int]) {
+    valuesMap.foreach { case (a, v) => values(a) = Word(v) }
+  }
+  def reset() {
+    val bytes = randomBytes(values.size)
+    bytes.indices.foreach(i => values(i) = Word(bytes(i)))
+  }
+  
+  def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
+  	v match {
+  		// PIO
+  	  case 48 => values(0) = regValue // PA
+  	  case 49 => values(1) = regValue // PB
+      case 50 => values(2) = regValue // CA
+      case 51 => values(3) = regValue // CB
+
+      // PIC
+      case 32 => values(4) = regValue // EOI
+      case 33 => values(5) = regValue // IMR
+      case 34 => values(6) = regValue // IRR
+      case 35 => values(7) = regValue // ISR
+      case 36 => values(8) = regValue // INT0
+      case 37 => values(9) = regValue // INT1
+      case 38 => values(10) = regValue // INT2
+      case 39 => values(11) = regValue // INT3
+      case 40 => values(12) = regValue // INT4
+      case 41 => values(13) = regValue // INT5
+      case 42 => values(14) = regValue // INT6
+      case 43 => values(15) = regValue // INT7
+
+      // HANDSHAKE
+      case 64 => values(16) = regValue // DATO
+      case 65 => values(17) = regValue // ESTADO
+
+      // TIMER
+      case 16 => values(18) = regValue // CONT
+      case 17 => values(19) = regValue // COMP
+
+      // CDMA
+      case 80 => values(20) = regValue // RFL
+      case 81 => values(21) = regValue // RFH
+      case 82 => values(22) = regValue // CONTL
+      case 83 => values(23) = regValue // CONTH
+      case 84 => values(24) = regValue // RDL
+      case 85 => values(25) = regValue // RDH
+      case 86 => values(26) = regValue // CTRL
+      case 87 => values(27) = regValue // ARRANQUE
+  	}
+  }
+  
+  def readIO(v: Simulator.IOMemoryAddress): Word = {
+  	v.toInt match {
+  		// PIO
+  	  case 48 => values(0) // PA
+  	  case 49 => values(1) // PB
+      case 50 => values(2) // CA
+      case 51 => values(3) // CB
+
+      // PIC
+      case 32 => values(4) // EOI
+      case 33 => values(5) // IMR
+      case 34 => values(6) // IRR
+      case 35 => values(7) // ISR
+      case 36 => values(8) // INT0
+      case 37 => values(9) // INT1
+      case 38 => values(10) // INT2
+      case 39 => values(11) // INT3
+      case 40 => values(12) // INT4
+      case 41 => values(13) // INT5
+      case 42 => values(14) // INT6
+      case 43 => values(15) // INT7
+
+      // HANDSHAKE
+      case 64 => values(16) // DATO
+      case 65 => values(17) // ESTADO
+
+      // TIMER
+      case 16 => values(18) // CONT
+      case 17 => values(19) // COMP
+
+      // CDMA
+      case 80 => values(20) // RFL
+      case 81 => values(21) // RFH
+      case 82 => values(22) // CONTL
+      case 83 => values(23) // CONTH
+      case 84 => values(24) // RDL
+      case 85 => values(25) // RDH
+      case 86 => values(26) // CTRL
+      case 87 => values(27) // ARRANQUE
+  	}
+  }
+  
+//  /*---- PIO ----*/
+//  def writePortA()
+//  def writePortB()
+//  
+//  def readPortA()
+//  def readPortB()
+//  
+//  def configurePortA()
+//  def configurePortB()
+//  
+//  /*---- Leds ----*/
+//  
+//  /*---- Llaves ----*/
+//  
+//  /*---- Impresora ----*/
+//  
+//  /*---- Handshake ----*/
+//  def writeData()
+//  def writeState()
+//
+//	def readData()
+//  def readState()
+//
+//  /*---- CDMA ----*/
+//  
+//  
+//  /*---- Timer ----*/
+//  def writeComp()
+//  
+//  def readComp()
+//  def readCont()
+//  
+//  /*---- PIC ----*/
+//  
+//  
+//  /*---- F10 ----*/
 }

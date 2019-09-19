@@ -29,6 +29,7 @@ import vonsim.assembly.i18n.CompilerLanguage
 import vonsim.assembly.i18n.English
 import scala.util.Random
 import vonsim.assembly.lexer.DB
+import vonsim.assembly.lexer.LowRegisterToken
 
 object Compiler {
 
@@ -535,6 +536,22 @@ object Compiler {
           semanticError(x, language.labelsUndefined(undefinedLabels))
         }
 
+      }
+      case x: parser.IO => {
+      	successfulTransformation(x, x.op match {
+      		case io: lexer.OUT	=> {
+		        x.r match {
+		      		case lexer.AX()	=> Out(AX, resolver.expression(x.add).toByte)
+		      		case lexer.AL() => Out(AL, resolver.expression(x.add).toByte)
+		      	}
+      		}
+      		case io: lexer.IN	=> {
+		        x.r match {
+		      		case lexer.AX()	=> In(AX, resolver.expression(x.add).toByte)
+		      		case lexer.AL() => In(AL, resolver.expression(x.add).toByte)
+		      	}
+      		}
+        })
       }
       case other =>
         semanticError(other, language.instructionNotSupported(other.toString()))

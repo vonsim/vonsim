@@ -179,6 +179,7 @@ object Simulator {
     new Simulator(
       new CPU(),
       Memory(Simulator.maxMemorySize),
+      new IOMemory(),
       Map[Int, InstructionInfo]()
     )
   }
@@ -233,6 +234,7 @@ case class InstructionExecutionError(
 class Simulator(
   val cpu: CPU,
   val memory: Memory,
+  val ioMemory: IOMemory,
   var instructions: Map[Int, InstructionInfo]
 ) {
   var state: SimulatorState = SimulatorExecutionStopped
@@ -243,16 +245,19 @@ class Simulator(
   def reset() {
     cpu.reset()
     //memory.reset()
+    ioMemory.reset()
     state = SimulatorExecutionStopped
   }
   def stop() {
     cpu.reset()
     //memory.reset()
+    ioMemory.reset()
     state = SimulatorExecutionStopped
   }
 
   def load(c: SuccessfulCompilation) {
     cpu.reset()
+    ioMemory.reset()
     memory.update(c.variablesMemory)
     memory.update(c.instructionsMemory)
 //    println("Memory addresses set:"+c.variablesMemory.keys.toList.sorted)
@@ -486,13 +491,13 @@ class Simulator(
         stopExecutionForError(language.instructionNotImplemented("cli"))
       }
       case In(reg, v) => {
-        stopExecutionForError(language.instructionNotImplemented("in"))
+      	cpu.set(reg, ioMemory.readIO(v))
+//        stopExecutionForError(language.instructionNotImplemented("in"))
       }
       case Out(reg, v) => {
-        
+      	ioMemory.writeIO(v, cpu.getIO(reg))
 //        checkUpdateResult(update(memory.getByte(reg), memory.getByte(v)), i)
-        
-        stopExecutionForError(language.instructionNotImplemented("out"))
+//        stopExecutionForError(language.instructionNotImplemented("out"))
       }
       case IntN(n) => {
       	encodeUnaryOperand(n).last.toInt match {

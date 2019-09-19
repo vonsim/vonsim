@@ -36,6 +36,15 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   val keyboardUI = new KeyboardUI(s)
   val pioUI = new PioUI(s)
   val keysUI = new KeysUI(s)
+  
+	for(i <- 0 to 7) {
+		keysUI.inputArray(i).onclick = (e: Any) => {
+			keysUI.toggleBit(7-i)
+			pioUI.simulatorEvent()
+		}
+  }
+
+
   val ledsUI = new LedsUI(s)
   
   val console = pre("").render
@@ -60,14 +69,26 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       ),
       li(
         role :="presentation",
-        id:="devices-tab",
+        id:="internal-devices-tab",
         a(
-          href:="#devices",
-//          id:="devices-tab",
+          href:="#internalDevices",
+//          id:="internal-devices-tab",
           role:="tab",
           data("toggle") := "tab",
-          aria.controls := "devices",
-          s.uil.devicesTitle
+          aria.controls := "internalDevices",
+          s.uil.internalDevicesTitle
+        )
+      ),
+      li(
+        role :="presentation",
+        id:="external-devices-tab",
+        a(
+          href:="#externalDevices",
+//          id:="external-devices-tab",
+          role:="tab",
+          data("toggle") := "tab",
+          aria.controls := "externalDevices",
+          s.uil.externalDevicesTitle
         )
       )
     ),
@@ -76,6 +97,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       div(
         role := "tabpanel",
         cls := "tab-pane fade in active",
+//        cls := "tab-pane fade",
         id := "cpu",
         cpuUI.root,
         memoryUI.root
@@ -85,10 +107,18 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       div(
         role := "tabpanel",
         cls := "tab-pane fade",
-        id := "devices",
+        id := "internalDevices",
+        pioUI.root
+        /*div(cls:="col-md-6", picUI.root),
+        div(cls:="col-md-6", printerUI.root)*/
+      ),
+      div(
+        role := "tabpanel",
+//        cls := "tab-pane fade in active",
+        cls := "tab-pane fade",
+        id := "externalDevices",
         monitorUI.root,
         keyboardUI.root,
-        pioUI.root,
         keysUI.root,
         ledsUI.root
         /*div(cls:="col-md-6", picUI.root),

@@ -49,7 +49,8 @@ abstract class UILanguage {
   def pioTitle: String
   def keysTitle: String
   def ledsTitle: String
-  def devicesTitle: String
+  def externalDevicesTitle: String
+  def internalDevicesTitle: String
   def monitorTitle: String
   def keyboardTitle: String
   def cpuSpecialRegisters: String

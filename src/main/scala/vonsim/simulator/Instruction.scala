@@ -101,12 +101,9 @@ case object JO extends Condition
 case object JNO extends Condition
 case class ConditionalJump(m: Int, c: Condition) extends JumpInstruction
 
-class IOInstruction(val r: IORegister, val a: Simulator.IOMemoryAddress)
-    extends ExecutableInstruction
+class IOInstruction(val r: IORegister, val a: Simulator.IOMemoryAddress) extends ExecutableInstruction
 
-case class In(rr: IORegister, aa: Simulator.IOMemoryAddress)
-    extends IOInstruction(rr, aa)
-case class Out(rr: IORegister, aa: Simulator.IOMemoryAddress)
-    extends IOInstruction(rr, aa)
+case class In(rr: IORegister, aa: Simulator.IOMemoryAddress) extends IOInstruction(rr, aa)
+case class Out(rr: IORegister, aa: Simulator.IOMemoryAddress) extends IOInstruction(rr, aa)
 
 case class EQUDef(label: String, value: Int) extends NonExecutableInstruction
