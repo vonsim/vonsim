@@ -36,6 +36,8 @@ class KeysUI (s: VonSimState)
       s.uil.keysTitle
     ) {
 	
+	var value = Word(s.s.ioMemory.readIO(48).toInt & s.s.ioMemory.readIO(50).toInt)
+	
 	val inputArray = Array(
 		input(cls:= "slider-box", `type`:= "checkbox").render,
 		input(cls:= "slider-box", `type`:= "checkbox").render,
@@ -48,47 +50,36 @@ class KeysUI (s: VonSimState)
 	)
 	
 	val spanArray = Array(
-		span(cls:= "slider", attr("bit"):="0").render,
-		span(cls:= "slider", attr("bit"):="0").render,
-		span(cls:= "slider", attr("bit"):="0").render,
-		span(cls:= "slider", attr("bit"):="0").render,
-		span(cls:= "slider", attr("bit"):="0").render,
-		span(cls:= "slider", attr("bit"):="0").render,
-		span(cls:= "slider", attr("bit"):="0").render,
-		span(cls:= "slider", attr("bit"):="0").render
+		span(cls:= "slider").render,
+		span(cls:= "slider").render,
+		span(cls:= "slider").render,
+		span(cls:= "slider").render,
+		span(cls:= "slider").render,
+		span(cls:= "slider").render,
+		span(cls:= "slider").render,
+		span(cls:= "slider").render
 	)
 	
-	val bitArray = Array(
-		td(7).render,
-  	td(6).render,
-  	td(5).render,
-  	td(4).render,
-  	td(3).render,
-  	td(2).render,
-  	td(1).render,
-  	td(0).render
+	val switches = Array(
+		tableSwitch(0),
+		tableSwitch(1),
+		tableSwitch(2),
+		tableSwitch(3),
+		tableSwitch(4),
+		tableSwitch(5),
+		tableSwitch(6),
+		tableSwitch(7)
 	)
-	
 	val body = tbody(
 	  tr(
-			tableSwitch(0),
-			tableSwitch(1),
-			tableSwitch(2),
-			tableSwitch(3),
-			tableSwitch(4),
-			tableSwitch(5),
-			tableSwitch(6),
-			tableSwitch(7)
-	  ),
-	  tr(
-	  	bitArray(0),
-	  	bitArray(1),
-	  	bitArray(2),
-	  	bitArray(3),
-	  	bitArray(4),
-	  	bitArray(5),
-	  	bitArray(6),
-	  	bitArray(7)
+			switches(0),
+			switches(1),
+			switches(2),
+			switches(3),
+			switches(4),
+			switches(5),
+			switches(6),
+			switches(7)
 	  )
 	).render
 	
@@ -99,8 +90,7 @@ class KeysUI (s: VonSimState)
 	
 	val keysUI =
 	  div(
-	    registerTable,
-		  div(style:="padding-top: 10px", "Verde -> Entrada  |  Rojo -> Salida")
+	    registerTable
 	  ).render
 	
 	contentDiv.appendChild(keysUI)
@@ -109,45 +99,29 @@ class KeysUI (s: VonSimState)
   	td(
 	  	label(
 	  		cls:= "switch",
-	  		inputArray(index),
+	  		inputArray(7-index),
 	  		spanArray(index)
-	  	)
+	  	),
+	  	cls:="keyElement",
+	  	data("toggle"):="tooltip",
+	  	data("placement"):="bottom",
+	  	title:= ""
   	).render
   }
 	
-	var previousPA = Word(0)
-	var previousCA = Word(0)
+	def updateDescriptions(index: Int, entrada: Int) {
+		var title = "Bit " + (7-index) + " del registro de interruptores, con valor: " + value.bit(7-index)
+		title = title + "\nEste bit está conectado al bit " + (7-index) + " del registro PA del PIO"
+		if(entrada == 0)
+			title = title + "\nAdvertencia: El bit está configurado como salida, en vez de entrada"
+		switches(index).title = title
+	}
 	
 	def simulatorEvent() {
-  	var PA = s.s.ioMemory.readIO(48)
   	var CA = s.s.ioMemory.readIO(50)
-  	
-  	if((previousPA != PA) || (previousCA != CA)){
-  		previousPA = PA
-  		previousCA = CA
-  		
-	  	var PAString = PA.bitString.reverse
-	  	var CAString = CA.bitString.reverse
-	  	
-			for(i <- 0 to 7) {
-				
-				if(CAString.charAt(i) == '1') { // Entrada => Verde
-					bitArray(i).classList.add("green")
-					bitArray(i).classList.remove("red")
-					inputArray(i).disabled = false
-				}
-				else if(CAString.charAt(i) == '0') { // Salida => Rojo
-					bitArray(i).classList.add("red")
-					bitArray(i).classList.remove("green")
-					inputArray(i).disabled = true
-				}
-				
-				if(PAString.charAt(i) == '1')
-					inputArray(i).checked = true
-				else if(PAString.charAt(i) == '0')
-					inputArray(i).checked = false
-				spanArray(i).setAttribute("bit", PAString.charAt(i).toString())
-  		}
+		for(i <- 0 to 7) {
+			inputArray(i).checked = (value.bit(i) == 1)
+			updateDescriptions(i, CA.bit(7-i))
 		}
 	}
 	
@@ -155,16 +129,29 @@ class KeysUI (s: VonSimState)
 	  simulatorEvent()
 	}
 	
+	def reset() {
+		value = Word(s.s.ioMemory.readIO(48).toInt & s.s.ioMemory.readIO(50).toInt)
+	}
+	
 	def toggleBit(i: Int) {
-  	var PA = s.s.ioMemory.readIO(48)
-  	
-  	if(PA.bit(i) == 0)
-  		PA = (Word) (PA | (1 << i));
-  	else if(PA.bit(i) == 1)
-  		PA = (Word) (PA & ~(1 << i));
 		
-  	s.s.ioMemory.writeIO(48, PA)
-  	
-  	simulatorEvent()
+  	if(value.bit(i) == 0)
+  		value = (Word) (value | (1 << i));
+  	else
+  		value = (Word) (value & ~(1 << i));
+
+  	var CA = s.s.ioMemory.readIO(50)
+  	if(CA.bit(i) == 1) {
+	  	var PA = s.s.ioMemory.readIO(48)
+	  	
+	  	if(PA.bit(i) == 0)
+	  		PA = (Word) (PA | (1 << i));
+	  	else
+	  		PA = (Word) (PA & ~(1 << i));
+	  	
+	  	s.s.ioMemory.writeIO(48, PA)
+	  	
+	  	simulatorEvent()
+  	}
 	}
 }

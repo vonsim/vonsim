@@ -27,7 +27,6 @@ import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 
-
 class PIORegistersUI(
 	s: VonSimState,
   val portx: Byte,

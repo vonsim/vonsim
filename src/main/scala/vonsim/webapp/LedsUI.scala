@@ -36,33 +36,31 @@ class LedsUI (s: VonSimState)
       s.uil.ledsTitle
     ) {
 	
-  val leds = Word
-
-	val tableRow = tr().render
-	val ledsByteString = leds.toString()
-	val ledBitRows = Array(
-		td(ledsByteString.charAt(0)).render,
-		td(ledsByteString.charAt(1)).render,
-		td(ledsByteString.charAt(2)).render,
-		td(ledsByteString.charAt(3)).render,
-		td(ledsByteString.charAt(4)).render,
-		td(ledsByteString.charAt(5)).render,
-		td(ledsByteString.charAt(6)).render,
-		td(ledsByteString.charAt(7)).render
+	var leds = Word(0)
+	val ledRows = Array(
+		i(cls:="far fa-lightbulb fa-2x").render,
+		i(cls:="far fa-lightbulb fa-2x").render,
+		i(cls:="far fa-lightbulb fa-2x").render,
+		i(cls:="far fa-lightbulb fa-2x").render,
+		i(cls:="far fa-lightbulb fa-2x").render,
+		i(cls:="far fa-lightbulb fa-2x").render,
+		i(cls:="far fa-lightbulb fa-2x").render,
+		i(cls:="far fa-lightbulb fa-2x").render
 	)
-	ledBitRows.foreach(b => tableRow.appendChild(b.render))
+	val tableCells = Array(
+		td(ledRows(0), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render,
+		td(ledRows(1), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render,
+		td(ledRows(2), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render,
+		td(ledRows(3), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render,
+		td(ledRows(4), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render,
+		td(ledRows(5), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render,
+		td(ledRows(6), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render,
+		td(ledRows(7), cls:="keyElement", data("toggle"):="tooltip", data("placement"):="bottom", title:= "").render
+	)
 	
 	val body = tbody(
-	  tableRow,
 	  tr(
-			td(7).render,
-	  	td(6).render,
-	  	td(5).render,
-	  	td(4).render,
-	  	td(3).render,
-	  	td(2).render,
-	  	td(1).render,
-	  	td(0).render
+	  	tableCells
 	  )
 	).render
 	
@@ -73,35 +71,42 @@ class LedsUI (s: VonSimState)
 	
 	val ledsUI =
 	  div(
-	    registerTable,
-		  div(style:="padding-top: 10px", "Verde -> Encendido")
+	    registerTable
 	  ).render
 	
 	contentDiv.appendChild(ledsUI)
 
-	var previousPB = Word(0).bitString.reverse
-
+	def updateDescriptions(index: Int, control: Int) {
+		var title = "Bit " + index + " del registro de luces, con valor: " + leds.bit(index)
+		title = title + "\nEste bit está conectado al bit " + index + " del registro PB del PIO"
+		if(control == 1)
+			title = title + "\nAdvertencia: El bit está configurado como entrada, en vez de salida"
+		tableCells(7-index).title = title
+	}
+	
 	def simulatorEvent() {
-  	var PB = s.s.ioMemory.readIO(49).bitString.reverse
-  	println("previousPB: " + previousPB)
-  	println("PB: " + PB)
-  	
-  	if(previousPB != PB){
-  		previousPB = PB
-	  	
-			for(i <- 0 to 7) {
-				
-				if(PB.charAt(i) == '1') // Encendido => Verde
-					ledBitRows(i).classList.add("green")
-				else if(PB.charAt(i) == '0') // Apagado => Sin color
-					ledBitRows(i).classList.remove("green")
-				
-				ledBitRows(i).textContent = PB.charAt(i).toString() 
-  		}
+		val CB = s.s.ioMemory.readIO(51)
+		leds = Word(s.s.ioMemory.readIO(49).toInt & ~(s.s.ioMemory.readIO(51).toInt))
+		for(i <- 0 to 7) {
+			if(leds.bit(7-i) == 1) { // Encendido => Verde
+				ledRows(i).classList.remove("far")
+				ledRows(i).classList.add("fas")
+				ledRows(i).classList.add("green-light")
+			}
+			else { // Apagado => Sin color
+				ledRows(i).classList.remove("fas")
+				ledRows(i).classList.remove("green-light")
+				ledRows(i).classList.add("far")
+			}
+			updateDescriptions(i, CB.bit(i))
 		}
 	}
 	
 	def simulatorEvent(i: InstructionInfo) {
 	  simulatorEvent()
+	}
+	
+	def reset() {
+		leds = Word(s.s.ioMemory.readIO(49).toInt & ~(s.s.ioMemory.readIO(51).toInt))
 	}
 }

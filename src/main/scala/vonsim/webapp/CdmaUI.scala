@@ -26,50 +26,38 @@ import vonsim.simulator.SimulatorExecutionStopped
 import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
+import vonsim.simulator.Simulator.IOMemoryAddress
 
-class HandRegistersUI(
+class CdmaRegistersUI(
 	s: VonSimState,
-  val data: Byte,
-  val state: Byte,
+  title: String,
   baseId: String = ""
 ) extends VonSimUI(s) {
+	def getIdFor(part: String) = if (baseId == "") "" else baseId + part
 
-  def getIdFor(part: String) = if (baseId == "") "" else baseId + part
-
-  val dataRow = tr(th(s.uil.handDataTitle)).render
-  val stateRow = tr(th(s.uil.handStateTitle)).render
-  
-  val dataBitRows = Array(
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render
-  )
-  
-  val stateBitRows = Array(
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render,
-		td("0").render
-  )
-
-  dataBitRows.foreach(b => dataRow.appendChild(b.render))
-  stateBitRows.foreach(b => stateRow.appendChild(b.render))
+	val rows = Array(
+		tr(th("RFL")).render,
+		tr(th("RFH")).render,
+		tr(th("CONTL")).render,
+		tr(th("CONTH")).render,
+		tr(th("RDL")).render,
+		tr(th("RDH")).render,
+		tr(th("CTRL")).render,
+		tr(th("ARRANQUE")).render
+	)
+	val bitRows = new Array[Array[TableCell]](8)
+	for(i <- 0 to 7) {
+		bitRows(i) = Array.fill(8)(td("0").render)
+		bitRows(i).foreach(b => rows(i).appendChild(b))
+	}
   
   val body = tbody(
     id := getIdFor("TableBody"),
-    cls := "registersTableBody",
-    dataRow,
-    stateRow
+    cls := "registersTableBody"
   ).render
+	for(i <- 0 to 7) {
+		body.appendChild(rows(i))
+	}
 
   val registerTable = table(
     cls := "registerTable",
@@ -84,52 +72,52 @@ class HandRegistersUI(
       div(
         cls := "cpuElementHeader",
         i(cls := "icon-file-binary", " "),
-        h3(s.uil.handPortTitle)
+        h3(title)
       ),
       registerTable
     ).render
 
   def simulatorEvent() {
-  	var dataByteString = ""
-  	var stateByteString = ""
-  	
-		dataByteString = s.s.ioMemory.readIO(64).bitString.reverse
-		stateByteString = s.s.ioMemory.readIO(65).bitString.reverse
-  	
+  	var intByteStrings = new Array[String](8)
+  	var memoryAdress : IOMemoryAddress = 0
   	for(i <- 0 to 7) {
-  		dataBitRows(i).textContent = dataByteString.charAt(i).toString()
-  		stateBitRows(i).textContent = stateByteString.charAt(i).toString() 
+  		memoryAdress = (80 + i).asInstanceOf[Byte]
+  		intByteStrings(i) = s.s.ioMemory.readIO(memoryAdress).bitString.reverse
+  	}
+  	
+  	for(i <- 7 to 0 by -1) {
+  		for(j <- 0 to 7) {
+  			bitRows(i)(j).textContent = intByteStrings(i).charAt(j).toString()
+  		}
   	}
   }
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
   }
   def compilationEvent() {}
-
 }
 
-class HandshakeUI (s: VonSimState)
+class CdmaUI (s: VonSimState)
     extends MainboardItemUI(
       s,
 			"exchange-alt",
-      "hand",
-      s.uil.handTitle
+      "cdma",
+      s.uil.cdmaTitle
     ) {
 	
-  val port = new HandRegistersUI(
+  val registers = new CdmaRegistersUI(
     s,
-    s.s.ioMemory.readIO(64),
-    s.s.ioMemory.readIO(65),
-    "hand"
+    s.uil.cdmaRegisters,
+    "cdma"
   )
 
-  contentDiv.appendChild(port.root)
+  contentDiv.appendChild(registers.root)
 
   def simulatorEvent() {
-    port.simulatorEvent()
+    registers.simulatorEvent()
   }
   def simulatorEvent(i: InstructionInfo) {
-    port.simulatorEvent(i)
+    simulatorEvent()
   }
 
 }

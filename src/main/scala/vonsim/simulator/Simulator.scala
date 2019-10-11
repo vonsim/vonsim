@@ -244,13 +244,13 @@ class Simulator(
   
   def reset() {
     cpu.reset()
-    //memory.reset()
+    memory.reset()
     ioMemory.reset()
     state = SimulatorExecutionStopped
   }
   def stop() {
     cpu.reset()
-    //memory.reset()
+    memory.reset()
     ioMemory.reset()
     state = SimulatorExecutionStopped
   }

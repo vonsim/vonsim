@@ -359,6 +359,7 @@ class CPU {
 }
 
 object Memory {
+	val seed = new Random().nextLong()
   def apply(size: Int): Memory = {
     new Memory(randomBytes(size).map(Word(_)))
   }
@@ -372,7 +373,7 @@ object Memory {
 
   def randomBytes(size: Int) = {
     val values = Array.ofDim[Byte](size)
-    new Random().nextBytes(values)
+    new Random(seed).nextBytes(values)
     values
   }
 }
@@ -436,6 +437,7 @@ class Memory(
 }
 
 class IOMemory {
+  val seed = new Random().nextLong()
   var values: Array[Word] = randomBytes(28).map(Word(_))
   /**	PIO:
 	  *		PA: 0
@@ -479,7 +481,7 @@ class IOMemory {
   
   def randomBytes(size: Int) = {
     val values = Array.ofDim[Byte](size)
-    new Random().nextBytes(values)
+    new Random(seed).nextBytes(values)
     values
   }
 	
@@ -543,42 +545,42 @@ class IOMemory {
   def readIO(v: Simulator.IOMemoryAddress): Word = {
   	v.toInt match {
   		// PIO
-  	  case 48 => values(0) // PA
-  	  case 49 => values(1) // PB
-      case 50 => values(2) // CA
-      case 51 => values(3) // CB
+  	  case 48 => values(0) // PA | 30h
+  	  case 49 => values(1) // PB | 31h
+      case 50 => values(2) // CA | 32h
+      case 51 => values(3) // CB | 33h
 
       // PIC
-      case 32 => values(4) // EOI
-      case 33 => values(5) // IMR
-      case 34 => values(6) // IRR
-      case 35 => values(7) // ISR
-      case 36 => values(8) // INT0
-      case 37 => values(9) // INT1
-      case 38 => values(10) // INT2
-      case 39 => values(11) // INT3
-      case 40 => values(12) // INT4
-      case 41 => values(13) // INT5
-      case 42 => values(14) // INT6
-      case 43 => values(15) // INT7
+      case 32 => values(4) // EOI | 20h
+      case 33 => values(5) // IMR | 21h
+      case 34 => values(6) // IRR | 22h
+      case 35 => values(7) // ISR | 23h
+      case 36 => values(8) // INT0 | 24h
+      case 37 => values(9) // INT1 | 25h
+      case 38 => values(10) // INT2 | 26h
+      case 39 => values(11) // INT3 | 27h
+      case 40 => values(12) // INT4 | 28h
+      case 41 => values(13) // INT5 | 29h
+      case 42 => values(14) // INT6 | 2Ah
+      case 43 => values(15) // INT7 | 2Bh
 
       // HANDSHAKE
-      case 64 => values(16) // DATO
-      case 65 => values(17) // ESTADO
+      case 64 => values(16) // DATO | 40h
+      case 65 => values(17) // ESTADO | 41h
 
       // TIMER
-      case 16 => values(18) // CONT
-      case 17 => values(19) // COMP
+      case 16 => values(18) // CONT | 10h
+      case 17 => values(19) // COMP | 11h
 
       // CDMA
-      case 80 => values(20) // RFL
-      case 81 => values(21) // RFH
-      case 82 => values(22) // CONTL
-      case 83 => values(23) // CONTH
-      case 84 => values(24) // RDL
-      case 85 => values(25) // RDH
-      case 86 => values(26) // CTRL
-      case 87 => values(27) // ARRANQUE
+      case 80 => values(20) // RFL | 50h
+      case 81 => values(21) // RFH | 51h
+      case 82 => values(22) // CONTL | 52h
+      case 83 => values(23) // CONTH | 53h
+      case 84 => values(24) // RDL | 54h
+      case 85 => values(25) // RDH | 55h
+      case 86 => values(26) // CTRL | 56h
+      case 87 => values(27) // ARRANQUE | 57h
   	}
   }
   

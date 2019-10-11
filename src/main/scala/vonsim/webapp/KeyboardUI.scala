@@ -49,7 +49,7 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
 			keyboardArea
 		).render
 	
-	disableTextArea()
+//	disableTextArea()
 	
 	contentDiv.appendChild(keyboard)
 	

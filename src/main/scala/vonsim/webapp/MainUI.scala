@@ -1,4 +1,5 @@
 package vonsim.webapp
+
 import vonsim.utils.CollectionUtils._
 import scalatags.JsDom.all._
 //import org.scalajs.dom.html._
@@ -38,6 +39,8 @@ import vonsim.assembly.CompilationError
 import vonsim.simulator.InstructionInfo
 import vonsim.assembly.Compiler.CompilationResult
 import vonsim.webapp.tutorials.Tutorial
+import vonsim.simulator.GeneralExecutionError
+import vonsim.simulator.InstructionInfo
 
 object UIConfig {
   def apply(
@@ -131,7 +134,8 @@ class MainUI(
   bindkey(root, s.uil.controlsFinishHotkey, () => {
     if (s.isSimulatorExecuting()) {
       s.s.runState = Run
-      runInstructions()
+//      runInstructions()
+      runInstructionsTimed()
     }
     false
   })
@@ -140,6 +144,11 @@ class MainUI(
     if (s.isSimulatorExecuting()) {
       stepInstruction()
     }
+    false
+  })
+
+  bindkey(root, "f10", () => {
+  	println("Tecla F10 presionada!")
     false
   })
 
@@ -173,6 +182,7 @@ class MainUI(
   headerUI.controlsUI.finishButton.onclick = (e: Any) => {
     s.s.runState = Run
   	runInstructions()
+//    runInstructionsTimed()
   }
   
   headerUI.controlsUI.stepButton.onclick = (e: Any) => { stepInstruction() }
@@ -190,14 +200,14 @@ class MainUI(
   }
 
   def simulatorEvent() {
-    println("simulatorEvent triggered")
+//    println("simulatorEvent triggered")
     headerUI.simulatorEvent()
     editorUI.simulatorEvent()
     mainboardUI.simulatorEvent()
   }
   
   def simulatorEvent(i: InstructionInfo) {
-    println(s"simulatorEvent instruction $i triggered")
+//    println(s"simulatorEvent instruction $i triggered")
     headerUI.simulatorEvent(i)
     editorUI.simulatorEvent(i)
     mainboardUI.simulatorEvent(i)
@@ -213,14 +223,54 @@ class MainUI(
   def reset() {
     println("Resetting	... ")
     s.s.reset()
+    mainboardUI.monitorUI.reset()
+    mainboardUI.keyboardUI.reset()
+    mainboardUI.keysUI.reset()
     simulatorEvent()
   }
   
   def stop() {
     println("Stopping execution... ")
     s.s.stop()
+    mainboardUI.monitorUI.reset()
     mainboardUI.keyboardUI.reset()
+    mainboardUI.keysUI.reset()
     simulatorEvent()
+  }
+  
+  def delay(time: Long) {
+  	val goal = System.currentTimeMillis() + time
+  	while(goal >= System.currentTimeMillis()){}
+  }
+  
+  def runInstructionsTimed() {
+  	
+    println("Running with time control... ")
+    
+    editorUI.disableTextArea()
+    headerUI.controlsUI.disableControls()
+    
+    val velocidad = 20 // Instrucciones por segundo
+    var cant = 0 // Cantidad de instrucciones realizadas
+    var tiempoTranscurrido: Long = 0
+    val tiempoInicial = System.currentTimeMillis()
+    while(s.isSimulatorExecuting()) {
+    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
+    	while((tiempoTranscurrido * velocidad / 1000) >= cant) {
+		    var i = s.s.stepInstruction()
+		    i match {
+		      case Left(error) => //executionError(error.message)
+		      case Right(i)    => {
+		      	simulatorEvent(i)
+			      if(s.isWaitingKeyPress())
+			      	$("#external-devices-tab a").tab("show")
+		     	}
+		    }
+	    	cant = cant + 1
+	    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
+    	}
+	    delay((cant * (1000 / velocidad)) - tiempoTranscurrido)
+    }
   }
   
   def runInstructions() {
@@ -238,7 +288,7 @@ class MainUI(
         // executionError(error.message)
       }
       if(s.isWaitingKeyPress())
-      	$("#devices-tab a").tab("show")
+      	$("#external-devices-tab a").tab("show")
     })
 
   }
@@ -260,7 +310,8 @@ class MainUI(
   def resumeRun() {
     s.c match {
       case Right(c: SuccessfulCompilation) => {
-        runInstructions()
+//        runInstructions()
+      	runInstructionsTimed()
       }
       case _ => dom.window.alert(s.uil.alertCompilationFailed)
     }
@@ -271,7 +322,8 @@ class MainUI(
     s.c match {
       case Right(c: SuccessfulCompilation) => {
       	loadProgram()
-        runInstructions()
+//        runInstructions()
+      	runInstructionsTimed()
       }
       case _ => dom.window.alert(s.uil.alertCompilationFailed)
     }
@@ -284,6 +336,7 @@ class MainUI(
         s.s.load(c)
         mainboardUI.monitorUI.reset()
         mainboardUI.keyboardUI.reset()
+        mainboardUI.keysUI.reset()
         mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
         	mainboardUI.keyboardUI.keyPressed(event.keyCode)
         	if(s.s.runState == Run)

@@ -28,6 +28,14 @@
   flex-wrap: wrap;
 }
 
+.green-light{
+	color: rgba(0, 128, 0, 0.541);
+}
+
+.fa-lightbulb{
+	margin: 5px
+}
+
 .green{
 	background-color: rgba(0, 128, 0, 0.541);
 }
@@ -242,6 +250,15 @@ textarea{
 #pio table td, #cpu table th{
 	border-color: white;
 }
+#pic table td, #cpu table th{
+	border-color: white;
+}
+#hand table td, #cpu table th{
+	border-color: white;
+}
+#cdma table td, #cpu table th{
+	border-color: white;
+}
 #keys table td, #cpu table th{
 	border-color: white;
 }
@@ -331,6 +348,10 @@ textarea{
 	margin-bottom: 10px;
 }
 
+.keyElement:hover,.keyElement:active{
+	box-shadow: 0px 0px 2px 3px #777777;
+	background-color:#303030;
+}
 
 
 .bitTable{

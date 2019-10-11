@@ -47,18 +47,28 @@ abstract class UILanguage {
   def aluTitle: String
   def cpuTitle: String
   def pioTitle: String
+  def picTitle: String
+  def cdmaTitle: String
+  def handTitle: String
   def keysTitle: String
   def ledsTitle: String
   def externalDevicesTitle: String
   def internalDevicesTitle: String
   def monitorTitle: String
   def keyboardTitle: String
+  def printerTitle: String
   def cpuSpecialRegisters: String
   def cpuGeneralPurposeRegisters: String
   def pioRegisters: String
   def port: String
   def pioAPort: String
   def pioBPort: String
+  def picGeneralRegisters: String
+  def picInterruptionsRegisters: String
+  def cdmaRegisters: String
+  def handPortTitle: String
+  def handDataTitle: String
+  def handStateTitle: String
   def memoryTitle: String
   def addressSearch: String
 
