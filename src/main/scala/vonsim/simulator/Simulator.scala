@@ -240,7 +240,20 @@ class Simulator(
   var state: SimulatorState = SimulatorExecutionStopped
   var language: SimulatorLanguage = new Spanish()
   var monitorStrings = new ListBuffer[String]()
+  
   var runState: RunType = Stop
+  var enabledInstructions = Array(false, false, false, false, false, false, false, false)
+  var pendingInterruption = false
+  
+  var computerIPC = 20 // Instrucciones por segundo
+  var timerDelay = computerIPC * 50
+  var printerSpeed = computerIPC * 5
+  
+  def serIPC(ipc: Int) {
+		computerIPC = ipc
+		timerDelay = ipc * 50
+		printerSpeed = ipc * 5
+  }
   
   def reset() {
     cpu.reset()
@@ -484,20 +497,26 @@ class Simulator(
         val a = cpu.alu.applyOp(op, v)
         checkUpdateResult(update(o, a), i)
       }
-      case Sti => {
-        stopExecutionForError(language.instructionNotImplemented("sti"))
-      }
       case Cli => {
-        stopExecutionForError(language.instructionNotImplemented("cli"))
+      	enabledInstructions = Array.fill[Boolean](8)(false)
+      }
+      case Sti => {
+      	val IMR = ioMemory.readIO(33) // 1 -> Ignorado; 0 -> Atendido
+      	for(i <- 0 to 7)
+      		enabledInstructions(i) = (IMR.bit(i) == 0)
+      }
+      case Iret => {
+      	// Hace 2 pops: 1 word del IP y 2 bytes de Flags, 4 bytes en total (2 pops de DWords)
+        val ra = pop()
+        cpu.alu.flags = Flags(pop())
+        cpu.jump(ra.toInt)
+        interruptionAttended()
       }
       case In(reg, v) => {
       	cpu.set(reg, ioMemory.readIO(v))
-//        stopExecutionForError(language.instructionNotImplemented("in"))
       }
       case Out(reg, v) => {
       	ioMemory.writeIO(v, cpu.getIO(reg))
-//        checkUpdateResult(update(memory.getByte(reg), memory.getByte(v)), i)
-//        stopExecutionForError(language.instructionNotImplemented("out"))
       }
       case IntN(n) => {
       	encodeUnaryOperand(n).last.toInt match {
@@ -594,5 +613,31 @@ class Simulator(
       case WordIndirectMemoryAddress  => memory.setByte(cpu.get(BX).toInt, v)
     }
   }
-
+  
+  def picInterruption (intX: Int) {
+  	val IMR = ioMemory.readIO(33) // 1 -> Ignorado; 0 -> Atendido
+  	if((IMR.bit(intX) == 0) || (enabledInstructions(intX) == true)) {
+		  	val adress = (ioMemory.readIO((36+intX).toByte)).toInt * 4
+		  	val interruptionAdress = memory.getBytes(adress)
+		  	println("Se leyó la interrupción INT" + intX + ", y se va a saltar a la dirección " + ("%04X".format(interruptionAdress.toUnsignedInt)) + "h.")
+		  	interruptionCall(interruptionAdress.toInt)
+		}
+		else
+  		println("Se rechazó la interrupción INT" + intX + ".")
+  }
+  
+  def interruptionCall(intDirection: Int) {
+  	pendingInterruption = true
+  	push(cpu.alu.flags.toDWord)
+  	push(cpu.ip)
+    cpu.jump(intDirection)
+  }
+  
+  def interruptionAttended() {
+  	pendingInterruption = false
+  }
+  
+  def isPendingInterruption() = {
+  	pendingInterruption
+  }
 }

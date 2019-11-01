@@ -259,6 +259,9 @@ textarea{
 #cdma table td, #cpu table th{
 	border-color: white;
 }
+#timer table td, #cpu table th{
+	border-color: white;
+}
 #keys table td, #cpu table th{
 	border-color: white;
 }

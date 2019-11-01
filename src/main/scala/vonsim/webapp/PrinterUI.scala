@@ -27,14 +27,13 @@ import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 
-class PrinterUI(s: VonSimState) extends MainboardItemUI (
-      s,
-			"print",
-      "printer",
-      s.uil.printerTitle
-    ) {
-	
-	var mode = 0 // 0 -> PIO, 1 -> HANDSHAKE
+import scala.concurrent.Promise
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+//class Printer(s: VonSimState) {
+class Printer() {
+
 	/*
 	 * PIO:
 	 *	BUSY: PA -> Bit 0 (entrada)
@@ -46,10 +45,82 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
 	 *	STROBE: ESTADO -> Bit 1 (salida)
 	 * 	DATA1...DATA8: DATOS -> PB0...PB7 (salida)
 	 */
-	var strobePreviousValue = 0
-	var strobeActualValue = 0
+//	var mode = 0 // 0 -> PIO, 1 -> HANDSHAKE
+	
+//	var strobePreviousValue = 0
+//	var strobeActualValue = 0
 	var strobePulse = false
 	var busy = false
+	
+	var data = Word(0)
+	var charToPrint = '\0'
+	
+	var readyLater = for {
+	  delayed <- delay(20)
+	} yield {
+	  checkPrint()
+	}
+
+  def delay(milliseconds: Int): Future[Unit] = {
+  	val p = Promise[Unit]()
+  	js.timers.setTimeout(milliseconds) {
+	    p.success(())
+	  }	
+	  p.future
+	}
+
+	def checkPrint() {
+//  	var CA = s.s.ioMemory.readIO(50)
+//  	var CB = s.s.ioMemory.readIO(51)
+//  	
+//  	strobeActualValue = PA.bit(1)
+
+//		if((CA.bit(1) == 0) && (CA.bit(0) == 1) && (CB.toInt == 0)) { // CA = XXXXXX01 && CB = 0000000
+//			if((strobePreviousValue == 0) && (strobeActualValue == 1))
+//				strobePulse = true
+//			strobePreviousValue = strobeActualValue
+			if(strobePulse && !busy) {
+				busy = true
+				charToPrint = data.toInt.toChar
+				strobePulse = false
+			}
+//		}
+	}
+	
+	def isIdle() = {
+		!busy
+	}
+	
+	def isBusy() = {
+		busy
+	}
+	
+	def sendData(d: Word) = {
+		data = d
+	}
+	
+	def sendStrobe() = {
+//		if(strobePreviousValue == 0)
+			strobePulse = true
+//		strobePreviousValue = 1
+	}
+	
+	def getCharToPrint() = {
+		busy = false
+		if(charToPrint != '\0')
+			charToPrint
+		else ""
+	}
+}
+
+class PrinterUI(s: VonSimState) extends MainboardItemUI (
+      s,
+			"print",
+      "printer",
+      s.uil.printerTitle
+    ) {
+	
+	var printer = new Printer() 
 	
 	var text = "".render
 	val monitorArea =
@@ -68,29 +139,8 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
 	contentDiv.appendChild(monitorArea)
 	
   def simulatorEvent() {
-  	var PA = s.s.ioMemory.readIO(48)
-  	var PB = s.s.ioMemory.readIO(49)
-  	var CA = s.s.ioMemory.readIO(50)
-  	var CB = s.s.ioMemory.readIO(51)
-  	
-  	strobeActualValue = PA.bit(1)
-
-		if((CA.bit(1) == 0) && (CA.bit(0) == 1) && (CB.toInt == 0)) { // CA = XXXXXX01 && CB = 0000000
-//			println()
-//			println("strobePreviousValue: " + strobePreviousValue)
-//			println("strobeActualValue: " + strobeActualValue)
-//			println()
-			if((strobePreviousValue == 0) && (strobeActualValue == 1))
-				strobePulse = true
-			strobePreviousValue = strobeActualValue
-			if(strobePulse && !busy) {
-				busy = true
-				text.textContent += PB.toInt.toChar
-				// Alguna clase de delay???
-				busy = false
-				strobePulse = false
-			}
-		}
+		if(printer.isBusy())
+			text.textContent += printer.getCharToPrint()
   }
 	
   def simulatorEvent(i: InstructionInfo) {

@@ -38,6 +38,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   val handUI = new HandshakeUI(s)
   val picUI = new PicUI(s)
   val cdmaUI = new CdmaUI(s)
+  val internalTimerUI = new InternalTimerUI(s)
   
   // Dispositivos externos
   val monitorUI = new MonitorUI(s)
@@ -45,6 +46,8 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   val keysUI = new KeysUI(s)
   val ledsUI = new LedsUI(s)
   val printerUI = new PrinterUI(s)
+//  val externalTimerUI = new ExternalTimerUI(s)
+  val f10Button = new F10Button(s)
   
 	for(i <- 0 to 7) {
 		keysUI.inputArray(i).onclick = (e: Any) => {
@@ -117,7 +120,8 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         pioUI.root,
         handUI.root,
         picUI.root,
-        cdmaUI.root
+        cdmaUI.root,
+        internalTimerUI.root
       ),
       div(
         role := "tabpanel",
@@ -128,8 +132,9 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         keyboardUI.root,
         keysUI.root,
         ledsUI.root,
-        printerUI.root
-        /*div(cls:="col-md-6", picUI.root),*/
+        printerUI.root,
+//        externalTimerUI.root,
+        f10Button.root
       )
     )
   ).render
@@ -141,9 +146,12 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 		monitorUI.simulatorEvent()
 		keyboardUI.simulatorEvent()
 		printerUI.simulatorEvent()
+//		externalTimerUI.simulatorEvent()
+		f10Button.simulatorEvent()
 		pioUI.simulatorEvent()
 		picUI.simulatorEvent()
 		cdmaUI.simulatorEvent()
+		internalTimerUI.simulatorEvent()
 		handUI.simulatorEvent()
 		keysUI.simulatorEvent()
 		ledsUI.simulatorEvent()
@@ -155,9 +163,12 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 		monitorUI.simulatorEvent(i)
 		keyboardUI.simulatorEvent(i)
 		printerUI.simulatorEvent(i)
+//		externalTimerUI.simulatorEvent(i)
+		f10Button.simulatorEvent(i)
 		pioUI.simulatorEvent(i)
 		picUI.simulatorEvent(i)
 		cdmaUI.simulatorEvent(i)
+		internalTimerUI.simulatorEvent(i)
 		handUI.simulatorEvent(i)
 		keysUI.simulatorEvent(i)
 		ledsUI.simulatorEvent(i)

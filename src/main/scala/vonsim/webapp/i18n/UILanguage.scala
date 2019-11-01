@@ -49,6 +49,8 @@ abstract class UILanguage {
   def pioTitle: String
   def picTitle: String
   def cdmaTitle: String
+  def timerTitle: String
+  def f10Title: String
   def handTitle: String
   def keysTitle: String
   def ledsTitle: String
@@ -66,6 +68,7 @@ abstract class UILanguage {
   def picGeneralRegisters: String
   def picInterruptionsRegisters: String
   def cdmaRegisters: String
+  def timerRegisters: String
   def handPortTitle: String
   def handDataTitle: String
   def handStateTitle: String

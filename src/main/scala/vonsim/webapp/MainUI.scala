@@ -42,6 +42,10 @@ import vonsim.webapp.tutorials.Tutorial
 import vonsim.simulator.GeneralExecutionError
 import vonsim.simulator.InstructionInfo
 
+import scala.concurrent.Promise
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 object UIConfig {
   def apply(
     disableEditor: Boolean = false,
@@ -147,10 +151,10 @@ class MainUI(
     false
   })
 
-  bindkey(root, "f10", () => {
-  	println("Tecla F10 presionada!")
-    false
-  })
+//  bindkey(root, "f10", () => {
+//  	println("Tecla F10 presionada!")
+//    false
+//  })
 
   bindkey(root, "ctrl+s", () => {
     false
@@ -226,6 +230,7 @@ class MainUI(
     mainboardUI.monitorUI.reset()
     mainboardUI.keyboardUI.reset()
     mainboardUI.keysUI.reset()
+//    mainboardUI.externalTimerUI.reset()
     simulatorEvent()
   }
   
@@ -235,28 +240,32 @@ class MainUI(
     mainboardUI.monitorUI.reset()
     mainboardUI.keyboardUI.reset()
     mainboardUI.keysUI.reset()
+//    mainboardUI.externalTimerUI.reset()
     simulatorEvent()
   }
   
-  def delay(time: Long) {
-  	val goal = System.currentTimeMillis() + time
-  	while(goal >= System.currentTimeMillis()){}
-  }
+//  def delay(time: Long) {
+//  	val goal = System.currentTimeMillis() + time
+//  	while(goal >= System.currentTimeMillis()){}
+//  }
   
-  def runInstructionsTimed() {
-  	
-    println("Running with time control... ")
-    
-    editorUI.disableTextArea()
-    headerUI.controlsUI.disableControls()
-    
-    val velocidad = 20 // Instrucciones por segundo
-    var cant = 0 // Cantidad de instrucciones realizadas
-    var tiempoTranscurrido: Long = 0
-    val tiempoInicial = System.currentTimeMillis()
-    while(s.isSimulatorExecuting()) {
-    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-    	while((tiempoTranscurrido * velocidad / 1000) >= cant) {
+  def delay(milliseconds: Int): Future[Unit] = {
+  	val p = Promise[Unit]()
+  	js.timers.setTimeout(milliseconds) {
+	    p.success(())
+	  }	
+	  p.future
+	}
+  
+  val velocidad = 2 // Instrucciones por segundo
+  var cant = 0 // Cantidad de instrucciones realizadas
+  var tiempoTranscurrido: Long = 0
+  var tiempoInicial: Long = 0
+  
+  def executeInstructionsTimed() {
+  	if(!s.isWaitingKeyPress()) {
+	  	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
+	  	if((tiempoTranscurrido * velocidad / 1000) >= cant) {
 		    var i = s.s.stepInstruction()
 		    i match {
 		      case Left(error) => //executionError(error.message)
@@ -266,11 +275,54 @@ class MainUI(
 			      	$("#external-devices-tab a").tab("show")
 		     	}
 		    }
-	    	cant = cant + 1
+		    cant = cant + 1
 	    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-    	}
-	    delay((cant * (1000 / velocidad)) - tiempoTranscurrido)
-    }
+	  	}
+  	}
+  	else {
+  		cant = 0
+  		tiempoInicial = System.currentTimeMillis()
+  	}
+  	
+  	if(s.isSimulatorExecuting()) {
+	  	var readyLater = for {
+			  delayed <- delay(((cant * (1000 / velocidad)) - tiempoTranscurrido).toInt)
+			} yield {
+				if(s.isSimulatorExecuting())
+			  	executeInstructionsTimed()
+			}
+  	}
+  }
+  
+  def runInstructionsTimed() {
+  	println("Running with time control...")
+
+    editorUI.disableTextArea()
+    headerUI.controlsUI.disableControls()
+    
+  	cant = 0
+  	tiempoTranscurrido = 0
+    tiempoInicial = System.currentTimeMillis()
+
+    executeInstructionsTimed()
+    
+//    while(s.isSimulatorExecuting()) {
+//    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
+//    	while((tiempoTranscurrido * velocidad / 1000) >= cant) {
+//		    var i = s.s.stepInstruction()
+//		    i match {
+//		      case Left(error) => //executionError(error.message)
+//		      case Right(i)    => {
+//		      	simulatorEvent(i)
+//			      if(s.isWaitingKeyPress())
+//			      	$("#external-devices-tab a").tab("show")
+//		     	}
+//		    }
+//	    	cant = cant + 1
+//	    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
+//    	}
+//	    delay((cant * (1000 / velocidad)) - tiempoTranscurrido)
+//    }
   }
   
   def runInstructions() {
@@ -337,6 +389,7 @@ class MainUI(
         mainboardUI.monitorUI.reset()
         mainboardUI.keyboardUI.reset()
         mainboardUI.keysUI.reset()
+//		    mainboardUI.externalTimerUI.reset()
         mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
         	mainboardUI.keyboardUI.keyPressed(event.keyCode)
         	if(s.s.runState == Run)
