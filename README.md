@@ -24,9 +24,9 @@ As of `2019/11/4`, all of the MSX88 instruction set is supported except for:
 
 The project has finished its beta milestone. There are two more planed [milestones](https://github.com/vonsim/vonsim/milestones). We have no deadlines set:
 
-1. Beta version (finished) : A fully working compiler/simulator (*without* support for devices or interruptions), with batch or instruction-by-instruction execution, and inspection of the program state.
-2. Devices: Adds support for communication with devices as per the MSX88 specification, as well as using both software and hardware interrupts.
-3. Polish: Adds bells and whistles to make programming easier
+1. **Beta version (finished)**: A fully working compiler/simulator (*without* support for devices or interruptions), with batch or instruction-by-instruction execution, and inspection of the program state.
+2. **Devices (current)**: Adds support for communication with devices as per the MSX88 specification, as well as using both software and hardware interrupts.
+3. **Polish**: Adds bells and whistles so that learning and programming is easier
   * Explanation of instruction semantics
   * Highlightning of instructions in memory, explanation of their encoding
   * Highlightning of defined variables in memory, explanation of their encoding
