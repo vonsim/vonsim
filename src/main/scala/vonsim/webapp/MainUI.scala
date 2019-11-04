@@ -200,15 +200,15 @@ class MainUI(
 
   def compilationEvent() {
     println("compilationEvent triggered " + s.c)
-    s.c match {
-      case Left(failed) => println(failed.instructions.map(a => {
-        a match { case Left(error) => error.location
-                  case Right(i) => "line"+i.line}
-         
-      }
-      ))
-      case other => 
-    }
+//    s.c match {
+//      case Left(failed) => println(failed.instructions.map(a => {
+//        a match { case Left(error) => error.location
+//                  case Right(i) => "line"+i.line}
+//         
+//      }
+//      ))
+//      case other => 
+//    }
     headerUI.compilationEvent()
     editorUI.compilationEvent()
   }
