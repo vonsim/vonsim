@@ -21,6 +21,7 @@ abstract class CompilerLanguage {
   def noOrg: String
   def labelUndefined(label: String): String
   def labelsUndefined(labels: List[String]): String
+  def expressionsWithMemoryOperands(memoryReferencedLabels:List[String]):String
   def operandNotUpdatable(operand: String): String
   def immediateOperandsNotUpdatable(operand: String): String
   def dontFitIn16Bits(v: Int): String

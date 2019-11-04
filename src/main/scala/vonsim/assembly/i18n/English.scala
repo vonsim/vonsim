@@ -28,6 +28,8 @@ class English extends CompilerLanguage {
   def labelsUndefined(labels: List[String]) =
     if (labels.length == 1) labelUndefined(labels(0))
     else s"Labels (${labels.mkString(", ")}) are undefined"
+  def expressionsWithMemoryOperands(memoryReferencedLabels:List[String]):String = 
+    s"There are references to variables in an expression: (${memoryReferencedLabels.mkString(", ")})" 
   def operandNotUpdatable(operand: String) =
     s"Operand $operand is not updatable"
   def immediateOperandsNotUpdatable(operand: String) =

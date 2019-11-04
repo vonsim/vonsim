@@ -690,16 +690,22 @@ object Compiler {
         }
 
         val expressionValue = resolver.expression(e)
+        val memoryReferencedLabels = resolver.memoryReferencesLabels(e)
         val undefinedLabels = resolver.undefinedLabels(e)
         //        println(s"WORD PTRCompiler:Undefined labels = $undefinedLabels for expression $e")
         if (undefinedLabels.isEmpty) {
+          
           if (resolver.isMemoryExpression(e)) {
             valueToMemoryAddress(expressionValue)
           } else {
-            valueToWord(expressionValue)
+            if (resolver.memoryReferences(e)==0){
+              valueToWord(expressionValue)
+            }else{
+              semanticError(op, language.expressionsWithMemoryOperands(memoryReferencedLabels))    
+            }
           }
         } else {
-          semanticError(e, language.labelsUndefined(undefinedLabels))
+          semanticError(op, language.labelsUndefined(undefinedLabels))
         }
       }
 

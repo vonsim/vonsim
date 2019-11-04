@@ -22,6 +22,8 @@ class Spanish extends CompilerLanguage {
     "Se detectó un ciclo en la definición de constantes con sentencias EQU."
   def labelWithMultipleDefinitions(label: String) =
     s"La etiqueta ${label} tiene múltiples definiciones."
+  def expressionsWithMemoryOperands(memoryReferencedLabels:List[String]):String = 
+    s"Hay referencias a variables en una expresión: (${memoryReferencedLabels.mkString(", ")})"
   def noOrg =
     "No hay ORG antes de esta instrucción; no se puede terminar su ubicación en memoria."
   def labelUndefined(label: String) =

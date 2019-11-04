@@ -45,6 +45,7 @@ import vonsim.simulator.InstructionInfo
 import scala.concurrent.Promise
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import vonsim.assembly.Compiler.FailedCompilation
 
 object UIConfig {
   def apply(
@@ -199,6 +200,15 @@ class MainUI(
 
   def compilationEvent() {
     println("compilationEvent triggered " + s.c)
+    s.c match {
+      case Left(failed) => println(failed.instructions.map(a => {
+        a match { case Left(error) => error.location
+                  case Right(i) => "line"+i.line}
+         
+      }
+      ))
+      case other => 
+    }
     headerUI.compilationEvent()
     editorUI.compilationEvent()
   }

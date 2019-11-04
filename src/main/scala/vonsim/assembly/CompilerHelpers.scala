@@ -89,14 +89,25 @@ abstract class Resolver {
   def equLabelDefined(label: String): Boolean
   def equ: Map[String, parser.Expression]
 
-  def isMemoryExpression(e: parser.Expression) = memoryReferences(e) == 1
-  def memoryReferences(e: parser.Expression): Int = e match {
-    case ConstantExpression(c)     => 0
-    case BinaryExpression(o, l, r) => memoryReferences(l) + memoryReferences(r)
-    case LabelExpression(l) =>
-      if (equLabelDefined(l)) memoryReferences(equ(l)) else 1
-    case OffsetLabelExpression(l) => 0
+  def isMemoryExpression(e: parser.Expression):Boolean={
+    e match{
+      case LabelExpression(l) => {
+        return vardefLabelDefined(l) //memory expressions contain just a vardef label
+      }
+      case other => false
+    }
   }
+  
+  def memoryReferencesLabels(e: parser.Expression): List[String] = e match {
+    case ConstantExpression(c)     => List()
+    case BinaryExpression(o, l, r) => memoryReferencesLabels(l) ++ memoryReferencesLabels(r)
+    case LabelExpression(l) =>{
+      if (vardefLabelDefined(l)) List(l) else List() 
+    }
+    case OffsetLabelExpression(l) => List()
+  }
+  
+  def memoryReferences(e: parser.Expression): Int = memoryReferencesLabels(e).length
 
   def getMemoryLabelFromMemoryExpression(e: parser.Expression): Option[String] =
     e match {
@@ -108,7 +119,9 @@ abstract class Resolver {
       case LabelExpression(l) => {
         if (vardefLabelDefined(l)) {
           Some(l)
-        } else {
+        } else if (jumpLabelDefined(l)) {
+          Some(l)
+        }else{
           getMemoryLabelFromMemoryExpression(equ(l))
         }
       }
@@ -122,7 +135,8 @@ abstract class Resolver {
     }
 
   def equOrVardefLabelDefined(label: String) =
-    equLabelDefined(label) || vardefLabelDefined(label)
+    equLabelDefined(label) || jumpLabelDefined(label) || vardefLabelDefined(label)
+    
   def undefinedLabels(e: parser.Expression): List[String] = {
     e match {
       case ConstantExpression(c)     => List()
@@ -218,6 +232,8 @@ class SecondPassResolver(
     case LabelExpression(l) => {
       if (vardefLabelDefined(l)) {
         vardefLabelToAddress(l)
+      }else if (jumpLabelDefined(l)) {
+        jumpLabelAddress(l)
       } else {
         expression(equ(l))
       }
