@@ -9,24 +9,24 @@ The goal of the project is to provide a replacement for the MSX88 in terms of in
 
 In the same way that, for pedagogic reasons, the MSX88 deviated from the original 8088 instructions set, VonSim deviates from MSX88 in that it provides a user interface more focused on the *programming* aspect of using the simulator. In particular, it does away with the animations and simply provides a step-by-step visual debugger for assembly programs with lots of help.
 
-You can demo the [alpha version of vonsim](http://facundoq.github.io/unlp/vonsim/assets/index.html?url=samples/sample.asm).
+You can demo the [beta version of vonsim](http://vonsim.github.io/).
 
 
-The language reference can be accessed reading the [old msx88 manual](http://weblidi.info.unlp.edu.ar/catedras/organiza/descargas/Manual-MSX88.pdf), [instruction set](http://weblidi.info.unlp.edu.ar/catedras/organiza/descargas/set-instr-MSX88.PDF) and checking out the [samples folder](https://github.com/facundoq/vonsim/tree/master/assets/samples).
+The language reference can be accessed reading the [old msx88 manual](http://weblidi.info.unlp.edu.ar/catedras/organiza/descargas/Manual-MSX88.pdf), [instruction set](http://weblidi.info.unlp.edu.ar/catedras/organiza/descargas/set-instr-MSX88.PDF) and checking out the [samples folder](https://github.com/vonsim/vonsim/tree/master/assets/samples).
 
 ## Instruction set support
 
-As of `2017/06/28`, all of the MSX88 instruction set is supported except for:
+As of `2019/11/4`, all of the MSX88 instruction set is supported except for:
 * DUP definitions
-* INT N instructions
 * IN and OUT instructions
 
 ## Roadmap
 
-The project is now in an alpha state. There are three planed [milestones](https://github.com/facundoq/vonsim/milestones). We have no deadlines set:
+The project has finished its beta milestone. There are two more planed [milestones](https://github.com/vonsim/vonsim/milestones). We have no deadlines set:
 
-1. Beta version (current) : A fully working compiler/simulator (without support for devices/interruptions), with batch or instruction-by-instruction execution, and inspection of the program state.
-2. Polish: Adds bells and whistles to make programming easier
+1. Beta version (finished) : A fully working compiler/simulator (*without* support for devices or interruptions), with batch or instruction-by-instruction execution, and inspection of the program state.
+2. Devices: Adds support for communication with devices as per the MSX88 specification, as well as using both software and hardware interrupts.
+3. Polish: Adds bells and whistles to make programming easier
   * Explanation of instruction semantics
   * Highlightning of instructions in memory, explanation of their encoding
   * Highlightning of defined variables in memory, explanation of their encoding
@@ -36,7 +36,6 @@ The project is now in an alpha state. There are three planed [milestones](https:
   * Integrated instruction set cheat-sheet
   * Autocomplete for instructions (or at least keywords)
 
-3. Devices: Add support for communication with devices as per the MSX88 specification, as well as using both software and hardware interrupts.
 
 ## Contributing
 You can check the [development docs](doc/index.md) to get a general idea of the project structure and the [how to contribute page](CONTRIBUTING.md) to get your development environment set up.
