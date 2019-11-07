@@ -59,7 +59,4 @@ class F10Button(s: VonSimState) extends MainboardItemUI (
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
   }
-  
-  //def compilationEvent() {}
-
 }

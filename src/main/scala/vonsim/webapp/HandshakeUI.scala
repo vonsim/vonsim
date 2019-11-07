@@ -93,8 +93,8 @@ class HandRegistersUI(
   	var dataByteString = ""
   	var stateByteString = ""
   	
-		dataByteString = s.s.ioMemory.readIO(64).bitString.reverse
-		stateByteString = s.s.ioMemory.readIO(65).bitString.reverse
+		dataByteString = s.s.devController.readIO(64).bitString.reverse
+		stateByteString = s.s.devController.readIO(65).bitString.reverse
   	
   	for(i <- 0 to 7) {
   		dataBitRows(i).textContent = dataByteString.charAt(i).toString()
@@ -118,8 +118,8 @@ class HandshakeUI (s: VonSimState)
 	
   val port = new HandRegistersUI(
     s,
-    s.s.ioMemory.readIO(64),
-    s.s.ioMemory.readIO(65),
+    s.s.devController.readIO(64),
+    s.s.devController.readIO(65),
     "hand"
   )
 

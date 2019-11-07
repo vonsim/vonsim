@@ -32,7 +32,7 @@ import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 import vonsim.simulator.Simulator.IOMemoryAddress
 
-class Timer(s: VonSimState) {
+/*class Timer(s: VonSimState) {
 	
   def delay(milliseconds: Int): Future[Unit] = {
   	val p = Promise[Unit]()
@@ -58,16 +58,15 @@ class Timer(s: VonSimState) {
 	}
 	
 	def checkTime() {
-		var cont = s.s.ioMemory.readIO(16).toInt
-		val comp = s.s.ioMemory.readIO(17).toInt
+		var cont = s.s.devController.readIO(16).toInt
+		val comp = s.s.devController.readIO(17).toInt
 		
 		cont += 1
-		println("Se incremento cont")
-		if(cont == comp) {
+		if(cont == 256)
 			cont = 0
+		if(cont == comp)
 			s.s.picInterruption(1)
-		}
-		s.s.ioMemory.writeIO(16, Word(cont))
+		s.s.devController.writeIO(16, Word(cont))
 		
 		var readyLater = for {
 		  delayed <- delay(timeDelay)
@@ -75,7 +74,7 @@ class Timer(s: VonSimState) {
 			  checkTime()
 		}
 	}
-}
+}*/
 
 class TimerRegistersUI(
 	s: VonSimState,
@@ -122,8 +121,8 @@ class TimerRegistersUI(
 
   def simulatorEvent() {
   	var intByteStrings = new Array[String](2)
-		intByteStrings(0) = s.s.ioMemory.readIO(16).bitString.reverse
-		intByteStrings(1) = s.s.ioMemory.readIO(17).bitString.reverse
+		intByteStrings(0) = s.s.devController.readIO(16).bitString.reverse
+		intByteStrings(1) = s.s.devController.readIO(17).bitString.reverse
   	
   	for(i <- 1 to 0 by -1) {
   		for(j <- 0 to 7) {
@@ -151,7 +150,7 @@ class InternalTimerUI (s: VonSimState)
     "time"
   )
   
-  var timer = new Timer(s)
+//  var timer = new Timer(s)
   
   contentDiv.appendChild(registers.root)
 
@@ -206,7 +205,7 @@ class ExternalTimerUI(s: VonSimState) extends MainboardItemUI (
 	}
 	
 	def checkTime() {
-		if(s.s.ioMemory.readIO(16).toInt == s.s.ioMemory.readIO(17).toInt) {
+		if(s.s.devController.readIO(16).toInt == s.s.devController.readIO(17).toInt) {
 			seconds = seconds + 1
 			println("Segundos: " + seconds)
 			if(seconds == 60) {

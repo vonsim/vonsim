@@ -99,12 +99,12 @@ class PIORegistersUI(
   	var controlByteString = ""
   	
   	if(portLetter == "A") {
-  		dataByteString = s.s.ioMemory.readIO(48).bitString.reverse
-  		controlByteString = s.s.ioMemory.readIO(50).bitString.reverse
+  		dataByteString = s.s.devController.readIO(48).bitString.reverse
+  		controlByteString = s.s.devController.readIO(50).bitString.reverse
   	}
   	else if (portLetter == "B") {
-  		dataByteString = s.s.ioMemory.readIO(49).bitString.reverse
-  		controlByteString = s.s.ioMemory.readIO(51).bitString.reverse
+  		dataByteString = s.s.devController.readIO(49).bitString.reverse
+  		controlByteString = s.s.devController.readIO(51).bitString.reverse
   	}
   	
   	for(i <- 0 to 7) {
@@ -129,8 +129,8 @@ class PioUI (s: VonSimState)
 	
   val portA = new PIORegistersUI(
     s,
-    s.s.ioMemory.readIO(48),
-    s.s.ioMemory.readIO(50),
+    s.s.devController.readIO(48),
+    s.s.devController.readIO(50),
     s.uil.pioAPort,
     "pio",
     "A"
@@ -138,8 +138,8 @@ class PioUI (s: VonSimState)
 
   val portB = new PIORegistersUI(
     s,
-    s.s.ioMemory.readIO(49),
-    s.s.ioMemory.readIO(51),
+    s.s.devController.readIO(49),
+    s.s.devController.readIO(51),
     s.uil.pioBPort,
     "pio",
     "B"

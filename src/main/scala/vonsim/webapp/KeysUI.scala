@@ -36,7 +36,7 @@ class KeysUI (s: VonSimState)
       s.uil.keysTitle
     ) {
 	
-	var value = Word(s.s.ioMemory.readIO(48).toInt & s.s.ioMemory.readIO(50).toInt)
+	var value = Word(s.s.devController.readIO(48).toInt & s.s.devController.readIO(50).toInt)
 	
 	val inputArray = Array(
 		input(cls:= "slider-box", `type`:= "checkbox").render,
@@ -118,7 +118,7 @@ class KeysUI (s: VonSimState)
 	}
 	
 	def simulatorEvent() {
-  	var CA = s.s.ioMemory.readIO(50)
+  	var CA = s.s.devController.readIO(50)
 		for(i <- 0 to 7) {
 			inputArray(i).checked = (value.bit(i) == 1)
 			updateDescriptions(i, CA.bit(7-i))
@@ -130,7 +130,7 @@ class KeysUI (s: VonSimState)
 	}
 	
 	def reset() {
-		value = Word(s.s.ioMemory.readIO(48).toInt & s.s.ioMemory.readIO(50).toInt)
+		value = Word(s.s.devController.readIO(48).toInt & s.s.devController.readIO(50).toInt)
 	}
 	
 	def toggleBit(i: Int) {
@@ -140,16 +140,16 @@ class KeysUI (s: VonSimState)
   	else
   		value = (Word) (value & ~(1 << i));
 
-  	var CA = s.s.ioMemory.readIO(50)
+  	var CA = s.s.devController.readIO(50)
   	if(CA.bit(i) == 1) {
-	  	var PA = s.s.ioMemory.readIO(48)
+	  	var PA = s.s.devController.readIO(48)
 	  	
 	  	if(PA.bit(i) == 0)
 	  		PA = (Word) (PA | (1 << i));
 	  	else
 	  		PA = (Word) (PA & ~(1 << i));
 	  	
-	  	s.s.ioMemory.writeIO(48, PA)
+	  	s.s.devController.writeIO(48, PA)
 	  	
 	  	simulatorEvent()
   	}

@@ -78,10 +78,10 @@ class PicGeneralRegistersUI(
     ).render
 
   def simulatorEvent() {
-		var eoiByteString = s.s.ioMemory.readIO(32).bitString.reverse
-		var imrByteString = s.s.ioMemory.readIO(33).bitString.reverse
-		var irrByteString = s.s.ioMemory.readIO(34).bitString.reverse
-		var isrByteString = s.s.ioMemory.readIO(35).bitString.reverse
+		var eoiByteString = s.s.devController.readIO(32).bitString.reverse
+		var imrByteString = s.s.devController.readIO(33).bitString.reverse
+		var irrByteString = s.s.devController.readIO(34).bitString.reverse
+		var isrByteString = s.s.devController.readIO(35).bitString.reverse
   	
   	for(i <- 0 to 7) {
       eoiBitRows(i).textContent = eoiByteString.charAt(i).toString()
@@ -142,7 +142,7 @@ class PicInterruptionsRegistersUI(
   	var memoryAdress : IOMemoryAddress = 0
   	for(i <- 0 to 7) {
   		memoryAdress = (36 + i).asInstanceOf[Byte]
-  		intByteStrings(i) = s.s.ioMemory.readIO(memoryAdress).bitString.reverse
+  		intByteStrings(i) = s.s.devController.readIO(memoryAdress).bitString.reverse
   	}
   	
   	for(i <- 7 to 0 by -1) {

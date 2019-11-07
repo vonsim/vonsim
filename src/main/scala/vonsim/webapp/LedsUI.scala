@@ -85,8 +85,8 @@ class LedsUI (s: VonSimState)
 	}
 	
 	def simulatorEvent() {
-		val CB = s.s.ioMemory.readIO(51)
-		leds = Word(s.s.ioMemory.readIO(49).toInt & ~(s.s.ioMemory.readIO(51).toInt))
+		val CB = s.s.devController.readIO(51)
+		leds = Word(s.s.devController.readIO(49).toInt & ~(s.s.devController.readIO(51).toInt))
 		for(i <- 0 to 7) {
 			if(leds.bit(7-i) == 1) { // Encendido => Verde
 				ledRows(i).classList.remove("far")
@@ -107,6 +107,6 @@ class LedsUI (s: VonSimState)
 	}
 	
 	def reset() {
-		leds = Word(s.s.ioMemory.readIO(49).toInt & ~(s.s.ioMemory.readIO(51).toInt))
+		leds = Word(s.s.devController.readIO(49).toInt & ~(s.s.devController.readIO(51).toInt))
 	}
 }

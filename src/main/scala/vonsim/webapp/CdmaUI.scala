@@ -82,7 +82,7 @@ class CdmaRegistersUI(
   	var memoryAdress : IOMemoryAddress = 0
   	for(i <- 0 to 7) {
   		memoryAdress = (80 + i).asInstanceOf[Byte]
-  		intByteStrings(i) = s.s.ioMemory.readIO(memoryAdress).bitString.reverse
+  		intByteStrings(i) = s.s.devController.readIO(memoryAdress).bitString.reverse
   	}
   	
   	for(i <- 7 to 0 by -1) {
