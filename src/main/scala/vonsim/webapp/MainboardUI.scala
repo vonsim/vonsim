@@ -49,12 +49,12 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 //  val externalTimerUI = new ExternalTimerUI(s)
   val f10Button = new F10Button(s)
   
-	for(i <- 0 to 7) {
-		keysUI.inputArray(i).onclick = (e: Any) => {
-			keysUI.toggleBit(i)
-			pioUI.simulatorEvent()
-		}
-  }
+//	for(i <- 0 to 7) {
+//		keysUI.inputArray(i).onclick = (e: Any) => {
+//			keysUI.toggleBit(i)
+//			pioUI.simulatorEvent()
+//		}
+//  }
   
   val console = pre("").render
   val consoleDir = div(id := "console", h2("Console"), console).render
@@ -138,6 +138,55 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       )
     )
   ).render
+  
+  changeDisplayConfiguration(0)
+  
+  def changeDisplayConfiguration(config: Int) {
+//    pioUI.hide()
+//    handUI.hide()
+//    cdmaUI.hide()
+//    keysUI.hide()
+//    ledsUI.hide()
+//    printerUI.hide()
+  	config match {
+  		case 0 => {
+        pioUI.show()
+        ledsUI.show()
+        keysUI.show()
+        
+        handUI.hide()
+        cdmaUI.hide()
+        printerUI.hide()
+  		}
+  		case 1 => {
+  			pioUI.show()
+        printerUI.show()
+        
+        handUI.hide()
+        cdmaUI.hide()
+        keysUI.hide()
+        ledsUI.hide()
+  		}
+  		case 2 => {
+  			handUI.show()
+        printerUI.show()
+        
+        pioUI.hide()
+        cdmaUI.hide()
+        keysUI.hide()
+        ledsUI.hide()
+  		}
+  		case 3 => {
+  			handUI.show()
+        printerUI.show()
+  			cdmaUI.show()
+  			
+        pioUI.hide()
+        keysUI.hide()
+        ledsUI.hide()
+  		}
+  	}
+  }
 
   def simulatorEvent() {
     memoryUI.simulatorEvent()
@@ -186,6 +235,7 @@ abstract class MainboardItemUI(
 ) extends VonSimUI(s) {
   val contentDiv = div(cls := "mainboardItemContent").render
 
+  val cpuSpeedButton = div(cls:="pull-right").render
   val root = div(
     cls := "mainboardItem",
     div(
@@ -197,7 +247,8 @@ abstract class MainboardItemUI(
           cls := "mainboardItemHeader",
           //img(cls := "mainboardItemIcon", src := "assets/"+icon),
       		//i(cls := "fas fa-"+icon),
-          h2(cls := "mainboardItemHeaderText fas fa-"+icon, " "+title)
+          h2(cls := "mainboardItemHeaderText pull-left fas fa-"+icon, " "+title),
+          if (title == "CPU") cpuSpeedButton.render
         ),
         contentDiv
       )

@@ -246,17 +246,36 @@ class Simulator(
   val devController: DevicesController = new DevicesController(memory)
   
   var runState: RunType = Stop
-  var enabledInstructions = false
+  // var enabledInterruptions = false
   var pendingInterruption = false
   
-  var computerIPC = 20 // Instrucciones por segundo
-  var timerDelay = computerIPC * 50
-  var printerSpeed = computerIPC * 5
+  var computerIPS = 4 // Instrucciones por segundo
+  var IPSDisplay = 1
+  var timerDelay = computerIPS * 50
+  var printerSpeed = computerIPS * 5
   
-  def setIPC(ipc: Int) {
-		computerIPC = ipc
-		timerDelay = ipc * 50
-		printerSpeed = ipc * 5
+  def setIPS(ips: Int) {
+		computerIPS = ips
+		timerDelay = ips * 50
+		printerSpeed = ips * 5
+  }
+  
+  def speedUp() {
+  	println("computerIPS: " + computerIPS)
+  	computerIPS match {
+  		case 4 => {
+  			setIPS(10)
+  			IPSDisplay = 2
+  		} 
+  		case 10 => {
+  			setIPS(20)
+  			IPSDisplay = 3
+  		} 
+  		case 20 => {
+  			setIPS(4)
+  			IPSDisplay = 1
+  		} 
+  	}
   }
   
   def reset() {
@@ -288,6 +307,10 @@ class Simulator(
   }
 
   def currentInstruction() = {
+    if(devController.isPendingInterruption() && cpu.acceptInterruptions) {
+	      interruptionCall(memory.getBytes(devController.getInterruptionAdress()).toInt)
+    }
+
     if (instructions.keySet.contains(cpu.ip)) {
       val instruction = instructions(cpu.ip)
       Right(instruction)
@@ -296,15 +319,11 @@ class Simulator(
       Left(GeneralExecutionError(message))
     }
   }
-
-  def nextInstruction() = {
-    if (instructions.keySet.contains((cpu.ip)+1)) {
-      val instruction = instructions(cpu.ip)
-      Right(instruction)
-    } else {
-      val message = language.memoryCellAsInstruction
-      Left(GeneralExecutionError(message))
-    }
+  
+  def interruptionCall(intAdress: Int) {
+  	push(cpu.alu.flags.toDWord)
+  	push(cpu.ip)
+    cpu.jump(intAdress)
   }
 
   def runInstructions() = {
@@ -505,17 +524,19 @@ class Simulator(
         checkUpdateResult(update(o, a), i)
       }
       case Cli => {
-      	enabledInstructions = false
+        cpu.disableInterruptions();
+      	// enabledInterruptions = false
       }
       case Sti => {
-    		enabledInstructions = true
+        cpu.enableInterruptions();
+    		// enabledInterruptions = true
       }
       case Iret => {
       	// Hace 2 pops: 1 word del IP y 2 bytes de Flags, 4 bytes en total (2 pops de DWords)
         val ra = pop()
         cpu.alu.flags = Flags(pop())
         cpu.jump(ra.toInt)
-        interruptionAttended()
+//        devController.interruptionAttended()
       }
       case In(reg, v) => {
       	cpu.set(reg, devController.readIO(v))
@@ -607,20 +628,5 @@ class Simulator(
   
   def attendInterruption() {
   	
-  }
-  
-  def interruptionCall(intDirection: Int) {
-  	pendingInterruption = true
-  	push(cpu.alu.flags.toDWord)
-  	push(cpu.ip)
-    cpu.jump(intDirection)
-  }
-  
-  def interruptionAttended() {
-  	pendingInterruption = false
-  }
-  
-  def isPendingInterruption() = {
-  	pendingInterruption
   }
 }

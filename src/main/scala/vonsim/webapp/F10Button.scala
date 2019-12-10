@@ -50,7 +50,7 @@ class F10Button(s: VonSimState) extends MainboardItemUI (
 	contentDiv.appendChild(monitorArea)
 	
 	boton.onclick = (e: Any) => {
-		s.s.picInterruption(0)
+		s.s.devController.pic.picInterruption(0)
   }
 	
   def simulatorEvent() {

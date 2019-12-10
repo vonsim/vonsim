@@ -36,7 +36,7 @@ class KeysUI (s: VonSimState)
       s.uil.keysTitle
     ) {
 	
-	var value = Word(s.s.devController.readIO(48).toInt & s.s.devController.readIO(50).toInt)
+	def value = s.s.devController.keys.value
 	
 	val inputArray = Array(
 		input(cls:= "slider-box", `type`:= "checkbox").render,
@@ -95,6 +95,12 @@ class KeysUI (s: VonSimState)
 	
 	contentDiv.appendChild(keysUI)
 	
+	for(i <- 0 to 7) {
+		inputArray(i).onclick = (e: Any) => {
+			toggleBit(i)
+		}
+  }
+
 	def tableSwitch(index: Int) = {
   	td(
 	  	label(
@@ -120,6 +126,8 @@ class KeysUI (s: VonSimState)
 	def simulatorEvent() {
   	var CA = s.s.devController.readIO(50)
 		for(i <- 0 to 7) {
+//			println("value.bit(" + i + ") = " + value.bit(i))
+			// println("inputArray(" + i + ") = " + inputArray(i).checked)
 			inputArray(i).checked = (value.bit(i) == 1)
 			updateDescriptions(i, CA.bit(7-i))
 		}
@@ -130,28 +138,19 @@ class KeysUI (s: VonSimState)
 	}
 	
 	def reset() {
-		value = Word(s.s.devController.readIO(48).toInt & s.s.devController.readIO(50).toInt)
+		s.s.devController.keys.reset()
 	}
 	
 	def toggleBit(i: Int) {
-		
-  	if(value.bit(i) == 0)
-  		value = (Word) (value | (1 << i));
-  	else
-  		value = (Word) (value & ~(1 << i));
-
-  	var CA = s.s.devController.readIO(50)
-  	if(CA.bit(i) == 1) {
-	  	var PA = s.s.devController.readIO(48)
-	  	
-	  	if(PA.bit(i) == 0)
-	  		PA = (Word) (PA | (1 << i));
-	  	else
-	  		PA = (Word) (PA & ~(1 << i));
-	  	
-	  	s.s.devController.writeIO(48, PA)
-	  	
-	  	simulatorEvent()
-  	}
+  	s.s.devController.keys.toggleBit(i)
+  	simulatorEvent()
 	}
+
+  def show() {
+  	root.classList.remove("hidden")
+  }
+  def hide() {
+  	root.classList.add("hidden")
+  }
+
 }

@@ -132,4 +132,11 @@ class HandshakeUI (s: VonSimState)
     port.simulatorEvent(i)
   }
 
+  def show() {
+  	root.classList.remove("hidden")
+  }
+  def hide() {
+  	root.classList.add("hidden")
+  }
+
 }

@@ -222,7 +222,14 @@ class CpuUI(s: VonSimState)
     "special"
   )
   val alu = new AluUI(s)
-
+  
+  val speedButton = button(cls := "btn btn-primary", "x1").render
+  cpuSpeedButton.appendChild(speedButton.render)
+  speedButton.onclick = (e: Any) => {
+  	s.s.speedUp()
+  	speedButton.textContent = "x" + s.s.IPSDisplay
+	}
+  
   contentDiv.appendChild(generalPurposeRegistersTable.root)
   contentDiv.appendChild(specialRegistersTable.root)
   contentDiv.appendChild(alu.root)

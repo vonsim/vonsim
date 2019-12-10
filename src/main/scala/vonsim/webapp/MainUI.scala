@@ -84,6 +84,14 @@ class MainUI(
   
   val mainboardUI = new MainboardUI(s)
   val headerUI = new HeaderUI(s)
+  for (i <- 0 to 3) {
+  	headerUI.configButtons(i).onclick = (e: Any) => {
+  		if(s.s.devController.config != i) {
+				mainboardUI.changeDisplayConfiguration(i)
+				s.s.devController.setConfig(i)
+  		}
+  	}
+  }
   val tutorialUI = tutorial.map(t => new TutorialUI(s, t, this))
   println("checking mode:..")
   val leftPanelId = "leftWrap"
@@ -267,7 +275,7 @@ class MainUI(
 	  p.future
 	}
   
-  val velocidad = 2 // Instrucciones por segundo
+//  val velocidad = 20 // Instrucciones por segundo
   var cant = 0 // Cantidad de instrucciones realizadas
   var tiempoTranscurrido: Long = 0
   var tiempoInicial: Long = 0
@@ -275,19 +283,23 @@ class MainUI(
   def executeInstructionsTimed() {
   	if(!s.isWaitingKeyPress()) {
 	  	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-	  	if((tiempoTranscurrido * velocidad / 1000) >= cant) {
+	  	if((tiempoTranscurrido * s.s.computerIPS / 1000) >= cant) {
 		    var i = s.s.stepInstruction()
 		    i match {
 		      case Left(error) => //executionError(error.message)
 		      case Right(i)    => {
+//		      	println("Tiempo: " + ((System.currentTimeMillis() - tiempoInicial)/250))
+		      	s.s.devController.simulatorEvent(System.currentTimeMillis() - tiempoInicial)
 		      	simulatorEvent(i)
 			      if(s.isWaitingKeyPress())
 			      	$("#external-devices-tab a").tab("show")
 		     	}
 		    }
 		    cant = cant + 1
+//		    s.s.devController.simulatorEvent(System.currentTimeMillis() - tiempoInicial)
 	    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
 	  	}
+	  	
   	}
   	else {
   		cant = 0
@@ -296,7 +308,7 @@ class MainUI(
   	
   	if(s.isSimulatorExecuting()) {
 	  	var readyLater = for {
-			  delayed <- delay(((cant * (1000 / velocidad)) - tiempoTranscurrido).toInt)
+			  delayed <- delay(((cant * (1000 / s.s.computerIPS)) - tiempoTranscurrido).toInt)
 			} yield {
 				if(s.isSimulatorExecuting())
 			  	executeInstructionsTimed()
@@ -355,12 +367,15 @@ class MainUI(
 
   }
 
+  var inst = 0
   def stepInstruction() {
     println("Step instruction.. ")
     val i = s.s.stepInstruction()
     i match {
       case Left(error) => //executionError(error.message)
       case Right(i)    => {
+      	inst += 1
+      	s.s.devController.simulatorEvent((1000 / s.s.computerIPS) * inst)
       	simulatorEvent(i)
 	      if(s.isWaitingKeyPress())
 	      	$("#devices-tab a").tab("show")

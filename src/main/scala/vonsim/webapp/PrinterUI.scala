@@ -126,8 +126,7 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
 	contentDiv.appendChild(monitorArea)
 	
   def simulatorEvent() {
-		if(s.s.devController.printer.isBusy())
-			text.textContent += s.s.devController.printer.getCharToPrint()
+		text.textContent += s.s.devController.printer.getCharToPrint()
   }
 	
   def simulatorEvent(i: InstructionInfo) {
@@ -137,4 +136,12 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
   def reset() {
   	text.textContent = ""
   }
+
+  def show() {
+  	root.classList.remove("hidden")
+  }
+  def hide() {
+  	root.classList.add("hidden")
+  }
+
 }

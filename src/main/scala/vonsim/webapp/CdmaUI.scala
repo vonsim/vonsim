@@ -120,4 +120,11 @@ class CdmaUI (s: VonSimState)
     simulatorEvent()
   }
 
+  def show() {
+  	root.classList.remove("hidden")
+  }
+  def hide() {
+  	root.classList.add("hidden")
+  }
+
 }

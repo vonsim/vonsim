@@ -156,5 +156,21 @@ class PioUI (s: VonSimState)
     portA.simulatorEvent(i)
     portB.simulatorEvent(i)
   }
+  
+  def show() {
+  	root.classList.remove("hidden")
+  }
+  def hide() {
+  	root.classList.add("hidden")
+  }
 
 }
+
+
+
+
+
+
+
+
+

@@ -280,9 +280,12 @@ class CPU {
 
   var halted = false
   var paused = false
+  var acceptInterruptions = false
+
   val alu = new ALU()
   var generalRegisters = mutable.Map[FullRegister, DWord]()
   var specialRegisters = mutable.Map[SpecialRegister, DWord]()
+
   reset()
   def reset() {
     jump(0x2000)
@@ -356,6 +359,13 @@ class CPU {
     set(r, Word(v))
   }
 
+  def enableInterruptions() {
+    acceptInterruptions = true
+  }
+
+  def disableInterruptions() {
+    acceptInterruptions = false
+  }
 }
 
 object Memory {

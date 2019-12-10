@@ -3,6 +3,7 @@ import vonsim.simulator._
 import scalatags.JsDom.all._
 import vonsim.assembly.Compiler.CompilationResult
 import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom.html._
 import vonsim.webapp.i18n.UILanguage
 
 abstract class ModalUI(s: VonSimState, modalID: String) extends VonSimUI(s) {
@@ -161,6 +162,13 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
   languageButtons.foreach(
     button => languageButtonsContainer.appendChild(button)
   )
+  
+  val configButtons = Array.apply(
+		dropdownConfigurationItemFactory(0).render,
+		dropdownConfigurationItemFactory(1).render,
+		dropdownConfigurationItemFactory(2).render,
+		dropdownConfigurationItemFactory(3).render
+  )
 
   val tutorialDropdown = div(
     cls := "dropdown dropdown-tutoriales",
@@ -180,11 +188,16 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
     div(
       cls := "dropdown-menu dropdown-menu-right",
       aria.labelledby := "dropdownTutorialButton",
-      dropdownItemFactory("whyassembly", "1. ¿Por que Assembly?"),
-      dropdownItemFactory("vonsim", "2. Sobre VonSim"),
-      dropdownItemFactory("basic", "3. Básico"),
-      dropdownItemFactory("variables", "4. Variables"),
-      dropdownItemFactory("code", "5. Registros e instrucciones")
+      dropdownTutorialItemFactory("whyassembly", "1. ¿Por que Assembly?"),
+      dropdownTutorialItemFactory("vonsim", "2. Sobre VonSim"),
+      dropdownTutorialItemFactory("basic", "3. Básico"),
+      dropdownTutorialItemFactory("variables", "4. Variables"),
+      dropdownTutorialItemFactory("code", "5. Registros e instrucciones"),
+      div(cls := "dropdown-divider"),
+      li(configButtons(0)),
+      li(configButtons(1)),
+      li(configButtons(2)),
+      li(configButtons(3))
     )
   ).render
 
@@ -265,13 +278,20 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 //  	)
 //  ).render
 
-  def dropdownItemFactory(tutorialUrl: String, tutorialString: String) = {
+  def dropdownTutorialItemFactory(tutorialUrl: String, tutorialString: String) = {
     li(
       a(
         cls := "dropdown-item",
         href := "?tutorial="+tutorialUrl,
         tutorialString
       )
+    )
+  }
+
+  def dropdownConfigurationItemFactory(conf: Int) = {
+    button(
+      cls := "dropdown-item",
+      "Configuración " + conf
     )
   }
 
