@@ -245,20 +245,14 @@ class MainUI(
   def reset() {
     println("Resetting	... ")
     s.s.reset()
-    mainboardUI.monitorUI.reset()
-    mainboardUI.keyboardUI.reset()
-    mainboardUI.keysUI.reset()
-//    mainboardUI.externalTimerUI.reset()
+    mainboardUI.reset()
     simulatorEvent()
   }
   
   def stop() {
     println("Stopping execution... ")
     s.s.stop()
-    mainboardUI.monitorUI.reset()
-    mainboardUI.keyboardUI.reset()
-    mainboardUI.keysUI.reset()
-//    mainboardUI.externalTimerUI.reset()
+    mainboardUI.reset()
     simulatorEvent()
   }
   
@@ -411,10 +405,7 @@ class MainUI(
       case Right(c: SuccessfulCompilation) => {
         println("Loading program... ")
         s.s.load(c)
-        mainboardUI.monitorUI.reset()
-        mainboardUI.keyboardUI.reset()
-        mainboardUI.keysUI.reset()
-//		    mainboardUI.externalTimerUI.reset()
+        mainboardUI.reset()
         mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
         	mainboardUI.keyboardUI.keyPressed(event.keyCode)
         	if(s.s.runState == Run)

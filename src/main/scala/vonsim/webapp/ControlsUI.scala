@@ -55,6 +55,52 @@ class SimulatorStateUI(s: VonSimState) extends VonSimUI(s) {
   def compilationEvent() {}
 
 }
+class ConfigurationStateUI(s: VonSimState) extends VonSimUI(s) {
+  def stateToIcon(state: SimulatorState) = state match {
+    case SimulatorExecutionError(msg) => "exclamation-circle"
+    case SimulatorExecutionFinished   => "check-circle"
+    case SimulatorExecutionStopped    => "circle"
+    case SimulatorProgramExecuting    => "pause-circle"
+  }
+  def stateToButtonClass(state: SimulatorState) = state match {
+    case SimulatorExecutionError(msg) => "btn-danger"
+    case SimulatorExecutionFinished   => "btn-success"
+    case SimulatorExecutionStopped    => "btn-danger"
+    case SimulatorProgramExecuting    => "btn-warning"
+  }
+
+  val stateIcon = i(cls := "").render
+  val stateTitle = span().render
+  val root = a(
+    cls := ""
+//      ,href:="#"
+//      ,rel:="tooltip"
+//      ,data("html"):="true"
+//      ,data("toggle"):="tooltip"
+//      ,title:="<div> <h1> HOLAHOLA </h1> <p> Chau </p> </div>"
+    ,
+    stateIcon,
+    stateTitle
+  ).render
+
+  simulatorEvent()
+
+  def simulatorEvent() {
+    val color = stateToButtonClass(s.s.state)
+//    root.className = "btn " + color + " simulatorState"
+    root.className = "btn " + color + " navbar-btn simulatorState"
+    root.title = s.uil.stateToTooltip(s.s.state)
+    stateTitle.textContent = s.uil.stateToMessage(s.s.state)
+    stateIcon.className = "fa fa-" + stateToIcon(s.s.state)
+
+  }
+  def simulatorEvent(i: InstructionInfo) {
+    simulatorEvent()
+
+  }
+  def compilationEvent() {}
+
+}
 class ControlsUI(s: VonSimState) extends VonSimUI(s) {
   //http://fontawesome.io/icons/
   class LoadOrStopButton(s: VonSimState) extends VonSimUI(s) {
@@ -137,6 +183,7 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
     "fa-play"
   )
   val simulatorStateUI = new SimulatorStateUI(s)
+  val configurationStateUI = new ConfigurationStateUI(s)
 
   val root = span(
     id := "controls",
@@ -146,7 +193,8 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
     span(cls := "controlSection", loadOrStopButton.root),
     span(cls := "controlSection", finishButton),
     span(cls := "controlSection", stepButton),
-    span(cls := "controlSection", simulatorStateUI.root)
+    span(cls := "controlSection", simulatorStateUI.root),
+    span(cls := "controlSection", configurationStateUI.root)
   ).render
 
   def disableButton(bootstrapButton: Anchor) {

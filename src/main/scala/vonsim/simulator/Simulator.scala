@@ -249,32 +249,20 @@ class Simulator(
   // var enabledInterruptions = false
   var pendingInterruption = false
   
-  var computerIPS = 4 // Instrucciones por segundo
-  var IPSDisplay = 1
-  var timerDelay = computerIPS * 50
-  var printerSpeed = computerIPS * 5
+  var computerIPS = 1 // Instrucciones por segundo
+  def timerDelay = computerIPS * 50
+  def printerSpeed = computerIPS * 5
   
   def setIPS(ips: Int) {
 		computerIPS = ips
-		timerDelay = ips * 50
-		printerSpeed = ips * 5
   }
   
   def speedUp() {
-  	println("computerIPS: " + computerIPS)
   	computerIPS match {
-  		case 4 => {
-  			setIPS(10)
-  			IPSDisplay = 2
-  		} 
-  		case 10 => {
-  			setIPS(20)
-  			IPSDisplay = 3
-  		} 
-  		case 20 => {
-  			setIPS(4)
-  			IPSDisplay = 1
-  		} 
+  		case 1 => computerIPS  = 2
+  		case 2 => computerIPS = 4
+  		case 4 => computerIPS = 8
+  		case 8 => computerIPS = 1
   	}
   }
   

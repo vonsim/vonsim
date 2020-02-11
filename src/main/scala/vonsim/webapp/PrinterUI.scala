@@ -118,7 +118,7 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
 				readonly,
 				cols := "20",
 				rows := "5",
-				style := "font-family: 'Lucida Console', Monaco, monospace;",
+				style := "font-family: 'Lucida Console', Monaco, monospace; white-space: pre;",
 				text
 			)
 		).render
@@ -126,7 +126,8 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
 	contentDiv.appendChild(monitorArea)
 	
   def simulatorEvent() {
-		text.textContent += s.s.devController.printer.getCharToPrint()
+	  if(s.s.devController.printer.isPrinting())
+		  text.textContent += s.s.devController.printer.getCharToPrint()
   }
 	
   def simulatorEvent(i: InstructionInfo) {

@@ -15,17 +15,13 @@ import scala.collection.mutable.Queue
 class DevicesController(memory: Memory) {
 	
   val seed = new Random().nextLong()
-
-  
   
   // Dispositivos internos
-  
   val printer = new Printer()
-
   val pic = new PIC(seed)
   val timer = new Timer(seed, pic)
   val pio = new PIO(seed, printer)
-  val hand = new Handshake(seed, pic)
+  val hand = new Handshake(seed, pic, printer)
   val cdma = new CDMA(seed, pic)
   
   // Dispositivos externos
@@ -128,8 +124,10 @@ class Printer() {
 	 * 	DATA1...DATA8: DATOS -> PB0...PB7 (salida)
 	 */
 	
+	var data = Word(0)
 	var strobePulse = false
-	var busy = false
+	def busy = (buffer.length == 5)
+	def printing = (buffer.length > 0)
 	
 	val buffer = Queue.empty[Word]
 	var charToPrint = '\0'
@@ -150,37 +148,32 @@ class Printer() {
 
 	def checkPrint() {
 			if(strobePulse && !busy && (buffer.size < 5)) {
-				busy = true
 //				charToPrint = buffer.dequeue().toInt.toChar
 				strobePulse = false
 			}
 	}
 	
-	def isIdle() = {
-		!busy
-	}
+	def isIdle() = !busy
 	
-	def isBusy() = {
-		busy
-	}
+	def isBusy() = busy
+	
+	def isPrinting() = printing
 	
 	def sendData(d: Word) = {
-		if(buffer.size < 5)
-			buffer += d
+		data = d
 	}
 	
 	def sendStrobe() = {
 			strobePulse = true
+			if(buffer.size < 5)
+			  buffer += data
 	}
 	
 	def getCharToPrint() = {
-		if(busy) {
-				charToPrint = buffer.dequeue().toInt.toChar
-			if(buffer.length == 0)
-				busy = false
-			if(charToPrint != '\0') {
+		if(printing) {
+			charToPrint = buffer.dequeue().toInt.toChar
+			if(charToPrint != '\0')
 				charToPrint
-			}
 			else ""
 		}
 		else
@@ -393,8 +386,6 @@ class PIO(seed: Long, printer: Printer) {
     checkAddress(v.toInt)
   	v match {
   	  case 48 => { // PA
-//  	  	println("config: " + config)
-//  	  	println("if("+(config == 2)+" && "+(values(0).bit(1) == 0)+" && "+(regValue.bit(1) == 1)+")")
   	  	if((config == 1) && (values(0).bit(1) == 0) && (regValue.bit(1) == 1))
   	  			printer.sendStrobe()
   	  	values(0) = regValue
@@ -404,7 +395,6 @@ class PIO(seed: Long, printer: Printer) {
 	  			printer.sendData(regValue)
   	  	values(1) = regValue
   	  }
-  	  
       case 50 => values(2) = regValue // CA
       case 51 => values(3) = regValue // CB
   	}
@@ -431,6 +421,10 @@ class PIO(seed: Long, printer: Printer) {
 
 class PIC(seed: Long) {
 	
+  def IMR = readIO(33) // 1 -> Ignorar; 0 -> Atender
+  def IRR = readIO(34)
+  def ISR = readIO(35) // 1 -> Atendida; 0 -> No se atendió
+
   val values: Array[Word] = randomBytes(12).map(Word(_))
 	var interruptionAdress: Int = 0
 	
@@ -451,31 +445,23 @@ class PIC(seed: Long) {
 		res
 	}
 	
-	def interruptionFinished() {
-		writeIO(35, Word(0)) // ISR = 0
-	}
+	def interruptionFinished() = writeIO(35, Word(0)) // ISR = 0
 	
   def simulatorEvent() {
-  	val IRR = readIO(34)
   	if(IRR != Word(0)) { // Si hay un llamado de interrupción
   		
   		var intX = -1
   		var i = 0
   		while((i < 8) && (intX == -1)) {
-				if(IRR.bit(i) == 1) { 
+				if(IRR.bit(i) == 1)
 					intX = i
-				}
 				i += 1
 			}
   		
-			val IMR = readIO(33) // 1 -> Ignorar; 0 -> Atender
-			if(IMR.bit(intX) == 0) {
-				val ISR = readIO(35) // 1 -> Atendida; 0 -> No se atendió
-				if(ISR == Word(0)) {
-					writeIO(34, Word(readIO(34) & ~(1 << intX))) // IRR:X = 0
-					writeIO(35, Word(ISR | (1 << intX))) // ISR:X = 1
-					interruptionAdress = (readIO((36+intX).toByte)).toInt * 4
-				}
+			if((IMR.bit(intX) == 0) && (ISR == Word(0))) {
+				writeIO(34, Word(readIO(34) & ~(1 << intX))) // IRR:X = 0
+				writeIO(35, Word(ISR | (1 << intX))) // ISR:X = 1
+				interruptionAdress = (readIO((36+intX).toByte)).toInt * 4
 			}
   	}
   }
@@ -545,16 +531,20 @@ class PIC(seed: Long) {
   }
 }
 
-class Handshake(seed: Long, pic: PIC) {
+class Handshake(seed: Long, pic: PIC, printer: Printer) {
   
   val values: Array[Word] = randomBytes(2).map(Word(_))
+  def state = readIO(65)
+  
+	writeIO(64, Word(0))
+	writeIO(65, Word(0))
 
   def simulatorEvent() {
-  	val state = readIO(65)
-  	if((state & 131) == 130) { // Estado AND 10000011 = X00000XX / 130 = 10000010
-//  	if((state.bit(7) == 1) && (state.bit(0) == 0) && (state.bit(1) == 1)) {
+  	if((state & 129) == 128) // Estado AND 10000001 = X000000X / 129 = 10000001 / 128 = 10000000 
   		pic.picInterruption(2)
-  		writeIO(65, Word(state & 253)) // Estado AND 11111101 = XXXXXX0X
+  	if(state.bit(1) == 1) {
+  	  printer.sendStrobe()
+      writeIO(65, Word(state & 253)) // Estado AND 11111101 = XXXXXX0X
   	}
   }
   
@@ -570,8 +560,8 @@ class Handshake(seed: Long, pic: PIC) {
   }
   
   def reset() {
-    val bytes = randomBytes(values.size)
-    bytes.indices.foreach(i => values(i) = Word(bytes(i)))
+    writeIO(64, Word(0))
+    writeIO(65, Word(0))
   }
   
   def randomBytes(size: Int) = {
@@ -583,7 +573,11 @@ class Handshake(seed: Long, pic: PIC) {
   def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
     checkAddress(v.toInt)
   	v match {
-      case 64 => values(0) = regValue // DATO
+      case 64 => { // DATO
+        printer.sendData(regValue)
+        values(0) = regValue
+        writeIO(65, Word(state | 2)) // Estado OR 00000010 = XXXXXX1X
+      }
       case 65 => values(1) = regValue // ESTADO
   	}
   }
@@ -592,7 +586,14 @@ class Handshake(seed: Long, pic: PIC) {
     checkAddress(v.toInt)
   	v match {
       case 64 => values(0) // DATO | 40h
-      case 65 => values(1) // ESTADO | 41h
+      case 65 => { // ESTADO | 41h
+	  		if(printer.isBusy())
+					writeIO(65, Word(values(1) | 1)) // ESTADO:0 = 1
+	  		else
+					writeIO(65, Word(values(1) & ~1)) // ESTADO:0 = 0
+        values(1)
+        
+      }
   	}
   }
 }

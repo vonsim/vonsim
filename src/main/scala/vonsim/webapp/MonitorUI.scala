@@ -42,6 +42,7 @@ class MonitorUI(s: VonSimState) extends MainboardItemUI (
 				readonly,
 				cols := "50",
 				rows := "4",
+				style := "white-space: pre",
 				text
 			)
 		).render

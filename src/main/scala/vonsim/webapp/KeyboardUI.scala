@@ -42,6 +42,7 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
 			cols := "50",
 			rows := "4",
 			id := "keyboardArea",
+			style := "white-space: pre",
 			text
 		).render
 	val keyboard =

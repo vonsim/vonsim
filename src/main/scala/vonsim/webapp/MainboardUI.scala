@@ -225,6 +225,12 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 
   def compilationEvent() {}
 
+  def reset() {
+    monitorUI.reset()
+    keyboardUI.reset()
+    keysUI.reset()
+    printerUI.reset()
+  }
 }
 
 abstract class MainboardItemUI(
