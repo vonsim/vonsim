@@ -223,11 +223,11 @@ class CpuUI(s: VonSimState)
   )
   val alu = new AluUI(s)
   
-  val speedButton = button(cls := "btn btn-primary", s.s.computerIPS + " Hz").render
-  cpuSpeedButton.appendChild(speedButton.render)
+  val speedButton = a(cls := "btn btn-primary", (1000 / s.s.getTickTime()) + " Hz").render
+  speedUpButton.appendChild(speedButton.render)
   speedButton.onclick = (e: Any) => {
   	s.s.speedUp()
-  	speedButton.textContent = s.s.computerIPS + " Hz"
+  	speedButton.textContent = (1000 / s.s.getTickTime()) + " Hz"
 	}
   
   contentDiv.appendChild(generalPurposeRegistersTable.root)
@@ -238,17 +238,19 @@ class CpuUI(s: VonSimState)
     generalPurposeRegistersTable.simulatorEvent()
     specialRegistersTable.simulatorEvent()
     alu.simulatorEvent()
-    
-    if (s.isSimulatorExecuting()) {
+    if (s.isSimulatorExecuting())
       speedButton.classList.add("disabled")
-    } else {
+    else
       speedButton.classList.remove("disabled")
-    }
   }
   def simulatorEvent(i: InstructionInfo) {
     generalPurposeRegistersTable.simulatorEvent(i)
     specialRegistersTable.simulatorEvent(i)
     alu.simulatorEvent(i)
+    if (s.isSimulatorExecuting())
+      speedButton.classList.add("disabled")
+    else
+      speedButton.classList.remove("disabled")
   }
 
 }

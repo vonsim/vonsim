@@ -15,7 +15,7 @@ class ExpressionSuite extends FunSuite {
   
   def simulator(program:String)={
     val compilation= Compiler(program)
-//    println(compilation)
+    if (compilation.isLeft) println(compilation)
     assert(compilation.isRight)
     val c=compilation.right.get
     Simulator(c)
@@ -38,8 +38,8 @@ class ExpressionSuite extends FunSuite {
   mov ax, 2+3+4
   mov ax, 2+3*4
   mov ax, (2+3)*4
-  mov ax, 2+ hola
-  mov ax, hola + 2
+;  mov ax, 2+ hola                                             ERROR LABEL
+;  mov ax, hola + 2                                            ERROR LABEL
   mov ax, hola
   mov hola,ax
   int 7

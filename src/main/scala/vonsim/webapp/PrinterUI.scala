@@ -123,11 +123,17 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
 			)
 		).render
 	
+  val speedButton = a(cls := "btn btn-primary", (1000.0 / s.s.devController.getPrinterTickTime()) + " Hz").render
+  speedUpButton.appendChild(speedButton.render)
+  speedButton.onclick = (e: Any) => {
+  	s.s.devController.printerSpeedUp()
+  	speedButton.textContent = (1000.0 / s.s.devController.getPrinterTickTime()) + " Hz"
+	}
+  
 	contentDiv.appendChild(monitorArea)
 	
   def simulatorEvent() {
-	  if(s.s.devController.printer.isPrinting())
-		  text.textContent += s.s.devController.printer.getCharToPrint()
+	  text.textContent = s.s.devController.strategie.getPrintedText()
   }
 	
   def simulatorEvent(i: InstructionInfo) {

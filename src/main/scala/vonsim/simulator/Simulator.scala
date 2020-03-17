@@ -241,49 +241,31 @@ class Simulator(
 ) {
   var state: SimulatorState = SimulatorExecutionStopped
   var language: SimulatorLanguage = new Spanish()
-  var monitorStrings = new ListBuffer[String]()
   
   val devController: DevicesController = new DevicesController(memory)
   
   var runState: RunType = Stop
-  // var enabledInterruptions = false
   var pendingInterruption = false
-  
-  var computerIPS = 1 // Instrucciones por segundo
-  def timerDelay = computerIPS * 50
-  def printerSpeed = computerIPS * 5
-  
-  def setIPS(ips: Int) {
-		computerIPS = ips
-  }
-  
-  def speedUp() {
-  	computerIPS match {
-  		case 1 => computerIPS  = 2
-  		case 2 => computerIPS = 4
-  		case 4 => computerIPS = 8
-  		case 8 => computerIPS = 1
-  	}
-  }
+
+  val systemEventTimer = new SystemEventTimer(1000)
+  def getTickTime() = systemEventTimer.getTickTime()
+  def speedUp() = systemEventTimer.speedUp()
   
   def reset() {
     cpu.reset()
     memory.reset()
-//    ioMemory.reset()
     devController.reset()
     state = SimulatorExecutionStopped
   }
   def stop() {
     cpu.reset()
     memory.reset()
-//    ioMemory.reset()
     devController.reset()
     state = SimulatorExecutionStopped
   }
 
   def load(c: SuccessfulCompilation) {
     cpu.reset()
-//    ioMemory.reset()
     devController.reset()
     memory.update(c.variablesMemory)
     memory.update(c.instructionsMemory)
@@ -296,7 +278,7 @@ class Simulator(
 
   def currentInstruction() = {
     if(devController.isPendingInterruption() && cpu.acceptInterruptions) {
-	      interruptionCall(memory.getBytes(devController.getInterruptionAdress()).toInt)
+      interruptionCall(memory.getBytes(devController.getInterruptionAdress()).toInt)
     }
 
     if (instructions.keySet.contains(cpu.ip)) {
@@ -333,10 +315,12 @@ class Simulator(
 
   def stepInstruction() = {
     val instructionInfo = currentInstruction()
-    //println("Executing instruction: "+instructionInfo)
     if (instructionInfo.isRight) {
       val info = instructionInfo.right.get
       val instruction = info.instruction
+
+      devController.simulatorEvent(System.currentTimeMillis())
+      
       cpu.jump(cpu.ip + Simulator.instructionSize(instruction))
       state = SimulatorProgramExecuting
       try {
@@ -345,7 +329,6 @@ class Simulator(
         case e: InvalidMemoryAddress =>
           stopExecutionForError(language.invalidMemoryAddress(e.address))
       }
-
     } else {
       stopExecutionForError(instructionInfo.left.get)
     }
@@ -360,6 +343,7 @@ class Simulator(
   }
   def stopExecutionForError(executionError: ExecutionError) {
     cpu.halted = true
+    stop()
     state = SimulatorExecutionError(executionError)
   }
 
@@ -539,12 +523,12 @@ class Simulator(
       	  case 7 => {
 						var startAdress = cpu.get(BX).toInt
 						val cant = cpu.get(AL).toInt
-						var toPrint = ""
+						var text = ""
 						for(i <- 1 to cant){
-							toPrint+=(memory.values(startAdress).toInt.toChar.toString())
+							text+=(memory.values(startAdress).toInt.toChar)
 							startAdress = startAdress + 1
 						}
-						monitorStrings += toPrint
+						devController.strategie.addMonitorText(text)
       	  }
       	}
       }

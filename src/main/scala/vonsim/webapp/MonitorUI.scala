@@ -46,30 +46,18 @@ class MonitorUI(s: VonSimState) extends MainboardItemUI (
 				text
 			)
 		).render
-	
+
 	contentDiv.appendChild(monitorArea)
-	
+
   def simulatorEvent() {
-		/*var startAdress = s.s.cpu.get(BX).toInt
-		println(startAdress)
-		val cant = s.s.cpu.get(AL).toInt
-		println(cant)
-		for(i <- 1 to cant){
-			monitorArea.firstChild.appendChild((s.s.memory.values(startAdress).toInt.toChar.toString()).render)
-			startAdress = startAdress + 1; 
-		}*/
-		s.s.monitorStrings.foreach(f => text.textContent += (f))
-  	s.s.monitorStrings.clear()
+	  text.textContent += s.s.devController.strategie.getMonitorText()
   }
-	
+
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
   }
-  
+
   def reset() {
   	text.textContent = ""
   }
-  
-  //def compilationEvent() {}
-
 }

@@ -95,6 +95,7 @@ end"""
      val program = 
 """
 const EQU 12
+PIC EQU 20H
 const2 EQU  const+1
 
 org 1000h
@@ -144,22 +145,22 @@ HOLA:    mov ax, 25AH
     mov al,vardb
     mov ax,vardw
     mov vardw,4
-;    in al,PIC ; not implemented yet!
-;    in al,123 ; not implemented yet!
-;    out ax,dx ; not implemented yet!
+    in al, PIC
+    in al, 123
+;    out ax, dx
 
     mov ax,num1
-	mov ax,num2
-	mov ax,(2+3)-5+offset res
-	mov ax,num2+3
-	mov ax,offset num2+3
-	mov ax,const+2
-	mov ax,const2+num2+offset num2
-	mov bx, offset num1
-	mov [bx],ax
-	mov [bx],al
-	mov WORD PTR [bx],2
-	mov BYTE PTR [bx],255
+    mov ax,num2
+    mov ax,(2+3)-5+offset res
+; 	  mov ax,num2+3                                                ERROR LABEL
+    mov ax,offset num2+3 
+    mov ax,const+2
+;   	mov ax,const2+num2+offset num2                               ERROR LABEL
+    mov bx, offset num1
+    mov [bx],ax
+    mov [bx],al
+    mov WORD PTR [bx],2
+    mov BYTE PTR [bx],255
     jc hola
     
 org 1000

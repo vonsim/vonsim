@@ -8,6 +8,7 @@ import Simulator._
 import ComputerWord._
 import scala.Equals
 import vonsim.assembly.Compiler.MemoryAddress
+import scala.collection.mutable.Queue
 
 object Flags {
 
@@ -396,6 +397,7 @@ class Memory(
   var readOnlyAddresses: List[Int] = List()
 ) {
 
+  val changedValues = Queue.empty[Int]
   def validAddress(address: Int) = address >= 0 && address < values.length
   def checkAddress(address: Int) {
     if (!validAddress(address)) {
@@ -418,10 +420,10 @@ class Memory(
     if (readOnlyAddresses.contains(address)) {
       Some(new MemoryAccessViolation(address))
     } else {
+      changedValues += address
       values(address) = v
       None
     }
-
   }
   def setBytes(address: Int, v: DWord) = {
     checkAddress(address)
@@ -432,16 +434,24 @@ class Memory(
     } else if (readOnlyAddresses.contains(address + 1)) {
       Some(new MemoryAccessViolation(address + 1))
     } else {
+      changedValues += address
       values(address) = v.l
+      changedValues += (address + 1)
       values(address + 1) = v.h
       None
     }
   }
   def update(valuesMap: Map[MemoryAddress, Int]) {
+    valuesMap.keys.foreach((address) => changedValues += address)
     valuesMap.foreach { case (a, v) => values(a) = Word(v) }
   }
   def reset() {
     val bytes = Memory.randomBytes(values.size)
     bytes.indices.foreach(i => values(i) = Word(bytes(i)))
+  }
+  def getChangedAddresses() = {
+    val v = changedValues.toArray
+    changedValues.clear()
+    v
   }
 }

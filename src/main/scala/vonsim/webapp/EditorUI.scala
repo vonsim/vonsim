@@ -78,12 +78,12 @@ class EditorUI(s: VonSimState, defaultCode: String, onchange: () => Unit)
   def simulatorEvent(i: InstructionInfo) {
     // TODO improve
     simulatorEvent()
-    //"ace_active-line"
-    editor.getSession()
-    val r = new AceRange(i.line - 1, 0, i.line - 1, 1)
-    val id = editor.getSession().addMarker(r, "executedLine", "fullLine", true)
-    markers += id
-    //editor.getSession().addMarker(new Range(i.line, 0, i.line+1, 1), "executedLine", "fullLine",true)
+    if(s.isSimulatorExecuting()){
+      editor.getSession()
+      val r = new AceRange(i.line - 1, 0, i.line - 1, 1)
+      val id = editor.getSession().addMarker(r, "executedLine", "fullLine", true)
+      markers += id
+    }
   }
 
   def disableTextArea() {

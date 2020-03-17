@@ -142,12 +142,6 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   changeDisplayConfiguration(0)
   
   def changeDisplayConfiguration(config: Int) {
-//    pioUI.hide()
-//    handUI.hide()
-//    cdmaUI.hide()
-//    keysUI.hide()
-//    ledsUI.hide()
-//    printerUI.hide()
   	config match {
   		case 0 => {
         pioUI.show()
@@ -192,35 +186,63 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
     memoryUI.simulatorEvent()
     cpuUI.simulatorEvent()
     
-		monitorUI.simulatorEvent()
+    monitorUI.simulatorEvent()
 		keyboardUI.simulatorEvent()
-		printerUI.simulatorEvent()
-//		externalTimerUI.simulatorEvent()
 		f10Button.simulatorEvent()
-		pioUI.simulatorEvent()
 		picUI.simulatorEvent()
-		cdmaUI.simulatorEvent()
 		internalTimerUI.simulatorEvent()
-		handUI.simulatorEvent()
-		keysUI.simulatorEvent()
-		ledsUI.simulatorEvent()
+
+    s.s.devController.getConfig() match {
+      case 0 => {
+    		keysUI.simulatorEvent()
+    		ledsUI.simulatorEvent()
+    		pioUI.simulatorEvent()
+      }
+      case 1 => {
+        printerUI.simulatorEvent()
+        pioUI.simulatorEvent()
+      }
+      case 2 => {
+        printerUI.simulatorEvent()
+        handUI.simulatorEvent()
+      }
+      case 3 => {
+        printerUI.simulatorEvent()
+        handUI.simulatorEvent()
+        cdmaUI.simulatorEvent()
+      }
+    }
   }
   def simulatorEvent(i: InstructionInfo) {
     memoryUI.simulatorEvent(i)
     cpuUI.simulatorEvent(i)
-    
-		monitorUI.simulatorEvent(i)
+
+    monitorUI.simulatorEvent(i)
 		keyboardUI.simulatorEvent(i)
-		printerUI.simulatorEvent(i)
-//		externalTimerUI.simulatorEvent(i)
 		f10Button.simulatorEvent(i)
-		pioUI.simulatorEvent(i)
 		picUI.simulatorEvent(i)
-		cdmaUI.simulatorEvent(i)
 		internalTimerUI.simulatorEvent(i)
-		handUI.simulatorEvent(i)
-		keysUI.simulatorEvent(i)
-		ledsUI.simulatorEvent(i)
+
+    s.s.devController.getConfig() match {
+      case 0 => {
+    		keysUI.simulatorEvent(i)
+    		ledsUI.simulatorEvent(i)
+    		pioUI.simulatorEvent(i)
+      }
+      case 1 => {
+        printerUI.simulatorEvent(i)
+        pioUI.simulatorEvent(i)
+      }
+      case 2 => {
+        printerUI.simulatorEvent(i)
+        handUI.simulatorEvent(i)
+      }
+      case 3 => {
+        printerUI.simulatorEvent(i)
+        handUI.simulatorEvent(i)
+        cdmaUI.simulatorEvent(i)
+      }
+    }
   }
 
   def compilationEvent() {}
@@ -240,8 +262,9 @@ abstract class MainboardItemUI(
   title: String
 ) extends VonSimUI(s) {
   val contentDiv = div(cls := "mainboardItemContent").render
+  val devicesWithButtons = Array("CpuUI", "PrinterUI")
 
-  val cpuSpeedButton = div(cls:="pull-right").render
+  val speedUpButton = div(cls:="pull-right").render
   val root = div(
     cls := "mainboardItem",
     div(
@@ -254,7 +277,7 @@ abstract class MainboardItemUI(
           //img(cls := "mainboardItemIcon", src := "assets/"+icon),
       		//i(cls := "fas fa-"+icon),
           h2(cls := "mainboardItemHeaderText pull-left fas fa-"+icon, " "+title),
-          if (title == "CPU") cpuSpeedButton.render
+          if (devicesWithButtons.contains(this.getClass.getSimpleName)) speedUpButton.render
         ),
         contentDiv
       )
@@ -338,7 +361,7 @@ class MemoryUI(s: VonSimState)
   val wrapper = div(addressSearchControls, memoryTableDiv)
   contentDiv.appendChild(wrapper.render)
 
-  var stringRows = generateRows().toJSArray
+  var stringRows = generateRows()
   val clusterizePropsElements = new ClusterizeProps {
     override val rows = Some(stringRows).orUndefined
     override val scrollElem = Some(memoryTableDiv).orUndefined
@@ -348,8 +371,9 @@ class MemoryUI(s: VonSimState)
 
   val clusterize = new Clusterize(clusterizePropsElements)
 
-  def generateRows() = {
-    (0 until s.s.memory.values.length).map(generateRow).toArray
+  def generateRows() = (0 until s.s.memory.values.length).map(generateRow).toJSArray
+  def updateRows() {
+    s.s.memory.getChangedAddresses().foreach(address => stringRows(address) = generateRow(address))
   }
   def generateRow(address: Int) = {
     val formattedAddress = s.uil.formatAddress(address)
@@ -364,11 +388,10 @@ class MemoryUI(s: VonSimState)
     s"memory_address_$address"
   }
   def simulatorEvent() {
-    stringRows = generateRows().toJSArray
+    updateRows()
     clusterize.update(stringRows)
   }
   def simulatorEvent(i: InstructionInfo) {
-    // TODO
     simulatorEvent()
   }
   def scrollToAddress() {

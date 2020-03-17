@@ -86,7 +86,7 @@ class MainUI(
   val headerUI = new HeaderUI(s)
   for (i <- 0 to 3) {
   	headerUI.configButtons(i).onclick = (e: Any) => {
-  		if(s.s.devController.config != i) {
+  		if(s.s.devController.getConfig() != i) {
 				mainboardUI.changeDisplayConfiguration(i)
 				s.s.devController.setConfig(i)
   		}
@@ -119,7 +119,6 @@ class MainUI(
         val tutorialDiv = div(cls := "fullscreenDiv", t.root).render
         t.root.classList.add("fullscreenTutorial")
         root.appendChild(tutorialDiv)
-
       }
     }
     case None =>
@@ -256,11 +255,6 @@ class MainUI(
     simulatorEvent()
   }
   
-//  def delay(time: Long) {
-//  	val goal = System.currentTimeMillis() + time
-//  	while(goal >= System.currentTimeMillis()){}
-//  }
-  
   def delay(milliseconds: Int): Future[Unit] = {
   	val p = Promise[Unit]()
   	js.timers.setTimeout(milliseconds) {
@@ -269,45 +263,50 @@ class MainUI(
 	  p.future
 	}
   
-//  val velocidad = 20 // Instrucciones por segundo
   var cant = 0 // Cantidad de instrucciones realizadas
   var tiempoTranscurrido: Long = 0
   var tiempoInicial: Long = 0
+  var lastTime: Long = 0
   
   def executeInstructionsTimed() {
   	if(!s.isWaitingKeyPress()) {
 	  	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-	  	if((tiempoTranscurrido * s.s.computerIPS / 1000) >= cant) {
+	  	if((tiempoTranscurrido * s.s.getTickTime() / 1000) >= cant) {
 		    var i = s.s.stepInstruction()
 		    i match {
 		      case Left(error) => //executionError(error.message)
 		      case Right(i)    => {
-//		      	println("Tiempo: " + ((System.currentTimeMillis() - tiempoInicial)/250))
-		      	s.s.devController.simulatorEvent(System.currentTimeMillis() - tiempoInicial)
 		      	simulatorEvent(i)
 			      if(s.isWaitingKeyPress())
 			      	$("#external-devices-tab a").tab("show")
 		     	}
 		    }
 		    cant = cant + 1
-//		    s.s.devController.simulatorEvent(System.currentTimeMillis() - tiempoInicial)
 	    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
 	  	}
-	  	
   	}
   	else {
   		cant = 0
   		tiempoInicial = System.currentTimeMillis()
   	}
-  	
-  	if(s.isSimulatorExecuting()) {
-	  	var readyLater = for {
-			  delayed <- delay(((cant * (1000 / s.s.computerIPS)) - tiempoTranscurrido).toInt)
-			} yield {
-				if(s.isSimulatorExecuting())
-			  	executeInstructionsTimed()
-			}
-  	}
+  	checkTime()
+  }
+  
+  def checkTime() { 
+  	var readyLater = for {
+		  delayed <- delay(25)
+		} yield {
+		  // s.s.devController.updateTimers(System.currentTimeMillis())
+    	if(s.isSimulatorExecuting()) {
+  			if(s.s.getTickTime() <= (System.currentTimeMillis() - lastTime)) {
+//  			  println("Tiempo transcurrido: " + (System.currentTimeMillis() - lastTime))
+        	lastTime = System.currentTimeMillis()
+  			  executeInstructionsTimed()
+  			}
+    	  else
+  		  	checkTime()
+    	}
+		}
   }
   
   def runInstructionsTimed() {
@@ -320,25 +319,8 @@ class MainUI(
   	tiempoTranscurrido = 0
     tiempoInicial = System.currentTimeMillis()
 
+    s.s.devController.startTimers()
     executeInstructionsTimed()
-    
-//    while(s.isSimulatorExecuting()) {
-//    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-//    	while((tiempoTranscurrido * velocidad / 1000) >= cant) {
-//		    var i = s.s.stepInstruction()
-//		    i match {
-//		      case Left(error) => //executionError(error.message)
-//		      case Right(i)    => {
-//		      	simulatorEvent(i)
-//			      if(s.isWaitingKeyPress())
-//			      	$("#external-devices-tab a").tab("show")
-//		     	}
-//		    }
-//	    	cant = cant + 1
-//	    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-//    	}
-//	    delay((cant * (1000 / velocidad)) - tiempoTranscurrido)
-//    }
   }
   
   def runInstructions() {
@@ -369,7 +351,7 @@ class MainUI(
       case Left(error) => //executionError(error.message)
       case Right(i)    => {
       	inst += 1
-      	s.s.devController.simulatorEvent((1000 / s.s.computerIPS) * inst)
+      	s.s.devController.simulatorEvent(s.s.getTickTime() * inst)
       	simulatorEvent(i)
 	      if(s.isWaitingKeyPress())
 	      	$("#devices-tab a").tab("show")
@@ -405,6 +387,7 @@ class MainUI(
       case Right(c: SuccessfulCompilation) => {
         println("Loading program... ")
         s.s.load(c)
+        if(s.s.runState == Debug) s.s.devController.startTimers()
         mainboardUI.reset()
         mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
         	mainboardUI.keyboardUI.keyPressed(event.keyCode)

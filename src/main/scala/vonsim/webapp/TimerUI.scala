@@ -217,7 +217,6 @@ class ExternalTimerUI(s: VonSimState) extends MainboardItemUI (
 			}
 		}
 		
-	println("s.state: " + s.s.state)
 //		if(s.isSimulatorExecuting()) {
 			var readyLater = for {
 			  delayed <- delay(timeDelay)
