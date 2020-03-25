@@ -29,35 +29,21 @@
 	margin-right: 90px;
 }
 
-/* .dropdown-tutoriales{
-	margin-right: 20px;
-} */
-
 .navbar{
 	margin-bottom: 0px;
 	border: 0px;
 	z-index: 9999;
 }
 
-@media screen and (max-width: 1150px) {
+@media screen and (max-height: 748px) {
 	.navbar {
 		margin-bottom: 15px;
 	}
-	@media screen and (min-height: 745px) {
-		.navbar {
-			margin-bottom: 0px;
-		}
-	}
 }
 
-@media screen and (min-width: 1150px) {
+@media screen and (max-width: 788px) {
 	.navbar {
-		margin-bottom: 23px;
-	}
-	@media screen and (min-height: 750px) {
-		.navbar {
-			margin-bottom: 0px;
-		}
+		margin-bottom: 15px;
 	}
 }
 
@@ -70,6 +56,9 @@
 }
 #dropdownTutorialButton{
     background-color: #34bbfc;
+}
+.clickable {
+	cursor: pointer;
 }
 
 span.caret {
@@ -112,6 +101,36 @@ span.caret {
 	    margin-left: 12px;
 	}
 }
+
+.dropdown-item {
+	padding: 3px 20px !important;
+}
+.dropdown-menu {
+	box-shadow: none;
+}
+@media screen and (max-width: 768px) {
+	.dropdown-menu{
+		max-width: 220px;
+	    background-color: white !important;
+	    margin-left: 1em;
+	}
+}
+@media screen and (min-width: 768px) and (max-width: 1150px) {
+	.dropdown-menu{
+		max-width: 220px;
+		position: static;
+	    float: none;
+	    margin: 0 0 0 1em;
+	    border: 0;
+	}
+}
+@media screen and (max-width: 1150px) {
+	.dropdown-menu{
+	    position: static;
+	    float: none;
+	}
+}
+
 .languageButton{
 	margin-right:10px;
 }

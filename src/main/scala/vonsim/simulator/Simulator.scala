@@ -247,10 +247,6 @@ class Simulator(
   var runState: RunType = Stop
   var pendingInterruption = false
 
-  val systemEventTimer = new SystemEventTimer(1000)
-  def getTickTime() = systemEventTimer.getTickTime()
-  def speedUp() = systemEventTimer.speedUp()
-  
   def reset() {
     cpu.reset()
     memory.reset()

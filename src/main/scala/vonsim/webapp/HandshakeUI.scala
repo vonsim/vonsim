@@ -27,13 +27,11 @@ import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 
-class HandRegistersUI(
-	s: VonSimState,
-  val data: Byte,
-  val state: Byte,
-  baseId: String = ""
-) extends VonSimUI(s) {
+class HandRegistersUI(s: VonSimState, baseId: String = "") extends VonSimUI(s) {
 
+	def DATA = s.s.devController.readIO(64)
+	def STATE = s.s.devController.readIO(65)
+	
   def getIdFor(part: String) = if (baseId == "") "" else baseId + part
 
   val dataRow = tr(th(s.uil.handDataTitle)).render
@@ -86,15 +84,25 @@ class HandRegistersUI(
         i(cls := "icon-file-binary", " "),
         h3(s.uil.handPortTitle)
       ),
-      registerTable
+      registerTable,
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= getDescription()
     ).render
+
+  def getDescription() = "Dato: " + formatWord(DATA) + "h" +
+                       "\n\tLos datos son los caracteres a imprimir" +
+                       "\nEstado: " + formatWord(STATE) + "h" +
+                       "\n\t- Bit 0: Línea BUSY " + (if (STATE.bit(0)==1) "activada." else "desactivada.") +
+                       "\n\t- Bit 1: Línea STROBE " + (if (STATE.bit(1)==1) "activada." else "desactivada.") +
+                       "\n\t- Bit 7: Línea INT " + (if (STATE.bit(7)==1) "activada." else "desactivada.")
 
   def simulatorEvent() {
   	var dataByteString = ""
   	var stateByteString = ""
-  	
-		dataByteString = s.s.devController.readIO(64).bitString.reverse
-		stateByteString = s.s.devController.readIO(65).bitString.reverse
+  	root.title = getDescription
+		dataByteString = DATA.bitString.reverse
+		stateByteString = STATE.bitString.reverse
   	
   	for(i <- 0 to 7) {
   		dataBitRows(i).textContent = dataByteString.charAt(i).toString()
@@ -118,8 +126,6 @@ class HandshakeUI (s: VonSimState)
 	
   val port = new HandRegistersUI(
     s,
-    s.s.devController.readIO(64),
-    s.s.devController.readIO(65),
     "hand"
   )
 

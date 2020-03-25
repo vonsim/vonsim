@@ -50,7 +50,7 @@ class MonitorUI(s: VonSimState) extends MainboardItemUI (
 	contentDiv.appendChild(monitorArea)
 
   def simulatorEvent() {
-	  text.textContent += s.s.devController.strategie.getMonitorText()
+	  text.textContent = s.s.devController.strategie.getMonitorText()
   }
 
   def simulatorEvent(i: InstructionInfo) {

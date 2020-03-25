@@ -31,7 +31,6 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 	// CPU
   val cpuUI = new CpuUI(s)
   val memoryUI = new MemoryUI(s)
-	//val ioMemoryUI = new IOMemoryUI(s)
   
   // Dispositivos internos
   val pioUI = new PioUI(s)
@@ -46,15 +45,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   val keysUI = new KeysUI(s)
   val ledsUI = new LedsUI(s)
   val printerUI = new PrinterUI(s)
-//  val externalTimerUI = new ExternalTimerUI(s)
   val f10Button = new F10Button(s)
-  
-//	for(i <- 0 to 7) {
-//		keysUI.inputArray(i).onclick = (e: Any) => {
-//			keysUI.toggleBit(i)
-//			pioUI.simulatorEvent()
-//		}
-//  }
   
   val console = pre("").render
   val consoleDir = div(id := "console", h2("Console"), console).render
@@ -81,7 +72,6 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         id:="internal-devices-tab",
         a(
           href:="#internalDevices",
-//          id:="internal-devices-tab",
           role:="tab",
           data("toggle") := "tab",
           aria.controls := "internalDevices",
@@ -93,7 +83,6 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         id:="external-devices-tab",
         a(
           href:="#externalDevices",
-//          id:="external-devices-tab",
           role:="tab",
           data("toggle") := "tab",
           aria.controls := "externalDevices",
@@ -106,12 +95,9 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       div(
         role := "tabpanel",
         cls := "tab-pane fade in active",
-//        cls := "tab-pane fade",
         id := "cpu",
         cpuUI.root,
         memoryUI.root
-//        div(cls:="col-md-4", cpuUI.root),
-//        div(cls:="col-md-4", memoryUI.root)
       ),
       div(
         role := "tabpanel",
@@ -125,7 +111,6 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
       ),
       div(
         role := "tabpanel",
-//        cls := "tab-pane fade in active",
         cls := "tab-pane fade",
         id := "externalDevices",
         monitorUI.root,
@@ -133,7 +118,6 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         keysUI.root,
         ledsUI.root,
         printerUI.root,
-//        externalTimerUI.root,
         f10Button.root
       )
     )
@@ -274,8 +258,6 @@ abstract class MainboardItemUI(
         id := itemId,
         div(
           cls := "mainboardItemHeader",
-          //img(cls := "mainboardItemIcon", src := "assets/"+icon),
-      		//i(cls := "fas fa-"+icon),
           h2(cls := "mainboardItemHeaderText pull-left fas fa-"+icon, " "+title),
           if (devicesWithButtons.contains(this.getClass.getSimpleName)) speedUpButton.render
         ),
@@ -298,9 +280,8 @@ class MemoryUI(s: VonSimState)
   val body = tbody(id := "memoryTableBody", cls := "clusterize-content").render
 
   val memoryTable = table(
-    cls := "table-hover"
+    cls := "table-hover",
 //    ,thead(th("Address"), th("Value"))
-    ,
     body
   ).render
   val memoryTableDiv = div(

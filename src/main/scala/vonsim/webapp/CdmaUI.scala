@@ -30,24 +30,25 @@ import vonsim.simulator.Simulator.IOMemoryAddress
 
 class CdmaRegistersUI(
 	s: VonSimState,
-  title: String,
+  cdmaTitle: String,
   baseId: String = ""
 ) extends VonSimUI(s) {
 	def getIdFor(part: String) = if (baseId == "") "" else baseId + part
-
-	val rows = Array(
-		tr(th("RFL")).render,
-		tr(th("RFH")).render,
-		tr(th("CONTL")).render,
-		tr(th("CONTH")).render,
-		tr(th("RDL")).render,
-		tr(th("RDH")).render,
-		tr(th("CTRL")).render,
-		tr(th("ARRANQUE")).render
-	)
+	
+	def values = {
+	  var i = -1
+	  new Array[Word](8).map(v => {
+	    i = i + 1
+	    s.s.devController.readIO((80 + i).asInstanceOf[Byte])
+	  })
+	}
+	val bytesValues = values
+	val rowNames = Array("RFL","RFH","CONTL","CONTH","RDL","RDH","CTRL","ARRANQUE")
+	val rows = rowNames.map(name => tr(th(name)).render)
 	val bitRows = new Array[Array[TableCell]](8)
+	val bitStrings = bytesValues.map(v => v.bitString.reverse)
 	for(i <- 0 to 7) {
-		bitRows(i) = Array.fill(8)(td("0").render)
+		bitRows(i) = bitStrings(i).map(bit => (td(bit.toString()).render)).toArray
 		bitRows(i).foreach(b => rows(i).appendChild(b))
 	}
   
@@ -72,18 +73,27 @@ class CdmaRegistersUI(
       div(
         cls := "cpuElementHeader",
         i(cls := "icon-file-binary", " "),
-        h3(title)
+        h3(cdmaTitle)
       ),
-      registerTable
+      registerTable,
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= getDescription(bytesValues)
     ).render
+    
+  def getDescription(values: Array[Word]) = {
+  	var i = -1
+  	rowNames.reduce((title, name) => {
+	    i = i + 1
+	    title + (if(i==0)": " + formatWord(values(i)) + "h\n" else "") +
+	    name + ": " + formatWord(values(i)) + "h" + (if(i<7) "\n" else "")
+	  })
+  }
 
   def simulatorEvent() {
-  	var intByteStrings = new Array[String](8)
-  	var memoryAdress : IOMemoryAddress = 0
-  	for(i <- 0 to 7) {
-  		memoryAdress = (80 + i).asInstanceOf[Byte]
-  		intByteStrings(i) = s.s.devController.readIO(memoryAdress).bitString.reverse
-  	}
+  	val bytesValues = values
+  	root.title = getDescription(bytesValues)
+  	val intByteStrings = bytesValues.map(v => v.bitString.reverse)
   	
   	for(i <- 7 to 0 by -1) {
   		for(j <- 0 to 7) {

@@ -32,53 +32,9 @@ import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 import vonsim.simulator.Simulator.IOMemoryAddress
 
-/*class Timer(s: VonSimState) {
-	
-  def delay(milliseconds: Int): Future[Unit] = {
-  	val p = Promise[Unit]()
-  	js.timers.setTimeout(milliseconds) {
-	    p.success(())
-	  }	
-	  p.future
-	}
-	
-	val timeDelay = 5000
-	check()
-	
-	def check() {
-		var readyLater = for {
-		  delayed <- delay(timeDelay)
-		} yield {
-			if(s.isSimulatorExecuting() && !s.isDebugging())
-			  checkTime()
-			else {
-		  	check()
-			}
-		}
-	}
-	
-	def checkTime() {
-		var cont = s.s.devController.readIO(16).toInt
-		val comp = s.s.devController.readIO(17).toInt
-		
-		cont += 1
-		if(cont == 256)
-			cont = 0
-		if(cont == comp)
-			s.s.picInterruption(1)
-		s.s.devController.writeIO(16, Word(cont))
-		
-		var readyLater = for {
-		  delayed <- delay(timeDelay)
-		} yield {
-			  checkTime()
-		}
-	}
-}*/
-
 class TimerRegistersUI(
 	s: VonSimState,
-  title: String,
+  timerTitle: String,
   baseId: String = ""
 ) extends VonSimUI(s) {
 	def getIdFor(part: String) = if (baseId == "") "" else baseId + part
@@ -87,6 +43,9 @@ class TimerRegistersUI(
 		tr(th("CONT")).render,
 		tr(th("COMP")).render
 	)
+	def CONT = s.s.devController.readIO(16)
+	def COMP = s.s.devController.readIO(17)
+
 	val bitRows = new Array[Array[TableCell]](8)
 	for(i <- 0 to 1) {
 		bitRows(i) = Array.fill(8)(td("0").render)
@@ -106,6 +65,7 @@ class TimerRegistersUI(
     body
   ).render
 
+  val tooltipTitle = "Sdsf"
   val root =
     div(
       id := getIdFor("RegistersTable"),
@@ -114,15 +74,22 @@ class TimerRegistersUI(
       div(
         cls := "cpuElementHeader",
         i(cls := "icon-file-binary", " "),
-        h3(title)
+        h3(timerTitle)
       ),
-      registerTable
+      registerTable,
+      data("toggle") := "tooltip",
+      data("placement") := "bottom",
+      title := getDescription()
     ).render
 
+  def getDescription() = "CONT: " + formatWord(CONT) + "h\nCOMP: " + formatWord(COMP) +
+  "h\nDisparará una interrupción cada " + COMP.toUnsignedInt + " segundos si es que se resetea cada vez."
+  
   def simulatorEvent() {
   	var intByteStrings = new Array[String](2)
-		intByteStrings(0) = s.s.devController.readIO(16).bitString.reverse
-		intByteStrings(1) = s.s.devController.readIO(17).bitString.reverse
+  	root.title = getDescription()
+		intByteStrings(0) = CONT.bitString.reverse
+		intByteStrings(1) = COMP.bitString.reverse
   	
   	for(i <- 1 to 0 by -1) {
   		for(j <- 0 to 7) {
@@ -150,8 +117,6 @@ class InternalTimerUI (s: VonSimState)
     "time"
   )
   
-//  var timer = new Timer(s)
-  
   contentDiv.appendChild(registers.root)
 
   def simulatorEvent() {
@@ -160,96 +125,5 @@ class InternalTimerUI (s: VonSimState)
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
   }
-
-}
-
-class ExternalTimerUI(s: VonSimState) extends MainboardItemUI (
-      s,
-			"stopwatch",
-      "timer",
-      s.uil.timerTitle
-    ) {
-	
-	var minutes = 0
-	var seconds = 0
-	var text = "".render
-	val monitorArea =
-		div(
-			id := "",
-			cls := "",
-			h2(text)
-		).render
-	
-	contentDiv.appendChild(monitorArea)
-	
-  def delay(milliseconds: Int): Future[Unit] = {
-  	val p = Promise[Unit]()
-  	js.timers.setTimeout(milliseconds) {
-	    p.success(())
-	  }	
-	  p.future
-	}
-	
-	val timeDelay = 1000
-	check()
-	
-	def check() {
-		var readyLater = for {
-		  delayed <- delay(timeDelay)
-		} yield {
-			if(s.isSimulatorExecuting() && !s.isDebugging())
-			  checkTime()
-			else
-		  	check()
-		}
-	}
-	
-	def checkTime() {
-		if(s.s.devController.readIO(16).toInt == s.s.devController.readIO(17).toInt) {
-			seconds = seconds + 1
-			println("Segundos: " + seconds)
-			if(seconds == 60) {
-				seconds = 0
-				minutes = minutes + 1
-				println("Minutos: " + minutes)
-				if(minutes == 60)
-					minutes = 0
-			}
-		}
-		
-//		if(s.isSimulatorExecuting()) {
-			var readyLater = for {
-			  delayed <- delay(timeDelay)
-			} yield {
-				  check()
-			}
-//		}
-	}
-
-	def simulatorEvent() {
-		var textString = ""
-
-		if(minutes < 10)
-			textString += "0"
-		textString += minutes.toString() + ":"
-		
-		if(seconds < 10)
-			textString += "0"
-		textString += seconds.toString()
-		
-		text.textContent = textString
-  }
-	
-  def simulatorEvent(i: InstructionInfo) {
-    simulatorEvent()
-  }
-  
-  def reset() {
-  	seconds = 0
-  	minutes = 0
-  	text.textContent = "00:00"
-  }
-  
-  //def compilationEvent() {}
 
 }

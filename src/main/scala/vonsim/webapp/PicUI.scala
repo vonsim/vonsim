@@ -30,34 +30,34 @@ import vonsim.simulator.Simulator.IOMemoryAddress
 
 class PicGeneralRegistersUI(
 	s: VonSimState,
-  title: String,
+  generalRegsTitle: String,
   baseId: String = ""
 ) extends VonSimUI(s) {
 	def getIdFor(part: String) = if (baseId == "") "" else baseId + part
 
-  val eoiRow = tr(th("EOI")).render
-  val imrRow = tr(th("IMR")).render
-  val irrRow = tr(th("IRR")).render
-  val isrRow = tr(th("ISR")).render
-  
-  val eoiBitRows = Array.fill(8)(td("0").render)
-  val imrBitRows = Array.fill(8)(td("0").render)
-  val irrBitRows = Array.fill(8)(td("0").render)
-  val isrBitRows = Array.fill(8)(td("0").render)
-  
-  eoiBitRows.foreach(b => eoiRow.appendChild(b))
-  imrBitRows.foreach(b => imrRow.appendChild(b))
-  irrBitRows.foreach(b => irrRow.appendChild(b))
-  isrBitRows.foreach(b => isrRow.appendChild(b))
-  
+	def values = {
+	  var i = -1
+	  new Array[Word](4).map(v => {
+	    i = i + 1
+	    s.s.devController.readIO((32 + i).asInstanceOf[Byte])
+	  })
+	}
+	
   val body = tbody(
     id := getIdFor("TableBody"),
-    cls := "registersTableBody",
-    eoiRow,
-    imrRow,
-    irrRow,
-    isrRow
+    cls := "registersTableBody"
   ).render
+
+  val bytesValues = values
+	val rowNames = Array("EOI","IMR","IRR","ISR")
+	val rows = rowNames.map(name => tr(th(name)).render)
+	val bitRows = new Array[Array[TableCell]](4)
+	val bitStrings = bytesValues.map(v => v.bitString.reverse)
+	for(i <- 0 to 3) {
+		bitRows(i) = bitStrings(i).map(bit => (td(bit.toString()).render)).toArray
+		bitRows(i).foreach(b => rows(i).appendChild(b))
+		body.appendChild(rows(i))
+	}
 
   val registerTable = table(
     cls := "registerTable",
@@ -72,22 +72,32 @@ class PicGeneralRegistersUI(
       div(
         cls := "cpuElementHeader",
         i(cls := "icon-file-binary", " "),
-        h3(title)
+        h3(generalRegsTitle)
       ),
-      registerTable
+      registerTable,
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= getDescription(bytesValues)
     ).render
 
+  def getDescription(values: Array[Word]) = {
+  	var i = -1
+  	rowNames.reduce((title, name) => {
+	    i = i + 1
+	    title + (if(i==0)": " + formatWord(values(i)) + "h\n" else "") +
+	    name + ": " + formatWord(values(i)) + "h" + (if(i<7) "\n" else "")
+	  })
+  }
+
   def simulatorEvent() {
-		var eoiByteString = s.s.devController.readIO(32).bitString.reverse
-		var imrByteString = s.s.devController.readIO(33).bitString.reverse
-		var irrByteString = s.s.devController.readIO(34).bitString.reverse
-		var isrByteString = s.s.devController.readIO(35).bitString.reverse
+  	val bytesValues = values
+  	root.title = getDescription(bytesValues)
+  	val intByteStrings = bytesValues.map(v => v.bitString.reverse)
   	
-  	for(i <- 0 to 7) {
-      eoiBitRows(i).textContent = eoiByteString.charAt(i).toString()
-      imrBitRows(i).textContent = imrByteString.charAt(i).toString()
-      irrBitRows(i).textContent = irrByteString.charAt(i).toString()
-      isrBitRows(i).textContent = isrByteString.charAt(i).toString()
+  	for(i <- 3 to 0 by -1) {
+  		for(j <- 0 to 7) {
+  			bitRows(i)(j).textContent = intByteStrings(i).charAt(j).toString()
+  		}
   	}
   }
   def simulatorEvent(i: InstructionInfo) {
@@ -98,25 +108,33 @@ class PicGeneralRegistersUI(
 
 class PicInterruptionsRegistersUI(
 	s: VonSimState,
-  title: String,
+  intRegsTitle: String,
   baseId: String = ""
 ) extends VonSimUI(s) {
 	def getIdFor(part: String) = if (baseId == "") "" else baseId + part
 
-	val intRows = new Array[TableRow](8)
-	val intBitRows = new Array[Array[TableCell]](8)
-	for(i <- 0 to 7) {
-		intRows(i) = tr(th("INT"+i)).render
-		intBitRows(i) = Array.fill(8)(td("0").render)
-		intBitRows(i).foreach(b => intRows(i).appendChild(b))
+	def values = {
+	  var i = -1
+	  new Array[Word](8).map(v => {
+	    i = i + 1
+	    s.s.devController.readIO((36 + i).asInstanceOf[Byte])
+	  })
 	}
-  
+	
   val body = tbody(
     id := getIdFor("TableBody"),
     cls := "registersTableBody"
   ).render
+
+  val bytesValues = values
+	val rowNames = Array("INT0", "INT1", "INT2", "INT3", "INT4", "INT5", "INT6", "INT7")
+	val rows = rowNames.map(name => tr(th(name)).render)
+	val bitRows = new Array[Array[TableCell]](8)
+	val bitStrings = bytesValues.map(v => v.bitString.reverse)
 	for(i <- 0 to 7) {
-		body.appendChild(intRows(i))
+		bitRows(i) = bitStrings(i).map(bit => (td(bit.toString()).render)).toArray
+		bitRows(i).foreach(b => rows(i).appendChild(b))
+		body.appendChild(rows(i))
 	}
 
   val registerTable = table(
@@ -132,25 +150,35 @@ class PicInterruptionsRegistersUI(
       div(
         cls := "cpuElementHeader",
         i(cls := "icon-file-binary", " "),
-        h3(title)
+        h3(intRegsTitle)
       ),
-      registerTable
+      registerTable,
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= getDescription(bytesValues)
     ).render
 
+  def getDescription(values: Array[Word]) = {
+  	var i = -1
+  	rowNames.reduce((title, name) => {
+	    i = i + 1
+	    title + (if(i==0)": " + formatWord(values(i)) + "h\n" else "") +
+	    name + ": " + formatWord(values(i)) + "h" + (if(i<7) "\n" else "")
+	  })
+  }
+
   def simulatorEvent() {
-  	var intByteStrings = new Array[String](8)
-  	var memoryAdress : IOMemoryAddress = 0
-  	for(i <- 0 to 7) {
-  		memoryAdress = (36 + i).asInstanceOf[Byte]
-  		intByteStrings(i) = s.s.devController.readIO(memoryAdress).bitString.reverse
-  	}
+  	val bytesValues = values
+  	root.title = getDescription(bytesValues)
+  	val intByteStrings = bytesValues.map(v => v.bitString.reverse)
   	
   	for(i <- 7 to 0 by -1) {
   		for(j <- 0 to 7) {
-  			intBitRows(i)(j).textContent = intByteStrings(i).charAt(j).toString()
+  			bitRows(i)(j).textContent = intByteStrings(i).charAt(j).toString()
   		}
   	}
   }
+  
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
   }

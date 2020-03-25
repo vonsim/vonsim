@@ -11,7 +11,6 @@ abstract class ModalUI(s: VonSimState, modalID: String) extends VonSimUI(s) {
     cls := "modal fade",
     role := "dialog",
     id := modalID,
-//		style := "display:none",
     div(
       cls := "modal-dialog",
       div(
@@ -179,8 +178,6 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
       data("toggle") := "dropdown",
       aria.haspopup := "true",
       aria.expanded := "false",
-//      "Tutoriales",
-//      i(cls:= "fas fa-ellipsis-v"),
       span(
         cls := "caret"
       )
@@ -193,7 +190,7 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
       dropdownTutorialItemFactory("basic", "3. Básico"),
       dropdownTutorialItemFactory("variables", "4. Variables"),
       dropdownTutorialItemFactory("code", "5. Registros e instrucciones"),
-      div(cls := "dropdown-divider"),
+      li(role:="separator", cls := "divider"),
       li(configButtons(0)),
       li(configButtons(1)),
       li(configButtons(2)),
@@ -201,7 +198,6 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
     )
   ).render
 
-//  val nav = nav(
   val root = div(
   	cls:= "navbar navbar-default",
   	div(
@@ -289,8 +285,8 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
   }
 
   def dropdownConfigurationItemFactory(conf: Int) = {
-    button(
-      cls := "dropdown-item",
+    a(
+      cls := "dropdown-item clickable",
       "Configuración " + conf
     )
   }

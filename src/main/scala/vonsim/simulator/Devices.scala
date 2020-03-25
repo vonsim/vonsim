@@ -34,8 +34,8 @@ class Printer() {
 	val buffer = Queue.empty[Word]
 	var printedText = ""
 	
-	val eventTimer = new PrinterEventTimer(2000, checkPrint)
-	
+  val eventTimer = new EventTimer(8000, Array(8000, 4000, 2000, 1000))
+
 	def checkPrint() {
 		if(strobePulse && !busy && (buffer.size < 5))
 			strobePulse = false
@@ -44,9 +44,7 @@ class Printer() {
 	}
 	
 	def isIdle() = !busy
-	
 	def isBusy() = busy
-	
 	def isPrinting() = printing
 	
 	def sendData(d: Word) {
@@ -61,7 +59,10 @@ class Printer() {
 	
 	def getPrintedText() = printedText
   
-  def simulatorEvent(actualTime: Long) {}
+  def simulatorEvent(actualTime: Long) {
+	  if(eventTimer.update(actualTime))
+	    checkPrint()
+	}
   def simulatorEvent(i: InstructionInfo, actualTime: Long) {
     simulatorEvent(actualTime)
   }
@@ -69,6 +70,7 @@ class Printer() {
   def reset() {
     buffer.clear()
     printedText = ""
+    eventTimer.reset()
   }
 }
 
@@ -180,7 +182,7 @@ class Monitor() {
 class Timer(seed: Long, pic: PIC) {
 
   val values: Array[Word] = randomBytes(2).map(Word(_))
-  val eventTimer = new TimerEventTimer(1000, checkTime)
+  val eventTimer = new EventTimer(800, Array(800))
 
 	def checkTime() {
 		var cont = readIO(16).toInt
@@ -195,7 +197,8 @@ class Timer(seed: Long, pic: PIC) {
 	}
   
   def simulatorEvent(actualTime: Long) {
-//    eventTimer.update(actualTime)
+    if(eventTimer.update(actualTime))
+      checkTime()
   }
   
   def simulatorEvent(i: InstructionInfo, actualTime: Long) {
@@ -211,6 +214,7 @@ class Timer(seed: Long, pic: PIC) {
   def reset() {
     val bytes = randomBytes(values.size)
     bytes.indices.foreach(i => values(i) = Word(bytes(i)))
+    eventTimer.reset()
   }
   
   def randomBytes(size: Int) = {
@@ -376,43 +380,11 @@ class PIC(seed: Long) {
     if((v == 32) && (regValue == Word(32)))
       interruptionFinished()
     values(v-32) = regValue
-//  	v match {
-//      case 32 => { // EOI
-//      	if(regValue == Word(32))
-//      		interruptionFinished()
-//      	values(0) = regValue
-//      }
-//      case 33 => values(1) = regValue // IMR
-//      case 34 => values(2) = regValue // IRR
-//      case 35 => values(3) = regValue // ISR
-//      case 36 => values(4) = regValue // INT0
-//      case 37 => values(5) = regValue // INT1
-//      case 38 => values(6) = regValue // INT2
-//      case 39 => values(7) = regValue // INT3
-//      case 40 => values(8) = regValue // INT4
-//      case 41 => values(9) = regValue // INT5
-//      case 42 => values(10) = regValue // INT6
-//      case 43 => values(11) = regValue // INT7
-//  	}
   }
   
   def readIO(v: Simulator.IOMemoryAddress): Word = {
     checkAddress(v.toInt)
     values(v-32)
-//  	v match {
-//      case 32 => values(0) // EOI | 20h
-//      case 33 => values(1) // IMR | 21h
-//      case 34 => values(2) // IRR | 22h
-//      case 35 => values(3) // ISR | 23h
-//      case 36 => values(4) // INT0 | 24h
-//      case 37 => values(5) // INT1 | 25h
-//      case 38 => values(6) // INT2 | 26h
-//      case 39 => values(7) // INT3 | 27h
-//      case 40 => values(8) // INT4 | 28h
-//      case 41 => values(9) // INT5 | 29h
-//      case 42 => values(10) // INT6 | 2Ah
-//      case 43 => values(11) // INT7 | 2Bh
-//  	}
   }
 }
 
@@ -542,84 +514,24 @@ class CDMA(seed: Long, pic: PIC) {
   }
 }
 
-abstract class EventTimer(var tickTime: Int) {
+class EventTimer(var tickTime: Int, val speedValues: Array[Int]) {
   
-  var running = false
-  var tiempoInicial: Long = 0
   var lastTick: Long = 0
-  var cant = 0
-
-  def delay(milliseconds: Int): Future[Unit] = {
-  	val p = Promise[Unit]()
-  	js.timers.setTimeout(milliseconds) {
-	    p.success(())
-	  }	
-	  p.future
-	}
-  
-  def startTimer() {
-    if(!running) {
-      tiempoInicial = System.currentTimeMillis()
-      running = true
-      check()
-    }
-  }
-  
-  def stopTimer() {
-    running = false
-    cant = 0
-  }
-  
-  def check() {
-    if(running) {
-    	var readyLater = for {
-    	  delayed <- delay(tickTime)
-    	} yield {
-      	tickEvent()
-      	check()
-    	}
-    }
-  }
-  
-  def update(actualTime: Long) {
-//    if((actualTime - lastTick) >= tickTime) {
-//      lastTick = actualTime
-//      tickEvent()
-//    }
-  }
-  
-  def tickEvent()
   
   def getTickTime() = tickTime
   def speedUp() {
-    tickTime match {
-  		case 1000 => tickTime = 500
-  		case 500 => tickTime = 250
-  		case 250 => tickTime = 125
-  		case 125 => tickTime = 1000
-  	}
+    tickTime = speedValues((speedValues.indexOf(tickTime) + 1) % speedValues.length)
   }
-}
 
-class SystemEventTimer(systemTime: Int) extends EventTimer(systemTime) {
-  def tickEvent() {}
-}
-
-class PrinterEventTimer(printerTime: Int, callback: () => Unit) extends EventTimer(printerTime) {
-  def tickEvent() = callback()
+  def update(actualTime: Long): Boolean = {
+    if((actualTime - lastTick) >= tickTime) {
+      lastTick = actualTime
+      return true
+    }
+    return false
+  }
   
-  override def speedUp() {
-    tickTime match {
-  		case 8000 => tickTime = 4000
-  		case 4000 => tickTime = 2000
-  		case 2000 => tickTime = 1000
-  		case 1000 => tickTime = 8000
-  	}
-    println(tickTime)
-    println(1000.0 / tickTime)
+  def reset() {
+    lastTick = 0
   }
-}
-
-class TimerEventTimer(timerTime: Int, callback: () => Unit) extends EventTimer(timerTime) {
-  def tickEvent() = callback()
 }

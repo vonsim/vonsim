@@ -43,10 +43,6 @@ class DevicesController(memory: Memory) {
   def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) = strategie.writeIO(v, regValue)
   def readIO(v: Simulator.IOMemoryAddress): Word = strategie.readIO(v)
   
-  def startTimers() = strategie.startTimers()
-  def stopTimers() = strategie.stopTimers()
-  def updateTimers(actualTime: Long) = strategie.updateTimers(actualTime)
-  
   def getPrinterTickTime() = strategie.getPrinterTickTime()
   def printerSpeedUp() = strategie.printerSpeedUp()
 }
@@ -63,7 +59,6 @@ abstract class Strategie() {
   var acumulatedTime: Long = 0
   
   def simulatorEvent(actualTime: Long) {
-    updateTimers(actualTime)
 		f10.simulatorEvent()
 		monitor.simulatorEvent()
 
@@ -76,15 +71,10 @@ abstract class Strategie() {
     monitor.reset()
     timer.reset()
     pic.reset()
-    stopTimers()
   }
   
   def isPendingInterruption() = pic.isPendingInterruption()
 	def getInterruptionAdress() = pic.getInterruptionAdress()
-  
-  def startTimers() = timer.eventTimer.startTimer()
-  def stopTimers() = timer.eventTimer.stopTimer()
-  def updateTimers(actualTime: Long) = timer.eventTimer.update(actualTime)
   
   def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
     val adress = v.toInt
@@ -117,7 +107,7 @@ abstract class Strategie() {
   
   def addMonitorText(text: String) = monitor.addText(text)
   
-  def getPrinterTickTime() = 1
+  def getPrinterTickTime() = 8000
   def printerSpeedUp() {}
 }
 
@@ -169,21 +159,6 @@ class StrategieOne() extends Strategie() {
   val printerConnection = new PrinterConnection(printer)
   val pio = new PIO(1, seed, printerConnection)
   
-  override def startTimers() {
-    super.startTimers()
-    printer.eventTimer.startTimer()
-  }
-  
-  override def stopTimers() {
-    super.stopTimers()
-    printer.eventTimer.stopTimer()
-  }
-  
-  override def updateTimers(actualTime: Long) {
-    super.updateTimers(actualTime)
-    printer.eventTimer.update(actualTime)
-  }
-
   override def simulatorEvent(actualTime: Long) {
     super.simulatorEvent(actualTime)
   	printer.simulatorEvent(actualTime)
@@ -223,21 +198,6 @@ class StrategieTwo() extends Strategie() {
   val printer = new Printer()
   val printerConnection = new PrinterConnection(printer)
   val hand = new Handshake(seed, pic, printerConnection)
-  
-  override def startTimers() {
-    super.startTimers()
-    printer.eventTimer.startTimer()
-  }
-  
-  override def stopTimers() {
-    super.stopTimers()
-    printer.eventTimer.stopTimer()
-  }
-  
-  override def updateTimers(actualTime: Long) {
-    super.updateTimers(actualTime)
-    printer.eventTimer.update(actualTime)
-  }
   
   override def simulatorEvent(actualTime: Long) {
     super.simulatorEvent(actualTime)
@@ -279,22 +239,6 @@ class StrategieThree() extends Strategie() {
   val printerConnection = new PrinterConnection(printer)
   val hand = new Handshake(seed, pic, printerConnection)
   val cdma = new CDMA(seed, pic)
-  
-  
-  override def startTimers() {
-    super.startTimers()
-    printer.eventTimer.startTimer()
-  }
-  
-  override def stopTimers() {
-    super.stopTimers()
-    printer.eventTimer.stopTimer()
-  }
-  
-  override def updateTimers(actualTime: Long) {
-    super.updateTimers(actualTime)
-    printer.eventTimer.update(actualTime)
-  }
   
   override def simulatorEvent(actualTime: Long) {
     super.simulatorEvent(actualTime)

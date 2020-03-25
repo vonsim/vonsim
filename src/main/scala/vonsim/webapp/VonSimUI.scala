@@ -17,6 +17,7 @@ import vonsim.webapp.i18n.English
 import vonsim.webapp.i18n.UILanguage
 import vonsim.simulator.SimulatorWaitingKeyPress
 import vonsim.simulator.Debug
+import vonsim.simulator.EventTimer
 
 abstract class HTMLUI {
   def root: HTMLElement
@@ -49,6 +50,8 @@ class VonSimState(
   var c: CompilationResult,
   var uil: UILanguage
 ) {
+  
+  val systemEventTimer = new EventTimer(1000, Array(1000, 500, 250, 125))
 
   def simulatorStopped() = {
     s.state == SimulatorExecutionFinished || s.state == SimulatorExecutionStopped || 

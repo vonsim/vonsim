@@ -37,14 +37,6 @@ class RegistersUI(
   var registerToValueL = mutable.Map[FullRegister, TableCell]()
   var registerToValueH = mutable.Map[FullRegister, TableCell]()
 
-//  registers.foreach(r => {
-//    val valueElementH=td("00").render
-//    val valueElementL=td("00").render
-//    registerToValueL(r)=valueElementL
-//    registerToValueH(r)=valueElementH
-//    body.appendChild( tr(td(r.toString()),valueElementH,valueElementL).render )
-//  })
-
   val names = registers.map(r => td(r.toString))
   val namesRow = thead(th("")).render
   val lowRow = tr(th("L")).render
@@ -67,8 +59,6 @@ class RegistersUI(
 
   val registerTable = table(
     cls := "registerTable",
-//    thead(th("Register"), th(colspan := 2, "Value")),
-//    thead(th(""), th("H"), th("L")),
     namesRow,
     body
   ).render
@@ -189,7 +179,6 @@ class AluUI(s: VonSimState) extends VonSimUI(s) {
     flagsUI.simulatorEvent()
   }
   def simulatorEvent(i: InstructionInfo) {
-    flagsUI.simulatorEvent(i)
     simulatorEvent()
   }
   def compilationEvent() {}
@@ -223,34 +212,35 @@ class CpuUI(s: VonSimState)
   )
   val alu = new AluUI(s)
   
-  val speedButton = a(cls := "btn btn-primary", (1000 / s.s.getTickTime()) + " Hz").render
+  val speedButton = a(
+    cls := "btn btn-primary",
+    (1000 / s.systemEventTimer.getTickTime()) + " Hz",
+    data("toggle"):="tooltip",
+    data("placement"):="bottom",
+    title:= "Período del clock: " + s.systemEventTimer.getTickTime() + " ms"
+  ).render
+  
   speedUpButton.appendChild(speedButton.render)
   speedButton.onclick = (e: Any) => {
-  	s.s.speedUp()
-  	speedButton.textContent = (1000 / s.s.getTickTime()) + " Hz"
+  	s.systemEventTimer.speedUp()
+  	speedButton.textContent = (1000 / s.systemEventTimer.getTickTime()) + " Hz"
+  	speedButton.title = "Período del clock: " + s.systemEventTimer.getTickTime() + " ms"
 	}
   
   contentDiv.appendChild(generalPurposeRegistersTable.root)
   contentDiv.appendChild(specialRegistersTable.root)
   contentDiv.appendChild(alu.root)
-
+  
   def simulatorEvent() {
     generalPurposeRegistersTable.simulatorEvent()
     specialRegistersTable.simulatorEvent()
     alu.simulatorEvent()
-    if (s.isSimulatorExecuting())
-      speedButton.classList.add("disabled")
-    else
-      speedButton.classList.remove("disabled")
+    
+    if (s.isSimulatorExecuting()) speedButton.classList.add("disabled")
+    else speedButton.classList.remove("disabled")
   }
   def simulatorEvent(i: InstructionInfo) {
-    generalPurposeRegistersTable.simulatorEvent(i)
-    specialRegistersTable.simulatorEvent(i)
-    alu.simulatorEvent(i)
-    if (s.isSimulatorExecuting())
-      speedButton.classList.add("disabled")
-    else
-      speedButton.classList.remove("disabled")
+    simulatorEvent()
   }
 
 }

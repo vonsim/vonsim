@@ -46,6 +46,7 @@ import scala.concurrent.Promise
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import vonsim.assembly.Compiler.FailedCompilation
+import vonsim.simulator.EventTimer
 
 object UIConfig {
   def apply(
@@ -268,10 +269,13 @@ class MainUI(
   var tiempoInicial: Long = 0
   var lastTime: Long = 0
   
+  def getTickTime() = s.systemEventTimer.getTickTime()
+  def speedUp() = s.systemEventTimer.speedUp()
+  
   def executeInstructionsTimed() {
   	if(!s.isWaitingKeyPress()) {
 	  	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-	  	if((tiempoTranscurrido * s.s.getTickTime() / 1000) >= cant) {
+	  	if((tiempoTranscurrido * getTickTime() / 1000) >= cant) {
 		    var i = s.s.stepInstruction()
 		    i match {
 		      case Left(error) => //executionError(error.message)
@@ -292,19 +296,15 @@ class MainUI(
   	checkTime()
   }
   
-  def checkTime() { 
+  def checkTime() {
   	var readyLater = for {
 		  delayed <- delay(25)
 		} yield {
-		  // s.s.devController.updateTimers(System.currentTimeMillis())
     	if(s.isSimulatorExecuting()) {
-  			if(s.s.getTickTime() <= (System.currentTimeMillis() - lastTime)) {
-//  			  println("Tiempo transcurrido: " + (System.currentTimeMillis() - lastTime))
-        	lastTime = System.currentTimeMillis()
-  			  executeInstructionsTimed()
-  			}
+    	  if(s.systemEventTimer.update(System.currentTimeMillis()))
+    	    executeInstructionsTimed()
     	  else
-  		  	checkTime()
+    	    checkTime()
     	}
 		}
   }
@@ -319,7 +319,6 @@ class MainUI(
   	tiempoTranscurrido = 0
     tiempoInicial = System.currentTimeMillis()
 
-    s.s.devController.startTimers()
     executeInstructionsTimed()
   }
   
@@ -351,7 +350,7 @@ class MainUI(
       case Left(error) => //executionError(error.message)
       case Right(i)    => {
       	inst += 1
-      	s.s.devController.simulatorEvent(s.s.getTickTime() * inst)
+      	s.s.devController.simulatorEvent(s.systemEventTimer.getTickTime() * inst)
       	simulatorEvent(i)
 	      if(s.isWaitingKeyPress())
 	      	$("#devices-tab a").tab("show")
@@ -387,7 +386,6 @@ class MainUI(
       case Right(c: SuccessfulCompilation) => {
         println("Loading program... ")
         s.s.load(c)
-        if(s.s.runState == Debug) s.s.devController.startTimers()
         mainboardUI.reset()
         mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
         	mainboardUI.keyboardUI.keyPressed(event.keyCode)

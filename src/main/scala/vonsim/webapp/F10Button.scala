@@ -37,7 +37,9 @@ class F10Button(s: VonSimState) extends MainboardItemUI (
 	val boton = button(
 		cls := "btn btn-primary",
     "F10",
-    title := "Interrupción F10"
+    data("toggle"):="tooltip",
+    data("placement"):="bottom",
+    title := "Interrupción F10\nPresionar para detonar la interrupción"
 	).render
 
 	val monitorArea =

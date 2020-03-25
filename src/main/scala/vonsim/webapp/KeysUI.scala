@@ -126,8 +126,6 @@ class KeysUI (s: VonSimState)
 	def simulatorEvent() {
   	var CA = s.s.devController.readIO(50)
 		for(i <- 0 to 7) {
-//			println("value.bit(" + i + ") = " + value.bit(i))
-			// println("inputArray(" + i + ") = " + inputArray(i).checked)
 			inputArray(i).checked = (value.bit(i) == 1)
 			updateDescriptions(i, CA.bit(7-i))
 		}
@@ -137,9 +135,7 @@ class KeysUI (s: VonSimState)
 	  simulatorEvent()
 	}
 	
-	def reset() {
-	  
-	}
+	def reset() {}
 	
 	def toggleBit(i: Int) {
   	s.s.devController.strategie.toggleKeyBit(i)
@@ -152,5 +148,4 @@ class KeysUI (s: VonSimState)
   def hide() {
   	root.classList.add("hidden")
   }
-
 }

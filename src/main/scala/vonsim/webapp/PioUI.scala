@@ -29,9 +29,7 @@ import vonsim.assembly.Compiler.CompilationResult
 
 class PIORegistersUI(
 	s: VonSimState,
-  val portx: Byte,
-  val controlx: Byte,
-  title: String,
+  pioTitle: String,
   baseId: String = "",
   portLetter: String
 ) extends VonSimUI(s) {
@@ -41,8 +39,11 @@ class PIORegistersUI(
   val dataRow = tr(th("P"+portLetter)).render
   val controlRow = tr(th("C"+portLetter)).render
   
-  val dataByteString = portx.toString()
-  val controlByteString = controlx.toString()
+  def dataByte = s.s.devController.readIO(if(portLetter=="B") 48 else 50)
+  def controlByte = s.s.devController.readIO(if(portLetter=="B") 49 else 51)
+
+  val dataByteString = dataByte.toString()
+  val controlByteString = controlByte.toString()
   
   val dataBitRows = Array(
 		td(dataByteString.charAt(0)).render,
@@ -89,28 +90,25 @@ class PIORegistersUI(
       div(
         cls := "cpuElementHeader",
         i(cls := "icon-file-binary", " "),
-        h3(title)
+        h3(pioTitle)
       ),
-      registerTable
+      registerTable,
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= getDescription()
     ).render
 
+  def getDescription() = "P"+portLetter+": " + formatWord(dataByte) + "h\nC"+portLetter+": " + formatWord(controlByte) + "h"
+	
   def simulatorEvent() {
-  	var dataByteString = ""
-  	var controlByteString = ""
-  	
-  	if(portLetter == "A") {
-  		dataByteString = s.s.devController.readIO(48).bitString.reverse
-  		controlByteString = s.s.devController.readIO(50).bitString.reverse
-  	}
-  	else if (portLetter == "B") {
-  		dataByteString = s.s.devController.readIO(49).bitString.reverse
-  		controlByteString = s.s.devController.readIO(51).bitString.reverse
-  	}
+  	var dataByteString = dataByte.bitString.reverse
+  	var controlByteString = controlByte.bitString.reverse
   	
   	for(i <- 0 to 7) {
   		dataBitRows(i).textContent = dataByteString.charAt(i).toString()
   		controlBitRows(i).textContent = controlByteString.charAt(i).toString() 
   	}
+  	root.title = getDescription()
   }
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
@@ -127,23 +125,8 @@ class PioUI (s: VonSimState)
       s.uil.pioTitle
     ) {
 	
-  val portA = new PIORegistersUI(
-    s,
-    s.s.devController.readIO(48),
-    s.s.devController.readIO(50),
-    s.uil.pioAPort,
-    "pio",
-    "A"
-  )
-
-  val portB = new PIORegistersUI(
-    s,
-    s.s.devController.readIO(49),
-    s.s.devController.readIO(51),
-    s.uil.pioBPort,
-    "pio",
-    "B"
-  )
+  val portA = new PIORegistersUI(s, s.uil.pioAPort, "pio", "A")
+  val portB = new PIORegistersUI(s, s.uil.pioBPort, "pio", "B")
 
   contentDiv.appendChild(portA.root)
   contentDiv.appendChild(portB.root)
@@ -153,8 +136,7 @@ class PioUI (s: VonSimState)
     portB.simulatorEvent()
   }
   def simulatorEvent(i: InstructionInfo) {
-    portA.simulatorEvent(i)
-    portB.simulatorEvent(i)
+    simulatorEvent()
   }
   
   def show() {
@@ -165,12 +147,3 @@ class PioUI (s: VonSimState)
   }
 
 }
-
-
-
-
-
-
-
-
-
