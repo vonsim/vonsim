@@ -90,6 +90,7 @@ class MainUI(
   		if(s.s.devController.getConfig() != i) {
 				mainboardUI.changeDisplayConfiguration(i)
 				s.s.devController.setConfig(i)
+				mainboardUI.pioUI.setConfig(i)
   		}
   	}
   }
@@ -267,7 +268,6 @@ class MainUI(
   var cant = 0 // Cantidad de instrucciones realizadas
   var tiempoTranscurrido: Long = 0
   var tiempoInicial: Long = 0
-  var lastTime: Long = 0
   
   def getTickTime() = s.systemEventTimer.getTickTime()
   def speedUp() = s.systemEventTimer.speedUp()
@@ -276,17 +276,17 @@ class MainUI(
   	if(!s.isWaitingKeyPress()) {
 	  	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
 	  	if((tiempoTranscurrido * getTickTime() / 1000) >= cant) {
+		    cant = cant + 1
 		    var i = s.s.stepInstruction()
 		    i match {
-		      case Left(error) => //executionError(error.message)
+		      case Left(error) => println(error.message)
 		      case Right(i)    => {
 		      	simulatorEvent(i)
+//		      	s.s.devController.simulatorEvent(System.currentTimeMillis())
 			      if(s.isWaitingKeyPress())
 			      	$("#external-devices-tab a").tab("show")
 		     	}
 		    }
-		    cant = cant + 1
-	    	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
 	  	}
   	}
   	else {
@@ -350,7 +350,7 @@ class MainUI(
       case Left(error) => //executionError(error.message)
       case Right(i)    => {
       	inst += 1
-      	s.s.devController.simulatorEvent(s.systemEventTimer.getTickTime() * inst)
+//      	s.s.devController.simulatorEvent(s.systemEventTimer.getTickTime() * inst)
       	simulatorEvent(i)
 	      if(s.isWaitingKeyPress())
 	      	$("#devices-tab a").tab("show")

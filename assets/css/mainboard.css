@@ -354,6 +354,10 @@ textarea{
 	margin-bottom: 10px;
 }
 
+.tooltipHover:hover{
+	box-shadow: 0px 0px 2px 3px #777777;
+}
+
 .keyElement:hover,.keyElement:active{
 	box-shadow: 0px 0px 2px 3px #777777;
 	background-color:#303030;

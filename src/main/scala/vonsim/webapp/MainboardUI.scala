@@ -243,12 +243,21 @@ abstract class MainboardItemUI(
   s: VonSimState,
   icon: String,
   itemId: String,
-  title: String
+  itemTitle: String
 ) extends VonSimUI(s) {
   val contentDiv = div(cls := "mainboardItemContent").render
   val devicesWithButtons = Array("CpuUI", "PrinterUI")
 
   val speedUpButton = div(cls:="pull-right").render
+  val header =
+    div(
+      cls := "mainboardItemHeader",
+      h2(cls := "mainboardItemHeaderText pull-left fas fa-"+icon, " "+itemTitle),
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= "",
+      if (devicesWithButtons.contains(this.getClass.getSimpleName)) speedUpButton.render
+    ).render
   val root = div(
     cls := "mainboardItem",
     div(
@@ -256,11 +265,7 @@ abstract class MainboardItemUI(
       div(
         cls := "mainboardItemContainer",
         id := itemId,
-        div(
-          cls := "mainboardItemHeader",
-          h2(cls := "mainboardItemHeaderText pull-left fas fa-"+icon, " "+title),
-          if (devicesWithButtons.contains(this.getClass.getSimpleName)) speedUpButton.render
-        ),
+        header,
         contentDiv
       )
     )

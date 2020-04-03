@@ -94,9 +94,9 @@ class LedsUI (s: VonSimState)
 				ledRows(i).classList.add("green-light")
 			}
 			else { // Apagado => Sin color
+				ledRows(i).classList.add("far")
 				ledRows(i).classList.remove("fas")
 				ledRows(i).classList.remove("green-light")
-				ledRows(i).classList.add("far")
 			}
 			updateDescriptions(i, CB.bit(i))
 		}

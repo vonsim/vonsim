@@ -111,7 +111,7 @@ class Keys(pio: PIO) {
 	
 	def PA = pio.readIO(48)
 	def CA = pio.readIO(50)
-	var value = Word(PA.toInt & CA.toInt)
+	var value = Word(0)
   
 	def toggleBit(i: Int) {
   	if(value.bit(i) == 0)
@@ -125,18 +125,18 @@ class Keys(pio: PIO) {
 	  	else
 	  		pio.writeIO(48, Word(PA & ~(1 << i)));
   	}
-  	
-  	pio.simulatorEvent()
 	}
 	
-  def simulatorEvent() {}
+  def simulatorEvent() {
+    value = Word(PA.toInt & CA.toInt)
+  }
   
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
   }
   
   def reset() {
-		value = Word(pio.readIO(48).toInt & pio.readIO(50).toInt)
+		value = Word(PA.toInt & CA.toInt)
   }
 }
 
@@ -257,8 +257,8 @@ class PIO(config: Int, seed: Long, printerConnection: PrinterConnection) {
   }
   
   def reset() {
-  	writeIO(50, Word(255))
-  	writeIO(51, Word(0))
+    val bytes = randomBytes(values.size)
+    bytes.indices.foreach(i => values(i) = Word(bytes(i)))
   }
   
   def randomBytes(size: Int) = {
@@ -307,8 +307,10 @@ class PIO(config: Int, seed: Long, printerConnection: PrinterConnection) {
 class PIC(seed: Long) {
 	
   def IMR = readIO(33) // 1 -> Ignorar; 0 -> Atender
-  def IRR = readIO(34)
+  def IRR = readIO(34) // 1 -> Pendiente; 0 -> No pendiente
   def ISR = readIO(35) // 1 -> Atendida; 0 -> No se atendió
+  
+  var acceptInterruptions = false
 
   val values: Array[Word] = randomBytes(12).map(Word(_))
 	var interruptionAdress: Int = 0
@@ -334,7 +336,7 @@ class PIC(seed: Long) {
 	}
 	
   def simulatorEvent() {
-  	if(IRR != Word(0)) { // Si hay un llamado de interrupción
+  	if((IRR != Word(0)) && acceptInterruptions) { // Si hay un llamado de interrupción
   		
   		var intX = -1
   		var i = 0

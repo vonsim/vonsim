@@ -25,7 +25,7 @@ class DevicesController(memory: Memory) {
       case 1 => strategie = new StrategieOne()
       case 2 => strategie = new StrategieTwo()
       case 3 => strategie = new StrategieThree()
-    } 
+    }
   }
   
   def getConfig() = config
@@ -45,6 +45,10 @@ class DevicesController(memory: Memory) {
   
   def getPrinterTickTime() = strategie.getPrinterTickTime()
   def printerSpeedUp() = strategie.printerSpeedUp()
+  
+  def getStrobePulse() = strategie.getStrobePulse()
+  def isPrinting() = strategie.isPrinting()
+  def getPrintedText() = strategie.getPrintedText()
 }
 
 abstract class Strategie() {
@@ -93,8 +97,6 @@ abstract class Strategie() {
     return null
   }
   
-  def getPrintedText() = ""
-  
   def getMonitorText() = monitor.getText()
   
   def getLedsValue() = Word(0)
@@ -109,6 +111,10 @@ abstract class Strategie() {
   
   def getPrinterTickTime() = 8000
   def printerSpeedUp() {}
+  
+  def getStrobePulse() = false
+  def isPrinting() = false
+  def getPrintedText() = ""
 }
 
 class StrategieZero() extends Strategie() {
@@ -188,10 +194,12 @@ class StrategieOne() extends Strategie() {
     return Word(new Random(seed).nextInt())
   }
   
-  override def getPrintedText() = printer.getPrintedText()
-  
   override def getPrinterTickTime() = printer.eventTimer.getTickTime()
   override def printerSpeedUp() = printer.eventTimer.speedUp()
+
+  override def getStrobePulse() = printer.strobePulse
+  override def isPrinting() = printer.isPrinting()
+  override def getPrintedText() = printer.getPrintedText()
 }
 
 class StrategieTwo() extends Strategie() {
@@ -228,10 +236,12 @@ class StrategieTwo() extends Strategie() {
     return Word(new Random(seed).nextInt())
   }
   
-  override def getPrintedText() = printer.getPrintedText()
-  
   override def getPrinterTickTime() = printer.eventTimer.getTickTime()
   override def printerSpeedUp() = printer.eventTimer.speedUp()
+
+  override def getStrobePulse() = printer.strobePulse
+  override def isPrinting() = printer.isPrinting()
+  override def getPrintedText() = printer.getPrintedText()
 }
 
 class StrategieThree() extends Strategie() {
@@ -275,8 +285,10 @@ class StrategieThree() extends Strategie() {
     return Word(new Random(seed).nextInt())
   }
   
-  override def getPrintedText() = printer.getPrintedText()
-  
   override def getPrinterTickTime() = printer.eventTimer.getTickTime()
   override def printerSpeedUp() = printer.eventTimer.speedUp()
+
+  override def getStrobePulse() = printer.strobePulse
+  override def isPrinting() = printer.isPrinting()
+  override def getPrintedText() = printer.getPrintedText()
 }

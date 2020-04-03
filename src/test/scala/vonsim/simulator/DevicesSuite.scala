@@ -63,7 +63,7 @@ class DevicesSuite extends FunSuite {
     s.stepInstruction()
     s.stepInstruction()
     s.stepInstruction()
-    assertResult("ARQUITECTURA DE COMPUTADORAS-FACULTAD DE INFORMATICA-UNLP")(s.devController.monitor.getText())
+    assertResult("ARQUITECTURA DE COMPUTADORAS-FACULTAD DE INFORMATICA-UNLP")(s.devController.strategie.getMonitorText())
   }
 
    test("Int 0 - Halt") {
@@ -100,26 +100,26 @@ class DevicesSuite extends FunSuite {
     val s=simulator(program)
     s.stepInstruction() // MOV AL, 0FFH
     s.stepInstruction() // OUT CA, AL
-    assertResult(s.devController.pio.readIO(50))(Word(255))
+    assertResult(s.devController.readIO(50))(Word(255))
     
     s.stepInstruction() // MOV AL, 0
     s.stepInstruction() // OUT CB, AL
-    assertResult(s.devController.pio.readIO(51))(Word(0))
+    assertResult(s.devController.readIO(51))(Word(0))
     
-    s.devController.pio.writeIO(48, Word(0))
+    s.devController.writeIO(48, Word(0))
     
     s.stepInstruction() // POLL: MOV al, 0
-    s.devController.keys.toggleBit(1) // Key 1 pressed
+    s.devController.strategie.toggleKeyBit(1) // Key 1 pressed
     s.stepInstruction() // IN AL, PA
     s.stepInstruction() // OUT PB, AL
-    assertResult(1)(s.devController.leds.PB.bit(1))
+    assertResult(1)(s.devController.readIO(49).bit(1))
     s.stepInstruction() // JMP POLL
     
     s.stepInstruction() // POLL: MOV al, 0
-    s.devController.keys.toggleBit(1) // Key 1 pressed again
+    s.devController.strategie.toggleKeyBit(1) // Key 1 pressed again
     s.stepInstruction() // IN AL, PA
     s.stepInstruction() // OUT PB, AL
-    assertResult(0)(s.devController.leds.PB.bit(1))
+    assertResult(0)(s.devController.readIO(49).bit(1))
   }
 
    test("PIO + Printer") {
@@ -178,53 +178,48 @@ POLL:	MOV AL, 0
 
 	INT 0
 END"""
-    val s=simulator(program)
-//    s.devController.setConfig(1)
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    
-//    // Lee Busy y se queda en el lazo mientras sea 1. (ocupada)
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    
-//    // Mando al puerto de datos (PB) el carácter a imprimir
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    
-//    // Fuerzo Strobe a 1
-//    s.stepInstruction() // IN AL, PIO
-//    s.stepInstruction() // OR AL, 02H
-//    println("strobePulse: " + s.devController.printer.strobePulse)
-//    s.stepInstruction() // OUT PIO, AL
-//    println("strobePulse: " + s.devController.printer.strobePulse)
-//    
-//    assertResult(true)(s.devController.printerConnection.isPrinting())
-//    assertResult('A')(s.devController.printer.getPrintedText())
-//    assertResult(false)(s.devController.printerConnection.isPrinting())
-//    
-//    // Fuerzo Strobe a 0
-//    s.stepInstruction()
-//    println("strobePulse: " + s.devController.printer.strobePulse)
-//    s.stepInstruction()
-//    println("isPrinting: " + s.devController.printerConnection.isPrinting())
-//    s.stepInstruction()
-//    println("isPrinting: " + s.devController.printerConnection.isPrinting())
-//    println("Printed: " + s.devController.printer.getPrintedText())    
-//    println("isPrinting: " + s.devController.printerConnection.isPrinting())
-//    // Siguiente caracter
-//    s.stepInstruction()
-//    s.stepInstruction()
-//    s.stepInstruction()
+   val s=simulator(program)
+   var timePassed = 0
+   s.devController.setConfig(1)
+   s.stepInstruction(timePassed) // MOV AL, 0FDH
+   s.stepInstruction(timePassed) // OUT PIO+2, AL
+   s.stepInstruction(timePassed) // MOV AL, 0
+   s.stepInstruction(timePassed) // OUT PIO+3, AL
+   s.stepInstruction(timePassed) // IN AL, PIO
+   s.stepInstruction(timePassed) // AND AL, 0FDH
+   s.stepInstruction(timePassed) // OUT PIO, AL
+   s.stepInstruction(timePassed) // MOV BX, OFFSET MSJ
+   s.stepInstruction(timePassed) // MOV CL, OFFSET FIN-OFFSET MSJ
+   for (i <- 1 to 28) {
+     // Lee Busy y se queda en el lazo mientras sea 1. (ocupada)
+     s.stepInstruction(timePassed) // POLL:	MOV AL, 0
+     s.stepInstruction(timePassed) // IN AL, PIO
+     s.stepInstruction(timePassed) // AND AL, 1
+     s.stepInstruction(timePassed) // JNZ POLL
+     // Mando al puerto de datos (PB) el carácter a imprimir
+     s.stepInstruction(timePassed) // MOV AL, [BX]
+     s.stepInstruction(timePassed) // OUT PIO+1, AL
+     // Fuerzo Strobe a 1
+     s.stepInstruction(timePassed) // IN AL, PIO
+     s.stepInstruction(timePassed) // OR AL, 02H
+     assertResult(false)(s.devController.strategie.getStrobePulse())
+     s.stepInstruction(timePassed) // OUT PIO, AL
+     assertResult(true)(s.devController.strategie.getStrobePulse())
+     timePassed = 8000 * i
+     // Fuerzo Strobe a 0
+     assertResult(true)(s.devController.strategie.isPrinting())
+     s.stepInstruction(timePassed) // IN AL, PIO
+     assertResult(false)(s.devController.strategie.isPrinting())
+     s.stepInstruction(timePassed) // AND AL, 0FDH
+     s.stepInstruction(timePassed) // OUT PIO, AL
+     // Siguiente caracter
+     s.stepInstruction(timePassed) // INC BX
+     s.stepInstruction(timePassed) // DEC CL
+     s.stepInstruction(timePassed) // JNZ POLL
+   }
+   assertResult("ARQUITECTURA DE COMPUTADORAS")(s.devController.strategie.getPrintedText())
+   s.stepInstruction(timePassed) // INT 0
+   assert(s.cpu.halted)
   }
    
    test("STI and CLI") {
@@ -233,51 +228,182 @@ END"""
   ORG 2000H
     CLI
     NOP
-    NOP
-    NOP
-    NOP
-    NOP
     STI
     NOP
     HLT
   END
 """
     val s=simulator(program)
-    s.stepInstruction()
+    s.stepInstruction() // CLI
     assertResult(false)(s.cpu.acceptInterruptions)
-    s.stepInstruction()
-    s.devController.pic.picInterruption(0)
-    assertResult(Word(1))(s.devController.pic.IRR)
-    s.stepInstruction()
-    assertResult(Word(0))(s.devController.pic.IRR)
-    s.stepInstruction()
-    s.stepInstruction()
-    s.stepInstruction()
-    assertResult(Word(1))(s.devController.pic.ISR)
-    assertResult(true)(s.devController.pic.isPendingInterruption())
-    s.stepInstruction()
+    assertResult(false)(s.devController.strategie.pic.acceptInterruptions)
+    s.stepInstruction() // NOP
+    s.devController.strategie.pic.picInterruption(0)
+    assertResult(Word(1))(s.devController.strategie.pic.IRR)
+    assertResult(Word(0))(s.devController.strategie.pic.ISR)
+    s.stepInstruction() // STI
+    assertResult(Word(0))(s.devController.strategie.pic.IRR)
+    assertResult(Word(1))(s.devController.strategie.pic.ISR)
     assertResult(true)(s.cpu.acceptInterruptions)
-    s.stepInstruction()
-    assertResult(false)(s.devController.pic.isPendingInterruption())
+    assertResult(true)(s.devController.strategie.pic.acceptInterruptions)
   }
    
    test("Handshake + Printer / Polling") {
      val program = 
 """
+  HAND EQU 40H
+  
+  ORG 1000H
+  MSJ	DB "FACULTAD DE "
+  	DB "INFORMATICA"
+  FIN	DB ?
+  
   ORG 2000H
-    HLT
+  	IN AL, HAND+1
+  	AND AL, 7FH
+  	OUT HAND+1, AL
+  	MOV BX, OFFSET MSJ
+  	MOV CL, OFFSET FIN-OFFSET MSJ
+  POLL:	MOV AL, 0
+  IN AL, HAND+1
+  	AND AL, 1
+  	JNZ POLL
+  	MOV AL, [BX]
+  	OUT HAND, AL
+  	INC BX
+  	DEC CL
+  	JNZ POLL
+  	INT 0
   END
 """
     val s=simulator(program)
+    var timePassed: Long = 0
+    s.devController.setConfig(2)
+  	s.stepInstruction(timePassed) // IN AL, HAND+1
+  	s.stepInstruction(timePassed) // AND AL, 7FH
+  	s.stepInstruction(timePassed) // OUT HAND+1, AL
+  	
+  	s.stepInstruction(timePassed) // MOV BX, OFFSET MSJ
+  	s.stepInstruction(timePassed) // MOV CL, OFFSET FIN-OFFSET MSJ
+  	
+    for (i <- 1 to 23) {
+      // Lee Busy y se queda en el lazo mientras sea 1. (ocupada)
+      s.stepInstruction(timePassed) // POLL:	MOV AL, 0
+      s.stepInstruction(timePassed) // IN AL, HAND+1
+      s.stepInstruction(timePassed) // AND AL, 1
+      s.stepInstruction(timePassed) // JNZ POLL
+    	
+    	// Mando al puerto de datos (PB) el carácter a imprimir
+      s.stepInstruction(timePassed) // MOV AL, [BX]
+    	s.stepInstruction(timePassed) // OUT HAND, AL
+      
+      timePassed = 8000 * i
+    	
+    	// Siguiente caracter
+    	s.stepInstruction(timePassed) // INC BX
+    	s.stepInstruction(timePassed) // DEC CL
+  	  s.stepInstruction(timePassed)
+    }
+  	
+    assertResult("FACULTAD DE INFORMATICA")(s.devController.strategie.getPrintedText())
+  	s.stepInstruction(timePassed) // INT 0
+    assert(s.cpu.halted)
   }
 
    test("Handshake + Printer / Interruptions") {
      val program = 
 """
+  PIC EQU 20H
+  HAND EQU 40H
+  N_HND EQU 10
+  
+  ORG 40
+  IP_HND	DW RUT_HND
+  
+  ORG 1000H
+  MSJ	DB "UNIVERSIDAD "
+      DB "NACIONAL DE LA PLATA"
+  FIN	DB ?
+  
+  ORG 3000H
+  RUT_HND: PUSH AX
+  	MOV AL, [BX]
+  	OUT HAND, AL
+  	INC BX
+  	DEC CL
+  	JNZ CONT
+  	MOV AL, 0FFH
+  	OUT PIC+1, AL
+  CONT:	MOV AL, 20H
+  	OUT PIC, AL
+  	POP AX
+  	IRET
+  
   ORG 2000H
-    HLT
+  	MOV BX, OFFSET MSJ
+  	MOV CL, OFFSET FIN-OFFSET MSJ
+  	CLI
+  	MOV AL, 0FBH
+  	OUT PIC+1, AL
+  	MOV AL, N_HND
+  	OUT PIC+6, AL
+  	MOV AL, 80H
+  	OUT HAND+1, AL
+  	STI
+  LAZO:	CMP CL, 0
+  	JNZ LAZO
+  	IN AL, HAND+1
+  	AND AL, 7FH
+  	OUT HAND+1, AL
+  	INT 0
   END
 """
     val s=simulator(program)
+    var timePassed = 0
+    s.devController.setConfig(2)
+    
+    s.stepInstruction(timePassed) // MOV BX, OFFSET MSJ
+    s.stepInstruction(timePassed) // MOV CL, OFFSET FIN-OFFSET MSJ
+    s.stepInstruction(timePassed) // CLI
+    s.stepInstruction(timePassed) // MOV AL, 0FBH
+    s.stepInstruction(timePassed) // OUT PIC+1, AL
+    s.stepInstruction(timePassed) // MOV AL, N_HND
+    s.stepInstruction(timePassed) // OUT PIC+6, AL
+    s.stepInstruction(timePassed) // MOV AL, 80H
+    s.stepInstruction(timePassed) // OUT HAND+1, AL
+    s.stepInstruction(timePassed) // STI
+
+    for (i <- 1 to 31) {
+      s.stepInstruction(timePassed) // RUT_HND:PUSH AX
+      s.stepInstruction(timePassed) // MOV AL, [BX]
+      s.stepInstruction(timePassed) // OUT HAND, AL
+      timePassed += 8000
+      s.stepInstruction(timePassed) // INC BX
+      s.stepInstruction(timePassed) // DEC CL
+      s.stepInstruction(timePassed) // JNZ CONT
+      s.stepInstruction(timePassed) // CONT:	MOV AL, 20H
+      s.stepInstruction(timePassed) // OUT PIC, AL
+    }
+    
+    s.stepInstruction(timePassed) // RUT_HND:PUSH AX
+    s.stepInstruction(timePassed) // MOV AL, [BX]
+    s.stepInstruction(timePassed) // OUT HAND, AL
+    timePassed += 8000
+    s.stepInstruction(timePassed) // INC BX
+    s.stepInstruction(timePassed) // DEC CL
+    s.stepInstruction(timePassed) // JNZ CONT
+    s.stepInstruction(timePassed) // MOV AL, 0FFH
+    s.stepInstruction(timePassed) // OUT PIC+1, AL
+    s.stepInstruction(timePassed) // CONT:	MOV AL, 20H
+    s.stepInstruction(timePassed) // OUT PIC, AL
+
+    assertResult("UNIVERSIDAD NACIONAL DE LA PLATA")(s.devController.strategie.getPrintedText())
+    
+    var cont = 0
+    while((!s.cpu.halted) && (cont < 1000)) {
+      s.stepInstruction()
+      cont += 1
+    }
+    assert(s.cpu.halted)
   }
 }

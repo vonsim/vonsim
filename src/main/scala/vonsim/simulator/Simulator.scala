@@ -274,7 +274,7 @@ class Simulator(
 
   def currentInstruction() = {
     if(devController.isPendingInterruption() && cpu.acceptInterruptions) {
-      interruptionCall(memory.getBytes(devController.getInterruptionAdress()).toInt)
+      interruptionCall(memory.getBytes(devController.getInterruptionAdress()).toUnsignedInt)
     }
 
     if (instructions.keySet.contains(cpu.ip)) {
@@ -309,18 +309,17 @@ class Simulator(
     instructions
   }
 
-  def stepInstruction() = {
+  def stepInstruction(actualTime: Long = System.currentTimeMillis()) = {
     val instructionInfo = currentInstruction()
     if (instructionInfo.isRight) {
       val info = instructionInfo.right.get
       val instruction = info.instruction
 
-      devController.simulatorEvent(System.currentTimeMillis())
-      
       cpu.jump(cpu.ip + Simulator.instructionSize(instruction))
       state = SimulatorProgramExecuting
       try {
         execute(info)
+        devController.simulatorEvent(actualTime)
       } catch {
         case e: InvalidMemoryAddress =>
           stopExecutionForError(language.invalidMemoryAddress(e.address))
@@ -493,10 +492,12 @@ class Simulator(
       }
       case Cli => {
         cpu.disableInterruptions();
+        devController.strategie.pic.acceptInterruptions = false
       	// enabledInterruptions = false
       }
       case Sti => {
         cpu.enableInterruptions();
+        devController.strategie.pic.acceptInterruptions = true
     		// enabledInterruptions = true
       }
       case Iret => {
