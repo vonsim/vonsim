@@ -83,24 +83,19 @@ class KeysUI (s: VonSimState)
 	  )
 	).render
 	
-	val registerTable = table(
-	  cls := "registerTable",
-	  body
-	).render
-	
-	val keysUI =
-	  div(
-	    registerTable
-	  ).render
-	
+	val registerTable = table(cls := "registerTable", body).render
+	val keysUI = div(registerTable).render
 	contentDiv.appendChild(keysUI)
 	
-	for(i <- 0 to 7) {
-		inputArray(i).onclick = (e: Any) => {
-			toggleBit(i)
-		}
-  }
-
+  def confKeys(pioUIUpdate:() => Unit) {
+  	for(i <- 0 to 7) {
+  		inputArray(i).onclick = (e: Any) => {
+  			toggleBit(i)
+		  	pioUIUpdate()
+  		}
+    }
+	}
+	
 	def tableSwitch(index: Int) = {
   	td(
 	  	label(

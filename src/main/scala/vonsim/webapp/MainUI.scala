@@ -195,11 +195,13 @@ class MainUI(
   
   headerUI.controlsUI.finishButton.onclick = (e: Any) => {
     s.s.runState = Run
-  	runInstructions()
-//    runInstructionsTimed()
+//  	runInstructions()
+    runInstructionsTimed()
   }
   
   headerUI.controlsUI.stepButton.onclick = (e: Any) => { stepInstruction() }
+  
+  mainboardUI.keysUI.confKeys(mainboardUI.pioUI.simulatorEvent)
 
   println("UI set up. Updating for the first time..")
   simulatorEvent()
@@ -208,29 +210,17 @@ class MainUI(
   tutorialUI.foreach(f => f.startTutorial)
 
   def compilationEvent() {
-    println("compilationEvent triggered " + s.c)
-//    s.c match {
-//      case Left(failed) => println(failed.instructions.map(a => {
-//        a match { case Left(error) => error.location
-//                  case Right(i) => "line"+i.line}
-//         
-//      }
-//      ))
-//      case other => 
-//    }
     headerUI.compilationEvent()
     editorUI.compilationEvent()
   }
 
   def simulatorEvent() {
-//    println("simulatorEvent triggered")
     headerUI.simulatorEvent()
     editorUI.simulatorEvent()
     mainboardUI.simulatorEvent()
   }
   
   def simulatorEvent(i: InstructionInfo) {
-//    println(s"simulatorEvent instruction $i triggered")
     headerUI.simulatorEvent(i)
     editorUI.simulatorEvent(i)
     mainboardUI.simulatorEvent(i)
@@ -254,6 +244,7 @@ class MainUI(
     println("Stopping execution... ")
     s.s.stop()
     mainboardUI.reset()
+    headerUI.enableConfigButtons()
     simulatorEvent()
   }
   
@@ -314,6 +305,7 @@ class MainUI(
 
     editorUI.disableTextArea()
     headerUI.controlsUI.disableControls()
+    headerUI.disableConfigButtons()
     
   	cant = 0
   	tiempoTranscurrido = 0
@@ -328,18 +320,17 @@ class MainUI(
     
     editorUI.disableTextArea()
     headerUI.controlsUI.disableControls()
+    headerUI.disableConfigButtons()
     
-    setTimeout(50)({
-      val instructions = s.s.runInstructions()
-      simulatorEvent()
-      if (instructions.length > 0 && instructions.last.isLeft) {
-        val error = instructions.last.left.get
-        // executionError(error.message)
-      }
-      if(s.isWaitingKeyPress())
-      	$("#external-devices-tab a").tab("show")
-    })
-
+    val instructions = s.s.runInstructions()
+    simulatorEvent()
+    if (instructions.length > 0 && instructions.last.isLeft) {
+      val error = instructions.last.left.get
+      // executionError(error.message)
+      println(error.message)
+    }
+    if(s.isWaitingKeyPress())
+    	$("#external-devices-tab a").tab("show")
   }
 
   var inst = 0
@@ -347,10 +338,12 @@ class MainUI(
     println("Step instruction.. ")
     val i = s.s.stepInstruction()
     i match {
-      case Left(error) => //executionError(error.message)
+      case Left(error) => {
+        //executionError(error.message)
+        println(error.message)
+      }
       case Right(i)    => {
       	inst += 1
-//      	s.s.devController.simulatorEvent(s.systemEventTimer.getTickTime() * inst)
       	simulatorEvent(i)
 	      if(s.isWaitingKeyPress())
 	      	$("#devices-tab a").tab("show")
@@ -394,6 +387,7 @@ class MainUI(
         	else if(s.s.runState == Debug)
         		headerUI.controlsUI.updateUI()
         }
+        headerUI.disableConfigButtons()
         simulatorEvent()
         println("Done")
       }

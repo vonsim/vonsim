@@ -198,7 +198,7 @@ class PicInterruptionsRegistersUI(
       i += 1
       intAddress = values(i).toUnsignedInt * 4
       intAddressValue = formatWord(s.s.memory.getByte(intAddress + 1)) + formatWord(s.s.memory.getByte(intAddress))
-      rows(i).title = "El índice del vector de interrupciones para línea de entrada " + name + " es " + intAddress + "h.\n" +
+      rows(i).title = "El índice del vector de interrupciones para línea de entrada " + name + " es " + intAddress + ".\n" +
                       "El vector de interrupciones en esa dirección vale " + intAddressValue + "h."
     })
   }

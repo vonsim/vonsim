@@ -220,7 +220,7 @@ class CpuUI(s: VonSimState)
     title:= "Período del clock: " + s.systemEventTimer.getTickTime() + " ms"
   ).render
   
-  speedUpButton.appendChild(speedButton.render)
+  speedUpButton.appendChild(speedButton)
   speedButton.onclick = (e: Any) => {
   	s.systemEventTimer.speedUp()
   	speedButton.textContent = (1000 / s.systemEventTimer.getTickTime()) + " Hz"

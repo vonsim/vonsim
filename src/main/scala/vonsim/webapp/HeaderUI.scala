@@ -50,8 +50,8 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
         cls := "modal-icon",
         alt := "Von Sim Icon",
         title := s.uil.iconTitle,
-        src := "img/icon.png"
-      //  src := "assets/img/icon.png"
+        // src := "img/icon.png"
+       src := "assets/img/icon.png"
       ),
       h4(
         cls := "modal-title",
@@ -163,11 +163,21 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
   )
   
   val configButtons = Array.apply(
-		dropdownConfigurationItemFactory(0).render,
-		dropdownConfigurationItemFactory(1).render,
-		dropdownConfigurationItemFactory(2).render,
-		dropdownConfigurationItemFactory(3).render
+		dropdownConfigurationItemFactory(0, "PIO + Llaves y leds").render,
+		dropdownConfigurationItemFactory(1, "PIO + Impresora").render,
+		dropdownConfigurationItemFactory(2, "Handshake + Impresora").render,
+		dropdownConfigurationItemFactory(3, "Handshake y CDMA + Impresora").render
   )
+
+  def dropdownConfigurationItemFactory(conf: Int, tooltip: String) = {
+    a(
+      cls := "dropdown-item clickable",
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= tooltip,
+      "Configuración " + conf
+    )
+  }
 
   val tutorialDropdown = div(
     cls := "dropdown dropdown-tutoriales",
@@ -198,6 +208,16 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
     )
   ).render
 
+  def dropdownTutorialItemFactory(tutorialUrl: String, tutorialString: String) = {
+    li(
+      a(
+        cls := "dropdown-item",
+        href := "?tutorial="+tutorialUrl,
+        tutorialString
+      )
+    )
+  }
+
   val root = div(
   	cls:= "navbar navbar-default",
   	div(
@@ -222,8 +242,8 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 	          id := "icon",
 	          alt := "Von Sim Icon",
 	          title := s.uil.iconTitle,
-	          src := "img/icon.png"
-	          // src := "assets/img/icon.png"
+	          // src := "img/icon.png"
+	          src := "assets/img/icon.png"
 	        )
 	  		)
 	  	),
@@ -274,42 +294,28 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 //  	)
 //  ).render
 
-  def dropdownTutorialItemFactory(tutorialUrl: String, tutorialString: String) = {
-    li(
-      a(
-        cls := "dropdown-item",
-        href := "?tutorial="+tutorialUrl,
-        tutorialString
-      )
-    )
+  def disableConfigButtons() {
+    configButtons.foreach(configButton => {
+      configButton.classList.remove("clickable")
+      configButton.classList.add("non-clickable")
+    })
+  }
+  def enableConfigButtons() {
+    configButtons.foreach(configButton => {
+      configButton.classList.remove("non-clickable")
+      configButton.classList.add("clickable")
+    })
   }
 
-  def dropdownConfigurationItemFactory(conf: Int) = {
-    a(
-      cls := "dropdown-item clickable",
-      "Configuración " + conf
-    )
-  }
-
-  def disableControls() {}
-  override def disable() {
-    controlsUI.disable()
-//    tutorialDropdown.classList.add("disabledElement")
-  }
-
-  override def enable() {
-    controlsUI.enable()
-//    tutorialDropdown.classList.remove("disabledElement")
-  }
+  override def disable() = controlsUI.disable()
+  override def enable() = controlsUI.enable()
 
   def simulatorEvent() {
     controlsUI.simulatorEvent()
-
   }
 
   def simulatorEvent(i: InstructionInfo) {
     controlsUI.simulatorEvent(i)
-
   }
 
   def compilationEvent() {

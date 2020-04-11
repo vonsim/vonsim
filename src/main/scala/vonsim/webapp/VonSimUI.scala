@@ -88,7 +88,6 @@ abstract class VonSimUI(val s: VonSimState) extends HTMLUI {
     root.classList.add("disabledElement")
   }
   def enable() {
-
     root.classList.remove("disabledElement")
   }
   def setDisabled(disabled: Boolean) {

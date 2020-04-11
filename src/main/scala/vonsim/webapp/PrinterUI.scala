@@ -37,8 +37,25 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
       "printer",
       s.uil.printerTitle
     ) {
+  
+  def buffer = s.s.devController.getPrinterBuffer()
 	
-	var text = "".render
+  val bufferRow = tr(th("Buffer")).render
+  val charsToPrint = Array.fill(5)(
+    td(
+      "",
+      cls:="tooltipHover",
+      data("toggle"):="tooltip",
+      data("placement"):="bottom",
+      title:= ""
+    ).render
+  )
+  charsToPrint.foreach(b => {
+    bufferRow.appendChild(b.render)
+    setDescription(b, "No hay caracter para imprimir")
+  })
+  
+  var text = "".render
 	val monitorArea =
 		div(
 			id := "",
@@ -49,7 +66,14 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
 				rows := "5",
 				style := "font-family: 'Lucida Console', Monaco, monospace; white-space: pre;",
 				text
-			)
+			),
+			table(
+        cls := "registerTable",
+        tbody(
+          cls := "registersTableBody",
+          bufferRow
+        )
+      )
 		).render
 	
   val speedButton = a(
@@ -69,7 +93,25 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
   
 	contentDiv.appendChild(monitorArea)
 	
+	def setDescription(cell: TableCell, tooltip: String) {
+	  cell.title = tooltip
+	}
+	
   def simulatorEvent() {
+    var i = -1
+    val bufferArray = Array.fill(5)(Word(0))
+    buffer.copyToArray(bufferArray)
+    bufferArray.foreach(word => {
+      i += 1
+      if(word != Word(0)) {
+        charsToPrint(i).textContent = word.toInt.toChar.toString()
+        setDescription(charsToPrint(i), i + "° caracter a imprimir: '" + charsToPrint(i).textContent + "'.")
+      }
+      else {
+        charsToPrint(i).textContent = ""
+        setDescription(charsToPrint(i), "No hay un caracter para imprimir.")
+      }
+    })
 	  text.textContent = s.s.devController.strategie.getPrintedText()
     if (s.isSimulatorExecuting()) speedButton.classList.add("disabled")
     else speedButton.classList.remove("disabled")

@@ -200,5 +200,4 @@ class PioUI (s: VonSimState)
   def hide() {
   	root.classList.add("hidden")
   }
-
 }

@@ -49,6 +49,7 @@ class DevicesController(memory: Memory) {
   def getStrobePulse() = strategie.getStrobePulse()
   def isPrinting() = strategie.isPrinting()
   def getPrintedText() = strategie.getPrintedText()
+  def getPrinterBuffer() = strategie.getPrinterBuffer()
 }
 
 abstract class Strategie() {
@@ -115,6 +116,7 @@ abstract class Strategie() {
   def getStrobePulse() = false
   def isPrinting() = false
   def getPrintedText() = ""
+  def getPrinterBuffer() = Queue.empty[Word]
 }
 
 class StrategieZero() extends Strategie() {
@@ -131,9 +133,9 @@ class StrategieZero() extends Strategie() {
   
   override def reset() {
     super.reset()
+    pio.reset()
     keys.reset()
     leds.reset()
-    pio.reset()
   }
   
   override def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
@@ -200,6 +202,7 @@ class StrategieOne() extends Strategie() {
   override def getStrobePulse() = printer.strobePulse
   override def isPrinting() = printer.isPrinting()
   override def getPrintedText() = printer.getPrintedText()
+  override def getPrinterBuffer() = printer.buffer
 }
 
 class StrategieTwo() extends Strategie() {
@@ -242,6 +245,7 @@ class StrategieTwo() extends Strategie() {
   override def getStrobePulse() = printer.strobePulse
   override def isPrinting() = printer.isPrinting()
   override def getPrintedText() = printer.getPrintedText()
+  override def getPrinterBuffer() = printer.buffer
 }
 
 class StrategieThree() extends Strategie() {
@@ -291,4 +295,5 @@ class StrategieThree() extends Strategie() {
   override def getStrobePulse() = printer.strobePulse
   override def isPrinting() = printer.isPrinting()
   override def getPrintedText() = printer.getPrintedText()
+  override def getPrinterBuffer() = printer.buffer
 }

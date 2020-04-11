@@ -60,6 +60,15 @@
 .clickable {
 	cursor: pointer;
 }
+.clickable {
+	cursor: pointer;
+}
+.clickable {
+	cursor: pointer;
+}
+.non-clickable {
+	pointer-events: none;
+}
 
 span.caret {
     display:none;
@@ -197,3 +206,4 @@ body.modal-open .modal .modal-dialog {
 	margin-right:auto;
 	height:48px;	
 }
+

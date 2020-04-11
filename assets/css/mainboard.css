@@ -271,6 +271,9 @@ textarea{
 #leds table td, #cpu table th{
 	border-color: white;
 }
+#printer table td, #cpu table th{
+	border-color: white;
+}
 .memoryTable table{
 	table-layout: fixed;
 	border-color: white;

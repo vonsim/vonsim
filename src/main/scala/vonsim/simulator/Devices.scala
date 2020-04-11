@@ -40,7 +40,7 @@ class Printer() {
 		if(strobePulse && !busy && (buffer.size < 5))
 			strobePulse = false
 		if(buffer.size > 0)
-		   printedText = printedText + buffer.dequeue().toInt.toChar
+      printedText = printedText + buffer.dequeue().toInt.toChar
 	}
 	
 	def isIdle() = !busy
@@ -111,7 +111,7 @@ class Keys(pio: PIO) {
 	
 	def PA = pio.readIO(48)
 	def CA = pio.readIO(50)
-	var value = Word(0)
+	var value = Word(PA.toInt & CA.toInt)
   
 	def toggleBit(i: Int) {
   	if(value.bit(i) == 0)
