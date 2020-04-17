@@ -15,12 +15,16 @@ class SimulatorStateUI(s: VonSimState) extends VonSimUI(s) {
     case SimulatorExecutionFinished   => "check-circle"
     case SimulatorExecutionStopped    => "circle"
     case SimulatorProgramExecuting    => "pause-circle"
+    case SimulatorWaitingKeyPress     => "pause-circle"
+    case SimulatorExecutionLoop       => "exclamation-circle"
   }
   def stateToButtonClass(state: SimulatorState) = state match {
     case SimulatorExecutionError(msg) => "btn-danger"
     case SimulatorExecutionFinished   => "btn-success"
     case SimulatorExecutionStopped    => "btn-danger"
     case SimulatorProgramExecuting    => "btn-warning"
+    case SimulatorWaitingKeyPress     => "btn-warning"
+    case SimulatorExecutionLoop       => "btn-danger"
   }
 
   val stateIcon = i(cls := "").render

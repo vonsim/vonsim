@@ -41,6 +41,8 @@ class English extends UILanguage {
     case SimulatorExecutionFinished   => "Execution Finished"
     case SimulatorExecutionStopped    => "No Program Loaded"
     case SimulatorProgramExecuting    => "Program executing"
+    case SimulatorWaitingKeyPress     => "Waiting key entry"
+    case SimulatorExecutionLoop       => "Program with loop"
   }
   def stateToTooltip(state: SimulatorState) = state match {
     case SimulatorExecutionError(error) => error.message
@@ -50,6 +52,9 @@ class English extends UILanguage {
       "There is no program loaded in the simulator; you must load one before executing, or perform a Quick Run"
     case SimulatorProgramExecuting =>
       "The program is executing. You can execute instructions one at a time with Step or until the program finishes with Run. While the program is running you cannot modify the code in the editor"
+    case SimulatorWaitingKeyPress     => "The program is waiting for the user to press a keyboard key."
+    case SimulatorExecutionLoop       => s"""The program stopped since a thousand instructions were executed and the program isn't finished.
+There is probably a loop in the program."""
   }
 
   def cpuFlagDescription(f: Flag, v: String) = s"Flag $f has value $v"

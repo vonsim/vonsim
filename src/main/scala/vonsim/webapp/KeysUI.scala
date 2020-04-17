@@ -90,8 +90,10 @@ class KeysUI (s: VonSimState)
   def confKeys(pioUIUpdate:() => Unit) {
   	for(i <- 0 to 7) {
   		inputArray(i).onclick = (e: Any) => {
-  			toggleBit(i)
-		  	pioUIUpdate()
+  		  if(s.isSimulatorExecuting()){
+    			toggleBit(i)
+  		  	pioUIUpdate()
+  		  }
   		}
     }
 	}

@@ -121,7 +121,7 @@ abstract class Strategie() {
 
 class StrategieZero() extends Strategie() {
   val pio = new PIO(0, seed, null)
-  val keys = new Keys(pio)
+  val keys = new Keys(seed, pio)
   val leds = new Leds(pio)
   
   override def simulatorEvent(actualTime: Long) {

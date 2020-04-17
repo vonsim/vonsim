@@ -93,3 +93,7 @@
 #help{
 	display:none;
 }
+
+.clickable {
+	cursor: pointer;
+}

@@ -44,6 +44,8 @@ class Spanish extends UILanguage {
     case SimulatorExecutionFinished   => "Ejecución finalizada"
     case SimulatorExecutionStopped    => "No hay programa cargado"
     case SimulatorProgramExecuting    => "Programa en ejecución"
+    case SimulatorWaitingKeyPress     => "Esperando tecla de entrada"
+    case SimulatorExecutionLoop       => "Programa con loop"
   }
   def stateToTooltip(state: SimulatorState) = state match {
     case SimulatorExecutionError(error) =>
@@ -55,6 +57,9 @@ class Spanish extends UILanguage {
       s"""El programa está ejecutándose en modo depuración. 
 Podés ejecutar instrucciones una a la vez con $controlsStepButton, o ejecutar el programa hasta que termine con $controlsFinishButton.
 Mientras el programa está ejecutándose no se puede modificar el código en el editor."""
+    case SimulatorWaitingKeyPress     => "El programa está esperando a que el usuario presione una tecla del teclado."
+    case SimulatorExecutionLoop       => s"""El programa se detuvo ya que se ejecutaron mil instrucciones sin finalizar.
+Es probable que haya un loop en el programa."""
   }
 
   def cpuFlagDescription(f: Flag, v: String) = {

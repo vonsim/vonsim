@@ -60,12 +60,6 @@
 .clickable {
 	cursor: pointer;
 }
-.clickable {
-	cursor: pointer;
-}
-.clickable {
-	cursor: pointer;
-}
 .non-clickable {
 	pointer-events: none;
 }

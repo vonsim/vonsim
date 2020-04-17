@@ -18,6 +18,7 @@ import vonsim.webapp.i18n.UILanguage
 import vonsim.simulator.SimulatorWaitingKeyPress
 import vonsim.simulator.Debug
 import vonsim.simulator.EventTimer
+import vonsim.simulator.SimulatorExecutionLoop
 
 abstract class HTMLUI {
   def root: HTMLElement
@@ -55,7 +56,7 @@ class VonSimState(
 
   def simulatorStopped() = {
     s.state == SimulatorExecutionFinished || s.state == SimulatorExecutionStopped || 
-    s.state.isInstanceOf[SimulatorExecutionError]
+    s.state.isInstanceOf[SimulatorExecutionError] || s.state == SimulatorExecutionLoop
   }
   def canLoadOrQuickRun() = {
     simulatorStopped() && this.c.isRight
@@ -64,12 +65,8 @@ class VonSimState(
     !simulatorStopped()
   }
   
-  def isSimulatorPaused() = {
-    isWaitingKeyPress()
-  }
   def isWaitingKeyPress() = {
-  	//s.state == SimulatorWaitingKeyPress
-  	s.cpu.paused == true
+  	s.state == SimulatorWaitingKeyPress
   }
   
   def isDebugging() = {

@@ -471,3 +471,42 @@ align-items: center;
 .addressSearchControls{
 	margin-bottom: 5px;
 }
+
+.toast {
+	position: fixed;
+	z-index: 1;
+	right: 50px;
+	top: 100px;
+	visibility: hidden;
+	max-width: 30%;
+	max-height: 15%;
+	overflow: auto;
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+    border-style: solid;
+    border-color: #777;
+    border-width: 1px;
+    border-radius: 3px;
+	font-size: 17px;
+}
+
+.toast.show {
+	visibility: visible;
+	-webkit-animation: fadein 0.5s;
+	animation: fadein 0.5s;
+}
+
+.toast-content {
+	padding: 16px;
+}
+
+@-webkit-keyframes fadein {
+	from {top: 0; opacity: 0} 
+	to {top: 100px; opacity: 1}
+}
+
+@keyframes fadein {
+	from {top: 0; opacity: 0}
+	to {top: 100px; opacity: 1}
+}

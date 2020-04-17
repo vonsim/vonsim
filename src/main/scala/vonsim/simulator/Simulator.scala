@@ -213,6 +213,7 @@ case object SimulatorExecutionStopped extends SimulatorStoppedState
 //case object SimulatorProgramLoaded extends SimulatorStoppedState
 case class SimulatorExecutionError(val e: ExecutionError) extends SimulatorStoppedState
 case object SimulatorExecutionFinished extends SimulatorStoppedState
+case object SimulatorExecutionLoop extends SimulatorStoppedState
 
 case object SimulatorWaitingKeyPress extends SimulatorPausedState
 
@@ -235,8 +236,6 @@ case class InstructionExecutionError(
 class Simulator(
   val cpu: CPU,
   val memory: Memory,
-//  val ioMemory: IOMemory,
-//  val devController: DevicesController,
   var instructions: Map[Int, InstructionInfo]
 ) {
   var state: SimulatorState = SimulatorExecutionStopped
@@ -300,9 +299,8 @@ class Simulator(
     val instruction = stepInstruction()
     var instructions = ListBuffer(instruction)
     var counter = 0
-
-//    while (counter < n && instruction.isRight && !cpu.halted) {
-    while (counter < n && instruction.isRight && !cpu.halted && !cpu.paused) {
+    
+    while (counter < n && instruction.isRight && !cpu.halted && !(state == SimulatorWaitingKeyPress)) {
       val instruction = stepInstruction()
       instructions += instruction
     }
@@ -330,14 +328,12 @@ class Simulator(
     instructionInfo
   }
   def finishExecution() {
-    cpu.halted = true
     state = SimulatorExecutionFinished
   }
   def stopExecutionForError(message: String) {
     stopExecutionForError(GeneralExecutionError(message))
   }
   def stopExecutionForError(executionError: ExecutionError) {
-    cpu.halted = true
     stop()
     state = SimulatorExecutionError(executionError)
   }
@@ -351,16 +347,15 @@ class Simulator(
     stopExecutionForError(message, i)
   }
   
-  def pauseExecutionToWaitKeyPress() {
-  	cpu.paused = true
-  	//state = SimulatorWaitingKeyPress
+  def pauseExecution(reason: String) {
+    if(reason == "KeyPress")
+  	  state = SimulatorWaitingKeyPress
+    else if(reason == "Loop")
+      state = SimulatorExecutionLoop
   }
   
   def resumeExecution(key: Int) {
-  	cpu.paused = false
   	state = SimulatorProgramExecuting
-  	
-  	// Agregar el char a la memoria
 		val adress = cpu.get(BX).toInt
 		memory.setByte(adress, Word(key.toByte))
   }
@@ -516,7 +511,7 @@ class Simulator(
       case IntN(n) => {
       	encodeUnaryOperand(n).last.toInt match {
       	  case 0 => { finishExecution() }
-      	  case 6 =>	{ pauseExecutionToWaitKeyPress() }
+      	  case 6 =>	{ pauseExecution("KeyPress") }
       	  case 7 => {
 						var startAdress = cpu.get(BX).toInt
 						val cant = cpu.get(AL).toInt

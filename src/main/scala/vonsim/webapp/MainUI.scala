@@ -47,6 +47,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import vonsim.assembly.Compiler.FailedCompilation
 import vonsim.simulator.EventTimer
+import vonsim.simulator.SimulatorExecutionLoop
 
 object UIConfig {
   def apply(
@@ -147,9 +148,12 @@ class MainUI(
 
   bindkey(root, s.uil.controlsFinishHotkey, () => {
     if (s.isSimulatorExecuting()) {
-      s.s.runState = Run
-//      runInstructions()
-      runInstructionsTimed()
+      if(s.s.runState == Debug)
+        finishInstructions()
+      else {
+        s.s.runState = Run
+        quickRun()
+      }
     }
     false
   })
@@ -160,11 +164,6 @@ class MainUI(
     }
     false
   })
-
-//  bindkey(root, "f10", () => {
-//  	println("Tecla F10 presionada!")
-//    false
-//  })
 
   bindkey(root, "ctrl+s", () => {
     false
@@ -194,9 +193,7 @@ class MainUI(
   })
   
   headerUI.controlsUI.finishButton.onclick = (e: Any) => {
-    s.s.runState = Run
-//  	runInstructions()
-    runInstructionsTimed()
+   	finishInstructions()
   }
   
   headerUI.controlsUI.stepButton.onclick = (e: Any) => { stepInstruction() }
@@ -273,7 +270,6 @@ class MainUI(
 		      case Left(error) => println(error.message)
 		      case Right(i)    => {
 		      	simulatorEvent(i)
-//		      	s.s.devController.simulatorEvent(System.currentTimeMillis())
 			      if(s.isWaitingKeyPress())
 			      	$("#external-devices-tab a").tab("show")
 		     	}
@@ -314,51 +310,52 @@ class MainUI(
     executeInstructionsTimed()
   }
   
-  def runInstructions() {
-  	
-    println("Running... ")
+  def finishInstructions() {
+    println("Finishing... ")
     
     editorUI.disableTextArea()
     headerUI.controlsUI.disableControls()
     headerUI.disableConfigButtons()
     
-    val instructions = s.s.runInstructions()
-    simulatorEvent()
-    if (instructions.length > 0 && instructions.last.isLeft) {
-      val error = instructions.last.left.get
-      // executionError(error.message)
-      println(error.message)
+    var cant = 0
+    var inst = 0
+    while(s.isSimulatorExecuting() && !s.isWaitingKeyPress()  && (cant < 1000)) {
+      cant += 1
+	    val i = s.s.stepInstruction(inst * s.systemEventTimer.tickTime)
+	    i match {
+	      case Left(error) => {
+	        mainboardUI.displayNewToast(error.message)
+	      }
+	      case Right(i)    => {
+	        inst += 1
+	      	simulatorEvent(i)
+		      if(s.isWaitingKeyPress())
+		      	$("#external-devices-tab a").tab("show")
+	     	}
+	    }
     }
-    if(s.isWaitingKeyPress())
-    	$("#external-devices-tab a").tab("show")
+
+    if(cant == 1000) {
+      s.s.pauseExecution("Loop")
+      mainboardUI.displayNewToast(s.uil.stateToTooltip(SimulatorExecutionLoop))
+      simulatorEvent()
+    }
   }
 
   var inst = 0
   def stepInstruction() {
     println("Step instruction.. ")
-    val i = s.s.stepInstruction()
+    val i = s.s.stepInstruction(inst * s.systemEventTimer.tickTime)
     i match {
       case Left(error) => {
-        //executionError(error.message)
-        println(error.message)
+        mainboardUI.displayNewToast(error.message)
       }
       case Right(i)    => {
       	inst += 1
       	simulatorEvent(i)
 	      if(s.isWaitingKeyPress())
-	      	$("#devices-tab a").tab("show")
+	      	$("#external-devices-tab a").tab("show")
      	}
-    }
-
-  }
-  
-  def resumeRun() {
-    s.c match {
-      case Right(c: SuccessfulCompilation) => {
-//        runInstructions()
-      	runInstructionsTimed()
-      }
-      case _ => dom.window.alert(s.uil.alertCompilationFailed)
     }
 
   }
@@ -367,13 +364,12 @@ class MainUI(
     s.c match {
       case Right(c: SuccessfulCompilation) => {
       	loadProgram()
-//        runInstructions()
       	runInstructionsTimed()
       }
       case _ => dom.window.alert(s.uil.alertCompilationFailed)
     }
-
   }
+  
   def loadProgram() {
     s.c match {
       case Right(c: SuccessfulCompilation) => {
@@ -383,7 +379,7 @@ class MainUI(
         mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
         	mainboardUI.keyboardUI.keyPressed(event.keyCode)
         	if(s.s.runState == Run)
-        		resumeRun
+        		runInstructionsTimed()
         	else if(s.s.runState == Debug)
         		headerUI.controlsUI.updateUI()
         }
@@ -395,9 +391,11 @@ class MainUI(
     }
 
   }
+  
   def saveCode() {
     dom.window.localStorage.setItem(saveCodeKey, editorUI.getCode())
   }
+  
   def applyUIConfig(uiConfig: UIConfig) {
     headerUI.setDisabled(uiConfig.disableControls)
     editorUI.setDisabled(uiConfig.disableEditor)

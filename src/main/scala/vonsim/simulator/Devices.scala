@@ -29,16 +29,15 @@ class Printer() {
 	var data = Word(0)
 	var strobePulse = false
 	def busy = (buffer.length == 5)
-	def printing = (buffer.length > 0)
+//	def printing = (buffer.length > 0)
+	var printing = false
 	
 	val buffer = Queue.empty[Word]
 	var printedText = ""
 	
   val eventTimer = new EventTimer(8000, Array(8000, 4000, 2000, 1000))
 
-	def checkPrint() {
-		if(strobePulse && !busy && (buffer.size < 5))
-			strobePulse = false
+	def print() {
 		if(buffer.size > 0)
       printedText = printedText + buffer.dequeue().toInt.toChar
 	}
@@ -53,15 +52,22 @@ class Printer() {
 	
 	def sendStrobe() {
 		strobePulse = true
-		if(buffer.size < 5)
+		if(buffer.size < 5) {
 		  buffer += data
+		  if(!printing) {
+		    eventTimer.start()
+		    printing = true
+		  }
+		}
 	}
 	
 	def getPrintedText() = printedText
   
   def simulatorEvent(actualTime: Long) {
-	  if(eventTimer.update(actualTime))
-	    checkPrint()
+	  if((eventTimer.update(actualTime)) && printing) {
+	    print()
+	    printing = false
+	  }
 	}
   def simulatorEvent(i: InstructionInfo, actualTime: Long) {
     simulatorEvent(actualTime)
@@ -69,6 +75,7 @@ class Printer() {
   
   def reset() {
     buffer.clear()
+    printing = false
     printedText = ""
     eventTimer.reset()
   }
@@ -107,12 +114,13 @@ class F10Button(pic: PIC) {
   }
 }
 
-class Keys(pio: PIO) {
+class Keys(seed: Long, pio: PIO) {
 	
 	def PA = pio.readIO(48)
 	def CA = pio.readIO(50)
-	var value = Word(PA.toInt & CA.toInt)
-  
+	var value = Word(new Random(seed).nextInt(255))
+  pio.writeIO(48, Word(value & CA));
+	
 	def toggleBit(i: Int) {
   	if(value.bit(i) == 0)
   		value = Word(value | (1 << i));
@@ -120,7 +128,7 @@ class Keys(pio: PIO) {
   		value = Word(value & ~(1 << i));
   	
   	if(CA.bit(i) == 1) {
-	  	if(PA.bit(i) == 0)
+	  	if(value.bit(i) == 1)
 	  		pio.writeIO(48, Word(PA | (1 << i)));
 	  	else
 	  		pio.writeIO(48, Word(PA & ~(1 << i)));
@@ -136,7 +144,8 @@ class Keys(pio: PIO) {
   }
   
   def reset() {
-		value = Word(PA.toInt & CA.toInt)
+		value = Word(new Random(seed).nextInt(255))
+		pio.writeIO(48, Word(value & CA));
   }
 }
 
@@ -271,12 +280,12 @@ class PIO(config: Int, seed: Long, printerConnection: PrinterConnection) {
     checkAddress(v.toInt)
   	v match {
   	  case 48 => { // PA
-  	  	if((config == 1) && (values(0).bit(1) == 0) && (regValue.bit(1) == 1))
+  	  	if((config == 1) && (values(0).bit(1) == 0) && (values(2).bit(1) == 0) && (regValue.bit(1) == 1))
   	  			printerConnection.sendStrobe()
   	  	values(0) = regValue
   	  }
   	  case 49 => { // PB
-  	  	if(config == 1)
+  	  	if((config == 1) && (values(3) == Word(0)))
 	  			printerConnection.sendData(regValue)
   	  	values(1) = regValue
   	  }
@@ -519,13 +528,22 @@ class CDMA(seed: Long, pic: PIC) {
 class EventTimer(var tickTime: Int, val speedValues: Array[Int]) {
   
   var lastTick: Long = 0
+  var actualTime: Long = 0
   
   def getTickTime() = tickTime
   def speedUp() {
     tickTime = speedValues((speedValues.indexOf(tickTime) + 1) % speedValues.length)
   }
+  
+  def start() {
+    println("EventTimer started")
+    lastTick = actualTime
+  }
 
-  def update(actualTime: Long): Boolean = {
+  def update(newActualTime: Long): Boolean = {
+    actualTime = newActualTime
+//    if(tickTime == 8000)
+//      println("actualTime - lastTick = " + (actualTime - lastTick))
     if((actualTime - lastTick) >= tickTime) {
       lastTick = actualTime
       return true

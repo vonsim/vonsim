@@ -49,9 +49,11 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   
   val console = pre("").render
   val consoleDir = div(id := "console", h2("Console"), console).render
+  val toastContainer = div().render
 
   val root = div(
     id := "mainboard",
+    toastContainer,
     ul(
       cls := "nav nav-tabs",
       role := "tablist",
@@ -163,6 +165,29 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         keysUI.hide()
         ledsUI.hide()
   		}
+  	}
+  }
+  
+  def displayNewToast(message: String) {
+    if (toastContainer.firstChild != null)
+      toastContainer.removeChild(toastContainer.firstChild)
+    val closeButton = a(
+      cls := "pull-right clickable",
+      data("effect") := "fadeOut",
+      i(cls := "fa fa-times")
+    ).render
+    val toast = div(
+      cls := "toast show",
+      closeButton,
+      p(
+        cls := "toast-content",
+        message
+      )
+    ).render
+    toastContainer.appendChild(toast)
+    closeButton.onclick = (e: Any) => {
+    	toast.className = toast.className.replace("show", "")
+    	toastContainer.removeChild(toast)
   	}
   }
 
