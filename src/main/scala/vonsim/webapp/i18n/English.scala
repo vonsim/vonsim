@@ -10,7 +10,7 @@ class English extends UILanguage {
   def iconTitle = "VonSim: A simplified 8088 simulator"
   def pageTitle = "A simplified 8088 simulator"
   def pageTitleExtended =
-    "A simplified intel 8088 simulator in the spirit of MSX88"
+    "A simplified intel 8088 simulator in the spirit of MSX88. For feedback, you have the following links:"
 
   def alertURLNotFound(url: String) = "Could not load URL " + url
 

@@ -50,8 +50,8 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
         cls := "modal-icon",
         alt := "Von Sim Icon",
         title := s.uil.iconTitle,
-//         src := "img/icon.png"
-       src := "assets/img/icon.png"
+        src := "img/icon.png"
+//        src := "assets/img/icon.png"
       ),
       h4(
         cls := "modal-title",
@@ -70,29 +70,44 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
     div(
       cls := "",
       p(s.uil.pageTitleExtended),
-      p(
-        a(
-          cls := "btn btn-success",
-          href := "https://github.com/facundoq/vonsim",
-          s.uil.helpGithubPage
+      ul(
+        li(
+          a(
+            cls := "btn btn-link",
+            href := "https://github.com/facundoq/vonsim",
+            s.uil.helpGithubPage
+          )
         ),
-        a(
-          cls := "btn btn-success",
-          href := "https://github.com/facundoq/vonsim/issues",
-          s.uil.helpReportIssue
+        li(
+          a(
+            cls := "btn btn-link",
+            href := "https://github.com/facundoq/vonsim/issues",
+            s.uil.helpReportIssue
+          )
         )
       ),
       p(s.uil.helpIntendedFor),
-      p(
-        a(
-          cls := "btn btn-success",
-          href := "http://weblidi.info.unlp.edu.ar/catedras/organiza/",
-          "Organización de Computadoras"
+      ul(
+        li(
+          a(
+            cls := "btn btn-link",
+            href := "http://weblidi.info.unlp.edu.ar/catedras/organiza/",
+            "Organización de Computadoras"
+          )
         ),
-        a(
-          cls := "btn btn-success",
-          href := "http://weblidi.info.unlp.edu.ar/catedras/arquitecturaP2003/",
-          "Arquitectura de Computadoras"
+        li(
+          a(
+            cls := "btn btn-link",
+            href := "http://weblidi.info.unlp.edu.ar/catedras/arquitecturaP2003/",
+            "Arquitectura de Computadoras"
+          )
+        ),
+        li(
+          a(
+            cls := "btn btn-link",
+            href := "http://weblidi.info.unlp.edu.ar/catedras/ConArqCom/",
+            "Concepto de Arquitectura de Computadoras"
+          )
         )
       )
     ).render
@@ -104,21 +119,27 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
       p(
         s.uil.helpMadeBy + " ",
         a(
-          cls := "btn btn-primary",
+          style := "color: white",
           href := "https://github.com/facundoq/",
           "Facundo Quiroga"
         ),
         " " + s.uil.helpWithHelpFrom + " ",
         a(
-          cls := "btn btn-primary",
+          style := "color: white",
           href := "https://github.com/AndoniZubimendi",
           "Andoni Zubimendi"
         ),
-        " " + s.uil.and + " ",
+        ", ",
         a(
-          cls := "btn btn-primary",
+          style := "color: white",
           href := "https://github.com/cesarares",
           "Cesar Estrebou"
+        ),
+        " " + s.uil.and + " ",
+        a(
+          style := "color: white",
+          href := "https://github.com/manuelbb",
+          "Manuel Bustos Berrondo"
         )
       ),
       p(s.uil.helpFeedbackWelcome + " f<last name> (at) gmail.com")
@@ -136,16 +157,16 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 
   val helpUI = new HelpUI(s)
 
-  val helpUIButton = span(
-    id := "help",
-    a(
-      cls := "helpButton",
-      data("toggle") := "modal",
-      data("target") := "#helpModal",
-      i(cls := s"fas fa-question-circle")
-    ),
-    helpUI.root
-  ).render
+//  val helpUIButton = span(
+//    id := "help",
+//    a(
+//      cls := "helpButton dropdown-item clickable",
+//      data("toggle") := "modal",
+//      data("target") := "#helpModal",
+//      "Sobre nosotros"
+//    ),
+//    helpUI.root
+//  ).render
   val currentLanguage = s.uil.code
   val languages = UILanguage.codes.keys.filter(_ != currentLanguage)
 
@@ -204,7 +225,16 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
       li(configButtons(0)),
       li(configButtons(1)),
       li(configButtons(2)),
-      li(configButtons(3))
+      li(configButtons(3)),
+      li(role:="separator", cls := "divider"),
+      li(
+        a(
+          cls := "dropdown-item clickable",
+          data("toggle") := "modal",
+          data("target") := "#helpModal",
+          "Sobre nosotros"
+        )
+      )
     )
   ).render
 
@@ -242,12 +272,15 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 	          id := "icon",
 	          alt := "Von Sim Icon",
 	          title := s.uil.iconTitle,
-//            src := "img/icon.png"
-	          src := "assets/img/icon.png"
+            src := "img/icon.png"
+//	          src := "assets/img/icon.png"
 	        )
 	  		)
 	  	),
-	  	
+      div(
+        id := "help",
+        helpUI.root
+      ),
 	  	div(
 	  		cls:= "collapse navbar-collapse",
 	  		id:= "navbar-collapse",
@@ -277,8 +310,8 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 //          id := "icon",
 //          alt := "Von Sim Icon",
 //          title := s.uil.iconTitle,
-////          src := "img/icon.png"
-//          src := "assets/img/icon.png"
+//          src := "img/icon.png"
+////          src := "assets/img/icon.png"
 //        )
 //      ),
 //      controlsUI.root,

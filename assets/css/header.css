@@ -137,11 +137,10 @@ span.caret {
 .languageButton{
 	margin-right:10px;
 }
+
 #help{
 	margin-right:10px;
 }
-
-
 .helpButton{
 	cursor: pointer;
 	font-size: 0.8em;
@@ -154,10 +153,6 @@ span.caret {
 }
 #help p{
 	font-size: 0.5em;
-}
-
-.modal-backdrop {
-/*    background-color: red; */
 }
 body.modal-open .modal {
     display: flex !important;
@@ -189,9 +184,8 @@ body.modal-open .modal .modal-dialog {
 }
 
 .modal-content{
-	    overflow:hidden;
+	overflow:hidden;
 	border-radius: 10px;
-	
 }
 .modal-title{
 	font-family: Lato;

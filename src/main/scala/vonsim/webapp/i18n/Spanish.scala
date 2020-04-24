@@ -10,7 +10,7 @@ class Spanish extends UILanguage {
   def iconTitle = appName + ": " + pageTitle
   def pageTitle = "Un simulador de la arquitectura 8088"
   def pageTitleExtended =
-    "Un simulador simplificado de la arquitectura 8088, similar al MSX88"
+    "Un simulador simplificado de la arquitectura 8088, similar al MSX88. Para feedback, tienes los siguientes enlaces:"
 
   def alertURLNotFound(url: String) = "No se pudo cargar la URL " + url
 

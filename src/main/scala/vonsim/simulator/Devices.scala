@@ -66,7 +66,8 @@ class Printer() {
   def simulatorEvent(actualTime: Long) {
 	  if((eventTimer.update(actualTime)) && printing) {
 	    print()
-	    printing = false
+	    if(buffer.size == 0)
+        printing = false
 	  }
 	}
   def simulatorEvent(i: InstructionInfo, actualTime: Long) {
