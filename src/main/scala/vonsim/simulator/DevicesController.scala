@@ -24,7 +24,7 @@ class DevicesController(memory: Memory) {
       case 0 => strategie = new StrategieZero()
       case 1 => strategie = new StrategieOne()
       case 2 => strategie = new StrategieTwo()
-      case 3 => strategie = new StrategieThree()
+//      case 3 => strategie = new StrategieThree()
     }
   }
   

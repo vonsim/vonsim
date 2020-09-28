@@ -49,7 +49,7 @@ abstract class HTMLUI {
 class VonSimState(
   var s: Simulator,
   var c: CompilationResult,
-  var uil: UILanguage
+  var uil: UILanguage //move to HTMLUI
 ) {
   
   val systemEventTimer = new EventTimer(1000, Array(1000, 500, 250, 125))

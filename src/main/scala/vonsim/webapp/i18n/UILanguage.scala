@@ -14,7 +14,8 @@ abstract class UILanguage {
 
   def and: String
   def iconTitle: String
-
+  
+  def aboutus: String
   def helpGithubPage: String
   def helpReportIssue: String
   def helpIntendedFor: String

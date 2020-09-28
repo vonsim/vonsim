@@ -329,6 +329,7 @@ class Simulator(
   }
   def finishExecution() {
     state = SimulatorExecutionFinished
+    cpu.halted = true
   }
   def stopExecutionForError(message: String) {
     stopExecutionForError(GeneralExecutionError(message))

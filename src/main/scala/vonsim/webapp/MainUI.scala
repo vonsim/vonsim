@@ -83,11 +83,13 @@ class MainUI(
   })
 
 	val $ = js.Dynamic.global.$
-  
   val mainboardUI = new MainboardUI(s)
+  
   val headerUI = new HeaderUI(s)
-  for (i <- 0 to 3) {
-  	headerUI.configButtons(i).onclick = (e: Any) => {
+  print(headerUI.configButtons.length)
+  
+  for ((configButton,i) <- headerUI.configButtons.zipWithIndex){
+    configButton.onclick = (e: Any) => {
   		if(s.s.devController.getConfig() != i) {
 				mainboardUI.changeDisplayConfiguration(i)
 				s.s.devController.setConfig(i)
@@ -95,6 +97,7 @@ class MainUI(
   		}
   	}
   }
+
   val tutorialUI = tutorial.map(t => new TutorialUI(s, t, this))
   println("checking mode:..")
   val leftPanelId = "leftWrap"

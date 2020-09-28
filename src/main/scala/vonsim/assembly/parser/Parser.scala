@@ -45,12 +45,15 @@ object Parser extends MyParsers {
     }
   }
   def labeledInstruction = positioned {
-    (label ~ instruction) ^^ {
+    (label ~ executableInstructions)  ^^ {
       case LABEL(l) ~ (o: ExecutableInstruction) => LabeledInstruction(l, o)
     }
   }
+  def executableInstructions = positioned {
+    io | zeroary | mov | jump |  arithmetic | intn | stack
+  }
   def instruction = positioned {
-    zeroary | org | mov | jump | arithmetic | io | intn | stack | vardef | equ
+     org |  vardef | equ | executableInstructions
   }
   def equ = positioned {
     (identifier ~ EQU() ~ expression) ^^ {
@@ -75,17 +78,31 @@ object Parser extends MyParsers {
     }
   }
   def unary = (Token.unaryArithmetic map tokenAsParser) reduceLeft (_ | _)
+//
+//  def io = positioned {
+//    ((IN() ~ (AL() | AX()) ~ COMMA() ~ (expression)) | (OUT() ~ (expression) ~ COMMA() ~ (AL() | AX()))) ^^ {
+//      case ((o: IOToken) ~ (m: IORegister) ~ _ ~ (a: Expression)) => IO(o, m, a)
+//      case ((o: IOToken) ~ (a: Expression) ~ _ ~ (m: IORegister)) => IO(o, m, a)
+//    }
+//  }
+  
+  def io:Parser[ExecutableInstruction] = in | out
 
-  def io = positioned {
-    ((IN() ~ (AL() | AX()) ~ COMMA() ~ (expression)) | (OUT() ~ (expression) ~ COMMA() ~ (AL() | AX()))) ^^ {
-      case ((o: IOToken) ~ (m: IORegister) ~ _ ~ (a: Expression)) => IO(o, m, a)
-      case ((o: IOToken) ~ (a: Expression) ~ _ ~ (m: IORegister)) => IO(o, m, a)
+  def in = positioned {
+    (IN() ~ (AL() | AX()) ~ COMMA() ~ (expression)) ^^ {
+      case ((i:IN) ~ (r: IORegister) ~ _ ~ (a: Expression)) => IO(i, r, a)
+    }
+  }
+  
+  def out = positioned {
+    ( OUT() ~ (expression) ~ COMMA() ~ (AL() | AX()) ) ^^ {
+      case ( (i:OUT) ~ (a: Expression) ~ _ ~ (r: IORegister) ) => IO(i, r, a)
     }
   }
 
   def cmp = positioned {
-    (CMP() ~ (operand) ~ COMMA() ~ (operand) ~ (newline)) ^^ {
-      case (CMP() ~ (v1: Operand) ~ _ ~ (v2: Operand) ~ _) => Cmp(v1, v2)
+    (CMP() ~ (operand) ~ COMMA() ~ (operand) ) ^^ {
+      case (CMP() ~ (v1: Operand) ~ _ ~ (v2: Operand) ) => Cmp(v1, v2)
     }
   }
 

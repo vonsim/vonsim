@@ -11,7 +11,7 @@ class English extends UILanguage {
   def pageTitle = "A simplified 8088 simulator"
   def pageTitleExtended =
     "A simplified intel 8088 simulator in the spirit of MSX88. For feedback, you have the following links:"
-
+  def aboutus = "About"
   def alertURLNotFound(url: String) = "Could not load URL " + url
 
   def helpGithubPage = "Github page"

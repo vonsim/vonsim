@@ -43,13 +43,9 @@ case class Ret()
 
 case class Mov(m: Operand, v: Operand) extends ExecutableInstruction
 
-case class IO(op: IOToken, r: IORegister, add: Expression) extends ExecutableInstruction
-
 trait Arithmetic extends ExecutableInstruction
-
 case class BinaryArithmetic(op: BinaryArithmeticOp, m: Operand, v: Operand)
     extends Arithmetic
-    
 case class UnaryArithmetic(op: UnaryArithmeticOp, m: Operand) extends Arithmetic
 case class Cmp(m: Operand, v: Operand) extends Arithmetic
 
@@ -75,6 +71,8 @@ case class UnconditionalJump(label: String) extends Jump
 case class Call(label: String) extends Jump
 case class ConditionalJump(op: ConditionalJumpToken, label: String) extends Jump
 
+//case class IO(op: IOToken, r: IORegister, add: IOAddress) extends Instruction
+case class IO(op: IOToken, r: IORegister, add: Expression) extends Instruction
 
 trait Expression extends Operand {
   def labels = List[String]()

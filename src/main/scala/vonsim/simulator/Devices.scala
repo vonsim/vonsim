@@ -537,7 +537,7 @@ class EventTimer(var tickTime: Int, val speedValues: Array[Int]) {
   }
   
   def start() {
-    println("EventTimer started")
+//    println("EventTimer started")
     lastTick = actualTime
   }
 

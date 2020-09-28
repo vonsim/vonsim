@@ -80,7 +80,10 @@ object Compiler {
     val fixedTokensNoEmpty = fixedTokens.filter(p => {
       !(p.isRight && p.right.get.length == 1 && p.right.get(0).equals(EMPTY()))
     })
-
+    
+    
+    
+    
     def parseValidTokens(
       t: Either[LexerError, List[Token]]
     ): Either[CompilationError, parser.Instruction] = {
@@ -88,7 +91,9 @@ object Compiler {
     }
 
     val parsedInstructions = fixedTokensNoEmpty map parseValidTokens toList
-
+    
+    
+    
     //    println("Compiler: parsed instructions")
     //    parsedInstructions.foreach(f => println(f))
 
@@ -130,6 +135,7 @@ object Compiler {
     //    println("jump label to line" + firstPassResolver.jumpLabelToLine)
     //    ins.foreach(println(_))
     val unlabeledInstructions = unlabelInstructions(ins)
+    
 
     //Transform from parser.Instruction to simulator.Instruction
     // Note that at this point the jump and memory addresses are actually dummy values
@@ -407,6 +413,7 @@ object Compiler {
       parser.Sti() -> Sti,
       parser.End() -> End
     )
+
     i match {
       case x: ZeroAry     => successfulTransformation(x, zeroary(x))
       case x: parser.IntN => successfulTransformation(x, IntN(WordValue(x.n)))

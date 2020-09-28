@@ -74,14 +74,14 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
         li(
           a(
             cls := "btn btn-link",
-            href := "https://github.com/facundoq/vonsim",
+            href := "https://github.com/vonsim/vonsim",
             s.uil.helpGithubPage
           )
         ),
         li(
           a(
             cls := "btn btn-link",
-            href := "https://github.com/facundoq/vonsim/issues",
+            href := "https://github.com/vonsim/vonsim/issues",
             s.uil.helpReportIssue
           )
         )
@@ -106,7 +106,7 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
           a(
             cls := "btn btn-link",
             href := "http://weblidi.info.unlp.edu.ar/catedras/ConArqCom/",
-            "Concepto de Arquitectura de Computadoras"
+            "Conceptos de Arquitectura de Computadoras"
           )
         )
       )
@@ -120,8 +120,14 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
         s.uil.helpMadeBy + " ",
         a(
           style := "color: white",
-          href := "https://github.com/facundoq/",
+          href := "http://facundoq.github.io/",
           "Facundo Quiroga"
+        ),
+        " " + s.uil.and + " ",
+        a(
+          style := "color: white",
+          href := "https://github.com/manuelbb",
+          "Manuel Bustos Berrondo"
         ),
         " " + s.uil.helpWithHelpFrom + " ",
         a(
@@ -134,15 +140,8 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
           style := "color: white",
           href := "https://github.com/cesarares",
           "Cesar Estrebou"
-        ),
-        " " + s.uil.and + " ",
-        a(
-          style := "color: white",
-          href := "https://github.com/manuelbb",
-          "Manuel Bustos Berrondo"
         )
-      ),
-      p(s.uil.helpFeedbackWelcome + " f<last name> (at) gmail.com")
+      )
     ).render
   }
 
@@ -153,8 +152,10 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
 }
 
 class HeaderUI(s: VonSimState) extends VonSimUI(s) {
+  
+  
   val controlsUI = new ControlsUI(s)
-
+  
   val helpUI = new HelpUI(s)
 
 //  val helpUIButton = span(
@@ -183,11 +184,11 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
     button => languageButtonsContainer.appendChild(button)
   )
   
-  val configButtons = Array.apply(
+  val configButtons = List(
 		dropdownConfigurationItemFactory(0, "PIO + Llaves y leds").render,
 		dropdownConfigurationItemFactory(1, "PIO + Impresora").render,
-		dropdownConfigurationItemFactory(2, "Handshake + Impresora").render,
-		dropdownConfigurationItemFactory(3, "Handshake y CDMA + Impresora").render
+		dropdownConfigurationItemFactory(2, "Handshake + Impresora").render
+//    ,dropdownConfigurationItemFactory(3, "Handshake y CDMA + Impresora").render
   )
 
   def dropdownConfigurationItemFactory(conf: Int, tooltip: String) = {
@@ -225,14 +226,13 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
       li(configButtons(0)),
       li(configButtons(1)),
       li(configButtons(2)),
-      li(configButtons(3)),
       li(role:="separator", cls := "divider"),
       li(
         a(
           cls := "dropdown-item clickable",
           data("toggle") := "modal",
           data("target") := "#helpModal",
-          "Sobre nosotros"
+          s.uil.aboutus
         )
       )
     )

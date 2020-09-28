@@ -14,7 +14,7 @@ class LexerSuite extends FunSuite {
   
 def getTokens(program:String,assertLength:Int)={
     val t =Lexer(program)
-//    println(t)
+    
     assert(t.isRight)
     val tokens=t.right.get
     assertResult(assertLength)(t.right.get.length)
@@ -64,6 +64,27 @@ test("binary values") {
      
 }
 
+test("label") {
+     val program = "asd: mov ax, 4"
+     val tokens=getTokens(program, 6)
+//     println("tokens:")
+//     println(tokens)
+     
+}
+
+test("in") {
+     val program = "in al, 4"
+     val tokens=getTokens(program, 5)
+//     println("tokens:")
+//     println(tokens)
+}
+
+test("in with label") {
+     val program = "asd: in al, 4"
+     val tokens=getTokens(program, 6)
+    println("tokens:")
+    println(tokens)
+}
 
 }
 
