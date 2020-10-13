@@ -202,11 +202,11 @@ object Main extends JSApp {
   }
 
   def defaultCode = """org 1000h
-; variables here
+; variables 
 
 
 org 2000h
-; your code here
+; código
 hlt
 end
 """

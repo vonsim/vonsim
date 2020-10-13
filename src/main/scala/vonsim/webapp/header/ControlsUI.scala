@@ -261,7 +261,6 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
   }
   
   def disableControlsQuickRun() {
-    println("+*******+ disableControlsQuickRun")
     setEnabled(quickButton, false)
     setEnabled(finishButton, false)
     setEnabled(stepButton, false)

@@ -1,7 +1,7 @@
 package vonsim.webapp
 
-import vonsim.utils.CollectionUtils._
 import scalatags.JsDom.all._
+import vonsim.utils.CollectionUtils._
 //import org.scalajs.dom.html._
 import org.scalajs.dom.raw.HTMLElement
 import org.scalajs.dom.raw.KeyboardEvent
@@ -52,10 +52,9 @@ import vonsim.webapp.header.HeaderUI
 
 object UIConfig {
   def apply(
-    disableEditor: Boolean = false,
+    disableEditor:    Boolean = false,
     disableMainboard: Boolean = false,
-    disableControls: Boolean = false
-  ) = {
+    disableControls:  Boolean = false) = {
     new UIConfig(disableEditor, disableMainboard, disableControls)
   }
   def enableAll = new UIConfig(false, false, false)
@@ -65,44 +64,41 @@ object UIConfig {
   def disableAllButControls = new UIConfig(true, true, false)
 }
 class UIConfig(
-  val disableEditor: Boolean,
+  val disableEditor:    Boolean,
   val disableMainboard: Boolean,
-  val disableControls: Boolean
-) {}
+  val disableControls:  Boolean) {}
 
 class MainUI(
-  s: VonSimState,
+  s:           VonSimState,
   defaultCode: String,
   saveCodeKey: String,
-  tutorial: Option[Tutorial]
-) extends VonSimUI(s) {
+  tutorial:    Option[Tutorial]) extends VonSimUI(s) {
 
-  val devicesConfigKey="config"
+  val devicesConfigKey = "config"
   println("Setting up UI..")
   val editorUI = new EditorUI(s, defaultCode, () => {
     saveCode()
     compile()
   })
 
-	val $ = js.Dynamic.global.$
+  val $ = js.Dynamic.global.$
   val mainboardUI = new MainboardUI(s)
-  
+
   val headerUI = new HeaderUI(s)
-//  print(headerUI.configButtons.length)
-  headerUI.controlsUI.deviceConfigurationUI.root.onclick = (e:Any) =>{
+  //  print(headerUI.configButtons.length)
+  headerUI.controlsUI.deviceConfigurationUI.root.onclick = (e: Any) => {
     val dc = s.s.devController
     val index = dc.configs.indexOf(dc.config)
     val newIndex = (index + 1) % dc.configs.length
     val newConfig = dc.configs(newIndex)
-    
+
     s.s.devController.setConfig(newConfig)
     mainboardUI.changeDisplayConfiguration(newConfig)
-		simulatorEvent()
-		setConfigValue(devicesConfigKey, newIndex)
-    
+    simulatorEvent()
+    setConfigValue(devicesConfigKey, newIndex)
+
   }
-  
-  
+
   val tutorialUI = tutorial.map(t => new TutorialUI(s, t, this))
   println("checking mode:..")
   val leftPanelId = "leftWrap"
@@ -134,7 +130,18 @@ class MainUI(
     }
     case None =>
   }
-
+  
+  mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
+    val code = event.keyCode
+    s.s.inputChar(code)
+    mainboardUI.keyboardUI.keyPressed(code)
+    simulatorEvent()
+    s.s.runState match {
+      case Run   => runInstructionsTimed()
+      case Debug => headerUI.controlsUI.updateUI()
+    }
+  }
+  
   bindkey(root, s.uil.controlsQuickHotkey, () => {
     if (s.canLoadOrQuickRun()) {
       s.s.runState = Run
@@ -156,7 +163,7 @@ class MainUI(
 
   bindkey(root, s.uil.controlsFinishHotkey, () => {
     if (s.isSimulatorExecuting()) {
-      if(s.s.runState == Debug)
+      if (s.s.runState == Debug)
         finishInstructions()
       else {
         s.s.runState = Run
@@ -176,17 +183,17 @@ class MainUI(
   bindkey(root, "ctrl+s", () => {
     false
   })
-  
+
   headerUI.controlsUI.quickButton.onclick = (e: Any) => {
     s.s.runState = Run
-  	quickRun()
+    quickRun()
   }
 
   headerUI.controlsUI.loadOrStopButton.loadButton.onclick = (e: Any) => {
     s.s.runState = Debug
     loadProgram()
   }
-  
+
   headerUI.controlsUI.loadOrStopButton.stopButton.onclick = (e: Any) => {
     s.s.runState = Stop
     stop()
@@ -199,14 +206,16 @@ class MainUI(
       dom.window.location.reload(false)
     }
   })
-  
+
   headerUI.controlsUI.finishButton.onclick = (e: Any) => {
     runInstructionsTimed()
   }
-  
+
   headerUI.controlsUI.stepButton.onclick = (e: Any) => { stepInstruction() }
-  
+
   mainboardUI.keysUI.confKeys(mainboardUI.pioUI.simulatorEvent)
+
+  
 
   println("UI set up. Updating for the first time..")
   simulatorEvent()
@@ -224,7 +233,7 @@ class MainUI(
     editorUI.simulatorEvent()
     mainboardUI.simulatorEvent()
   }
-  
+
   def simulatorEvent(i: InstructionInfo) {
     headerUI.simulatorEvent(i)
     editorUI.simulatorEvent(i)
@@ -233,7 +242,7 @@ class MainUI(
 
   def compile() {
     val codeString = editorUI.getCode()
-    println("MainUI:Code String:" + codeString)
+//    println("MainUI:Code String:" + codeString)
     s.c = Compiler(codeString)
     compilationEvent()
   }
@@ -244,107 +253,103 @@ class MainUI(
     mainboardUI.reset()
     simulatorEvent()
   }
-  
+
   def stop() {
     println("Stopping execution... ")
     s.s.stop()
     mainboardUI.reset()
     simulatorEvent()
   }
-  
+
   def delay(milliseconds: Int): Future[Unit] = {
-  	val p = Promise[Unit]()
-  	js.timers.setTimeout(milliseconds) {
-	    p.success(())
-	  }	
-	  p.future
-	}
-  
+    val p = Promise[Unit]()
+    js.timers.setTimeout(milliseconds) {
+      p.success(())
+    }
+    p.future
+  }
+
   var cant = 0 // Cantidad de instrucciones realizadas
   var tiempoTranscurrido: Long = 0
   var tiempoInicial: Long = 0
-  
+
   def getTickTime() = s.systemEventTimer.getTickTime()
 
-  
   def executeInstructionsTimed() {
-  	if(!s.isWaitingKeyPress()) {
-	  	tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-	  	if((tiempoTranscurrido * getTickTime() / 1000) >= cant) {
-		    cant = cant + 1
-		    var i = s.s.stepInstruction()
-		    i match {
-		      case Left(error) => println(error.message)
-		      case Right(i)    => {
-		      	simulatorEvent(i)
-			      if(s.isWaitingKeyPress())
-			      	$("#external-devices-tab a").tab("show")
-		     	}
-		    }
-	  	}
-  	}
-  	else {
-  		cant = 0
-  		tiempoInicial = System.currentTimeMillis()
-  	}
-  	checkTime()
+    if (!s.isWaitingKeyPress()) {
+      tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
+      if ((tiempoTranscurrido * getTickTime() / 1000) >= cant) {
+        cant = cant + 1
+        var i = s.s.stepInstruction()
+        i match {
+          case Left(error) => println(error.message)
+          case Right(i) => {
+            simulatorEvent(i)
+            if (s.isWaitingKeyPress())
+              $("#external-devices-tab a").tab("show")
+          }
+        }
+      }
+    } else {
+      cant = 0
+      tiempoInicial = System.currentTimeMillis()
+    }
+    checkTime()
   }
-  
+
   def checkTime() {
-  	var readyLater = for {
-		  delayed <- delay(25)
-		} yield {
-    	if(s.isSimulatorExecuting()) {
-    	  if(s.systemEventTimer.update(System.currentTimeMillis()))
-    	    executeInstructionsTimed()
-    	  else
-    	    checkTime()
-    	}
-		}
+    var readyLater = for {
+      delayed <- delay(25)
+    } yield {
+      if (s.isSimulatorExecuting()) {
+        if (s.systemEventTimer.update(System.currentTimeMillis()))
+          executeInstructionsTimed()
+        else
+          checkTime()
+      }
+    }
   }
-  
+
   def runInstructionsTimed() {
-  	println("Running with time control...")
+    println("Running with time control...")
 
     editorUI.disableTextArea()
     headerUI.disable()
-    print("disable quick run")
     headerUI.controlsUI.disableControlsQuickRun()
-    print("disable quick run")
-    
-  	cant = 0
-  	tiempoTranscurrido = 0
+
+    cant = 0
+    tiempoTranscurrido = 0
     tiempoInicial = System.currentTimeMillis()
 
     executeInstructionsTimed()
   }
-  
+
   def finishInstructions() {
     println("Finishing... ")
-    
+
     editorUI.disableTextArea()
     headerUI.disable()
     headerUI.controlsUI.disableControlsQuickRun()
-    
+
     var cant = 0
     var inst = 0
-    while(s.isSimulatorExecuting() && !s.isWaitingKeyPress()  && (cant < 1000)) {
+    while (s.isSimulatorExecuting() && !s.isWaitingKeyPress() && (cant < 1000)) {
       cant += 1
-	    val i = s.s.stepInstruction(inst * s.systemEventTimer.tickTime)
-	    i match {
-	      case Left(error) => {
-	        mainboardUI.displayNewToast(error.message)
-	      }
-	      case Right(i)    => {
-	        inst += 1
-	      	simulatorEvent(i)
-		      if(s.isWaitingKeyPress())
-		      	$("#external-devices-tab a").tab("show")
-	     	}
-	    }
+      val i = s.s.stepInstruction(inst * s.systemEventTimer.tickTime)
+      i match {
+        case Left(error) => {
+          mainboardUI.displayNewToast(error.message)
+        }
+        case Right(i) => {
+          inst += 1
+          simulatorEvent(i)
+          if (s.isWaitingKeyPress())
+            $("#external-devices-tab a").tab("show")
+        }
+      }
     }
 
-    if(cant == 1000) {
+    if (cant == 5000) {
       s.s.pauseExecution("Loop")
       mainboardUI.displayNewToast(s.uil.stateToTooltip(SimulatorExecutionLoop))
       simulatorEvent()
@@ -359,52 +364,43 @@ class MainUI(
       case Left(error) => {
         mainboardUI.displayNewToast(error.message)
       }
-      case Right(i)    => {
-      	inst += 1
-      	simulatorEvent(i)
-	      if(s.isWaitingKeyPress())
-	      	$("#external-devices-tab a").tab("show")
-     	}
+      case Right(i) => {
+        inst += 1
+        simulatorEvent(i)
+        if (s.isWaitingKeyPress())
+          $("#external-devices-tab a").tab("show")
+      }
     }
 
   }
-  
+
   def quickRun() {
     s.c match {
       case Right(c: SuccessfulCompilation) => {
-      	loadProgram()
-      	runInstructionsTimed()
+        loadProgram()
+        runInstructionsTimed()
       }
       case _ => dom.window.alert(s.uil.alertCompilationFailed)
     }
   }
-  
+
   def loadProgram() {
     s.c match {
       case Right(c: SuccessfulCompilation) => {
         println("Loading program... ")
         s.s.load(c)
         mainboardUI.reset()
-        mainboardUI.keyboardUI.keyboardArea.onkeypress = (event: KeyboardEvent) => {
-        	mainboardUI.keyboardUI.keyPressed(event.keyCode)
-        	if(s.s.runState == Run)
-        		runInstructionsTimed()
-        	else if(s.s.runState == Debug)
-        		headerUI.controlsUI.updateUI()
-        }
-        
         simulatorEvent()
-        println("Done")
       }
       case _ => dom.window.alert(s.uil.alertCompilationFailed)
     }
 
   }
-  
+
   def saveCode() {
     dom.window.localStorage.setItem(saveCodeKey, editorUI.getCode())
   }
-  
+
   def applyUIConfig(uiConfig: UIConfig) {
     headerUI.setDisabled(uiConfig.disableControls)
     editorUI.setDisabled(uiConfig.disableEditor)

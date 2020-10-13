@@ -36,7 +36,7 @@ class DevicesSuite extends FunSuite {
     val base1=0x1000
     s.stepInstruction()
     s.stepInstruction()
-    s.resumeExecution('A'.toInt)
+    s.inputChar('A'.toInt)
     assertResult('A')(s.memory.getByte(base1).toInt.toChar)
   }
 

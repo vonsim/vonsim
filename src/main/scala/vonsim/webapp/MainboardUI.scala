@@ -46,7 +46,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
   
   // Dispositivos externos
   val monitorUI = new MonitorUI(s)
-  val keyboardUI = new KeyboardUI(s)
+  val keyboardUI = new KeyboardUI(s, t => {println("Evento"+t)})
   val keysUI = new KeysUI(s)
   val ledsUI = new LedsUI(s)
   val printerUI = new PrinterUI(s)

@@ -28,13 +28,14 @@ import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 
-class KeyboardUI(s: VonSimState) extends MainboardItemUI (
+class KeyboardUI(s: VonSimState,val callback:Function1[Int,Unit]) extends MainboardItemUI (
       s,
 			"keyboard",
       "keyboard",
       s.uil.keyboardTitle
     ) {
 	val text = "".render
+	
 	val keyboardArea = 
 		textarea(
 //			disabled,
@@ -45,6 +46,7 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
 			style := "white-space: pre",
 			text
 		).render
+		
 	val keyboard =
 		div(
 			keyboardArea
@@ -54,10 +56,7 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
 	
 	contentDiv.appendChild(keyboard)
 	
-	def configKeyboardEvent(){
-		keyboardArea.onkeypress = (event: KeyboardEvent) => { keyPressed(event.keyCode) }
-	}
-	
+		
   def simulatorEvent() {
 		if(s.isWaitingKeyPress())
 			enableTextArea()
@@ -91,7 +90,7 @@ class KeyboardUI(s: VonSimState) extends MainboardItemUI (
   def keyPressed(key: Int){
   	disableTextArea()
   	text.textContent += key.toChar
-  	s.s.resumeExecution(key)
+  
   }
   
   //def compilationEvent() {}

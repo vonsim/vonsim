@@ -356,10 +356,11 @@ class Simulator(
       state = SimulatorExecutionLoop
   }
   
-  def resumeExecution(key: Int) {
+  def inputChar(key: Int) {
   	state = SimulatorProgramExecuting
-		val adress = cpu.get(BX).toInt
-		memory.setByte(adress, Word(key.toByte))
+		val address = cpu.get(BX).toInt
+		memory.setByte(address, Word(key.toByte))
+//		println(s"Received char input $key, stored in $address")
   }
   
   def setSpecialRegisters(i: Instruction) {

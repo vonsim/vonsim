@@ -40,7 +40,7 @@ abstract class HTMLUI {
     
   def getConfigValue(k:String) = {
     val v = dom.window.localStorage.getItem(getStorageKey(k))
-    println(s"$k -> $v (VonSimUi)")
+//    println(s"$k -> $v (VonSimUi)")
     Option(v)
   }
   
