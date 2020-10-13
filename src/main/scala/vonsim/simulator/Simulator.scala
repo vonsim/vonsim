@@ -241,7 +241,7 @@ class Simulator(
   var state: SimulatorState = SimulatorExecutionStopped
   var language: SimulatorLanguage = new Spanish()
   
-  val devController: DevicesController = new DevicesController(memory)
+  val devController: DevicesController = new DevicesController()
   
   var runState: RunType = Stop
   var pendingInterruption = false
@@ -272,6 +272,7 @@ class Simulator(
   }
 
   def currentInstruction() = {
+//    println(s" pic int pending ${devController.isPendingInterruption()} ints ${cpu.acceptInterruptions}(simulator)")
     if(devController.isPendingInterruption() && cpu.acceptInterruptions) {
       interruptionCall(memory.getBytes(devController.getInterruptionAdress()).toUnsignedInt)
     }
@@ -487,14 +488,10 @@ class Simulator(
         checkUpdateResult(update(o, a), i)
       }
       case Cli => {
-        cpu.disableInterruptions();
-        devController.strategie.pic.acceptInterruptions = false
-      	// enabledInterruptions = false
+        cpu.disableInterruptions()
       }
       case Sti => {
-        cpu.enableInterruptions();
-        devController.strategie.pic.acceptInterruptions = true
-    		// enabledInterruptions = true
+        cpu.enableInterruptions()
       }
       case Iret => {
       	// Hace 2 pops: 1 word del IP y 2 bytes de Flags, 4 bytes en total (2 pops de DWords)
@@ -521,7 +518,7 @@ class Simulator(
 							text+=(memory.values(startAdress).toInt.toChar)
 							startAdress = startAdress + 1
 						}
-						devController.strategie.addMonitorText(text)
+						devController.config.addMonitorText(text)
       	  }
       	}
       }

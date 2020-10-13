@@ -26,6 +26,7 @@ import vonsim.assembly.lexer.AL
 import vonsim.assembly.lexer.RegisterToken
 import vonsim.assembly.lexer.DW
 import vonsim.assembly.lexer.DB
+import vonsim.webapp.header.ModalUI
 
 class TutorialUIControl(
   s: VonSimState,

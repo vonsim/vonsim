@@ -209,6 +209,7 @@ end"""
     s.stepInstruction()
     assertResult(3)(s.cpu.get(AX).toInt)
     s.stepInstruction()
+    println(s.cpu.get(AX))
     assertResult(5)(s.cpu.get(AX).toInt)
     s.stepInstruction()
     assert(s.cpu.halted)

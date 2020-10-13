@@ -76,19 +76,32 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
       )
 		).render
 	
+  val speedValues = Array(1000,500,250,125,62,31)
+  val printerSpeedKey="printerSpeed"
+  getConfigValueInt(printerSpeedKey).foreach( 
+      speed => s.s.devController.setPrinterTickTime(speed) )
+  
+  val tickTime=s.s.devController.getPrinterTickTime()
+  println(tickTime)
   val speedButton = a(
     cls := "btn btn-primary",
-    (1000.0 / s.s.devController.getPrinterTickTime()) + " Hz",
+    (1000.0 / tickTime) + " Hz",
     data("toggle"):="tooltip",
     data("placement"):="bottom",
-    title:= "Período del clock: " + s.s.devController.getPrinterTickTime() + " ms"
+    title:= "Período: " + tickTime + " ms"
   ).render
   
+
+      
   speedUpButton.appendChild(speedButton.render)
   speedButton.onclick = (e: Any) => {
-  	s.s.devController.printerSpeedUp()
-  	speedButton.textContent = (1000.0 / s.s.devController.getPrinterTickTime()) + " Hz"
-  	speedButton.title = "Período del clock: " + s.s.devController.getPrinterTickTime() + " ms"
+    
+  	val tickTime = s.s.devController.getPrinterTickTime()
+    val newTickTime = speedValues((speedValues.indexOf(tickTime) + 1) % speedValues.length)
+    s.s.devController.setPrinterTickTime(newTickTime)
+    setConfigValue(printerSpeedKey, newTickTime)
+  	speedButton.textContent = (1000 / newTickTime ) + " Hz"
+  	speedButton.title = "Período: " + newTickTime  + " ms"
 	}
   
 	contentDiv.appendChild(monitorArea)
@@ -112,7 +125,7 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
         setDescription(charsToPrint(i), "No hay un caracter para imprimir.")
       }
     })
-	  text.textContent = s.s.devController.strategie.getPrintedText()
+	  text.textContent = s.s.devController.config.getPrintedText()
     if (s.isSimulatorExecuting()) speedButton.classList.add("disabled")
     else speedButton.classList.remove("disabled")
   }

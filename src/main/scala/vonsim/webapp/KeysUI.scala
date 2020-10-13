@@ -36,7 +36,7 @@ class KeysUI (s: VonSimState)
       s.uil.keysTitle
     ) {
 	
-	def value = s.s.devController.strategie.getKeysValue
+	def value = s.s.devController.config.getKeysValue
 	
 	val inputArray = Array(
 		input(cls:= "slider-box", `type`:= "checkbox").render,
@@ -135,7 +135,7 @@ class KeysUI (s: VonSimState)
 	def reset() {}
 	
 	def toggleBit(i: Int) {
-  	s.s.devController.strategie.toggleKeyBit(i)
+  	s.s.devController.config.toggleKeyBit(i)
   	simulatorEvent()
 	}
 

@@ -63,7 +63,9 @@ class DevicesSuite extends FunSuite {
     s.stepInstruction()
     s.stepInstruction()
     s.stepInstruction()
-    assertResult("ARQUITECTURA DE COMPUTADORAS-FACULTAD DE INFORMATICA-UNLP")(s.devController.strategie.getMonitorText())
+    
+    assertResult("ARQUITECTURA DE COMPUTADORAS-FACULTAD DE INFORMATICA-UNLP")(s.devController.config.getMonitorText())
+    
   }
 
    test("Int 0 - Halt") {
@@ -109,14 +111,14 @@ class DevicesSuite extends FunSuite {
     s.devController.writeIO(48, Word(0))
     
     s.stepInstruction() // POLL: MOV al, 0
-    s.devController.strategie.toggleKeyBit(1) // Key 1 pressed
+    s.devController.config.toggleKeyBit(1) // Key 1 pressed
     s.stepInstruction() // IN AL, PA
     s.stepInstruction() // OUT PB, AL
     assertResult(1)(s.devController.readIO(49).bit(1))
     s.stepInstruction() // JMP POLL
     
     s.stepInstruction() // POLL: MOV al, 0
-    s.devController.strategie.toggleKeyBit(1) // Key 1 pressed again
+    s.devController.config.toggleKeyBit(1) // Key 1 pressed again
     s.stepInstruction() // IN AL, PA
     s.stepInstruction() // OUT PB, AL
     assertResult(0)(s.devController.readIO(49).bit(1))
@@ -205,12 +207,12 @@ END"""
      // TODO put it back
 //     assertResult(false)(s.devController.strategie.getStrobePulse())
      s.stepInstruction(timePassed) // OUT PIO, AL
-     assertResult(true)(s.devController.strategie.getStrobePulse())
+     assertResult(true)(s.devController.config.getStrobePulse())
      timePassed = 8000 * i
      // Fuerzo Strobe a 0
-     assertResult(true)(s.devController.strategie.isPrinting())
+     assertResult(true)(s.devController.config.isPrinting())
      s.stepInstruction(timePassed) // IN AL, PIO
-     assertResult(false)(s.devController.strategie.isPrinting())
+     assertResult(false)(s.devController.config.isPrinting())
      s.stepInstruction(timePassed) // AND AL, 0FDH
      s.stepInstruction(timePassed) // OUT PIO, AL
      // Siguiente caracter
@@ -218,7 +220,7 @@ END"""
      s.stepInstruction(timePassed) // DEC CL
      s.stepInstruction(timePassed) // JNZ POLL
    }
-   assertResult("ARQUITECTURA DE COMPUTADORAS")(s.devController.strategie.getPrintedText())
+   assertResult("ARQUITECTURA DE COMPUTADORAS")(s.devController.config.getPrintedText())
    s.stepInstruction(timePassed) // INT 0
    assert(s.cpu.halted)
   }
@@ -237,16 +239,15 @@ END"""
     val s=simulator(program)
     s.stepInstruction() // CLI
     assertResult(false)(s.cpu.acceptInterruptions)
-    assertResult(false)(s.devController.strategie.pic.acceptInterruptions)
+    
     s.stepInstruction() // NOP
-    s.devController.strategie.pic.picInterruption(0)
-    assertResult(Word(1))(s.devController.strategie.pic.IRR)
-    assertResult(Word(0))(s.devController.strategie.pic.ISR)
+    s.devController.config.pic.picInterruption(0)
+    assertResult(Word(1))(s.devController.config.pic.IRR)
+    assertResult(Word(0))(s.devController.config.pic.ISR)
     s.stepInstruction() // STI
-    assertResult(Word(0))(s.devController.strategie.pic.IRR)
-    assertResult(Word(1))(s.devController.strategie.pic.ISR)
+    assertResult(Word(0))(s.devController.config.pic.IRR)
+    assertResult(Word(1))(s.devController.config.pic.ISR)
     assertResult(true)(s.cpu.acceptInterruptions)
-    assertResult(true)(s.devController.strategie.pic.acceptInterruptions)
   }
    
    test("Handshake + Printer / Polling") {
@@ -280,7 +281,8 @@ END"""
     val s=simulator(program)
     var timePassed: Long = 0
     s.devController.setConfig(2)
-  	s.stepInstruction(timePassed) // IN AL, HAND+1
+  	
+    s.stepInstruction(timePassed) // IN AL, HAND+1
   	s.stepInstruction(timePassed) // AND AL, 7FH
   	s.stepInstruction(timePassed) // OUT HAND+1, AL
   	
@@ -306,7 +308,8 @@ END"""
   	  s.stepInstruction(timePassed)
     }
   	
-    assertResult("FACULTAD DE INFORMATICA")(s.devController.strategie.getPrintedText())
+     
+    assertResult("FACULTAD DE INFORMATICA")(s.devController.config.getPrintedText())
   	s.stepInstruction(timePassed) // INT 0
     assert(s.cpu.halted)
   }
@@ -398,7 +401,7 @@ END"""
     s.stepInstruction(timePassed) // CONT:	MOV AL, 20H
     s.stepInstruction(timePassed) // OUT PIC, AL
 
-    assertResult("UNIVERSIDAD NACIONAL DE LA PLATA")(s.devController.strategie.getPrintedText())
+    assertResult("UNIVERSIDAD NACIONAL DE LA PLATA")(s.devController.config.getPrintedText())
     
     var cont = 0
     while((!s.cpu.halted) && (cont < 1000)) {

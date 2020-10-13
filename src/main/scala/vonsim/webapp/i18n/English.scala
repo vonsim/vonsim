@@ -57,6 +57,15 @@ class English extends UILanguage {
 There is probably a loop in the program."""
   }
 
+  def deviceConfigurationToMessage(s:DevicesController) = s.config match{
+    case _: LedsAndSwitches => s"0) Leds & Switches"
+    case _: PrinterPIO => s"1) Printer w/ PIO"
+    case _: PrinterHandshake => s"2) Printer w/ HANDSHAKE"
+    case _: PrinterCDMA=> s"3) Printer w/ DMAC"
+  }
+  def deviceConfigurationToTooltip(s:DevicesController) = deviceConfigurationToMessage(s)
+  
+
   def cpuFlagDescription(f: Flag, v: String) = s"Flag $f has value $v"
   def flags = "Flags"
   def aluTitle = "ALU"
@@ -93,11 +102,19 @@ There is probably a loop in the program."""
   def alertCompilationFailed = "Compilation failed, can't load/run program"
 
   def describeInstruction(i: Instruction) = "Valid instruction."
-  def describeMemoryCell(address: Int, value: Word) =
+  def describeMemoryCell(address: Int, value: Word) ={
+    val c = value.toUnsignedInt.toChar
+    val ascii = if (charPrintable(c)) s"$c" else s"Non-printable code"
+  
     s"""Memory cell with address ${formatAddress(address)}h and value:
 Hexadecimal: ${formatWord(value)}h
 Binary: ${value.bitString.reverse}
 CA2: ${value.toInt}
 BSS: ${value.toUnsignedInt}
+ASCII: ${ascii}
 """
+}
+def deviceConfigurations = "Connections sets"
+def tutorials = "Tutorials"
+def language= "Language"
 }

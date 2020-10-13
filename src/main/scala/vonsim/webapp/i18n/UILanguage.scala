@@ -32,6 +32,9 @@ abstract class UILanguage {
   def controlsDebugTooltip: String
   def controlsStopButton: String
   def controlsStopTooltip: String
+  
+  def deviceConfigurations:String
+  def tutorials:String
 
   def controlsQuickButton: String
   def controlsQuickTooltip: String
@@ -42,7 +45,9 @@ abstract class UILanguage {
 
   def stateToMessage(state: SimulatorState): String
   def stateToTooltip(state: SimulatorState): String
-
+  def deviceConfigurationToMessage(s:DevicesController):String
+  def deviceConfigurationToTooltip(s:DevicesController):String
+  
   def cpuFlagDescription(f: Flag, v: String): String
   def flags: String
   def aluTitle: String
@@ -93,6 +98,15 @@ abstract class UILanguage {
   }
   def formatDWord(a: DWord) = {
     "%04X".format(a.toUnsignedInt)
+  }
+  
+  def language:String
+  
+  def charPrintable(c:Char)={
+    val code = c.toInt
+    val unprintable = List(127,129,141,143,144,157,160)
+    code > 32 && !unprintable.contains(code)
+    
   }
 
 }

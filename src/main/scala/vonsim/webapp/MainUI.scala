@@ -48,6 +48,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import vonsim.assembly.Compiler.FailedCompilation
 import vonsim.simulator.EventTimer
 import vonsim.simulator.SimulatorExecutionLoop
+import vonsim.webapp.header.HeaderUI
 
 object UIConfig {
   def apply(
@@ -76,6 +77,7 @@ class MainUI(
   tutorial: Option[Tutorial]
 ) extends VonSimUI(s) {
 
+  val devicesConfigKey="config"
   println("Setting up UI..")
   val editorUI = new EditorUI(s, defaultCode, () => {
     saveCode()
@@ -86,18 +88,21 @@ class MainUI(
   val mainboardUI = new MainboardUI(s)
   
   val headerUI = new HeaderUI(s)
-  print(headerUI.configButtons.length)
-  
-  for ((configButton,i) <- headerUI.configButtons.zipWithIndex){
-    configButton.onclick = (e: Any) => {
-  		if(s.s.devController.getConfig() != i) {
-				mainboardUI.changeDisplayConfiguration(i)
-				s.s.devController.setConfig(i)
-				mainboardUI.pioUI.setConfig(i)
-  		}
-  	}
+//  print(headerUI.configButtons.length)
+  headerUI.controlsUI.deviceConfigurationUI.root.onclick = (e:Any) =>{
+    val dc = s.s.devController
+    val index = dc.configs.indexOf(dc.config)
+    val newIndex = (index + 1) % dc.configs.length
+    val newConfig = dc.configs(newIndex)
+    
+    s.s.devController.setConfig(newConfig)
+    mainboardUI.changeDisplayConfiguration(newConfig)
+		simulatorEvent()
+		setConfigValue(devicesConfigKey, newIndex)
+    
   }
-
+  
+  
   val tutorialUI = tutorial.map(t => new TutorialUI(s, t, this))
   println("checking mode:..")
   val leftPanelId = "leftWrap"
@@ -187,7 +192,7 @@ class MainUI(
     stop()
   }
 
-  headerUI.languageButtons.foreach(b => {
+  headerUI.dropdownUI.languageUI.languageButtons.foreach(b => {
     b.onclick = (e: Any) => {
       val language = b.getAttribute("lang")
       dom.window.localStorage.setItem(Main.cookieLanguageKey, language)
@@ -196,7 +201,7 @@ class MainUI(
   })
   
   headerUI.controlsUI.finishButton.onclick = (e: Any) => {
-   	finishInstructions()
+    runInstructionsTimed()
   }
   
   headerUI.controlsUI.stepButton.onclick = (e: Any) => { stepInstruction() }
@@ -244,7 +249,6 @@ class MainUI(
     println("Stopping execution... ")
     s.s.stop()
     mainboardUI.reset()
-    headerUI.enableConfigButtons()
     simulatorEvent()
   }
   
@@ -261,7 +265,7 @@ class MainUI(
   var tiempoInicial: Long = 0
   
   def getTickTime() = s.systemEventTimer.getTickTime()
-  def speedUp() = s.systemEventTimer.speedUp()
+
   
   def executeInstructionsTimed() {
   	if(!s.isWaitingKeyPress()) {
@@ -303,8 +307,10 @@ class MainUI(
   	println("Running with time control...")
 
     editorUI.disableTextArea()
-    headerUI.controlsUI.disableControls()
-    headerUI.disableConfigButtons()
+    headerUI.disable()
+    print("disable quick run")
+    headerUI.controlsUI.disableControlsQuickRun()
+    print("disable quick run")
     
   	cant = 0
   	tiempoTranscurrido = 0
@@ -317,8 +323,8 @@ class MainUI(
     println("Finishing... ")
     
     editorUI.disableTextArea()
-    headerUI.controlsUI.disableControls()
-    headerUI.disableConfigButtons()
+    headerUI.disable()
+    headerUI.controlsUI.disableControlsQuickRun()
     
     var cant = 0
     var inst = 0
@@ -386,7 +392,7 @@ class MainUI(
         	else if(s.s.runState == Debug)
         		headerUI.controlsUI.updateUI()
         }
-        headerUI.disableConfigButtons()
+        
         simulatorEvent()
         println("Done")
       }

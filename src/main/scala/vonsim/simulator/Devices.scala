@@ -13,6 +13,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable.Queue
 import scala.collection.mutable.ListBuffer
 
+abstract class InternalDevice{
+  
+  def writeIO(v: Simulator.IOMemoryAddress, regValue: Word)
+  
+  def readIO(v:Simulator.IOMemoryAddress):Word
+  def validAddress(address: Int):Boolean
+  
+}
+
 class Printer() {
 	/*
 	 * PIO:
@@ -35,9 +44,9 @@ class Printer() {
 	val buffer = Queue.empty[Word]
 	var printedText = ""
 	
-  val eventTimer = new EventTimer(8000, Array(8000, 4000, 2000, 1000))
+  val eventTimer = new EventTimer(8000)
 
-	def print() {
+	def printChar() {
 		if(buffer.size > 0)
       printedText = printedText + buffer.dequeue().toInt.toChar
 	}
@@ -65,7 +74,7 @@ class Printer() {
   
   def simulatorEvent(actualTime: Long) {
 	  if((eventTimer.update(actualTime)) && printing) {
-	    print()
+	    printChar()
 	    if(buffer.size == 0)
         printing = false
 	  }
@@ -173,9 +182,11 @@ class Monitor() {
   
   var text = ""
   
-  def addText(textToAdd: String) {
-    text += textToAdd
+  def addText(textAdd: String) {
+    print(s"(Monitor) adding text textAdd")
+    text += textAdd
   }
+  
   def getText() = text
   
   def simulatorEvent() {}
@@ -189,10 +200,10 @@ class Monitor() {
   }
 }
 
-class Timer(seed: Long, pic: PIC) {
+class Timer(seed: Long, pic: PIC) extends InternalDevice {
 
   val values: Array[Word] = randomBytes(2).map(Word(_))
-  val eventTimer = new EventTimer(800, Array(800))
+  val eventTimer = new EventTimer(800)
 
 	def checkTime() {
 		var cont = readIO(16).toInt
@@ -250,7 +261,7 @@ class Timer(seed: Long, pic: PIC) {
   }
 }
 
-class PIO(config: Int, seed: Long, printerConnection: PrinterConnection) {
+class PIO(config: Int, seed: Long, printerConnection: PrinterConnection) extends InternalDevice {
   
   val values: Array[Word] = randomBytes(4).map(Word(_))
 
@@ -314,13 +325,13 @@ class PIO(config: Int, seed: Long, printerConnection: PrinterConnection) {
   }
 }
 
-class PIC(seed: Long) {
+class PIC(seed: Long) extends InternalDevice {
 	
   def IMR = readIO(33) // 1 -> Ignorar; 0 -> Atender
   def IRR = readIO(34) // 1 -> Pendiente; 0 -> No pendiente
   def ISR = readIO(35) // 1 -> Atendida; 0 -> No se atendió
   
-  var acceptInterruptions = false
+ 
 
   val values: Array[Word] = randomBytes(12).map(Word(_))
 	var interruptionAdress: Int = 0
@@ -335,6 +346,7 @@ class PIC(seed: Long) {
   }
 	
 	def isPendingInterruption() = (interruptionAdress != 0)
+	
 	def getInterruptionAdress(): Int = {
 		var res = interruptionAdress
 		interruptionAdress = 0
@@ -346,7 +358,7 @@ class PIC(seed: Long) {
 	}
 	
   def simulatorEvent() {
-  	if((IRR != Word(0)) && acceptInterruptions) { // Si hay un llamado de interrupción
+  	if((IRR != Word(0))) { // Si hay un llamado de interrupción
   		
   		var intX = -1
   		var i = 0
@@ -400,7 +412,7 @@ class PIC(seed: Long) {
   }
 }
 
-class Handshake(seed: Long, pic: PIC, printerConnection: PrinterConnection) {
+class Handshake(seed: Long, pic: PIC, printerConnection: PrinterConnection) extends InternalDevice {
   
   val values: Array[Word] = randomBytes(2).map(Word(_))
   def state = readIO(65)
@@ -467,7 +479,7 @@ class Handshake(seed: Long, pic: PIC, printerConnection: PrinterConnection) {
   }
 }
 
-class CDMA(seed: Long, pic: PIC) {
+class CDMA(seed: Long, pic: PIC) extends InternalDevice {
   
   val values: Array[Word] = randomBytes(8).map(Word(_))
   
@@ -526,14 +538,16 @@ class CDMA(seed: Long, pic: PIC) {
   }
 }
 
-class EventTimer(var tickTime: Int, val speedValues: Array[Int]) {
+class EventTimer(var tickTime: Int=1000) {
   
   var lastTick: Long = 0
   var actualTime: Long = 0
   
   def getTickTime() = tickTime
-  def speedUp() {
-    tickTime = speedValues((speedValues.indexOf(tickTime) + 1) % speedValues.length)
+  
+  def setTickTime(hz:Int){
+    tickTime=hz
+    
   }
   
   def start() {

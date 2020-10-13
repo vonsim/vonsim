@@ -1,13 +1,12 @@
-package vonsim.webapp
-
-import vonsim.simulator.Simulator
+package vonsim.webapp.header
 
 import scalajs.js
 import org.scalajs.dom.html._
 import scalatags.JsDom.all._
 import vonsim.simulator._
-import vonsim.assembly.Compiler.CompilationResult
-import vonsim.assembly.Compiler.FailedCompilation
+import scala.scalajs.js.annotation.JSGlobal
+import vonsim.webapp.VonSimState
+import vonsim.webapp.VonSimUI
 
 class SimulatorStateUI(s: VonSimState) extends VonSimUI(s) {
   def stateToIcon(state: SimulatorState) = state match {
@@ -59,6 +58,49 @@ class SimulatorStateUI(s: VonSimState) extends VonSimUI(s) {
   def compilationEvent() {}
 
 }
+
+class DeviceConfigurationUI(s: VonSimState) extends VonSimUI(s) {
+  
+  val stateIcon = i(cls := "").render
+  val stateTitle = span(style:="padding-left:5px;").render
+  val root = a(
+    cls := ""
+//      ,href:="#"
+//      ,rel:="tooltip"
+//      ,data("html"):="true"
+//      ,data("toggle"):="tooltip"
+//      ,title:="<div> <h1> HOLAHOLA </h1> <p> Chau </p> </div>"
+    ,
+    stateIcon,
+    stateTitle
+  ).render
+
+  simulatorEvent()
+
+  def simulatorEvent() {
+//    root.className = "btn " + color + " simulatorState"
+    root.className = "btn " + "btn-info" + " navbar-btn  simulatorState"
+    root.title = " "+s.uil.deviceConfigurationToTooltip(s.s.devController)
+    stateTitle.textContent = s.uil.deviceConfigurationToMessage(s.s.devController)
+    stateIcon.className = "fas fa-exchange-alt"
+    
+    if (s.isSimulatorExecuting()) {
+      root.classList.add("disabled")
+    }else{
+      root.classList.remove("disabled")
+    }
+
+  }
+  def simulatorEvent(i: InstructionInfo) {
+    simulatorEvent()
+  }
+
+  def compilationEvent() {}
+  
+   
+}
+
+
 class ConfigurationStateUI(s: VonSimState) extends VonSimUI(s) {
   def stateToIcon(state: SimulatorState) = state match {
     case SimulatorExecutionError(msg) => "exclamation-circle"
@@ -188,7 +230,8 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
   )
   val simulatorStateUI = new SimulatorStateUI(s)
   val configurationStateUI = new ConfigurationStateUI(s)
-
+  val deviceConfigurationUI = new DeviceConfigurationUI(s)
+  
   val root = span(
     id := "controls",
     span(cls := "controlSectionStart"),
@@ -198,7 +241,8 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
     span(cls := "controlSection", finishButton),
     span(cls := "controlSection", stepButton),
     span(cls := "controlSection", simulatorStateUI.root),
-    span(cls := "controlSection", configurationStateUI.root)
+    span(cls := "controlSection", configurationStateUI.root),
+    span(cls := "controlSection", deviceConfigurationUI.root)
   ).render
 
   def disableButton(bootstrapButton: Anchor) {
@@ -215,6 +259,15 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
     }
 
   }
+  
+  def disableControlsQuickRun() {
+    println("+*******+ disableControlsQuickRun")
+    setEnabled(quickButton, false)
+    setEnabled(finishButton, false)
+    setEnabled(stepButton, false)
+    loadOrStopButton.enableControls()
+  }
+  
   def disableControls() {
     setEnabled(quickButton, false)
     setEnabled(finishButton, false)
@@ -246,13 +299,17 @@ class ControlsUI(s: VonSimState) extends VonSimUI(s) {
   def simulatorEvent() {
     updateUI()
     simulatorStateUI.simulatorEvent()
+    deviceConfigurationUI.simulatorEvent()
   }
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()
     simulatorStateUI.simulatorEvent(i)
+    deviceConfigurationUI.simulatorEvent(i)
   }
   def compilationEvent() {
     updateUI()
     simulatorStateUI.compilationEvent()
+    deviceConfigurationUI.compilationEvent()
+    
   }
 }

@@ -26,6 +26,11 @@ import vonsim.simulator.SimulatorExecutionStopped
 import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
+import vonsim.simulator.DeviceConfiguration
+import vonsim.simulator.LedsAndSwitches
+import vonsim.simulator.PrinterPIO
+import vonsim.simulator.PrinterHandshake
+import vonsim.simulator.PrinterCDMA
 
 class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 	// CPU
@@ -125,11 +130,13 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
     )
   ).render
   
-  changeDisplayConfiguration(0)
+  changeDisplayConfiguration(s.s.devController.config)
   
-  def changeDisplayConfiguration(config: Int) {
+  def changeDisplayConfiguration(config: DeviceConfiguration) {
+    pioUI.setConfig(config)
+    
   	config match {
-  		case 0 => {
+  		case _:LedsAndSwitches => {
         pioUI.show()
         ledsUI.show()
         keysUI.show()
@@ -138,7 +145,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         cdmaUI.hide()
         printerUI.hide()
   		}
-  		case 1 => {
+  		case _:PrinterPIO => {
   			pioUI.show()
         printerUI.show()
         
@@ -147,7 +154,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         keysUI.hide()
         ledsUI.hide()
   		}
-  		case 2 => {
+  		case _:PrinterHandshake => {
   			handUI.show()
         printerUI.show()
         
@@ -156,7 +163,7 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
         keysUI.hide()
         ledsUI.hide()
   		}
-  		case 3 => {
+  		case _:PrinterCDMA => {
   			handUI.show()
         printerUI.show()
   			cdmaUI.show()
@@ -201,21 +208,21 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 		picUI.simulatorEvent()
 		internalTimerUI.simulatorEvent()
 
-    s.s.devController.getConfig() match {
-      case 0 => {
+    s.s.devController.config match {
+      case _:LedsAndSwitches => {
     		keysUI.simulatorEvent()
     		ledsUI.simulatorEvent()
     		pioUI.simulatorEvent()
       }
-      case 1 => {
+      case _:PrinterPIO => {
         printerUI.simulatorEvent()
         pioUI.simulatorEvent()
       }
-      case 2 => {
+      case _:PrinterHandshake => {
         printerUI.simulatorEvent()
         handUI.simulatorEvent()
       }
-      case 3 => {
+      case _:PrinterCDMA => {
         printerUI.simulatorEvent()
         handUI.simulatorEvent()
         cdmaUI.simulatorEvent()
@@ -232,21 +239,21 @@ class MainboardUI(s: VonSimState) extends VonSimUI(s) {
 		picUI.simulatorEvent(i)
 		internalTimerUI.simulatorEvent(i)
 
-    s.s.devController.getConfig() match {
-      case 0 => {
+    s.s.devController.config match {
+      case _:LedsAndSwitches => {
     		keysUI.simulatorEvent(i)
     		ledsUI.simulatorEvent(i)
     		pioUI.simulatorEvent(i)
       }
-      case 1 => {
+      case _:PrinterPIO => {
         printerUI.simulatorEvent(i)
         pioUI.simulatorEvent(i)
       }
-      case 2 => {
+      case _:PrinterHandshake => {
         printerUI.simulatorEvent(i)
         handUI.simulatorEvent(i)
       }
-      case 3 => {
+      case _:PrinterCDMA => {
         printerUI.simulatorEvent(i)
         handUI.simulatorEvent(i)
         cdmaUI.simulatorEvent(i)

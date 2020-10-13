@@ -3,8 +3,8 @@ package vonsim.webapp
 // tutorial https://www.scala-js.org/tutorial/basic/
 // canvas https://github.com/vmunier/scalajs-simple-canvas-game/blob/master/src/main/scala/simplegame/SimpleCanvasGame.scala
 
-import scala.scalajs.js.JSApp
 import scala.scalajs.js
+import scala.scalajs.js.JSApp
 import org.scalajs.dom
 import org.scalajs.dom.Element
 
@@ -154,7 +154,9 @@ object Main extends JSApp {
     val compilationResult = Compiler(initialCode)
 
     Compiler.language = l.compilerLanguage
+    
     val simulator = Simulator.Empty()
+    
     simulator.language = l.simulatorLanguage
 
     var s = new VonSimState(simulator, compilationResult, l.uiLanguage)

@@ -1,58 +1,55 @@
 package vonsim.simulator
 
-import scala.util.Random
-import scala.collection.mutable
-import vonsim.assembly.Compiler.MemoryAddress
-
-import scala.scalajs.js
-import js.JSConverters._
-
-import scala.concurrent.Promise
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable.Queue
-import scala.collection.mutable.ListBuffer
+import scala.util.Random
 
-class DevicesController(memory: Memory) {
+
+
+class DevicesController {
 	
-  var strategie: Strategie = new StrategieZero()
-  var config = 0
   
-  def setConfig(newConfig: Int) {
-    config = newConfig
-    newConfig match {
-      case 0 => strategie = new StrategieZero()
-      case 1 => strategie = new StrategieOne()
-      case 2 => strategie = new StrategieTwo()
-//      case 3 => strategie = new StrategieThree()
-    }
+  
+  val configs = List(
+      new LedsAndSwitches(),
+      new PrinterPIO(),
+      new PrinterHandshake())
+      
+  var config: DeviceConfiguration = configs(0)
+  
+  def setConfig(c:DeviceConfiguration){
+    config = c  
   }
   
-  def getConfig() = config
+  def setConfig(index:Int){
+      config=configs(index)
+  }
   
-  def simulatorEvent(actualTime: Long) = strategie.simulatorEvent(actualTime)
+  def configIndex = configs.indexOf(config)
+  
+  
+  def simulatorEvent(actualTime: Long) = config.simulatorEvent(actualTime)
   def simulatorEvent(i: InstructionInfo, actualTime: Long) {
     simulatorEvent(actualTime)
   }
 
-  def isPendingInterruption() = strategie.isPendingInterruption()
-	def getInterruptionAdress() = strategie.getInterruptionAdress()
+  def isPendingInterruption() = config.isPendingInterruption()
+	def getInterruptionAdress() = config.getInterruptionAdress()
   
-  def reset() = strategie.reset()
+  def reset() = config.reset()
   
-  def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) = strategie.writeIO(v, regValue)
-  def readIO(v: Simulator.IOMemoryAddress): Word = strategie.readIO(v)
+  def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) = config.writeIO(v, regValue)
+  def readIO(v: Simulator.IOMemoryAddress): Word = config.readIO(v)
   
-  def getPrinterTickTime() = strategie.getPrinterTickTime()
-  def printerSpeedUp() = strategie.printerSpeedUp()
+  def getPrinterTickTime() = config.getPrinterTickTime()
+  def setPrinterTickTime(tickTime:Int) = config.printerSetTickTime(tickTime)
   
-  def getStrobePulse() = strategie.getStrobePulse()
-  def isPrinting() = strategie.isPrinting()
-  def getPrintedText() = strategie.getPrintedText()
-  def getPrinterBuffer() = strategie.getPrinterBuffer()
+  def getStrobePulse() = config.getStrobePulse()
+  def isPrinting() = config.isPrinting()
+  def getPrintedText() = config.getPrintedText()
+  def getPrinterBuffer() = config.getPrinterBuffer()
 }
 
-abstract class Strategie() {
+abstract class DeviceConfiguration() {
   val seed = new Random().nextLong()
   
   val pic = new PIC(seed)
@@ -81,21 +78,30 @@ abstract class Strategie() {
   def isPendingInterruption() = pic.isPendingInterruption()
 	def getInterruptionAdress() = pic.getInterruptionAdress()
   
+	def safeWriteIO(d:InternalDevice,v: Simulator.IOMemoryAddress, regValue: Word){
+    val address = v.toInt
+    if (d.validAddress(address)){
+      d.writeIO(v, regValue)
+    }
+  }
+  def safeReadIO(d:InternalDevice,v: Simulator.IOMemoryAddress)={
+    val address = v.toInt
+    if (d.validAddress(address)){
+      Some(d.readIO(v))
+    }else{
+      None
+    }
+  }
+  
   def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
-    val adress = v.toInt
-    if((adress >= 16) && (adress <= 17))
-      timer.writeIO(v, regValue)
-    if((adress >= 32) && (adress <= 43))
-      pic.writeIO(v, regValue)
+    safeWriteIO(timer,v,regValue)
+    safeWriteIO(pic,v,regValue)
   }
   
   def readIO(v: Simulator.IOMemoryAddress): Word = {
-    val adress = v.toInt
-    if((adress >= 16) && (adress <= 17))
-      return timer.readIO(v)
-    if((adress >= 32) && (adress <= 43))
-      return pic.readIO(v)
-    return null
+    val picOrRandom = safeReadIO(pic, v).getOrElse(Word(new Random(seed).nextInt()))
+    safeReadIO(timer, v).getOrElse(picOrRandom)
+    
   }
   
   def getMonitorText() = monitor.getText()
@@ -111,7 +117,7 @@ abstract class Strategie() {
   def addMonitorText(text: String) = monitor.addText(text)
   
   def getPrinterTickTime() = 8000
-  def printerSpeedUp() {}
+  def printerSetTickTime(tickTime:Int) {}
   
   def getStrobePulse() = false
   def isPrinting() = false
@@ -119,7 +125,7 @@ abstract class Strategie() {
   def getPrinterBuffer() = Queue.empty[Word]
 }
 
-class StrategieZero() extends Strategie() {
+class LedsAndSwitches() extends DeviceConfiguration() {
   val pio = new PIO(0, seed, null)
   val keys = new Keys(seed, pio)
   val leds = new Leds(pio)
@@ -139,20 +145,12 @@ class StrategieZero() extends Strategie() {
   }
   
   override def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
+    safeWriteIO(pio, v, regValue)
     super.writeIO(v, regValue)
-    val adress = v.toInt
-    if((adress >= 48) && (adress <= 51))
-      pio.writeIO(v, regValue)
   }
   
   override def readIO(v: Simulator.IOMemoryAddress): Word = {
-    var superIO = super.readIO(v)
-    if(superIO != null)
-      return superIO
-    val adress = v.toInt
-    if((adress >= 48) && (adress <= 51))
-      return pio.readIO(v)
-    return Word(new Random(seed).nextInt())
+    safeReadIO(pio,v).getOrElse(super.readIO(v))
   }
 
   override def getLedsValue() = leds.value
@@ -162,95 +160,85 @@ class StrategieZero() extends Strategie() {
   override def toggleKeyBit(i: Int) = keys.toggleBit(i)
 }
 
-class StrategieOne() extends Strategie() {
+class PrinterDeviceConfiguration extends DeviceConfiguration(){
   val printer = new Printer()
+  
+    override def getPrinterTickTime() = printer.eventTimer.getTickTime()
+  override def printerSetTickTime(tickTime:Int) = printer.eventTimer.setTickTime(tickTime)
+
+  override def getStrobePulse() = printer.strobePulse
+  override def isPrinting() = printer.isPrinting()
+  override def getPrintedText() = printer.getPrintedText()
+  override def getPrinterBuffer() = printer.buffer
+  
+  override def reset(){
+    super.reset()
+    printer.reset()
+  }
+  
+  override def simulatorEvent(actualTime: Long) {
+    super.simulatorEvent(actualTime)
+  	printer.simulatorEvent(actualTime)
+		
+  }
+  
+}
+class PrinterPIO() extends PrinterDeviceConfiguration() {
+   
   val printerConnection = new PrinterConnection(printer)
   val pio = new PIO(1, seed, printerConnection)
   
   override def simulatorEvent(actualTime: Long) {
     super.simulatorEvent(actualTime)
-  	printer.simulatorEvent(actualTime)
 		pio.simulatorEvent()
   }
 
   override def reset() {
     super.reset()
-    printer.reset()
     pio.reset()
   }
   
+  
   override def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
     super.writeIO(v, regValue)
-    val adress = v.toInt
-    if((adress >= 48) && (adress <= 51))
-      pio.writeIO(v, regValue)
+    safeWriteIO(pio,v, regValue)
+    
   }
   
   override def readIO(v: Simulator.IOMemoryAddress): Word = {
-    var superIO = super.readIO(v)
-    if(superIO != null)
-      return superIO
-    val adress = v.toInt
-    if((adress >= 48) && (adress <= 51))
-      return pio.readIO(v)
-    return Word(new Random(seed).nextInt())
+    safeReadIO(pio,v).getOrElse(super.readIO(v))
   }
   
-  override def getPrinterTickTime() = printer.eventTimer.getTickTime()
-  override def printerSpeedUp() = printer.eventTimer.speedUp()
 
-  override def getStrobePulse() = printer.strobePulse
-  override def isPrinting() = printer.isPrinting()
-  override def getPrintedText() = printer.getPrintedText()
-  override def getPrinterBuffer() = printer.buffer
 }
 
-class StrategieTwo() extends Strategie() {
-  val printer = new Printer()
+class PrinterHandshake() extends PrinterDeviceConfiguration() {
   val printerConnection = new PrinterConnection(printer)
   val hand = new Handshake(seed, pic, printerConnection)
   
   override def simulatorEvent(actualTime: Long) {
     super.simulatorEvent(actualTime)
-  	printer.simulatorEvent(actualTime)
 		hand.simulatorEvent()
   }
 
   override def reset() {
     super.reset()
-    printer.reset()
     hand.reset()
   }
   
   override def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
+    safeWriteIO(hand, v, regValue)
     super.writeIO(v, regValue)
-    val adress = v.toInt
-    if((adress >= 64) && (adress <= 65))
-      hand.writeIO(v, regValue)
   }
   
   override def readIO(v: Simulator.IOMemoryAddress): Word = {
-    var superIO = super.readIO(v)
-    if(superIO != null)
-      return superIO
-    val adress = v.toInt
-    if((adress >= 64) && (adress <= 65))
-      return hand.readIO(v)
-    return Word(new Random(seed).nextInt())
+    safeReadIO(hand,v).getOrElse(super.readIO(v))
   }
   
-  override def getPrinterTickTime() = printer.eventTimer.getTickTime()
-  override def printerSpeedUp() = printer.eventTimer.speedUp()
-
-  override def getStrobePulse() = printer.strobePulse
-  override def isPrinting() = printer.isPrinting()
-  override def getPrintedText() = printer.getPrintedText()
-  override def getPrinterBuffer() = printer.buffer
 }
 
-class StrategieThree() extends Strategie() {
-  val printer = new Printer()
-  val printerConnection = new PrinterConnection(printer)
+class PrinterCDMA() extends PrinterDeviceConfiguration() {
+    val printerConnection = new PrinterConnection(printer)
   val hand = new Handshake(seed, pic, printerConnection)
   val cdma = new CDMA(seed, pic)
   
@@ -263,37 +251,21 @@ class StrategieThree() extends Strategie() {
   
   override def reset() {
     super.reset()
-    printer.reset()
     hand.reset()
     cdma.reset()
   }
   
+  
   override def writeIO(v: Simulator.IOMemoryAddress, regValue: Word) {
     super.writeIO(v, regValue)
-    val adress = v.toInt
-    if((adress >= 64) && (adress <= 65))
-      hand.writeIO(v, regValue)
-    if((adress >= 80) && (adress <= 87))
-      cdma.writeIO(v, regValue)
+    safeWriteIO(hand,v, regValue)
+    safeWriteIO(cdma,v, regValue)
+    
   }
   
   override def readIO(v: Simulator.IOMemoryAddress): Word = {
-    var superIO = super.readIO(v)
-    if(superIO != null)
-      return superIO
-    val adress = v.toInt
-    if((adress >= 64) && (adress <= 65))
-      return hand.readIO(v)
-    if((adress >= 80) && (adress <= 87))
-      return cdma.readIO(v)
-    return Word(new Random(seed).nextInt())
+    val cmdaOrSuper= safeReadIO(cdma,v).getOrElse(super.readIO(v))
+    safeReadIO(hand,v).getOrElse(cmdaOrSuper)
   }
-  
-  override def getPrinterTickTime() = printer.eventTimer.getTickTime()
-  override def printerSpeedUp() = printer.eventTimer.speedUp()
 
-  override def getStrobePulse() = printer.strobePulse
-  override def isPrinting() = printer.isPrinting()
-  override def getPrintedText() = printer.getPrintedText()
-  override def getPrinterBuffer() = printer.buffer
 }

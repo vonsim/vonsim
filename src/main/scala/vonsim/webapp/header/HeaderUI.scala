@@ -1,10 +1,17 @@
-package vonsim.webapp
+package vonsim.webapp.header
 import vonsim.simulator._
 import scalatags.JsDom.all._
-import vonsim.assembly.Compiler.CompilationResult
 import org.scalajs.dom.raw.HTMLElement
 import org.scalajs.dom.html._
 import vonsim.webapp.i18n.UILanguage
+import scala.scalajs.js
+import scala.scalajs
+
+import scala.scalajs.js.annotation.JSGlobal
+import scala.scalajs.js.|.from
+
+import vonsim.webapp.VonSimState
+import vonsim.webapp.VonSimUI
 
 abstract class ModalUI(s: VonSimState, modalID: String) extends VonSimUI(s) {
   val root = div(
@@ -151,28 +158,15 @@ class HelpUI(s: VonSimState) extends ModalUI(s, "helpModal") {
   def compilationEvent() {}
 }
 
-class HeaderUI(s: VonSimState) extends VonSimUI(s) {
-  
-  
-  val controlsUI = new ControlsUI(s)
-  
-  val helpUI = new HelpUI(s)
 
-//  val helpUIButton = span(
-//    id := "help",
-//    a(
-//      cls := "helpButton dropdown-item clickable",
-//      data("toggle") := "modal",
-//      data("target") := "#helpModal",
-//      "Sobre nosotros"
-//    ),
-//    helpUI.root
-//  ).render
+class LanguageUI(s: VonSimState) extends VonSimUI(s) {
+  
   val currentLanguage = s.uil.code
   val languages = UILanguage.codes.keys.filter(_ != currentLanguage)
 
-  val languageButtonsContainer = div(
-		id := "languageButtonContainer"
+  val root = div(
+		id := "languageButtonContainer",
+		cls:= "dropdown-item"
   ).render
 
   val languageButtons = languages.map(
@@ -181,27 +175,33 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
   )
 
   languageButtons.foreach(
-    button => languageButtonsContainer.appendChild(button)
+    button => root.appendChild(button)
   )
   
-  val configButtons = List(
-		dropdownConfigurationItemFactory(0, "PIO + Llaves y leds").render,
-		dropdownConfigurationItemFactory(1, "PIO + Impresora").render,
-		dropdownConfigurationItemFactory(2, "Handshake + Impresora").render
-//    ,dropdownConfigurationItemFactory(3, "Handshake y CDMA + Impresora").render
-  )
+  
+  
+   def simulatorEvent() {}
 
-  def dropdownConfigurationItemFactory(conf: Int, tooltip: String) = {
-    a(
-      cls := "dropdown-item clickable",
-      data("toggle"):="tooltip",
-      data("placement"):="bottom",
-      title:= tooltip,
-      "Configuración " + conf
+  def simulatorEvent(i: InstructionInfo) {}
+  def compilationEvent() {}
+}
+
+class DropdownUI(s: VonSimState) extends VonSimUI(s) {
+  
+    
+  val languageUI = new LanguageUI(s)
+
+  def dropdownTutorialItemFactory(tutorialUrl: String, tutorialString: String) = {
+    li(
+      a(
+        cls := "dropdown-item",
+        href := "?tutorial="+tutorialUrl,
+        tutorialString
+      )
     )
   }
-
-  val tutorialDropdown = div(
+  
+  val root = div(
     cls := "dropdown dropdown-tutoriales",
     button(
       cls := "btn btn-secondary dropdown-toggle fas fa-bars fa-1x",
@@ -217,15 +217,20 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
     div(
       cls := "dropdown-menu dropdown-menu-right",
       aria.labelledby := "dropdownTutorialButton",
+      li(h1(cls := "dropdown-header",s.uil.tutorials)),
       dropdownTutorialItemFactory("whyassembly", "1. ¿Por que Assembly?"),
       dropdownTutorialItemFactory("vonsim", "2. Sobre VonSim"),
       dropdownTutorialItemFactory("basic", "3. Básico"),
       dropdownTutorialItemFactory("variables", "4. Variables"),
       dropdownTutorialItemFactory("code", "5. Registros e instrucciones"),
       li(role:="separator", cls := "divider"),
-      li(configButtons(0)),
-      li(configButtons(1)),
-      li(configButtons(2)),
+      li(h1(cls := "dropdown-header",s.uil.language)),
+      li(languageUI.root),
+//      li(role:="separator", cls := "divider"),
+//      li(h1(cls := "dropdown-header",s.uil.deviceConfigurations)),
+//      li(configButtons(0)),
+//      li(configButtons(1)),
+//      li(configButtons(2)),
       li(role:="separator", cls := "divider"),
       li(
         a(
@@ -237,16 +242,22 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
       )
     )
   ).render
+  
+   def simulatorEvent() { languageUI.simulatorEvent() }
 
-  def dropdownTutorialItemFactory(tutorialUrl: String, tutorialString: String) = {
-    li(
-      a(
-        cls := "dropdown-item",
-        href := "?tutorial="+tutorialUrl,
-        tutorialString
-      )
-    )
+  def simulatorEvent(i: InstructionInfo) {
+    languageUI.simulatorEvent(i)
   }
+  def compilationEvent() {}
+  
+}
+
+class HeaderUI(s: VonSimState) extends VonSimUI(s) {
+  
+  val controlsUI = new ControlsUI(s)
+  val helpUI = new HelpUI(s)
+  val dropdownUI = new DropdownUI(s)
+    
 
   val root = div(
   	cls:= "navbar navbar-default",
@@ -273,7 +284,6 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 	          alt := "Von Sim Icon",
 	          title := s.uil.iconTitle,
             src := "img/icon.png"
-//	          src := "assets/img/icon.png"
 	        )
 	  		)
 	  	),
@@ -290,65 +300,43 @@ class HeaderUI(s: VonSimState) extends VonSimUI(s) {
 			    li(span(cls := "controlSection", controlsUI.loadOrStopButton.root)),
 			    li(span(cls := "controlSection", controlsUI.finishButton)),
 			    li(span(cls := "controlSection", controlsUI.stepButton)),
-			    li(span(cls := "controlSection", controlsUI.simulatorStateUI.root))
+			    li(span(cls := "controlSection", controlsUI.simulatorStateUI.root)),
+			    li(span(cls := "controlSection", controlsUI.deviceConfigurationUI.root))
 	  		),
 	  		ul(
 	  			cls:= "nav navbar-nav navbar-right",
-	  			li(languageButtonsContainer),
-	  			li(tutorialDropdown)
+//	  			li(languageUI.root),
+	  			li(dropdownUI.root)
 	  		)
 	  	) 
   	)
   ).render
+   
   
-//  val root = header(
-//  	div(
-//      id := "headerControls",
-//      a(
-//        href := "index.html",
-//        img(
-//          id := "icon",
-//          alt := "Von Sim Icon",
-//          title := s.uil.iconTitle,
-//          src := "img/icon.png"
-////          src := "assets/img/icon.png"
-//        )
-//      ),
-//      controlsUI.root,
-//      span(id := "headerSeparator"),
-//      // tutorialDropdown,
-//      languageButtonsContainer,
-//      //, helpUIButton
-//      div(
-//        id := "headerOptions",
-//        languageButtonsContainer,
-//        tutorialDropdown
-//      )
-//  	)
-//  ).render
-
-  def disableConfigButtons() {
-    configButtons.foreach(configButton => {
-      configButton.classList.remove("clickable")
-      configButton.classList.add("non-clickable")
-    })
+  def disableForQuickRun(){
+    controlsUI.disableControlsQuickRun()
+    controlsUI.deviceConfigurationUI.disable()
   }
-  def enableConfigButtons() {
-    configButtons.foreach(configButton => {
-      configButton.classList.remove("non-clickable")
-      configButton.classList.add("clickable")
-    })
-  }
+  override def disable() {
+    controlsUI.disable()
+    controlsUI.deviceConfigurationUI.disable()
 
-  override def disable() = controlsUI.disable()
-  override def enable() = controlsUI.enable()
+    
+  }
+  override def enable() {
+    controlsUI.enable()
+    controlsUI.deviceConfigurationUI.enable()
+
+  }
 
   def simulatorEvent() {
     controlsUI.simulatorEvent()
+    dropdownUI.simulatorEvent()
   }
 
   def simulatorEvent(i: InstructionInfo) {
     controlsUI.simulatorEvent(i)
+    dropdownUI.simulatorEvent(i)
   }
 
   def compilationEvent() {

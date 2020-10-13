@@ -90,16 +90,10 @@ span.caret {
 #headerSeparator{
 	margin-left:auto;
 }
-#languageButtonContainer{
-/*    display:flex; */
-    justify-content:space-between;
-    align-items: center;
-}
+
 
 @media screen and (max-width: 1150px) {
-	#languageButtonContainer{
-	    margin-left: 25px;
-	}
+	
 	.dropdown{
 	    margin-left: 12px;
 	}

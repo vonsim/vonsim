@@ -19,10 +19,36 @@ import vonsim.simulator.SimulatorWaitingKeyPress
 import vonsim.simulator.Debug
 import vonsim.simulator.EventTimer
 import vonsim.simulator.SimulatorExecutionLoop
+import org.scalajs.dom
+
 
 abstract class HTMLUI {
   def root: HTMLElement
-
+  
+  def getStorageKey(k:String) = s"${this.getClass().getName()}_$k"
+  
+  def setConfigValue(k:String,v:String){
+    dom.window.localStorage.setItem(getStorageKey(k), v)
+  }
+  
+  def setConfigValue(k:String,v:Int){
+   setConfigValue(k, v.toString())
+  }
+  def setConfigValue(k:String,v:Boolean){
+    setConfigValue(k, v.toString())
+  }
+    
+  def getConfigValue(k:String) = {
+    val v = dom.window.localStorage.getItem(getStorageKey(k))
+    println(s"$k -> $v (VonSimUi)")
+    Option(v)
+  }
+  
+  def getConfigValueInt(k:String)= this.getConfigValue(k).map(_.toInt)
+  
+  def getConfigValueBool(k:String)= this.getConfigValue(k).map(_.toBoolean)
+  
+  
   def bindkey(element: HTMLElement, key: String, f: Function0[Boolean]) {
 
     Mousetrap.bindGlobal(key, f, "keydown")
@@ -51,8 +77,9 @@ class VonSimState(
   var c: CompilationResult,
   var uil: UILanguage //move to HTMLUI
 ) {
-  
-  val systemEventTimer = new EventTimer(1000, Array(1000, 500, 250, 125))
+   
+  val defaultCPUSpeed = 125
+  val systemEventTimer = new EventTimer(defaultCPUSpeed)
 
   def simulatorStopped() = {
     s.state == SimulatorExecutionFinished || s.state == SimulatorExecutionStopped || 
@@ -80,7 +107,7 @@ abstract class VonSimUI(val s: VonSimState) extends HTMLUI {
   def simulatorEvent() // update changes made to the simulator
   def simulatorEvent(i: InstructionInfo) // update UI after execution of instruction
   def compilationEvent()
-
+  
   def disable() {
     root.classList.add("disabledElement")
   }

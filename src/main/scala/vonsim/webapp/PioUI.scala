@@ -27,6 +27,10 @@ import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
 import scala.collection.mutable.Queue
+import vonsim.simulator.PrinterPIO
+import vonsim.simulator.PrinterHandshake
+import vonsim.simulator.LedsAndSwitches
+import vonsim.simulator.DeviceConfiguration
 
 class PIORegistersUI(
 	s: VonSimState,
@@ -178,17 +182,21 @@ class PioUI (s: VonSimState)
   contentDiv.appendChild(portA.root)
   contentDiv.appendChild(portB.root)
   
-  setConfig(s.s.devController.getConfig())
-  def setConfig(newConfig: Integer) {
-    header.title = "PIO conectado a " + (
-      if(newConfig == 0) "los interruptores en el puerto A y los leds en el puerto B."
-      else "la impresora, con control en el puerto A y datos en el puerto B."
-    )
+  
+  def setConfig(newConfig: DeviceConfiguration) {
+    val title =  s.s.devController.config match {
+      case a:LedsAndSwitches => "los interruptores en el puerto A y los leds en el puerto B."
+      case b:PrinterPIO => "la impresora, con control en el puerto A y datos en el puerto B."
+      case _ => ""
+    }
+    
+    header.title = "PIO conectado a " + title
   }
 
   def simulatorEvent() {
     portA.simulatorEvent()
     portB.simulatorEvent()
+    
   }
   def simulatorEvent(i: InstructionInfo) {
     simulatorEvent()

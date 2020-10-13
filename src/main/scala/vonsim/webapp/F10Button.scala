@@ -52,7 +52,7 @@ class F10Button(s: VonSimState) extends MainboardItemUI (
 	contentDiv.appendChild(monitorArea)
 	
 	boton.onclick = (e: Any) => {
-		s.s.devController.strategie.f10Pressed()
+		s.s.devController.config.f10Pressed()
   }
 	
   def simulatorEvent() {}

@@ -287,10 +287,13 @@ class CPU {
   var specialRegisters = mutable.Map[SpecialRegister, DWord]()
 
   reset()
+  
   def reset() {
     jump(0x2000)
     setSP(Simulator.maxMemorySize)
     halted = false
+    acceptInterruptions = true
+
     generalRegisters = mutable.Map[FullRegister, DWord](
       AX -> DWord(),
       BX -> DWord(),

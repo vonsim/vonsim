@@ -1,7 +1,7 @@
 package vonsim.webapp
 
-import vonsim.simulator.InstructionInfo
 import vonsim.utils.CollectionUtils._
+import vonsim.simulator.InstructionInfo
 import scalatags.JsDom.all._
 import org.scalajs.dom.html._
 import org.scalajs.dom.raw.HTMLElement
@@ -19,11 +19,13 @@ import vonsim.simulator.FullRegister
 import scalatags.JsDom.all._
 import vonsim.simulator.Flag
 
+import vonsim.simulator.CPU
 import vonsim.simulator.SimulatorProgramExecuting
 import vonsim.simulator.SimulatorExecutionStopped
 import vonsim.simulator.SimulatorExecutionError
 import vonsim.simulator.SimulatorExecutionFinished
 import vonsim.assembly.Compiler.CompilationResult
+
 
 class RegistersUI(
   s: VonSimState,
@@ -98,6 +100,36 @@ class WordUI(s: VonSimState) extends HTMLUI {
     wordElement.textContent = h + " " + l
   }
 
+}
+
+class CPUStateUI(s: VonSimState) extends VonSimUI(s) {
+  
+  
+  val state = p("asd").render
+  val root =
+    div(
+      cls := "cpuElement",
+      div(
+        cls := "cpuElementHeader",
+        i(cls := "icon-file-binary", " "),
+        h3("Estado CPU")
+      ),
+      state.render
+    ).render
+    
+  
+  def update(c:CPU){
+    val state= if (c.acceptInterruptions) "Habilitadas" else "Deshabilitadas"
+    root.innerHTML=s"Interrupciones: ${state}"
+  }
+  def simulatorEvent() {
+    update(s.s.cpu)
+  }
+  def compilationEvent() {}
+  
+  def simulatorEvent(i: InstructionInfo) {
+    simulatorEvent()
+  }
 }
 
 class FlagsUI(s: VonSimState) extends VonSimUI(s) {
@@ -192,6 +224,7 @@ class CpuUI(s: VonSimState)
       s.uil.cpuTitle
     ) {
 
+  val cpuState=new CPUStateUI(s)
   val generalPurposeRegistersTable = new RegistersUI(
     s,
     List(simulator.AX, simulator.BX, simulator.CX, simulator.DX),
@@ -211,7 +244,11 @@ class CpuUI(s: VonSimState)
     "special"
   )
   val alu = new AluUI(s)
-  
+  val cpuSpeedKey="cpuSpeed"
+  getConfigValueInt(cpuSpeedKey).foreach( 
+      speed => s.systemEventTimer.setTickTime(speed) )
+      
+  val speedValues = Array(1000,500,250,125,62,31)
   val speedButton = a(
     cls := "btn btn-primary",
     (1000 / s.systemEventTimer.getTickTime()) + " Hz",
@@ -220,13 +257,21 @@ class CpuUI(s: VonSimState)
     title:= "Período del clock: " + s.systemEventTimer.getTickTime() + " ms"
   ).render
   
+//  println(s"${getConfigValueInt(cpuSpeedKey)} (CpuUI)")
+
+  
+  
   speedUpButton.appendChild(speedButton)
   speedButton.onclick = (e: Any) => {
-  	s.systemEventTimer.speedUp()
-  	speedButton.textContent = (1000 / s.systemEventTimer.getTickTime()) + " Hz"
-  	speedButton.title = "Período del clock: " + s.systemEventTimer.getTickTime() + " ms"
+    val tickTime = s.systemEventTimer.tickTime
+    val newTickTime = speedValues((speedValues.indexOf(tickTime) + 1) % speedValues.length)
+    s.systemEventTimer.setTickTime(newTickTime)
+    setConfigValue(cpuSpeedKey, newTickTime)
+  	speedButton.textContent = (1000 / newTickTime ) + " Hz"
+  	speedButton.title = "Período del clock: " + newTickTime  + " ms"
 	}
   
+  contentDiv.appendChild(cpuState.root)
   contentDiv.appendChild(generalPurposeRegistersTable.root)
   contentDiv.appendChild(specialRegistersTable.root)
   contentDiv.appendChild(alu.root)
@@ -235,6 +280,7 @@ class CpuUI(s: VonSimState)
     generalPurposeRegistersTable.simulatorEvent()
     specialRegistersTable.simulatorEvent()
     alu.simulatorEvent()
+    cpuState.simulatorEvent()
     
     if (s.isSimulatorExecuting()) speedButton.classList.add("disabled")
     else speedButton.classList.remove("disabled")
