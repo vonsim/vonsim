@@ -58,10 +58,10 @@ There is probably a loop in the program."""
   }
 
   def deviceConfigurationToMessage(s:DevicesController) = s.config match{
-    case _: LedsAndSwitches => s"0) Leds & Switches"
-    case _: PrinterPIO => s"1) Printer w/ PIO"
-    case _: PrinterHandshake => s"2) Printer w/ HANDSHAKE"
-    case _: PrinterCDMA=> s"3) Printer w/ DMAC"
+    case _: LedsAndSwitches => s"0. Leds & Switches"
+    case _: PrinterPIO => s"1. Printer w/ PIO"
+    case _: PrinterHandshake => s"2. Printer w/ HANDSHAKE"
+    case _: PrinterCDMA=> s"3. Printer w/ DMAC"
   }
   def deviceConfigurationToTooltip(s:DevicesController) = deviceConfigurationToMessage(s)
   

@@ -33,7 +33,7 @@ class DevicesController {
   }
 
   def isPendingInterruption() = config.isPendingInterruption()
-	def getInterruptionAdress() = config.getInterruptionAdress()
+
   
   def reset() = config.reset()
   
@@ -75,8 +75,7 @@ abstract class DeviceConfiguration() {
     pic.reset()
   }
   
-  def isPendingInterruption() = pic.isPendingInterruption()
-	def getInterruptionAdress() = pic.getInterruptionAdress()
+  def isPendingInterruption() = pic.isPendingInterruption
   
 	def safeWriteIO(d:InternalDevice,v: Simulator.IOMemoryAddress, regValue: Word){
     val address = v.toInt

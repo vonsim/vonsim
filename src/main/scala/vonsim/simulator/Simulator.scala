@@ -16,6 +16,7 @@ object Simulator {
   type IOMemoryAddress = Byte
   def maxMemorySize = 0x4000 // in bytes
   def maxInstructions = 10000 // max number of instructions to execute
+  def interruptVectorElementSize = 4
 
   def encode(instruction: Instruction) = {
 
@@ -274,14 +275,19 @@ class Simulator(
   def currentInstruction() = {
 //    println(s" pic int pending ${devController.isPendingInterruption()} ints ${cpu.acceptInterruptions}(simulator)")
     if(devController.isPendingInterruption() && cpu.acceptInterruptions) {
-      interruptionCall(memory.getBytes(devController.getInterruptionAdress()).toUnsignedInt)
+      
+//      println("pending interrupt "+ devController.config.pic.pendingInterruptions.mkString)
+      val id = devController.config.pic.serviceInterrupt()
+      val interruptVectorAddress=id*Simulator.interruptVectorElementSize
+      val ip = memory.getBytes(interruptVectorAddress).toUnsignedInt
+      interruptionCall(ip)
     }
 
     if (instructions.keySet.contains(cpu.ip)) {
       val instruction = instructions(cpu.ip)
       Right(instruction)
     } else {
-      val message = language.memoryCellAsInstruction
+      val message = language.memoryCellAsInstruction(cpu.ip)
       Left(GeneralExecutionError(message))
     }
   }
@@ -319,6 +325,7 @@ class Simulator(
       try {
         execute(info)
         devController.simulatorEvent(actualTime)
+        
       } catch {
         case e: InvalidMemoryAddress =>
           stopExecutionForError(language.invalidMemoryAddress(e.address))
@@ -336,7 +343,6 @@ class Simulator(
     stopExecutionForError(GeneralExecutionError(message))
   }
   def stopExecutionForError(executionError: ExecutionError) {
-    stop()
     state = SimulatorExecutionError(executionError)
   }
 

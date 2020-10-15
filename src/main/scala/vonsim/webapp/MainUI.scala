@@ -282,7 +282,9 @@ class MainUI(
         cant = cant + 1
         var i = s.s.stepInstruction()
         i match {
-          case Left(error) => println(error.message)
+          case Left(error) => {
+            simulatorEvent()
+          }
           case Right(i) => {
             simulatorEvent(i)
             if (s.isWaitingKeyPress())

@@ -76,7 +76,7 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
       )
 		).render
 	
-  val speedValues = Array(1000,500,250,125,62,31)
+  val speedValues = Array(8000,4000,1000,500,250,125,62,31)
   val printerSpeedKey="printerSpeed"
   getConfigValueInt(printerSpeedKey).foreach( 
       speed => s.s.devController.setPrinterTickTime(speed) )

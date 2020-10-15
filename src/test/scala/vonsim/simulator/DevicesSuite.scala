@@ -233,22 +233,45 @@ END"""
     NOP
     STI
     NOP
+    CLI
     HLT
   END
 """
     val s=simulator(program)
+    assertResult(true)(s.cpu.acceptInterruptions)
     s.stepInstruction() // CLI
     assertResult(false)(s.cpu.acceptInterruptions)
     
     s.stepInstruction() // NOP
-    s.devController.config.pic.picInterruption(0)
+    s.stepInstruction() // STI
+    assertResult(true)(s.cpu.acceptInterruptions)
+    s.stepInstruction() // NOP
+    s.stepInstruction() // CLI
+    assertResult(false)(s.cpu.acceptInterruptions)
+    s.stepInstruction() // HLT
+  }
+   
+   
+   test("IRR and ISR") {
+     val program = 
+"""
+  ORG 2000H
+    NOP
+    NOP
+    HLT
+  END
+"""
+    val s=simulator(program)
+    
+    s.stepInstruction() // NOP    
+    s.devController.config.pic.requestInterrupt(0)
     assertResult(Word(1))(s.devController.config.pic.IRR)
     assertResult(Word(0))(s.devController.config.pic.ISR)
-    s.stepInstruction() // STI
-    assertResult(Word(0))(s.devController.config.pic.IRR)
-    assertResult(Word(1))(s.devController.config.pic.ISR)
-    assertResult(true)(s.cpu.acceptInterruptions)
+    s.devController.config.pic.requestInterrupt(1)
+    assertResult(Word(3))(s.devController.config.pic.IRR)
+    assertResult(Word(0))(s.devController.config.pic.ISR)
   }
+   
    
    test("Handshake + Printer / Polling") {
      val program = 

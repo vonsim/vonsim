@@ -7,8 +7,8 @@ object Spanish {
 }
 class Spanish extends SimulatorLanguage {
   def code = Spanish.code
-  def memoryCellAsInstruction =
-    "Al ejecutar el programa, se quiso interpretar una celda de memoria que no ha sido marcada como ejecutable. Verifique que su programa contiene las instrucciones HLT necesarias, y que haya instrucciones en la dirección 2000h."
+  def memoryCellAsInstruction(address: Int) = 
+    s"Al ejecutar el programa, se quiso interpretar la celda de memoria ${address.toHexString} que no ha sido marcada como ejecutable. Verifique que su programa contiene las instrucciones HLT necesarias, y que haya instrucciones en la dirección 2000h."
   def modifyingReadOnlyMemory(address: Int) =
     s"La dirección de memoria $address está marcada cómo de sólo lectura. Es probable que estés intentando modificar una celda de memoria donde se almacena una instrucción."
   def invalidMemoryAddress(address: Int) =

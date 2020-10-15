@@ -110,10 +110,10 @@ Es probable que haya un loop en el programa."""
   def addressSearch = "Ver dirección de memoria"
   
   def deviceConfigurationToMessage(s:DevicesController) = s.config match{
-    case _: LedsAndSwitches => s"0) Luces e Interruptores"
-    case _: PrinterPIO => s"1) Impresora con el PIO"
-    case _: PrinterHandshake => s"2) Impresora con el HANDSHAKE"
-    case _: PrinterCDMA=> s"3) Impresora con el CDMA"
+    case _: LedsAndSwitches => s"0. Luces e Interruptores"
+    case _: PrinterPIO => s"1. Impresora con el PIO"
+    case _: PrinterHandshake => s"2. Impresora con el HANDSHAKE"
+    case _: PrinterCDMA=> s"3. Impresora con el CDMA"
   }
   def deviceConfigurationToTooltip(s:DevicesController) = deviceConfigurationToMessage(s) 
   

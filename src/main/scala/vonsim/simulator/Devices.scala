@@ -22,7 +22,7 @@ abstract class InternalDevice{
   
 }
 
-class Printer() {
+class Printer {
 	/*
 	 * PIO:
 	 *	BUSY: PA -> Bit 0 (entrada)
@@ -110,7 +110,7 @@ class F10Button(pic: PIC) {
   
   def simulatorEvent() {
   	if (buttonPressed) {
-  	  pic.picInterruption(0)
+  	  pic.requestInterrupt(0)
   	  buttonPressed = false
   	}
   }
@@ -183,7 +183,7 @@ class Monitor() {
   var text = ""
   
   def addText(textAdd: String) {
-    print(s"(Monitor) adding text textAdd")
+//    print(s"(Monitor) adding text textAdd")
     text += textAdd
   }
   
@@ -208,13 +208,13 @@ class Timer(seed: Long, pic: PIC) extends InternalDevice {
 	def checkTime() {
 		var cont = readIO(16).toInt
 		val comp = readIO(17).toInt
-		
+//		println("Timer checktime "+cont)
 		cont += 1
 		if(cont == 256)
 			cont = 0
 		writeIO(16, Word(cont))
 		if(cont == comp)
-			pic.picInterruption(1)
+			pic.requestInterrupt(1)
 	}
   
   def simulatorEvent(actualTime: Long) {
@@ -330,50 +330,45 @@ class PIC(seed: Long) extends InternalDevice {
   def IMR = readIO(33) // 1 -> Ignorar; 0 -> Atender
   def IRR = readIO(34) // 1 -> Pendiente; 0 -> No pendiente
   def ISR = readIO(35) // 1 -> Atendida; 0 -> No se atendió
-  
- 
 
   val values: Array[Word] = randomBytes(12).map(Word(_))
-	var interruptionAdress: Int = 0
-	
-	writeIO(32, Word(0))
-	writeIO(33, Word(0))
-	writeIO(34, Word(0))
-	writeIO(35, Word(0))
+		
+	reset()
   
-  def picInterruption(intX: Int) {
+  def requestInterrupt(intX: Int) {
   	writeIO(34, Word(readIO(34) | (1 << intX))) // IRR:X = 1
   }
 	
-	def isPendingInterruption() = (interruptionAdress != 0)
+	def isPendingInterruption = !pendingInterruptions.isEmpty
 	
-	def getInterruptionAdress(): Int = {
-		var res = interruptionAdress
-		interruptionAdress = 0
-		res
+	def isServicingInterrupt = ISR.toInt != 0
+	
+	def pendingInterruptions ={
+	  val pairs = (IRR.toBits(),IMR.toBits()).zipped.toList.zipWithIndex
+	  val pending = pairs .filter{ case ((r,m),i) => r==1 && m==0}
+	  val indices = pending.map{ case ((r,m),i) => i }
+	  if (isServicingInterrupt) List() else indices
 	}
 	
+		
 	def interruptionFinished() {
 	  writeIO(35, Word(0)) // ISR = 0
 	}
 	
+	def serviceInterrupt()={
+	  assert(isPendingInterruption)
+//	  println(s"pending interruptions: "+pendingInterruptions.mkString)
+	  val intX = pendingInterruptions(0)
+//	  println("Servicing "+intX)
+	  writeIO(34, Word(readIO(34) & ~(1 << intX))) // IRR:X = 0
+	  writeIO(35, Word(ISR | (1 << intX))) // ISR:X = 1
+//	  println(readIO(34),readIO(35))
+	  
+	  readIO((36+intX).toByte).toInt
+	  
+	}
   def simulatorEvent() {
-  	if((IRR != Word(0))) { // Si hay un llamado de interrupción
-  		
-  		var intX = -1
-  		var i = 0
-  		while((i < 8) && (intX == -1)) {
-				if(IRR.bit(i) == 1)
-					intX = i
-				i += 1
-			}
-  		
-			if((IMR.bit(intX) == 0) && (ISR == Word(0))) {
-				writeIO(34, Word(readIO(34) & ~(1 << intX))) // IRR:X = 0
-				writeIO(35, Word(ISR | (1 << intX))) // ISR:X = 1
-				interruptionAdress = (readIO((36+intX).toByte)).toInt * 4
-			}
-  	}
+
   }
   
   def simulatorEvent(i: InstructionInfo) {
@@ -388,7 +383,7 @@ class PIC(seed: Long) extends InternalDevice {
   
   def reset() {
 		writeIO(32, Word(0))
-		writeIO(33, Word(0))
+		writeIO(33, Word(255))
 		writeIO(34, Word(0))
 		writeIO(35, Word(0))
   }
@@ -422,7 +417,7 @@ class Handshake(seed: Long, pic: PIC, printerConnection: PrinterConnection) exte
 
   def simulatorEvent() {
   	if((state & 129) == 128) // Estado AND 10000001 = X000000X / 129 = 10000001 / 128 = 10000000 
-  		pic.picInterruption(2)
+  		pic.requestInterrupt(2)
   	if(state.bit(1) == 1) {
   	  printerConnection.sendStrobe()
       writeIO(65, Word(state & 253)) // Estado AND 11111101 = XXXXXX0X

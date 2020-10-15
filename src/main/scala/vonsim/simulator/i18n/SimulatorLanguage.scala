@@ -7,8 +7,12 @@ object SimulatorLanguage {
   val codes = Map(Spanish.code -> new Spanish(), English.code -> new English())
 }
 abstract class SimulatorLanguage {
+  
+  def hex(v:Int){
+    
+  }
   def code: String
-  def memoryCellAsInstruction: String
+  def memoryCellAsInstruction(address:Int): String
   def modifyingReadOnlyMemory(address: Int): String
   def invalidMemoryAddress(address: Int): String
   def instructionNotImplemented(instruction: String): String
