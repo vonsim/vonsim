@@ -81,29 +81,32 @@ class PrinterUI(s: VonSimState) extends MainboardItemUI (
   getConfigValueInt(printerSpeedKey).foreach( 
       speed => s.s.devController.setPrinterTickTime(speed) )
   
-  val tickTime=s.s.devController.getPrinterTickTime()
-  println(tickTime)
-  val speedButton = a(
-    cls := "btn btn-primary",
-    (1000.0 / tickTime) + " Hz",
-    data("toggle"):="tooltip",
-    data("placement"):="bottom",
-    title:= "Período: " + tickTime + " ms"
-  ).render
   
 
+  val speedButton = a(
+    cls := "btn btn-primary",
+    data("toggle"):="tooltip",
+    data("placement"):="bottom"
+  ).render
+  updateSpeed()  
+
       
-  speedUpButton.appendChild(speedButton.render)
+  speedUpButton.appendChild(speedButton)
   speedButton.onclick = (e: Any) => {
     
   	val tickTime = s.s.devController.getPrinterTickTime()
     val newTickTime = speedValues((speedValues.indexOf(tickTime) + 1) % speedValues.length)
     s.s.devController.setPrinterTickTime(newTickTime)
     setConfigValue(printerSpeedKey, newTickTime)
-  	speedButton.textContent = (1000 / newTickTime ) + " Hz"
-  	speedButton.title = "Período: " + newTickTime  + " ms"
+  	updateSpeed()
 	}
-  
+  def updateSpeed(){
+    val tickTime=s.s.devController.getPrinterTickTime()
+    val frequency = (1000.0 / tickTime )
+    val frequencyStr= if (frequency>1) frequency.round.toString() else frequency.toString()
+    speedButton.textContent = frequencyStr + " Hz"
+  	speedButton.title = "Período: " + tickTime  + " ms"
+  }
 	contentDiv.appendChild(monitorArea)
 	
 	def setDescription(cell: TableCell, tooltip: String) {
