@@ -280,6 +280,7 @@ class Simulator(
       val id = devController.config.pic.serviceInterrupt()
       val interruptVectorAddress=id*Simulator.interruptVectorElementSize
       val ip = memory.getBytes(interruptVectorAddress).toUnsignedInt
+      cpu.acceptInterruptions = false
       interruptionCall(ip)
     }
 
@@ -302,14 +303,16 @@ class Simulator(
     stepNInstructions(Simulator.maxInstructions)
   }
 
-  def stepNInstructions(n: Int) = {
+  def stepNInstructions(n: Int,speed:Int=1000) = {
     val instruction = stepInstruction()
     var instructions = ListBuffer(instruction)
     var counter = 0
-    
+    var time = 0
     while (counter < n && instruction.isRight && !cpu.halted && !(state == SimulatorWaitingKeyPress)) {
-      val instruction = stepInstruction()
+      val instruction = stepInstruction(time)
+      time+=speed
       instructions += instruction
+      counter+=1
     }
     instructions
   }
@@ -505,6 +508,7 @@ class Simulator(
         val ra = pop()
         cpu.alu.flags = Flags(pop())
         cpu.jump(ra.toInt)
+        cpu.acceptInterruptions = true
 //        devController.interruptionAttended()
       }
       case In(reg, v) => {

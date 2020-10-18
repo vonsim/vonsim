@@ -22,7 +22,7 @@ abstract class InternalDevice{
   
 }
 
-class Printer {
+class Printer(speed:Int=8000,var maxBufferSize:Int=5) {
 	/*
 	 * PIO:
 	 *	BUSY: PA -> Bit 0 (entrada)
@@ -37,23 +37,23 @@ class Printer {
 	
 	var data = Word(0)
 	var strobePulse = false
-	def busy = (buffer.length == 5)
+	
+	def busy = (buffer.length == maxBufferSize) 
 //	def printing = (buffer.length > 0)
-	var printing = false
+	def printing = !buffer.isEmpty
 	
 	val buffer = Queue.empty[Word]
 	var printedText = ""
 	
-  val eventTimer = new EventTimer(8000)
+  val eventTimer = new EventTimer(speed)
+	
 
 	def printChar() {
-		if(buffer.size > 0)
-      printedText = printedText + buffer.dequeue().toInt.toChar
+    printedText = printedText + buffer.dequeue().toInt.toChar
 	}
 	
 	def isIdle() = !busy
 	def isBusy() = busy
-	def isPrinting() = printing
 	
 	def sendData(d: Word) {
 	  data = d
@@ -61,11 +61,10 @@ class Printer {
 	
 	def sendStrobe() {
 		strobePulse = true
-		if(buffer.size < 5) {
+		if(buffer.size < maxBufferSize) {
 		  buffer += data
 		  if(!printing) {
-		    eventTimer.start()
-		    printing = true
+		    eventTimer.start()		    
 		  }
 		}
 	}
@@ -73,10 +72,11 @@ class Printer {
 	def getPrintedText() = printedText
   
   def simulatorEvent(actualTime: Long) {
+//	  println(s"Buffer ${buffer.length}, time ${actualTime}, printing $printing")
+	  
 	  if((eventTimer.update(actualTime)) && printing) {
+//	    println("printchar")
 	    printChar()
-	    if(buffer.size == 0)
-        printing = false
 	  }
 	}
   def simulatorEvent(i: InstructionInfo, actualTime: Long) {
@@ -85,7 +85,6 @@ class Printer {
   
   def reset() {
     buffer.clear()
-    printing = false
     printedText = ""
     eventTimer.reset()
   }
@@ -94,7 +93,7 @@ class Printer {
 class PrinterConnection(printer: Printer) {
 	def isIdle() = printer.isIdle()
 	def isBusy() = printer.isBusy()
-	def isPrinting() = printer.isPrinting()
+	def isPrinting() = printer.printing
 	
 	def sendData(d: Word) = printer.sendData(d)
 	def sendStrobe() = printer.sendStrobe()
@@ -334,7 +333,9 @@ class PIC(seed: Long) extends InternalDevice {
   val values: Array[Word] = randomBytes(12).map(Word(_))
 		
 	reset()
-  
+  def cancelInterrupt(intX:Int){
+    writeIO(34, Word(readIO(34) & ~(1 << intX))) // IRR:X = 0
+  }
   def requestInterrupt(intX: Int) {
   	writeIO(34, Word(readIO(34) | (1 << intX))) // IRR:X = 1
   }
@@ -416,8 +417,15 @@ class Handshake(seed: Long, pic: PIC, printerConnection: PrinterConnection) exte
 	writeIO(65, Word(0))
 
   def simulatorEvent() {
-  	if((state & 129) == 128) // Estado AND 10000001 = X000000X / 129 = 10000001 / 128 = 10000000 
-  		pic.requestInterrupt(2)
+    if (state.bit(7).toInt==1){
+      if (state.bit(0) ==0){
+        pic.requestInterrupt(2)  
+      }else{
+        pic.cancelInterrupt(2)
+      }
+      
+    } 
+  		
   	if(state.bit(1) == 1) {
   	  printerConnection.sendStrobe()
       writeIO(65, Word(state & 253)) // Estado AND 11111101 = XXXXXX0X
@@ -551,10 +559,14 @@ class EventTimer(var tickTime: Int=1000) {
   }
 
   def update(newActualTime: Long): Boolean = {
+//    println("Last tick: "+lastTick)
     actualTime = newActualTime
 //    if(tickTime == 8000)
 //      println("actualTime - lastTick = " + (actualTime - lastTick))
-    if((actualTime - lastTick) >= tickTime) {
+    val elapsed = actualTime - lastTick
+    val delta = elapsed - tickTime
+    
+    if(delta >= 0) {
       lastTick = actualTime
       return true
     }

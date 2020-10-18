@@ -166,7 +166,7 @@ class PrinterDeviceConfiguration extends DeviceConfiguration(){
   override def printerSetTickTime(tickTime:Int) = printer.eventTimer.setTickTime(tickTime)
 
   override def getStrobePulse() = printer.strobePulse
-  override def isPrinting() = printer.isPrinting()
+  override def isPrinting() = printer.printing
   override def getPrintedText() = printer.getPrintedText()
   override def getPrinterBuffer() = printer.buffer
   
