@@ -47,24 +47,27 @@ print("Moving files to {}...".format(args.output))
 from distutils import dir_util,file_util
 
 assets_folder='assets'
-output_assets_folder=os.path.join(output_folder,assets_folder)
+output_assets_folder=os.path.join(output_folder,"")
 makedirs_ifnot(output_assets_folder)
 print("Moving assets folder from '{}' to '{}'...".format(assets_folder,output_assets_folder))
 
 dir_util.copy_tree(assets_folder,output_assets_folder)
 
-compiled_js_folder='target/scala-2.11'
-output_compiled_js_folder=os.path.join(output_folder,compiled_js_folder)
+compiled_js_folder='target/scala-2.11/'
+output_compiled_js_folder=os.path.join(output_folder,"")
 makedirs_ifnot(output_compiled_js_folder)
 
-compiled_js_file=os.path.join(compiled_js_folder,'vonsim-opt.js')
+compiled_js_file='vonsim-opt.js'
 compiled_js_file_map=compiled_js_file+".map"
+
+compiled_js_filepath=os.path.join(compiled_js_folder,compiled_js_file)
+compiled_js_filepath_map=os.path.join(compiled_js_folder,compiled_js_file_map)
 output_compiled_js_file=os.path.join(output_folder,compiled_js_file)
 output_compiled_js_file_map=os.path.join(output_folder,compiled_js_file_map)
-print("Moving compiled js file to '{}' and source map to '{}'...".format(compiled_js_file,compiled_js_file_map))
-file_util.copy_file(compiled_js_file,output_compiled_js_file)
-file_util.copy_file(compiled_js_file_map,output_compiled_js_file_map)
+print("Moving compiled js file to '{}' and source map to '{}' ...".format(output_compiled_js_file,output_compiled_js_file_map))
+file_util.copy_file(compiled_js_filepath,output_compiled_js_file)
+file_util.copy_file(compiled_js_filepath_map,output_compiled_js_file_map)
 index_path=os.path.join(output_assets_folder,'index.html')
 print("Replacing fastopt.js for opt.js in {}".format(index_path))
-replace_string_in_file(index_path,'fastopt.js','opt.js')
+replace_string_in_file(index_path,'../target/scala-2.11/vonsim-fastopt.js','vonsim-opt.js')
 
