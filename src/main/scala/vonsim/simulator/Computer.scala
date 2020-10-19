@@ -390,8 +390,11 @@ object Memory {
   }
 }
 
-class MemoryAccessViolation(val address: Int)
-case class InvalidMemoryAddress(val address: Int) extends Exception()
+
+class MemoryError(val address:Int) extends Exception()
+class MemoryAccessViolation(a:Int) extends MemoryError(a)
+class InvalidMemoryAddress(a:Int) extends MemoryError(a) 
+
 
 class Memory(
   var values: Array[Word],
@@ -400,6 +403,7 @@ class Memory(
 
   val changedValues = Queue.empty[Int]
   def validAddress(address: Int) = address >= 0 && address < values.length
+  
   def checkAddress(address: Int) {
     if (!validAddress(address)) {
       throw new InvalidMemoryAddress(address)
@@ -415,32 +419,22 @@ class Memory(
     checkAddress(address + 1)
     DWord(values(address), values(address + 1))
   }
-  def setByte(address: Int, v: Word) = {
-    checkAddress(address)
-//    println(s"setting $address to $v ($readOnlyAddresses)")
-    if (readOnlyAddresses.contains(address)) {
-      Some(new MemoryAccessViolation(address))
-    } else {
-      changedValues += address
-      values(address) = v
-      None
+  def checkWritable(address:Int){
+    if (readOnlyAddresses.contains(address)){ 
+      throw new MemoryAccessViolation(address)
     }
   }
-  def setBytes(address: Int, v: DWord) = {
+  def setByte(address: Int, v: Word){
     checkAddress(address)
-    checkAddress(address + 1)
+    checkWritable(address)
 //    println(s"setting $address to $v ($readOnlyAddresses)")
-    if (readOnlyAddresses.contains(address)) {
-      Some(new MemoryAccessViolation(address))
-    } else if (readOnlyAddresses.contains(address + 1)) {
-      Some(new MemoryAccessViolation(address + 1))
-    } else {
-      changedValues += address
-      values(address) = v.l
-      changedValues += (address + 1)
-      values(address + 1) = v.h
-      None
-    }
+    changedValues += address
+    values(address) = v
+
+  }
+  def setBytes(address: Int, v: DWord){
+    setByte(address,v.l)
+    setByte(address+1,v.h)
   }
   def update(valuesMap: Map[MemoryAddress, Int]) {
     valuesMap.keys.foreach((address) => changedValues += address)

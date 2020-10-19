@@ -20,4 +20,5 @@ class English extends SimulatorLanguage {
   def instructionErrorMessage(i: InstructionInfo) =
     s"Error executing instruction ${i.rawInstruction}."
   def reason = "Reason"
+    
 }

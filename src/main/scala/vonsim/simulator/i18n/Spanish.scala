@@ -2,11 +2,14 @@ package vonsim.simulator.i18n
 
 import vonsim.simulator.InstructionInfo
 
+
 object Spanish {
   def code = "es"
 }
 class Spanish extends SimulatorLanguage {
   def code = Spanish.code
+  
+  
   def memoryCellAsInstruction(address: Int) = 
     s"Al ejecutar el programa, se quiso interpretar la celda de memoria ${address.toHexString} que no ha sido marcada como ejecutable. Verifique que su programa contiene las instrucciones HLT necesarias, y que haya instrucciones en la dirección 2000h."
   def modifyingReadOnlyMemory(address: Int) =

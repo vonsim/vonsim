@@ -270,17 +270,18 @@ class MainUI(
   }
 
   var cant = 0 // Cantidad de instrucciones realizadas
-  var tiempoTranscurrido: Long = 0
-  var tiempoInicial: Long = 0
+  var timeElapsed: Long = 0
+  var startTime: Long = 0
 
   def getTickTime() = s.systemEventTimer.getTickTime()
 
   def executeInstructionsTimed() {
+    val now = System.currentTimeMillis()
     if (!s.isWaitingKeyPress()) {
-      tiempoTranscurrido = System.currentTimeMillis() - tiempoInicial
-      if ((tiempoTranscurrido * getTickTime() / 1000) >= cant) {
+      timeElapsed = now - startTime
+      if ((timeElapsed * getTickTime() / 1000) >= cant) {
         cant = cant + 1
-        var i = s.s.stepInstruction()
+        var i = s.s.stepInstruction(now)
         i match {
           case Left(error) => {
             simulatorEvent()
@@ -294,7 +295,7 @@ class MainUI(
       }
     } else {
       cant = 0
-      tiempoInicial = System.currentTimeMillis()
+      startTime = System.currentTimeMillis()
     }
     checkTime()
   }
@@ -320,8 +321,8 @@ class MainUI(
     headerUI.controlsUI.disableControlsQuickRun()
 
     cant = 0
-    tiempoTranscurrido = 0
-    tiempoInicial = System.currentTimeMillis()
+    timeElapsed = 0
+    startTime = System.currentTimeMillis()
 
     executeInstructionsTimed()
   }

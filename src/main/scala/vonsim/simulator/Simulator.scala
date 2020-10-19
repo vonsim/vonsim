@@ -271,29 +271,33 @@ class Simulator(
     instructions = c.addressToInstruction
     state = SimulatorProgramExecuting
   }
-
-  def currentInstruction() = {
-//    println(s" pic int pending ${devController.isPendingInterruption()} ints ${cpu.acceptInterruptions}(simulator)")
+  
+  def checkInterruption()  {
     if(devController.isPendingInterruption() && cpu.acceptInterruptions) {
       
 //      println("pending interrupt "+ devController.config.pic.pendingInterruptions.mkString)
       val id = devController.config.pic.serviceInterrupt()
-      val interruptVectorAddress=id*Simulator.interruptVectorElementSize
-      val ip = memory.getBytes(interruptVectorAddress).toUnsignedInt
       cpu.acceptInterruptions = false
-      interruptionCall(ip)
-    }
-
-    if (instructions.keySet.contains(cpu.ip)) {
-      val instruction = instructions(cpu.ip)
-      Right(instruction)
-    } else {
-      val message = language.memoryCellAsInstruction(cpu.ip)
-      Left(GeneralExecutionError(message))
+      val interruptVectorAddress=id*Simulator.interruptVectorElementSize
+      val ip = memory.getBytes(interruptVectorAddress)
+      interruptionCall(ip.toUnsignedInt)
     }
   }
+  private def currentInstruction() = {
+//    println(s" pic int pending ${devController.isPendingInterruption()} ints ${cpu.acceptInterruptions}(simulator)")
+      checkInterruption()
+      
+      if (instructions.keySet.contains(cpu.ip)) {
+        val instruction = instructions(cpu.ip)
+        Right(instruction)
+      } else {
+        val message = language.memoryCellAsInstruction(cpu.ip)
+        Left(GeneralExecutionError(message))
+      }
+    
+  }
   
-  def interruptionCall(intAdress: Int) {
+  private def interruptionCall(intAdress: Int) {
   	push(cpu.alu.flags.toDWord)
   	push(cpu.ip)
     cpu.jump(intAdress)
@@ -304,10 +308,12 @@ class Simulator(
   }
 
   def stepNInstructions(n: Int,speed:Int=1000) = {
-    val instruction = stepInstruction()
-    var instructions = ListBuffer(instruction)
     var counter = 0
     var time = 0
+    
+    val instruction = stepInstruction(time)
+    var instructions = ListBuffer(instruction)
+    
     while (counter < n && instruction.isRight && !cpu.halted && !(state == SimulatorWaitingKeyPress)) {
       val instruction = stepInstruction(time)
       time+=speed
@@ -317,27 +323,32 @@ class Simulator(
     instructions
   }
 
-  def stepInstruction(actualTime: Long = System.currentTimeMillis()) = {
-    val instructionInfo = currentInstruction()
-    if (instructionInfo.isRight) {
-      val info = instructionInfo.right.get
-      val instruction = info.instruction
-
-      cpu.jump(cpu.ip + Simulator.instructionSize(instruction))
-      state = SimulatorProgramExecuting
-      try {
-        execute(info)
-        devController.simulatorEvent(actualTime)
+  def stepInstruction(actualTime: Long=0): Either[GeneralExecutionError,InstructionInfo] = {
+    try {
+      val instructionInfo = currentInstruction()
+      if (instructionInfo.isRight) {
+        val info = instructionInfo.right.get
+        val instruction = info.instruction
+  
+        cpu.jump(cpu.ip + Simulator.instructionSize(instruction))
+        state = SimulatorProgramExecuting
         
-      } catch {
-        case e: InvalidMemoryAddress =>
-          stopExecutionForError(language.invalidMemoryAddress(e.address))
+          execute(info)
+          devController.simulatorEvent(actualTime)
+          
+
+      } else {
+        stopExecutionForError(instructionInfo.left.get)
       }
-    } else {
-      stopExecutionForError(instructionInfo.left.get)
+      return instructionInfo
+      
+    } catch {
+      case e: MemoryError =>
+      Left(GeneralExecutionError(language.memoryError(e)))
     }
-    instructionInfo
+    
   }
+  
   def finishExecution() {
     state = SimulatorExecutionFinished
     cpu.halted = true
@@ -465,10 +476,10 @@ class Simulator(
 
       case Mov(os: WordBinaryOperands) => {
 //        println(s"Updating operand ${os.o1} with ${os.o2}")
-        checkUpdateResult(update(os.o1, get(os.o2)), i)
+        update(os.o1, get(os.o2))
       }
       case Mov(os: DWordBinaryOperands) => {
-        checkUpdateResult(update(os.o1, get(os.o2)), i)
+        update(os.o1, get(os.o2))
       }
       case ALUBinary(CMP, os: WordBinaryOperands) => {
         cpu.alu.applyOp(SUB, get(os.o1), get(os.o2))
@@ -477,25 +488,22 @@ class Simulator(
         cpu.alu.applyOp(SUB, get(os.o1), get(os.o2))
       }
       case ALUBinary(op, os: WordBinaryOperands) => {
-        checkUpdateResult(
-          update(os.o1, cpu.alu.applyOp(op, get(os.o1), get(os.o2))),
-          i
-        )
+          update(os.o1, cpu.alu.applyOp(op, get(os.o1), get(os.o2)))
+        
       }
       case ALUBinary(op, os: DWordBinaryOperands) => {
-        checkUpdateResult(
-          update(os.o1, cpu.alu.applyOp(op, get(os.o1), get(os.o2))),
-          i
-        )
+        
+          update(os.o1, cpu.alu.applyOp(op, get(os.o1), get(os.o2)))
+        
       }
       case ALUUnary(op, o: WordOperand) => {
-        checkUpdateResult(update(o, cpu.alu.applyOp(op, get(o))), i)
+        update(o, cpu.alu.applyOp(op, get(o)))
       }
       case ALUUnary(op, o: DWordOperand) => {
         val v = get(o)
 
         val a = cpu.alu.applyOp(op, v)
-        checkUpdateResult(update(o, a), i)
+        update(o, a)
       }
       case Cli => {
         cpu.disableInterruptions()
@@ -551,10 +559,11 @@ class Simulator(
   def push(v: Int) {
     push(DWord(v))
   }
-  def push(v: DWord) {
+  def push(v: DWord) = {
     cpu.setSP(cpu.sp - 2)
     memory.setBytes(cpu.sp, v)
   }
+  
   def pop() = {
     val v = memory.getBytes(cpu.sp)
     cpu.setSP(cpu.sp + 2)
@@ -564,8 +573,8 @@ class Simulator(
   def get(o: DWordOperand): DWord = {
     o match {
       case DWordMemoryAddress(address) => memory.getBytes(address)
-      case r: FullRegister             => cpu.get(r)
-      case v: DWordValue               => DWord(v.v)
+      case r: FullRegister             =>cpu.get(r)
+      case v: DWordValue               =>DWord(v.v)
       case DWordIndirectMemoryAddress  => memory.getBytes(cpu.get(BX).toInt)
     }
   }
@@ -573,7 +582,7 @@ class Simulator(
   def update(o: DWordOperand, v: DWord) = {
     o match {
       case DWordMemoryAddress(address) => memory.setBytes(address, v)
-      case r: FullRegister             => { cpu.set(r, v); None }
+      case r: FullRegister             => cpu.set(r, v)
       case DWordIndirectMemoryAddress  => memory.setBytes(cpu.get(BX).toInt, v)
     }
   }
@@ -586,11 +595,11 @@ class Simulator(
       case WordIndirectMemoryAddress  => memory.getByte(cpu.get(BX).toInt)
     }
   }
-  def update(o: WordOperand, v: Word) = {
+  def update(o: WordOperand, v: Word)  {
 //    println(s"Updating operand $o with $v")
     o match {
       case WordMemoryAddress(address) => memory.setByte(address, v)
-      case r: HalfRegister            => { cpu.set(r, v); None }
+      case r: HalfRegister            => cpu.set(r, v)
       case WordIndirectMemoryAddress  => memory.setByte(cpu.get(BX).toInt, v)
     }
   }
