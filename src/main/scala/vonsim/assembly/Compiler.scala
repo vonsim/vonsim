@@ -493,7 +493,7 @@ object Compiler {
 //          println("Values in def: "+values)
           val optionValues = values.map(_ match {
             case None    => Some(None)
-            case Some(v) => ComputerWord.minimalWordFor(v).map(Some(_))
+            case Some(v) => ComputerWord.minimalWordFor(v, x.t).map(Some(_))
           })
 
 //          println(optionValues)

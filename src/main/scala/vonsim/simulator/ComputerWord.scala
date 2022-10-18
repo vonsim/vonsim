@@ -1,16 +1,25 @@
 package vonsim.simulator
 
+import vonsim.assembly.lexer.{VarType, DW}
+
 import ComputerWord._
 
 object ComputerWord {
 
-  def minimalWordFor(x: Int) = {
+  def minimalWordFor(x: Int, t: VarType) = {
     bytesFor(x) match {
       case 2 => Option(DWord(x))
-      case 1 => Option(Word(x))
+      case 1 => {
+        if (x < 0 && t.isInstanceOf[DW]) {
+          // If it's negative and it's a DW, we need to use a DWord
+          // This will ensure that the sign is extended
+          Option(DWord(x))
+        } else {
+          Option(Word(x))
+        }
+      }
       case _ => None
     }
-
   }
 
   // Minimum number of bytes to encode a number
