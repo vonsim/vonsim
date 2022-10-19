@@ -479,7 +479,6 @@ object Compiler {
         if (!undefinedLabels.isEmpty) {
           semanticError(x, language.labelsUndefined(undefinedLabels))
         } else {
-          println(x.values)
           val values = x.values.map(_ match {
             case Right(e) => {
               Some(resolver.expression(e))
