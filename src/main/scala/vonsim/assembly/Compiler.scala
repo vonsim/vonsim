@@ -494,7 +494,7 @@ object Compiler {
                   case None => None
                   case Some(v) => {
                     if (ComputerWord.bytesFor(v) > 1) {
-                      Some(None)
+                      Some(None) // Ignore values that are too big
                     } else{
                       Some(Some(Word(v)))
                     }
@@ -508,6 +508,8 @@ object Compiler {
                   case Some(Some(v)) => Some(v)
                 })
   
+              // The only way these two lists can have different sizes is if
+              // there was a value that didn't fit in 8 bits
               if(wordValues.size != values.size) {
                 semanticError(x, language.dontFitIn8Bits)
               } else {
@@ -516,7 +518,7 @@ object Compiler {
                   WordDef(
                     x.label,
                     resolver.vardefLabelAddress(x.label),
-                    wordValues.asInstanceOf[List[Option[Word]]]
+                    wordValues
                   )
                 )
               }
@@ -527,7 +529,7 @@ object Compiler {
                   case None => None
                   case Some(v)  => {
                     if (ComputerWord.bytesFor(v) > 2) {
-                      Some(None)
+                      Some(None) // Ignore values that are too big
                     } else{
                       Some(Some(DWord(v)))
                     }
@@ -541,6 +543,8 @@ object Compiler {
                   case Some(Some(v)) => Some(v)
                 })
   
+              // The only way these two lists can have different sizes is if
+              // there was a value that didn't fit in 16 bits
               if(dwordValues.size != values.size) {
                 semanticError(x, language.dontFitIn16Bits)
               } else {

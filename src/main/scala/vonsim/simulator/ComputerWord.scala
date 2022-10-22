@@ -1,7 +1,5 @@
 package vonsim.simulator
 
-import vonsim.assembly.lexer.{VarType, DW}
-
 import ComputerWord._
 
 object ComputerWord {
