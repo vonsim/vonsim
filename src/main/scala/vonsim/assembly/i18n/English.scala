@@ -38,6 +38,8 @@ class English extends CompilerLanguage {
     s"The number ${v} cannot be represented with 8 or 16 bits"
   def dontFitIn16Bits = "Some values do not fit into a 16 bit representation."
   def dontFitIn8Bits = "Some values do not fit into an 8 bit representation."
+  def dontFitIn16Bits(values:List[Int]) = s"The values ${values.mkString(", ")} do not fit in 16 bits"
+  def dontFitIn8Bits(values:List[Int]) = s"The values ${values.mkString(", ")} do not fit in 8 bits"
   def instructionNotSupported(i: String) = s"Instruction $i not supported."
   def invalidOperands = "Invalid operands."
   def literalStringsAsImmediate(s: String) =

@@ -25,6 +25,8 @@ abstract class CompilerLanguage {
   def operandNotUpdatable(operand: String): String
   def immediateOperandsNotUpdatable(operand: String): String
   def dontFitIn16Bits(v: Int): String
+  def dontFitIn16Bits(values:List[Int]): String
+  def dontFitIn8Bits(values:List[Int]): String
   def dontFitIn16Bits: String
   def dontFitIn8Bits: String
   def instructionNotSupported(i: String): String

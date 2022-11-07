@@ -40,6 +40,9 @@ class Spanish extends CompilerLanguage {
   def dontFitIn16Bits =
     "Algún valor no puede codificarse con 16 bits, es demasiado grande o chico."
   def dontFitIn8Bits = "Algún valor no puede representarse con 8 bits."
+  
+  def dontFitIn16Bits(values:List[Int]) = s"Los valores: ${values.mkString(", ")} no pueden codificarse con 16 bits"
+  def dontFitIn8Bits(values:List[Int]) = s"Los valores: ${values.mkString(", ")} no pueden codificarse con 8 bits"
   def instructionNotSupported(i: String) =
     s"La instrucción $i no está implementada."
   def invalidOperands = "Operandos inválidos."

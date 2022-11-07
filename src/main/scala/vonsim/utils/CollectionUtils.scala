@@ -6,7 +6,14 @@ object CollectionUtils {
 
   implicit class BetterEither[A, B, C](a: Either[A, B]) {}
   implicit class BetterMap[A: ClassTag](m: Map[Int, A]) {}
-
+  
+  implicit class BetterList[A](val a:List[A]){
+    
+    def indicesOf(p: A => Boolean):List[Int]={
+      a.zipWithIndex.filter( t => p(t._1)).map(t => t._2)
+    }
+  }
+  
   implicit class EitherList[A, B, C](a: List[Either[A, B]]) {
 
     def mapRightEither(f: B => Either[A, C]): List[Either[A, C]] = {

@@ -396,7 +396,24 @@ object Compiler {
       case other                         => other
     })
   }
-
+  
+  def getTooLargeValues(t: VarType, values:List[Option[Int]]):List[Int] ={
+    val maxBytes = t match{
+            case t:lexer.DB => 1
+            case t:lexer.DW => 2
+          }
+    val bytesForValues = values.map(_ match{
+      case None=> 0
+      case Some(v) => ComputerWord.bytesFor(v)
+    })
+    val tooLargeValuesIndices = bytesForValues.indicesOf(_>maxBytes)
+    val tooLargeValues = tooLargeValuesIndices.map(values(_)).map(_ match{
+        case None => 0
+        case Some(v) => v
+      })
+    tooLargeValues  
+  }
+  
   def parserToSimulatorInstruction(
     i: parser.Instruction,
     resolver: Resolver
@@ -486,33 +503,18 @@ object Compiler {
             case Left(u) => None // This is for the case `var DB ?`
           })
           
-
+          val tooLargeValues = getTooLargeValues(x.t, values) 
+          
           x.t match {
             case t: lexer.DB => {
-              val wordValues: List[Option[Word]] = values
-                .map(_ match {
-                  case None => None
-                  case Some(v) => {
-                    if (ComputerWord.bytesFor(v) > 1) {
-                      Some(None) // Ignore values that are too big
-                    } else{
-                      Some(Some(Word(v)))
-                    }
-                  }
-                }).filter(_ match {
-                  case None => true
-                  case Some(None) => false // Ignore values that are too big
-                  case Some(Some(_)) => true
-                }).map(_ match {
-                  case None => None
-                  case Some(Some(v)) => Some(v)
+              if (tooLargeValues.length > 0){
+                semanticError(x,language.dontFitIn8Bits(tooLargeValues))
+              }else{
+                val wordValues = values.map(_ match{
+                  case None=> None
+                  case Some(v) => Some(Word(v))       
                 })
-  
-              // The only way these two lists can have different sizes is if
-              // there was a value that didn't fit in 8 bits
-              if(wordValues.size != values.size) {
-                semanticError(x, language.dontFitIn8Bits)
-              } else {
+                
                 successfulTransformation(
                   x,
                   WordDef(
@@ -524,39 +526,22 @@ object Compiler {
               }
             }
             case t: lexer.DW => {
-              val dwordValues: List[Option[DWord]] = values
-                .map(_ match {
-                  case None => None
-                  case Some(v)  => {
-                    if (ComputerWord.bytesFor(v) > 2) {
-                      Some(None) // Ignore values that are too big
-                    } else{
-                      Some(Some(DWord(v)))
-                    }
-                  }
-                }).filter(_ match {
-                  case None => true
-                  case Some(None) => false // Ignore values that are too big
-                  case Some(Some(_)) => true
-                }).map(_ match {
-                  case None => None
-                  case Some(Some(v)) => Some(v)
-                })
-  
-              // The only way these two lists can have different sizes is if
-              // there was a value that didn't fit in 16 bits
-              if(dwordValues.size != values.size) {
-                semanticError(x, language.dontFitIn16Bits)
-              } else {
-                successfulTransformation(
-                  x,
-                  DWordDef(
-                    x.label,
-                    resolver.vardefLabelAddress(x.label),
-                    dwordValues
+              if (tooLargeValues.length > 0){
+                semanticError(x,language.dontFitIn16Bits(tooLargeValues))
+              }else{
+                  val dwordValues = values.map(_ match{
+                    case None=> None
+                    case Some(v) => Some(DWord(v))       
+                  })
+                  successfulTransformation(
+                    x,
+                    DWordDef(
+                      x.label,
+                      resolver.vardefLabelAddress(x.label),
+                      dwordValues
+                    )
                   )
-                )
-              }
+                }
             }
           }
         }
