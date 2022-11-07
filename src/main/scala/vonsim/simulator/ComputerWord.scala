@@ -4,15 +4,6 @@ import ComputerWord._
 
 object ComputerWord {
 
-  def minimalWordFor(x: Int) = {
-    bytesFor(x) match {
-      case 2 => Option(DWord(x))
-      case 1 => Option(Word(x))
-      case _ => None
-    }
-
-  }
-
   // Minimum number of bytes to encode a number
   def ca2range(bytes: Int) = {
     val h = (Math.pow(2, (bitsPerByte * bytes) - 1) - 1).toInt
