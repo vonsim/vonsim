@@ -7,7 +7,7 @@ import com.sun.org.apache.bcel.internal.generic.ArithmeticInstruction
 import vonsim.assembly.Compiler
 import vonsim.assembly.Compiler.SuccessfulCompilation
 import scala.io.Source
-import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter
+
 import org.scalatest.enablers.Length
 
 
