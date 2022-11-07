@@ -74,7 +74,7 @@ class Flags(
     }
   }
   def toDWord() = {
-    DWord(IndexedSeq(c.toInt, s.toInt, z.toInt, o.toInt).toInt())
+    DWord(IndexedSeq(c.toInt, s.toInt, o.toInt, z.toInt).toInt())
   }
   def canEqual(a: Any) = a.isInstanceOf[Flags]
   override def equals(a: Any) = {
