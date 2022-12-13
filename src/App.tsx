@@ -1,29 +1,44 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-
-import "./App.css";
+import { Scanner } from "./compiler/lexer/scanner";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [source, setSource] = useState("");
+  const [output, setOutput] = useState("");
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="p-4">
+      <h1 className="text-center text-4xl font-bold">VonSim</h1>
+
+      <div className="flex gap-4">
+        <div>
+          <textarea
+            className="w-full rounded border p-1 focus:outline-none"
+            cols={50}
+            rows={20}
+            value={source}
+            onChange={e => setSource(e.currentTarget.value)}
+          />
+
+          <br />
+
+          <button
+            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+            onClick={() => {
+              try {
+                const scanner = new Scanner(source);
+                const result = scanner.scanTokens();
+                setOutput(result.join("\n"));
+              } catch (error) {
+                setOutput(String(error));
+              }
+            }}
+          >
+            Run
+          </button>
+        </div>
+
+        <pre className="grow rounded bg-gray-200 p-4">{output}</pre>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount(count => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
     </div>
   );
 }
