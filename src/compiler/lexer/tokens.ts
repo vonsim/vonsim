@@ -1,18 +1,10 @@
 import type { Position } from "../common";
 
-export class Token {
-  // TypeScript's Parameter Properties
-  // https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties
-  constructor(
-    public readonly type: TokenType,
-    public readonly lexeme: string,
-    public readonly position: Position,
-  ) {}
-
-  toString() {
-    return `${this.type} '${this.lexeme}' ${this.position}`;
-  }
-}
+export type Token = {
+  type: TokenType;
+  lexeme: string;
+  position: Position;
+};
 
 export type TokenType =
   // Single-character tokens.
@@ -27,7 +19,7 @@ export type TokenType =
   | "STRING"
   | "NUMBER"
   // Keywords.
-  | typeof KEYWORDS[number]
+  | KeywordType
   // ...
   | "EOL"
   | "EOF";
@@ -77,4 +69,8 @@ const INSTRUCTIONS = [
   "HLT",
 ] as const;
 
+export type InstructionType = typeof INSTRUCTIONS[number];
+
 export const KEYWORDS = ["OFFSET", "ORG", "DB", "DW", "EQU", "END", ...INSTRUCTIONS] as const;
+
+export type KeywordType = typeof KEYWORDS[number];

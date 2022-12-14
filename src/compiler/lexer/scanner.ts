@@ -5,17 +5,22 @@ export class Scanner {
   private tokens: Token[] = [];
   private current = 0;
   private start = 0;
-  private startPos: Position = new Position(1, 1);
-  private currentPos: Position = new Position(1, 1);
+  private startPos: Position = [1, 1];
+  private currentPos: Position = [1, 1];
+  private scanned = false;
 
   constructor(private source: string) {}
 
   private addToken(type: TokenType) {
-    this.tokens.push(new Token(type, this.source.slice(this.start, this.current), this.startPos));
+    this.tokens.push({
+      type,
+      lexeme: this.source.slice(this.start, this.current),
+      position: this.startPos,
+    });
   }
 
   private advance() {
-    this.currentPos = this.currentPos.forward();
+    this.currentPos = [this.currentPos[0], this.currentPos[1] + 1]; // Forward one column
     return this.source.charAt(this.current++);
   }
 
@@ -40,15 +45,12 @@ export class Scanner {
   }
 
   scanTokens(): Token[] {
-    this.current = 0;
-    this.start = 0;
-    this.startPos = new Position(1, 1);
-    this.currentPos = new Position(1, 1);
-    this.tokens = [];
+    if (this.scanned) throw new Error("Scanner has already been used.");
+    else this.scanned = true;
 
     while (!this.isAtEnd()) {
       this.start = this.current;
-      this.startPos = this.currentPos.clone();
+      this.startPos = [...this.currentPos];
 
       const c = this.advance();
       switch (c) {
@@ -97,7 +99,7 @@ export class Scanner {
 
         case "\n":
           this.addToken("EOL");
-          this.currentPos = this.currentPos.down();
+          this.currentPos = [this.currentPos[0] + 1, 1]; // Down one line
           continue;
       }
 
@@ -152,7 +154,7 @@ export class Scanner {
     }
 
     this.start = this.current;
-    this.startPos = this.currentPos.clone();
+    this.startPos = [...this.currentPos];
     this.addToken("EOF");
     return this.tokens;
   }

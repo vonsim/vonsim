@@ -27,7 +27,7 @@ function App() {
               try {
                 const scanner = new Scanner(source);
                 const result = scanner.scanTokens();
-                setOutput(result.join("\n"));
+                setOutput(JSON.stringify(result, null, 2));
               } catch (error) {
                 setOutput(String(error));
               }

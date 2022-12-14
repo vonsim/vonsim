@@ -1,22 +1,4 @@
-export class Position {
-  constructor(public readonly line: number, public readonly column: number) {}
-
-  forward() {
-    return new Position(this.line, this.column + 1);
-  }
-
-  down() {
-    return new Position(this.line + 1, 1);
-  }
-
-  clone() {
-    return new Position(this.line, this.column);
-  }
-
-  toString() {
-    return `${this.line},${this.column}`;
-  }
-}
+export type Position = [line: number, column: number];
 
 export class CompilerError extends Error {
   constructor(message: string, public readonly from: Position, public readonly to: Position) {
@@ -24,6 +6,6 @@ export class CompilerError extends Error {
   }
 
   toString() {
-    return `${this.message} (${this.from} - ${this.to})`;
+    return `${this.message} (${this.from.join(",")} - ${this.to.join(",")})`;
   }
 }
