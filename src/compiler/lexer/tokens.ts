@@ -12,6 +12,7 @@ export type TokenType =
   | "RIGHT_BRACKET"
   | "COMMA"
   | "COLON"
+  | "QUESTION_MARK"
   | "PLUS"
   | "MINUS"
   // Literals.

@@ -63,6 +63,9 @@ export class Scanner {
         case ",":
           this.addToken("COMMA");
           continue;
+        case "?":
+          this.addToken("QUESTION_MARK");
+          continue;
         case ":":
           this.addToken("COLON");
           continue;
