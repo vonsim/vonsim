@@ -111,28 +111,37 @@ export class Scanner {
 
       // Numbers
       if (this.isDigit(c)) {
-        const start = c + this.peek().toLowerCase();
+        while (
+          this.isDigit(this.peek()) ||
+          (this.peek() >= "a" && this.peek() <= "f") ||
+          (this.peek() >= "A" && this.peek() <= "F")
+        ) {
+          this.advance();
+        }
 
-        if (start === "0x") {
-          // Hexadecimal
+        if (this.peek() === "H" || this.peek() === "h") {
+          // By this point, we know that the number is a hexadecimal number.
           this.advance();
-          while (
-            this.isDigit(this.peek()) ||
-            (this.peek() >= "a" && this.peek() <= "f") ||
-            (this.peek() >= "A" && this.peek() <= "F")
-          ) {
-            this.advance();
-          }
-        } else if (start === "0b") {
-          // Binary
-          this.advance();
-          while (this.peek() === "0" || this.peek() === "1") {
-            this.advance();
-          }
         } else {
-          // Decimal
-          while (this.isDigit(this.peek())) {
-            this.advance();
+          const text = this.source.slice(this.start, this.current);
+          if (text.at(-1) === "b" || text.at(-1) === "B") {
+            // Should be a binary number.
+            if (!/^[01]+b$/i.test(text)) {
+              throw new CompilerError(
+                "Invalid binary number. It should only contain 0s and 1s.",
+                this.startPos,
+                this.currentPos,
+              );
+            }
+          } else {
+            // Should be a decimal number.
+            if (!/^\d+$/.test(text)) {
+              throw new CompilerError(
+                "Invalid decimal number. It should only contain digits.",
+                this.startPos,
+                this.currentPos,
+              );
+            }
           }
         }
 
