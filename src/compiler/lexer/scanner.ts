@@ -75,6 +75,9 @@ export class Scanner {
         case "-":
           this.addToken("MINUS");
           continue;
+        case "*":
+          this.addToken("ASTERISK");
+          continue;
 
         case '"':
           while (this.peek() !== '"') {

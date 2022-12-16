@@ -15,6 +15,7 @@ export type TokenType =
   | "QUESTION_MARK"
   | "PLUS"
   | "MINUS"
+  | "ASTERISK"
   // Literals.
   | "IDENTIFIER"
   | "STRING"
@@ -25,7 +26,7 @@ export type TokenType =
   | "EOL"
   | "EOF";
 
-const INSTRUCTIONS = [
+export const INSTRUCTIONS = [
   // Transfer
   "MOV",
   "PUSH",
@@ -72,6 +73,17 @@ const INSTRUCTIONS = [
 
 export type InstructionType = typeof INSTRUCTIONS[number];
 
-export const KEYWORDS = ["OFFSET", "ORG", "DB", "DW", "EQU", "END", ...INSTRUCTIONS] as const;
+export const KEYWORDS = [
+  "OFFSET",
+  "ORG",
+  "DB",
+  "DW",
+  "EQU",
+  "BYTE",
+  "WORD",
+  "PTR",
+  "END",
+  ...INSTRUCTIONS,
+] as const;
 
 export type KeywordType = typeof KEYWORDS[number];
