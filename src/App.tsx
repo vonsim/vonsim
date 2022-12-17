@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Scanner } from "./compiler/lexer/scanner";
+import { Parser } from "./compiler/parser/parser";
 
 function App() {
   const [source, setSource] = useState("");
-  const [output, setOutput] = useState("");
+  const [lexed, setLexed] = useState("");
+  const [parsed, setParsed] = useState("");
 
   return (
     <div className="p-4">
@@ -26,10 +28,20 @@ function App() {
             onClick={() => {
               try {
                 const scanner = new Scanner(source);
-                const result = scanner.scanTokens();
-                setOutput(JSON.stringify(result, null, 2));
+                const lexed = scanner.scanTokens();
+                setLexed(JSON.stringify(lexed, null, 2));
+                try {
+                  const parser = new Parser(lexed);
+                  const parsed = parser.parseTokens();
+                  setParsed(JSON.stringify(parsed, null, 2));
+                } catch (error) {
+                  setParsed(String(error));
+                  console.error(error);
+                }
               } catch (error) {
-                setOutput(String(error));
+                setLexed(String(error));
+                setParsed("");
+                console.error(error);
               }
             }}
           >
@@ -37,7 +49,8 @@ function App() {
           </button>
         </div>
 
-        <pre className="grow rounded bg-gray-200 p-4">{output}</pre>
+        <pre className="grow rounded bg-gray-200 p-4">{lexed}</pre>
+        <pre className="grow rounded bg-gray-200 p-4">{parsed}</pre>
       </div>
     </div>
   );

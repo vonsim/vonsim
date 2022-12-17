@@ -5,6 +5,7 @@ specifiers:
   '@types/react-dom': ^18.0.9
   '@vitejs/plugin-react-swc': ^3.0.0
   autoprefixer: ^10.4.13
+  klona: ^2.0.5
   postcss: ^8.4.20
   prettier: ^2.8.1
   prettier-plugin-organize-imports: ^3.2.1
@@ -12,11 +13,13 @@ specifiers:
   react: ^18.2.0
   react-dom: ^18.2.0
   tailwindcss: ^3.2.4
+  type-fest: ^3.4.0
   typescript: ~4.9.4
   vite: ^4.0.1
   vitepress: 1.0.0-alpha.31
 
 dependencies:
+  klona: 2.0.5
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
 
@@ -30,6 +33,7 @@ devDependencies:
   prettier-plugin-organize-imports: 3.2.1_2gbcgqmzq2pxiocqw2qs7hdeqe
   prettier-plugin-tailwindcss: 0.2.1_prettier@2.8.1
   tailwindcss: 3.2.4_postcss@8.4.20
+  type-fest: 3.4.0
   typescript: 4.9.4
   vite: 4.0.1
   vitepress: 1.0.0-alpha.31_ib3m5ricvtkl2cll7qpr2f6lvq
@@ -47,6 +51,9 @@ packages:
     peerDependencies:
       '@algolia/client-search': '>= 4.9.1 < 6'
       algoliasearch: '>= 4.9.1 < 6'
+    peerDependenciesMeta:
+      '@algolia/client-search':
+        optional: true
     dependencies:
       '@algolia/autocomplete-shared': 1.7.2
       algoliasearch: 4.14.2
@@ -997,6 +1004,11 @@ packages:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
     dev: true
 
+  /klona/2.0.5:
+    resolution: {integrity: sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==}
+    engines: {node: '>= 8'}
+    dev: false
+
   /lilconfig/2.0.6:
     resolution: {integrity: sha512-9JROoBW7pobfsx+Sq2JsASvCo6Pfo6WWoUW79HuB1BCoBXD4PLWJPqDF6fNj67pqBYTbAHkE57M1kS/+L1neOg==}
     engines: {node: '>=10'}
@@ -1322,6 +1334,11 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
+    dev: true
+
+  /type-fest/3.4.0:
+    resolution: {integrity: sha512-PEPg6RHlB9cFwoTMNENNrQFL0cXX04voWr2UPwQBJ3pVs7Mt8Y1oLWdUeMdGEwZE8HFFlujq8gS9enmyiQ8pLg==}
+    engines: {node: '>=14.16'}
     dev: true
 
   /typescript/4.9.4:

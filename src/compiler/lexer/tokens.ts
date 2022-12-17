@@ -8,6 +8,8 @@ export type Token = {
 
 export type TokenType =
   // Single-character tokens.
+  | "LEFT_PAREN"
+  | "RIGHT_PAREN"
   | "LEFT_BRACKET"
   | "RIGHT_BRACKET"
   | "COMMA"
@@ -73,16 +75,41 @@ export const INSTRUCTIONS = [
 
 export type InstructionType = typeof INSTRUCTIONS[number];
 
+export const DATA_DIRECTIVES = ["DB", "DW", "EQU"] as const;
+
+export type DataDirectiveType = typeof DATA_DIRECTIVES[number];
+
+export const REGISTERS = [
+  "AX",
+  "BX",
+  "CX",
+  "DX",
+  "AL",
+  "BL",
+  "CL",
+  "DL",
+  "AH",
+  "BH",
+  "CH",
+  "DH",
+  "IP",
+  "SP",
+  "IR",
+  "MAR",
+  "MBR",
+] as const;
+
+export type RegisterType = typeof REGISTERS[number];
+
 export const KEYWORDS = [
   "OFFSET",
   "ORG",
-  "DB",
-  "DW",
-  "EQU",
   "BYTE",
   "WORD",
   "PTR",
   "END",
+  ...DATA_DIRECTIVES,
+  ...REGISTERS,
   ...INSTRUCTIONS,
 ] as const;
 

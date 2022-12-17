@@ -1,4 +1,4 @@
-import { CompilerError, Position } from "../common";
+import { CompilerError, includes, Position } from "../common";
 import { KEYWORDS, Token, TokenType } from "./tokens";
 
 export class Scanner {
@@ -11,39 +11,6 @@ export class Scanner {
 
   constructor(private source: string) {}
 
-  private addToken(type: TokenType) {
-    this.tokens.push({
-      type,
-      lexeme: this.source.slice(this.start, this.current),
-      position: this.startPos,
-    });
-  }
-
-  private advance() {
-    this.currentPos = [this.currentPos[0], this.currentPos[1] + 1]; // Forward one column
-    return this.source.charAt(this.current++);
-  }
-
-  private isAlpha(c: string) {
-    return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_";
-  }
-
-  private isAlphaNumeric(c: string) {
-    return this.isAlpha(c) || this.isDigit(c);
-  }
-
-  private isAtEnd() {
-    return this.current >= this.source.length;
-  }
-
-  private isDigit(c: string) {
-    return c >= "0" && c <= "9";
-  }
-
-  private peek() {
-    return this.isAtEnd() ? "\0" : this.source.charAt(this.current);
-  }
-
   scanTokens(): Token[] {
     if (this.scanned) throw new Error("Scanner has already been used.");
     else this.scanned = true;
@@ -54,6 +21,12 @@ export class Scanner {
 
       const c = this.advance();
       switch (c) {
+        case "(":
+          this.addToken("LEFT_PAREN");
+          continue;
+        case ")":
+          this.addToken("RIGHT_PAREN");
+          continue;
         case "[":
           this.addToken("LEFT_BRACKET");
           continue;
@@ -155,13 +128,10 @@ export class Scanner {
         }
 
         // Check if the identifier is a reserved word.
-        // The last 'as' is a hack to make TypeScript happy.
-        const text = this.source
-          .slice(this.start, this.current)
-          .toUpperCase() as typeof KEYWORDS[number];
-
-        if (KEYWORDS.includes(text)) this.addToken(text);
+        const text = this.source.slice(this.start, this.current).toUpperCase();
+        if (includes(KEYWORDS, text)) this.addToken(text);
         else this.addToken("IDENTIFIER");
+
         continue;
       }
 
@@ -172,5 +142,42 @@ export class Scanner {
     this.startPos = [...this.currentPos];
     this.addToken("EOF");
     return this.tokens;
+  }
+
+  // #=========================================================================#
+  // # Helpers                                                                 #
+  // #=========================================================================#
+
+  private addToken(type: TokenType) {
+    this.tokens.push({
+      type,
+      lexeme: this.source.slice(this.start, this.current),
+      position: this.startPos,
+    });
+  }
+
+  private advance() {
+    this.currentPos = [this.currentPos[0], this.currentPos[1] + 1]; // Forward one column
+    return this.source.charAt(this.current++);
+  }
+
+  private isAlpha(c: string) {
+    return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_";
+  }
+
+  private isAlphaNumeric(c: string) {
+    return this.isAlpha(c) || this.isDigit(c);
+  }
+
+  private isAtEnd() {
+    return this.current >= this.source.length;
+  }
+
+  private isDigit(c: string) {
+    return c >= "0" && c <= "9";
+  }
+
+  private peek() {
+    return this.isAtEnd() ? "\0" : this.source.charAt(this.current);
   }
 }
