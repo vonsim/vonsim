@@ -1,14 +1,11 @@
 import { linter } from "@codemirror/lint";
 import { useCodeMirror } from "@uiw/react-codemirror";
 import { useEffect, useRef, useState } from "react";
-import { CompilerError } from "./compiler/common";
-import { Scanner } from "./compiler/lexer/scanner";
-import { Parser } from "./compiler/parser/parser";
+import { compile } from "./compiler";
 
 function App() {
   const [cache, setCache] = useState("");
-  const [lexed, setLexed] = useState("");
-  const [parsed, setParsed] = useState("");
+  const [compiled, setCompiled] = useState("");
 
   const editor = useRef<HTMLDivElement | null>(null);
   const { setContainer } = useCodeMirror({
@@ -19,32 +16,19 @@ function App() {
     height: "400px",
     extensions: [
       linter(view => {
-        try {
-          const source = view.state.doc.toString();
-          setLexed("...");
-          setParsed("...");
-
-          const scanner = new Scanner(source);
-          const lexed = scanner.scanTokens();
-          setLexed(JSON.stringify(lexed, null, 2));
-
-          const parser = new Parser(lexed);
-          const parsed = parser.parseTokens();
-          setParsed(JSON.stringify(parsed, null, 2));
-        } catch (error) {
-          console.error(error);
-          if (error instanceof CompilerError) {
-            return [
-              {
-                from: error.from,
-                to: error.to,
-                message: error.message,
-                severity: "error",
-              },
-            ];
-          }
+        const result = compile(view.state.doc.toString());
+        if (result.success) {
+          setCompiled(result.result);
+          return [];
+        } else {
+          setCompiled("Error");
+          return result.errors.map(error => ({
+            from: error.from,
+            to: error.to,
+            message: error.message,
+            severity: "error",
+          }));
         }
-        return [];
       }),
     ],
   });
@@ -62,12 +46,8 @@ function App() {
       <div className="flex gap-4">
         <div ref={editor} />
         <div>
-          <b>Lexer</b>
-          <pre className="grow rounded bg-gray-200 p-4">{lexed}</pre>
-        </div>
-        <div>
-          <b>Parser</b>
-          <pre className="grow rounded bg-gray-200 p-4">{parsed}</pre>
+          <b>Compiled</b>
+          <pre className="grow rounded bg-gray-200 p-4">{compiled}</pre>
         </div>
       </div>
     </div>
