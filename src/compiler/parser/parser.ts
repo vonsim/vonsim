@@ -1,18 +1,17 @@
 import { klona } from "klona/json";
 import type { Merge } from "type-fest";
 import { CompilerError, includes, PositionRange } from "../common";
-import { DATA_DIRECTIVES, INSTRUCTIONS, Token, TokenType } from "../lexer/tokens";
-import type { DataDirectiveValue, NumberExpression, Statement } from "./grammar";
+import {
+  DATA_DIRECTIVES,
+  INSTRUCTIONS,
+  REGISTERS,
+  RegisterType,
+  Token,
+  TokenType,
+} from "../lexer/tokens";
+import type { DataDirectiveValue, NumberExpression, Operand, Statement } from "./grammar";
 
 export class Parser {
-  static config = {
-    maxMemoryAddress: 0x3fff,
-    maxByteValue: 0xff,
-    maxWordValue: 0xffff,
-    maxNegativeByteValue: -0x80,
-    maxNegativeWordValue: -0x8000,
-  };
-
   private current = 0;
   private statements: Statement[] = [];
 
@@ -115,11 +114,93 @@ export class Parser {
         }
 
         this.addStatement(statement);
-      } else if (includes(INSTRUCTIONS, token.type)) {
-        // TODO
-      } else {
-        throw CompilerError.fromToken(`Expected instruction, got ${token.type}`, token);
+        continue;
       }
+
+      if (includes(INSTRUCTIONS, token.type)) {
+        let statement = {
+          type: "instruction",
+          instruction: token.type,
+          label,
+          operands: [] as Operand[],
+          position: this.calculatePositionRange(token),
+        } satisfies Statement;
+
+        // Check for zeroary instructions
+        if (this.check("EOL")) {
+          this.addStatement(statement);
+          continue;
+        }
+
+        while (true) {
+          if (this.match(...REGISTERS)) {
+            const registerToken = this.advance() as Merge<Token, { type: RegisterType }>;
+            statement.operands.push({
+              type: "register",
+              value: registerToken.type,
+              position: this.calculatePositionRange(registerToken),
+            });
+          } else if (this.check("IDENTIFIER")) {
+            const identifierToken = this.advance();
+            statement.operands.push({
+              type: "memory-direct",
+              label: identifierToken.lexeme.toUpperCase(),
+              position: this.calculatePositionRange(identifierToken),
+            });
+          } else if (this.match("BYTE", "WORD", "LEFT_BRACKET")) {
+            let mode: "auto" | "byte" | "word";
+            let start: Token;
+            if (this.check("LEFT_BRACKET")) {
+              mode = "auto";
+              start = this.advance();
+            } else {
+              mode = this.check("BYTE") ? "byte" : "word";
+              start = this.advance();
+              this.consume("PTR", `Expected "PTR" after "${mode.toUpperCase()}"`);
+              this.consume("LEFT_BRACKET", `Expected "[" after "${mode.toUpperCase()} PTR"`);
+            }
+
+            if (this.check("BX")) {
+              this.advance();
+              const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after "BX"');
+              statement.operands.push({
+                type: "memory-indirect",
+                mode,
+                value: { type: "BX" },
+                position: this.calculatePositionRange(start, rbracket),
+              });
+            } else {
+              const calc = this.numberExpression();
+              const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after expression');
+              statement.operands.push({
+                type: "memory-indirect",
+                mode,
+                value: calc,
+                position: this.calculatePositionRange(start, rbracket),
+              });
+            }
+          } else {
+            const calc = this.numberExpression();
+            statement.operands.push({
+              type: "immediate",
+              value: calc,
+              position: calc.position,
+            });
+          }
+
+          if (this.check("COMMA")) {
+            this.advance();
+          } else {
+            this.expectEOL();
+            break;
+          }
+        }
+
+        this.addStatement(statement);
+        continue;
+      }
+
+      throw CompilerError.fromToken(`Expected instruction, got ${token.type}`, token);
     }
 
     return this.statements;
