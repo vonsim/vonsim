@@ -1,10 +1,18 @@
-import { CompilerError, includes } from "../common";
+import { CompilerError, includes, Position } from "../common";
 import { KEYWORDS, Token, TokenType } from "./tokens";
+
+/**
+ * This class is responsible for taking a string of source code and turning it
+ * into a list of tokens.
+ *
+ * It is a class because it maintains state as it scans the source code, although
+ * it could be refactored to be pure functions.
+ */
 
 export class Scanner {
   private tokens: Token[] = [];
-  private current = 0;
-  private start = 0;
+  private current: Position = 0;
+  private start: Position = 0;
   private scanned = false;
 
   constructor(private source: string) {}
@@ -49,6 +57,7 @@ export class Scanner {
           this.addToken("ASTERISK");
           continue;
 
+        // Read string
         case '"':
           while (this.peek() !== '"') {
             if (this.isAtEnd() || this.peek() === "\n") {
@@ -60,6 +69,7 @@ export class Scanner {
           this.addToken("STRING");
           continue;
 
+        // Consume comment
         case ";":
           // Consume comment until end of line.
           while (this.peek() !== "\n" && !this.isAtEnd()) {
@@ -67,10 +77,10 @@ export class Scanner {
           }
           continue;
 
+        // Ignore whitespace
         case " ":
         case "\r":
         case "\t":
-          // Ignore whitespace.
           continue;
 
         case "\n":
@@ -118,6 +128,7 @@ export class Scanner {
         continue;
       }
 
+      // Identifiers
       if (this.isAlpha(c)) {
         while (this.isAlphaNumeric(this.peek())) {
           this.advance();

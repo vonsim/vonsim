@@ -2,7 +2,9 @@ import type { Position } from "../common";
 
 export type Token = {
   type: TokenType;
+  /** The literal text found in the source code */
   lexeme: string;
+  /** @see {@link Position} */
   position: Position;
 };
 

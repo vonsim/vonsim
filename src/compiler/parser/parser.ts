@@ -11,13 +11,43 @@ import {
 } from "../lexer/tokens";
 import type { DataDirectiveValue, NumberExpression, Operand, Statement } from "./grammar";
 
+/**
+ * The parser is responsible for taking a list of tokens and turning it into a
+ * list of statements.
+ *
+ * It is a class because it maintains state as it parses the tokens, although it
+ * could be refactored to be pure functions.
+ *
+ * This parser parses each line individually, which can be
+ * - an origin change,
+ * - an end statement,
+ * - a data directive,
+ * - or an instruction.
+ *
+ * The last two can have multiple operands separated by commas. Inside each operand,
+ * there can be a number expression, which is a sequence of numbers and operators
+ * that can be evaluated at compile time.
+ *
+ * The number expression parser is a recursive descent parser, which means that
+ * it uses a set of functions to parse the tokens. Each function is responsible
+ * for parsing a specific type of statement, and it calls other functions to parse
+ * sub-parts of the statement.
+ *
+ * The parser is also responsible for validating the syntax of the source code.
+ * For example, it will throw an error if it encounters a token that it doesn't
+ * expect. More extensive validation is done by the semantic analyzer.
+ */
 export class Parser {
   private current = 0;
   private statements: Statement[] = [];
+  private parsed = false;
 
   constructor(private tokens: Token[]) {}
 
   parseTokens(): Statement[] {
+    if (this.parsed) throw new Error("Parser has already been used.");
+    else this.parsed = true;
+
     this.current = 0;
     this.statements = [];
 
@@ -28,7 +58,6 @@ export class Parser {
       }
 
       // First, parse special statements
-
       if (this.check("ORG")) {
         const token = this.advance();
         const addressToken = this.consume("NUMBER", "Expected address after ORG");
@@ -42,7 +71,9 @@ export class Parser {
 
         this.expectEOL();
         continue;
-      } else if (this.check("END")) {
+      }
+
+      if (this.check("END")) {
         const token = this.advance();
         this.addStatement({
           type: "end",
@@ -57,68 +88,31 @@ export class Parser {
         continue;
       }
 
-      let label: string | null = null;
-      if (this.check("IDENTIFIER") && this.checkNext("COLON")) {
-        const labelToken = this.advance();
-        label = labelToken.lexeme.toUpperCase(); // all labels are uppercase
-        const colonToken = this.advance();
-
-        const duplicatedLabel = this.statements.find(s => "label" in s && s.label === label);
-        if (duplicatedLabel) {
-          throw CompilerError.fromPositionRange(
-            `Duplicated label: ${label}`,
-            this.calculatePositionRange(labelToken, colonToken),
-          );
-        }
-
-        while (this.check("EOL")) {
-          this.advance();
-        }
-      }
-
+      const label = this.label();
       const token = this.advance();
+
       if (includes(DATA_DIRECTIVES, token.type)) {
-        let statement = {
+        const statement = {
           type: "data",
           directive: token.type,
           label,
-          values: [] as DataDirectiveValue[],
+          values: [this.dataDirectiveValue()], // There must be at least one value
           position: this.calculatePositionRange(token),
         } satisfies Statement;
 
-        while (true) {
-          if (this.check("STRING")) {
-            const stringToken = this.advance();
-            statement.values.push({
-              type: "string",
-              value: this.parseString(stringToken),
-              position: this.calculatePositionRange(stringToken),
-            });
-          } else if (this.check("QUESTION_MARK")) {
-            const questionMarkToken = this.advance();
-            statement.values.push({
-              type: "unassigned",
-              position: this.calculatePositionRange(questionMarkToken),
-            });
-          } else {
-            const calc = this.numberExpression();
-            statement.values.push(calc);
-          }
-
-          if (this.check("COMMA")) {
-            this.advance();
-          } else {
-            this.expectEOL();
-            break;
-          }
+        while (this.check("COMMA")) {
+          this.advance();
+          statement.values.push(this.dataDirectiveValue());
         }
+
+        this.expectEOL();
 
         this.addStatement(statement);
         continue;
       }
 
       if (includes(INSTRUCTIONS, token.type)) {
-        let statement = {
+        const statement = {
           type: "instruction",
           instruction: token.type,
           label,
@@ -130,71 +124,16 @@ export class Parser {
         if (this.check("EOL")) {
           this.addStatement(statement);
           continue;
+        } else {
+          statement.operands.push(this.instructionOperand());
         }
 
-        while (true) {
-          if (this.match(...REGISTERS)) {
-            const registerToken = this.advance() as Merge<Token, { type: RegisterType }>;
-            statement.operands.push({
-              type: "register",
-              value: registerToken.type,
-              position: this.calculatePositionRange(registerToken),
-            });
-          } else if (this.check("IDENTIFIER")) {
-            const identifierToken = this.advance();
-            statement.operands.push({
-              type: "memory-direct",
-              label: identifierToken.lexeme.toUpperCase(),
-              position: this.calculatePositionRange(identifierToken),
-            });
-          } else if (this.match("BYTE", "WORD", "LEFT_BRACKET")) {
-            let mode: "auto" | "byte" | "word";
-            let start: Token;
-            if (this.check("LEFT_BRACKET")) {
-              mode = "auto";
-              start = this.advance();
-            } else {
-              mode = this.check("BYTE") ? "byte" : "word";
-              start = this.advance();
-              this.consume("PTR", `Expected "PTR" after "${mode.toUpperCase()}"`);
-              this.consume("LEFT_BRACKET", `Expected "[" after "${mode.toUpperCase()} PTR"`);
-            }
-
-            if (this.check("BX")) {
-              this.advance();
-              const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after "BX"');
-              statement.operands.push({
-                type: "memory-indirect",
-                mode,
-                value: { type: "BX" },
-                position: this.calculatePositionRange(start, rbracket),
-              });
-            } else {
-              const calc = this.numberExpression();
-              const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after expression');
-              statement.operands.push({
-                type: "memory-indirect",
-                mode,
-                value: calc,
-                position: this.calculatePositionRange(start, rbracket),
-              });
-            }
-          } else {
-            const calc = this.numberExpression();
-            statement.operands.push({
-              type: "immediate",
-              value: calc,
-              position: calc.position,
-            });
-          }
-
-          if (this.check("COMMA")) {
-            this.advance();
-          } else {
-            this.expectEOL();
-            break;
-          }
+        while (this.check("COMMA")) {
+          this.advance();
+          statement.operands.push(this.instructionOperand());
         }
+
+        this.expectEOL();
 
         this.addStatement(statement);
         continue;
@@ -293,6 +232,120 @@ export class Parser {
 
   private peekNext() {
     return this.tokens[this.current + 1];
+  }
+
+  // #=========================================================================#
+  // # Parse labels                                                            #
+  // #=========================================================================#
+
+  private label(): string | null {
+    if (!this.check("IDENTIFIER") || !this.checkNext("COLON")) {
+      return null;
+    }
+
+    const labelToken = this.advance();
+    const label = labelToken.lexeme.toUpperCase(); // all labels are uppercase
+    const colonToken = this.advance();
+
+    const duplicatedLabel = this.statements.find(s => "label" in s && s.label === label);
+    if (duplicatedLabel) {
+      throw CompilerError.fromPositionRange(
+        `Duplicated label: ${label}`,
+        this.calculatePositionRange(labelToken, colonToken),
+      );
+    }
+
+    while (this.check("EOL")) {
+      this.advance();
+    }
+
+    return label;
+  }
+
+  // #=========================================================================#
+  // # Parse operands                                                          #
+  // #=========================================================================#
+
+  private dataDirectiveValue(): DataDirectiveValue {
+    if (this.check("STRING")) {
+      const stringToken = this.advance();
+      return {
+        type: "string",
+        value: this.parseString(stringToken),
+        position: this.calculatePositionRange(stringToken),
+      };
+    }
+
+    if (this.check("QUESTION_MARK")) {
+      const questionMarkToken = this.advance();
+      return {
+        type: "unassigned",
+        position: this.calculatePositionRange(questionMarkToken),
+      };
+    }
+
+    return this.numberExpression();
+  }
+
+  private instructionOperand(): Operand {
+    if (this.match(...REGISTERS)) {
+      const registerToken = this.advance() as Merge<Token, { type: RegisterType }>;
+      return {
+        type: "register",
+        value: registerToken.type,
+        position: this.calculatePositionRange(registerToken),
+      };
+    }
+
+    if (this.check("IDENTIFIER")) {
+      const identifierToken = this.advance();
+      return {
+        type: "memory-direct",
+        label: identifierToken.lexeme.toUpperCase(),
+        position: this.calculatePositionRange(identifierToken),
+      };
+    }
+
+    if (this.match("BYTE", "WORD", "LEFT_BRACKET")) {
+      let mode: "auto" | "byte" | "word";
+      let start: Token;
+      if (this.check("LEFT_BRACKET")) {
+        mode = "auto";
+        start = this.advance();
+      } else {
+        mode = this.check("BYTE") ? "byte" : "word";
+        start = this.advance();
+        this.consume("PTR", `Expected "PTR" after "${mode.toUpperCase()}"`);
+        this.consume("LEFT_BRACKET", `Expected "[" after "${mode.toUpperCase()} PTR"`);
+      }
+
+      if (this.check("BX")) {
+        this.advance();
+        const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after "BX"');
+        return {
+          type: "memory-indirect",
+          mode,
+          value: { type: "BX" },
+          position: this.calculatePositionRange(start, rbracket),
+        };
+      } else {
+        const calc = this.numberExpression();
+        const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after expression');
+        return {
+          type: "memory-indirect",
+          mode,
+          value: calc,
+          position: this.calculatePositionRange(start, rbracket),
+        };
+      }
+    }
+
+    const calc = this.numberExpression();
+    return {
+      type: "immediate",
+      value: calc,
+      position: calc.position,
+    };
   }
 
   // #=========================================================================#

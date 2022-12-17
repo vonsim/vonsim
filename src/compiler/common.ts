@@ -1,7 +1,14 @@
 import { Token } from "./lexer/tokens";
 
+/** A number representing a position in the source code, counting from the beginning. */
 export type Position = number;
-export type PositionRange = [from: number, to: number];
+
+/**
+ * A range of positions in the source code, represented as a tuple of two positions.
+ *
+ * @see {@link Position}
+ */
+export type PositionRange = [from: Position, to: Position];
 
 export class CompilerError extends Error {
   constructor(message: string, public readonly from: Position, public readonly to: Position) {
@@ -21,9 +28,14 @@ export class CompilerError extends Error {
   }
 }
 
-// This is a TypeScript hack for when you want to use Array.includes() to check
-// if an element is in a collection, but you also want to narrow the type of
-// the element to the type of the collection.
+/**
+ * This is a TypeScript hack for when you want to use Array.includes() to check
+ * if an element is in a collection, but you also want to narrow the type of
+ * the element to the type of the collection.
+ *
+ * @param coll collection to search
+ * @param el element to search for
+ */
 export function includes<T extends U, U>(coll: ReadonlyArray<T>, el: U): el is T {
   return coll.includes(el as T);
 }

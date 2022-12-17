@@ -49,6 +49,19 @@ export type Operand =
       position: PositionRange;
     };
 
+/**
+ * A number expression is a recursive data structure that represents a number
+ * that can be computed at compile time. It can be a literal number, a label
+ * that is resolved to a number, or a binary or unary operation on two other
+ * number expressions.
+ *
+ * @example
+ * 1 + 2 * 3
+ * OFFSET data + 2
+ * -3
+ * 2 * (3 + 4)
+ * OFFSET data + (constant + 2) * 3
+ */
 export type NumberExpression =
   | { type: "number-literal"; value: number; position: PositionRange }
   | { type: "label"; value: string; offset: boolean; position: PositionRange }
