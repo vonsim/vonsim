@@ -1,12 +1,10 @@
-import { CompilerError, includes, Position } from "../common";
+import { CompilerError, includes } from "../common";
 import { KEYWORDS, Token, TokenType } from "./tokens";
 
 export class Scanner {
   private tokens: Token[] = [];
   private current = 0;
   private start = 0;
-  private startPos: Position = [1, 1];
-  private currentPos: Position = [1, 1];
   private scanned = false;
 
   constructor(private source: string) {}
@@ -17,7 +15,6 @@ export class Scanner {
 
     while (!this.isAtEnd()) {
       this.start = this.current;
-      this.startPos = [...this.currentPos];
 
       const c = this.advance();
       switch (c) {
@@ -55,7 +52,7 @@ export class Scanner {
         case '"':
           while (this.peek() !== '"') {
             if (this.isAtEnd() || this.peek() === "\n") {
-              throw new CompilerError("Unterminated string.", this.startPos, this.currentPos);
+              throw new CompilerError("Unterminated string.", this.start, this.current);
             }
             this.advance();
           }
@@ -78,7 +75,6 @@ export class Scanner {
 
         case "\n":
           this.addToken("EOL");
-          this.currentPos = [this.currentPos[0] + 1, 1]; // Down one line
           continue;
       }
 
@@ -102,8 +98,8 @@ export class Scanner {
             if (!/^[01]+b$/i.test(text)) {
               throw new CompilerError(
                 "Invalid binary number. It should only contain 0s and 1s.",
-                this.startPos,
-                this.currentPos,
+                this.start,
+                this.current,
               );
             }
           } else {
@@ -111,8 +107,8 @@ export class Scanner {
             if (!/^\d+$/.test(text)) {
               throw new CompilerError(
                 "Invalid decimal number. It should only contain digits.",
-                this.startPos,
-                this.currentPos,
+                this.start,
+                this.current,
               );
             }
           }
@@ -135,11 +131,10 @@ export class Scanner {
         continue;
       }
 
-      throw new CompilerError(`Unexpected character "${c}".`, this.startPos, this.currentPos);
+      throw new CompilerError(`Unexpected character "${c}".`, this.start, this.current);
     }
 
     this.start = this.current;
-    this.startPos = [...this.currentPos];
     this.addToken("EOF");
     return this.tokens;
   }
@@ -152,12 +147,11 @@ export class Scanner {
     this.tokens.push({
       type,
       lexeme: this.source.slice(this.start, this.current),
-      position: this.startPos,
+      position: this.start,
     });
   }
 
   private advance() {
-    this.currentPos = [this.currentPos[0], this.currentPos[1] + 1]; // Forward one column
     return this.source.charAt(this.current++);
   }
 

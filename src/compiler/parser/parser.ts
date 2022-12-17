@@ -143,16 +143,11 @@ export class Parser {
     let rightmost = tokens[0];
 
     for (const token of tokens) {
-      if (token.position[0] < leftmost.position[0]) leftmost = token;
-      else if (token.position[0] > rightmost.position[0]) rightmost = token;
-      else if (token.position[1] < leftmost.position[1]) leftmost = token;
-      else rightmost = token; // There will never be a two tokens with the same position
+      if (token.position < leftmost.position) leftmost = token;
+      else if (token.position > rightmost.position) rightmost = token;
     }
 
-    return [
-      [...leftmost.position],
-      [rightmost.position[0], rightmost.position[1] + rightmost.lexeme.length],
-    ];
+    return [leftmost.position, rightmost.position + rightmost.lexeme.length];
   }
 
   private check(type: TokenType) {

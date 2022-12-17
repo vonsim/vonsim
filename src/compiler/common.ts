@@ -1,7 +1,7 @@
 import { Token } from "./lexer/tokens";
 
-export type Position = [line: number, column: number];
-export type PositionRange = [from: Position, to: Position];
+export type Position = number;
+export type PositionRange = [from: number, to: number];
 
 export class CompilerError extends Error {
   constructor(message: string, public readonly from: Position, public readonly to: Position) {
@@ -9,10 +9,7 @@ export class CompilerError extends Error {
   }
 
   static fromToken(message: string, token: Token) {
-    return new CompilerError(message, token.position, [
-      token.position[0],
-      token.position[1] + token.lexeme.length,
-    ]);
+    return new CompilerError(message, token.position, token.position + token.lexeme.length);
   }
 
   static fromPositionRange(message: string, [from, to]: PositionRange) {
@@ -20,7 +17,7 @@ export class CompilerError extends Error {
   }
 
   toString() {
-    return `${this.message} (${this.from.join(",")} - ${this.to.join(",")})`;
+    return `${this.message} (${this.from} - ${this.to})`;
   }
 }
 
