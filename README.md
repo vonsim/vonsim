@@ -14,5 +14,4 @@ TODO
 - [ ] Add ✨ animations ✨
 - [ ] Perf measurements
 
-
 More suggestions: https://github.com/vonsim/vonsim/issues/26

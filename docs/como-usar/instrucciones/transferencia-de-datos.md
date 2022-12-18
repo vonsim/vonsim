@@ -42,7 +42,7 @@ Internamente, `POP` es equivalente a hacer
 ```asm
 ; Este código es didáctico, no corre en VonSim
 
-MOV dest, [SP]    ; Copia los contenidos de la celda a la que apunta SP en dest 
+MOV dest, [SP]    ; Copia los contenidos de la celda a la que apunta SP en dest
 ADD SP, 2         ; Incrementa el Stack Pointer en 2
 ```
 

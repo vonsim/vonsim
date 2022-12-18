@@ -82,7 +82,6 @@ loop_end: HLT
           END
 ```
 
-
 ## Combinaciones _dest_,_fuente_
 
 Combinaciones de operandos para las instrucciones `MOV`, `ADD`, `ADC`, `SUB`, `SBB`, `CMP`, `AND`, `OR` y `XOR`.

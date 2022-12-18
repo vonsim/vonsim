@@ -57,11 +57,11 @@ Son instrucciones que requieren un operando ([más info aquí](/como-usar/modos-
 
 _DD_ indica el modo de direccionamiento. A continuación se detalla qué significa cada valor de _DD_ y los operandos que requiere.
 
-| Descripción         | _DD_  | [Operandos](#operandos) |
-| :------------------ | :---: | :---------------------- |
-| Registro            | `00`  | _reg_ dest              |
-| Memoria (directo)   | `01`  | _mem_ dest              |
-| Memoria (indirecto) | `10`  |                         |
+| Descripción         | _DD_ | [Operandos](#operandos) |
+| :------------------ | :--: | :---------------------- |
+| Registro            | `00` | _reg_ dest              |
+| Memoria (directo)   | `01` | _mem_ dest              |
+| Memoria (indirecto) | `10` |                         |
 
 _W_ indica si la operación es de tipo byte (`W=0`) o de tipo word (`W=1`).
 
@@ -85,11 +85,11 @@ Los primeros dos requieren un registro _reg_ de 16 bit. Los otros dos no reciben
 
 _PP_ indica si fuente o destino (según si es `IN` o `OUT` respectivamente). A continuación se detalla qué significa cada valor de _PP_ y los operandos que requiere.
 
-| Descripción               | _PP_  | [Operandos](#operandos)  |
-| :------------------------ | :---: | :----------------------- |
-| Puerto fijo               | `00`  | _op.inm_ puerto (1 byte) |
-| Puerto alojado en memoria | `01`  | _mem_ puerto             |
-| `DX`                      | `10`  |                          |
+| Descripción               | _PP_ | [Operandos](#operandos)  |
+| :------------------------ | :--: | :----------------------- |
+| Puerto fijo               | `00` | _op.inm_ puerto (1 byte) |
+| Puerto alojado en memoria | `01` | _mem_ puerto             |
+| `DX`                      | `10` |                          |
 
 _W_ indica si la operación es de tipo byte (`W=0`) o de tipo word (`W=1`).
 
@@ -114,6 +114,7 @@ Aquí se definen todas las operaciones relacionadas con saltar (también llamada
 Todas estas instrucciones (salvo `RET`) reciben un operando: la dirección de memoria [_mem_](#operandos) a donde se debe saltar.
 
 A modo de ayuda memoria:
+
 - todos los saltos comienzan con `1110`;
 - los saltos condicionales siguen el formato `1110 1FFN`, donde `FF` es la [flag](#flags) y `N` es si es la operación es negada.
 
@@ -162,11 +163,11 @@ Los registros (_reg_) se denotan en binario de la siguiente manera:
 | `MAB`  | `10100100` |
 
 A modo de ayuda memoria:
+
 - si empieza con `0`, es de tipo byte, y si empieza con `1`, es de tipo word;
 - si empieza con `101`, es un registro especial;
 - si no es un registro especial, los últimos números representan si es `A`, `B`, `C` o `D`;
 - si empieza con `00`, es la parte low registro general, y si empieza con `01`, es la parte high.
-
 
 ## Flags
 

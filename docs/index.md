@@ -5,6 +5,7 @@ VonSim es una herramienta destinada a la enseñanza y aprendizaje de arquitectur
 La arquitectura de VonSim es una [simplificación](/diferencias-con-la-realidad) del procesador 8086/8088 de Intel. Está basado en MSX88, desarrollado por la Universidad Politécnica de Madrid.
 
 El emulador cuenta con
+
 - canales de 16 bits y memoria de tipo byte (8 bits) y word (16 bits);
 - una memoria que va desde `0000h` hasta `3FFFh`;
 - cuatro registros multipropósito de 16 bits: `AX`, `BX`, `CX` y `DX`, y cada uno está divido en su parte low (`AL`) y high (`AH`) de 8 bits cada una;
