@@ -288,40 +288,41 @@ export class Parser {
     if (this.check("IDENTIFIER")) {
       const identifierToken = this.advance();
       return {
-        type: "memory-direct",
+        type: "label",
         label: identifierToken.lexeme.toUpperCase(),
         position: this.calculatePositionRange(identifierToken),
       };
     }
 
     if (this.match("BYTE", "WORD", "LEFT_BRACKET")) {
-      let mode: "auto" | "byte" | "word";
+      let size: "auto" | "byte" | "word";
       let start: Token;
       if (this.check("LEFT_BRACKET")) {
-        mode = "auto";
+        size = "auto";
         start = this.advance();
       } else {
-        mode = this.check("BYTE") ? "byte" : "word";
+        size = this.check("BYTE") ? "byte" : "word";
         start = this.advance();
-        this.consume("PTR", `Expected "PTR" after "${mode.toUpperCase()}"`);
-        this.consume("LEFT_BRACKET", `Expected "[" after "${mode.toUpperCase()} PTR"`);
+        this.consume("PTR", `Expected "PTR" after "${size.toUpperCase()}"`);
+        this.consume("LEFT_BRACKET", `Expected "[" after "${size.toUpperCase()} PTR"`);
       }
 
       if (this.check("BX")) {
         this.advance();
         const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after "BX"');
         return {
-          type: "memory-indirect",
-          mode,
-          value: { type: "BX" },
+          type: "address",
+          size,
+          mode: "indirect",
           position: this.calculatePositionRange(start, rbracket),
         };
       } else {
         const calc = this.numberExpression();
         const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after expression');
         return {
-          type: "memory-indirect",
-          mode,
+          type: "address",
+          size,
+          mode: "direct",
           value: calc,
           position: this.calculatePositionRange(start, rbracket),
         };

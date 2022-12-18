@@ -1,22 +1,29 @@
 import type { PositionRange } from "../common";
 import type { DataDirectiveType, InstructionType, RegisterType } from "../lexer/tokens";
 
-export type Statement =
-  | { type: "origin-change"; newAddress: number; position: PositionRange }
-  | {
-      type: "data";
-      directive: DataDirectiveType;
-      values: DataDirectiveValue[];
-      label: string | null;
-      position: PositionRange;
-    }
-  | {
-      type: "instruction";
-      instruction: InstructionType;
-      operands: Operand[];
-      label: string | null;
-      position: PositionRange;
-    };
+export type Statement = OriginChangeStatement | DataDirectiveStatement | InstructionStatement;
+
+export type OriginChangeStatement = {
+  type: "origin-change";
+  newAddress: number;
+  position: PositionRange;
+};
+
+export type DataDirectiveStatement = {
+  type: "data";
+  directive: DataDirectiveType;
+  values: DataDirectiveValue[];
+  label: string | null;
+  position: PositionRange;
+};
+
+export type InstructionStatement = {
+  type: "instruction";
+  instruction: InstructionType;
+  operands: Operand[];
+  label: string | null;
+  position: PositionRange;
+};
 
 export type DataDirectiveValue =
   | NumberExpression
@@ -30,16 +37,15 @@ export type Operand =
       position: PositionRange;
     }
   | {
-      type: "memory-direct";
+      type: "label";
       label: string;
       position: PositionRange;
     }
-  | {
-      type: "memory-indirect";
-      mode: "byte" | "word" | "auto";
-      value: NumberExpression | { type: "BX" };
+  | ({
+      type: "address";
+      size: "byte" | "word" | "auto";
       position: PositionRange;
-    }
+    } & ({ mode: "indirect" } | { mode: "direct"; value: NumberExpression }))
   | {
       type: "immediate";
       value: NumberExpression;

@@ -69,17 +69,17 @@ function statementToString(statements: Statement): string {
           return operand.value;
         }
 
-        if (operand.type === "memory-direct") {
+        if (operand.type === "label") {
           return operand.label;
         }
 
-        if (operand.type === "memory-indirect") {
+        if (operand.type === "address") {
           let op = "";
-          if (operand.mode !== "auto") {
+          if (operand.size !== "auto") {
             op += `${operand.mode.toUpperCase()} PTR `;
           }
           op += "[";
-          if (operand.value.type === "BX") op += "BX";
+          if (operand.mode === "indirect") op += "BX";
           else op += numberExpressionToString(operand.value);
           op += "]";
 
