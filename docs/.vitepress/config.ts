@@ -53,6 +53,10 @@ export default defineConfig({
           { text: "Modos de direccionamiento", link: "/como-usar/modos-de-direccionamiento" },
         ],
       },
+      {
+        text: "Especificaciones",
+        items: [{ text: "Codificación", link: "/especificaciones/codificacion" }],
+      },
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/vonsim/vonsim" }],
     outlineTitle: "Contenidos",
