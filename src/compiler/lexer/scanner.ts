@@ -63,6 +63,13 @@ export class Scanner {
             if (this.isAtEnd() || this.peek() === "\n") {
               throw new CompilerError("Unterminated string.", this.start, this.current);
             }
+            if (this.peek().charCodeAt(0) > 255) {
+              throw new CompilerError(
+                "Only ASCII character are supported for string.",
+                this.current,
+                this.current + 1,
+              );
+            }
             this.advance();
           }
           this.advance();
