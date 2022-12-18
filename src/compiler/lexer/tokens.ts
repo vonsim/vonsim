@@ -109,7 +109,6 @@ export const KEYWORDS = [
   "BYTE",
   "WORD",
   "PTR",
-  "END",
   ...DATA_DIRECTIVES,
   ...REGISTERS,
   ...INSTRUCTIONS,

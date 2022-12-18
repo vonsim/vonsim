@@ -1,11 +1,8 @@
 import type { PositionRange } from "../common";
 import type { DataDirectiveType, InstructionType, RegisterType } from "../lexer/tokens";
 
-export type Program = Statement[];
-
 export type Statement =
   | { type: "origin-change"; newAddress: number; position: PositionRange }
-  | { type: "end"; position: PositionRange }
   | {
       type: "data";
       directive: DataDirectiveType;

@@ -38,11 +38,15 @@ import type { DataDirectiveValue, NumberExpression, Operand, Statement } from ".
  * expect. More extensive validation is done by the semantic analyzer.
  */
 export class Parser {
+  private tokens: Token[];
+
   private current = 0;
   private statements: Statement[] = [];
   private parsed = false;
 
-  constructor(private tokens: Token[]) {}
+  constructor(tokens: Token[]) {
+    this.tokens = klona(tokens);
+  }
 
   parseTokens(): Statement[] {
     if (this.parsed) throw new Error("Parser has already been used.");
@@ -57,7 +61,7 @@ export class Parser {
         continue;
       }
 
-      // First, parse special statements
+      // First, parse ORG changes
       if (this.check("ORG")) {
         const token = this.advance();
         const addressToken = this.consume("NUMBER", "Expected address after ORG");
@@ -70,21 +74,6 @@ export class Parser {
         });
 
         this.expectEOL();
-        continue;
-      }
-
-      if (this.check("END")) {
-        const token = this.advance();
-        this.addStatement({
-          type: "end",
-          position: this.calculatePositionRange(token),
-        });
-        while (this.check("EOL")) {
-          this.advance();
-        }
-        if (!this.isAtEnd()) {
-          throw CompilerError.fromToken("END must be the last instruction", token);
-        }
         continue;
       }
 
@@ -121,7 +110,7 @@ export class Parser {
         } satisfies Statement;
 
         // Check for zeroary instructions
-        if (this.check("EOL")) {
+        if (this.isAtEndOfStatement()) {
           this.addStatement(statement);
           continue;
         } else {
@@ -150,8 +139,7 @@ export class Parser {
   // #=========================================================================#
 
   private addStatement(statement: Statement) {
-    // Clones the statement to prevent mutation
-    this.statements.push(klona(statement));
+    this.statements.push(statement);
   }
 
   private advance() {
@@ -189,17 +177,17 @@ export class Parser {
   }
 
   private expectEOL() {
-    if (this.isAtEnd()) {
-      throw CompilerError.fromToken(`The program must end with an END instruction.`, this.peek());
-    }
-    if (!this.check("EOL")) {
-      throw CompilerError.fromToken(`Expected EOL, got ${this.peek().type}`, this.peek());
-    }
-    return this.advance();
+    if (this.isAtEnd()) return;
+    if (this.check("EOL")) return this.advance();
+    throw CompilerError.fromToken(`Expected EOL, got ${this.peek().type}`, this.peek());
   }
 
   private isAtEnd() {
     return this.check("EOF");
+  }
+
+  private isAtEndOfStatement() {
+    return this.check("EOL") || this.isAtEnd();
   }
 
   private match(...types: TokenType[]) {

@@ -79,7 +79,6 @@ Un ejemplo práctico de este concepto es un programa suma 1 a todos los valores 
           INC BX
           JMP loop
 loop_end: HLT
-          END
 ```
 
 ## Combinaciones _dest_,_fuente_

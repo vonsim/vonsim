@@ -39,10 +39,6 @@ function statementToString(statements: Statement): string {
     return `ORG ${statements.newAddress.toString(16).toUpperCase()}h`;
   }
 
-  if (statements.type === "end") {
-    return "END";
-  }
-
   let result = "";
 
   if (statements.label) {
