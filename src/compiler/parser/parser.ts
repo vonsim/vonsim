@@ -237,9 +237,9 @@ export class Parser {
 
     const duplicatedLabel = this.statements.find(s => "label" in s && s.label === label);
     if (duplicatedLabel) {
-      throw CompilerError.fromPositionRange(
+      throw new CompilerError(
         `Duplicated label: ${label}`,
-        this.calculatePositionRange(labelToken, colonToken),
+        ...this.calculatePositionRange(labelToken, colonToken),
       );
     }
 

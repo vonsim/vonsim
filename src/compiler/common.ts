@@ -19,10 +19,6 @@ export class CompilerError extends Error {
     return new CompilerError(message, token.position, token.position + token.lexeme.length);
   }
 
-  static fromPositionRange(message: string, [from, to]: PositionRange) {
-    return new CompilerError(message, from, to);
-  }
-
   toString() {
     return `${this.message} (${this.from} - ${this.to})`;
   }
