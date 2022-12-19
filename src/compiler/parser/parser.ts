@@ -1,14 +1,13 @@
 import { klona } from "klona/json";
+import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { CompilerError, includes, PositionRange } from "../common";
+import { CompilerError, PositionRange, RegisterType } from "~/compiler/common";
 import {
-  DATA_DIRECTIVES,
-  INSTRUCTIONS,
-  REGISTERS,
-  RegisterType,
-  Token,
-  TokenType,
-} from "../lexer/tokens";
+  dataDirectivePattern,
+  instructionPattern,
+  registerPattern,
+} from "~/compiler/common/patterns";
+import type { Token, TokenType } from "~/compiler/lexer/tokens";
 import type { DataDirectiveValue, NumberExpression, Operand, Statement } from "./grammar";
 
 /**
@@ -80,7 +79,7 @@ export class Parser {
       const label = this.label();
       const token = this.advance();
 
-      if (includes(DATA_DIRECTIVES, token.type)) {
+      if (isMatching(dataDirectivePattern, token.type)) {
         const statement = {
           type: "data",
           directive: token.type,
@@ -100,7 +99,7 @@ export class Parser {
         continue;
       }
 
-      if (includes(INSTRUCTIONS, token.type)) {
+      if (isMatching(instructionPattern, token.type)) {
         const statement = {
           type: "instruction",
           instruction: token.type,
@@ -276,7 +275,7 @@ export class Parser {
   }
 
   private instructionOperand(): Operand {
-    if (this.match(...REGISTERS)) {
+    if (isMatching(registerPattern, this.peek().type)) {
       const registerToken = this.advance() as Merge<Token, { type: RegisterType }>;
       return {
         type: "register",

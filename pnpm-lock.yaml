@@ -16,6 +16,7 @@ specifiers:
   react: ^18.2.0
   react-dom: ^18.2.0
   tailwindcss: ^3.2.4
+  ts-pattern: ^4.0.6
   type-fest: ^3.4.0
   typescript: ~4.9.4
   vite: ^4.0.1
@@ -28,6 +29,7 @@ dependencies:
   klona: 2.0.5
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  ts-pattern: 4.0.6
 
 devDependencies:
   '@types/react': 18.0.26
@@ -1492,6 +1494,10 @@ packages:
     dependencies:
       is-number: 7.0.0
     dev: true
+
+  /ts-pattern/4.0.6:
+    resolution: {integrity: sha512-sFHQYD4KoysBi7e7a2mzDPvRBeqA4w+vEyRE+P5MU9VLq8eEYxgKCgD9RNEAT+itGRWUTYN+hry94GDPLb1/Yw==}
+    dev: false
 
   /type-fest/3.4.0:
     resolution: {integrity: sha512-PEPg6RHlB9cFwoTMNENNrQFL0cXX04voWr2UPwQBJ3pVs7Mt8Y1oLWdUeMdGEwZE8HFFlujq8gS9enmyiQ8pLg==}

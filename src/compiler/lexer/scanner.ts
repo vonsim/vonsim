@@ -1,5 +1,7 @@
-import { CompilerError, includes, Position } from "../common";
-import { KEYWORDS, Token, TokenType } from "./tokens";
+import { isMatching } from "ts-pattern";
+import { CompilerError, Position } from "~/compiler/common";
+import { keywordPattern } from "~/compiler/common/patterns";
+import { Token, TokenType } from "./tokens";
 
 /**
  * This class is responsible for taking a string of source code and turning it
@@ -143,7 +145,7 @@ export class Scanner {
 
         // Check if the identifier is a reserved word.
         const text = this.source.slice(this.start, this.current).toUpperCase();
-        if (includes(KEYWORDS, text)) this.addToken(text);
+        if (isMatching(keywordPattern, text)) this.addToken(text);
         else this.addToken("IDENTIFIER");
 
         continue;

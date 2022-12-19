@@ -1,5 +1,9 @@
-import type { PositionRange } from "../common";
-import type { DataDirectiveType, InstructionType, RegisterType } from "../lexer/tokens";
+import type {
+  DataDirectiveType,
+  InstructionType,
+  PositionRange,
+  RegisterType,
+} from "~/compiler/common";
 
 export type Statement = OriginChangeStatement | DataDirectiveStatement | InstructionStatement;
 

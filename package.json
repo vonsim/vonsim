@@ -25,7 +25,8 @@
     "@uiw/react-codemirror": "^4.19.4",
     "klona": "^2.0.5",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "ts-pattern": "^4.0.6"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",
