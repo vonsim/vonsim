@@ -1,17 +1,17 @@
+import { AnalysisResult, analyze } from "./analyzer";
 import { CompilerError } from "./common";
 import { Scanner } from "./lexer/scanner";
-import { NumberExpression, Statement } from "./parser/grammar";
 import { Parser } from "./parser/parser";
 
-export type CompileResult =
-  | {
-      success: true;
-      result: string;
-    }
-  | {
-      success: false;
-      errors: CompilerError[];
-    };
+export { CompilerError };
+
+export type CompileResultSuccess = Extract<AnalysisResult, { success: true }>;
+export type CompileResultError = {
+  success: false;
+  lineErrors: CompilerError[];
+  codeErrors: string[];
+};
+export type CompileResult = CompileResultSuccess | CompileResultError;
 
 export function compile(source: string): CompileResult {
   try {
@@ -21,94 +21,26 @@ export function compile(source: string): CompileResult {
     const parser = new Parser(lexed);
     const parsed = parser.parseTokens();
 
-    // For testing purposes, returns the statements printed as a string
-    return { success: true, result: parsed.map(statementToString).join("\n") };
+    const analysis = analyze(parsed);
+
+    if (analysis.success) return analysis;
+    else return groupErrors(analysis);
   } catch (error) {
+    return groupErrors({ success: false, errors: [error] });
+  }
+}
+
+function groupErrors({ errors }: { success: false; errors: unknown[] }): CompileResultError {
+  const lineErrors: CompilerError[] = [];
+  const codeErrors: string[] = [];
+
+  for (const error of errors) {
     if (error instanceof CompilerError) {
-      return { success: false, errors: [error] };
+      lineErrors.push(error);
     } else {
-      throw error;
+      codeErrors.push(String(error));
     }
   }
-}
 
-export { CompilerError };
-
-function statementToString(statements: Statement): string {
-  if (statements.type === "origin-change") {
-    return `ORG ${statements.newAddress.toString(16).toUpperCase()}h`;
-  }
-
-  let result = "";
-
-  if (statements.label) {
-    result += `${statements.label}: `;
-  }
-
-  if (statements.type === "data") {
-    result += `${statements.directive} `;
-    result += statements.values
-      .map((value): string => {
-        if (value.type === "string") {
-          return `"${value.value}"`;
-        }
-
-        if (value.type === "unassigned") {
-          return "?";
-        }
-
-        return numberExpressionToString(value);
-      })
-      .join(", ");
-  } else {
-    result += statements.instruction;
-    if (statements.operands.length > 0) result += " ";
-    result += statements.operands
-      .map((operand): string => {
-        if (operand.type === "register") {
-          return operand.value;
-        }
-
-        if (operand.type === "label") {
-          return operand.label;
-        }
-
-        if (operand.type === "address") {
-          let op = "";
-          if (operand.size !== "auto") {
-            op += `${operand.mode.toUpperCase()} PTR `;
-          }
-          op += "[";
-          if (operand.mode === "indirect") op += "BX";
-          else op += numberExpressionToString(operand.value);
-          op += "]";
-
-          return op;
-        }
-
-        return numberExpressionToString(operand.value);
-      })
-      .join(", ");
-  }
-
-  return result;
-}
-
-function numberExpressionToString(expression: NumberExpression): string {
-  if (expression.type === "number-literal") {
-    return expression.value.toString(16).toUpperCase() + "h";
-  }
-
-  if (expression.type === "label") {
-    if (expression.offset) return `OFFSET ${expression.value}`;
-    else return expression.value;
-  }
-
-  if (expression.type === "unary-operation") {
-    return `${expression.operator}(${numberExpressionToString(expression.right)})`;
-  }
-
-  return `(${numberExpressionToString(expression.left)}) ${
-    expression.operator
-  } (${numberExpressionToString(expression.right)})`;
+  return { success: false, lineErrors, codeErrors };
 }

@@ -5,7 +5,7 @@ import { compile } from "./compiler";
 
 function App() {
   const [cache, setCache] = useState("");
-  const [compiled, setCompiled] = useState("");
+  const [codeErrors, setCodeErrors] = useState("");
 
   const editor = useRef<HTMLDivElement | null>(null);
   const { setContainer } = useCodeMirror({
@@ -18,11 +18,19 @@ function App() {
       linter(view => {
         const result = compile(view.state.doc.toString());
         if (result.success) {
-          setCompiled(result.result);
+          setCodeErrors("No errors");
+          console.log(result);
           return [];
         } else {
-          setCompiled("Error");
-          return result.errors.map(error => ({
+          setCodeErrors(
+            [
+              "Line errors: " + result.lineErrors.length,
+              "Code errors: " + result.codeErrors.length,
+              "",
+              ...result.codeErrors,
+            ].join("\n"),
+          );
+          return result.lineErrors.map(error => ({
             from: error.from,
             to: error.to,
             message: error.message,
@@ -46,8 +54,8 @@ function App() {
       <div className="flex gap-4">
         <div ref={editor} />
         <div>
-          <b>Compiled</b>
-          <pre className="grow rounded bg-gray-200 p-4">{compiled}</pre>
+          <b>Errors</b>
+          <pre className="grow rounded bg-gray-200 p-4">{codeErrors}</pre>
         </div>
       </div>
     </div>

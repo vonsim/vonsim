@@ -1,11 +1,18 @@
-import { P } from "ts-pattern";
-import {
+import type { P } from "ts-pattern";
+import type {
+  binaryInstructionPattern,
   byteRegisterPattern,
   dataDirectivePattern,
   instructionPattern,
+  intInstructionPattern,
+  ioInstructionPattern,
+  jumpInstructionPattern,
   keywordPattern,
   registerPattern,
+  stackInstructionPattern,
+  unaryInstructionPattern,
   wordRegisterPattern,
+  zeroaryInstructionPattern,
 } from "./patterns";
 
 export type RegisterType = P.infer<typeof registerPattern>;
@@ -14,6 +21,14 @@ export type WordRegisterType = P.infer<typeof wordRegisterPattern>;
 
 export type DataDirectiveType = P.infer<typeof dataDirectivePattern>;
 export type InstructionType = P.infer<typeof instructionPattern>;
+
+export type ZeroaryInstructionType = P.infer<typeof zeroaryInstructionPattern>;
+export type BinaryInstructionType = P.infer<typeof binaryInstructionPattern>;
+export type UnaryInstructionType = P.infer<typeof unaryInstructionPattern>;
+export type StackInstructionType = P.infer<typeof stackInstructionPattern>;
+export type JumpInstructionType = P.infer<typeof jumpInstructionPattern>;
+export type IOInstructionType = P.infer<typeof ioInstructionPattern>;
+export type IntInstructionType = P.infer<typeof intInstructionPattern>;
 
 export type KeywordType = P.infer<typeof keywordPattern>;
 
@@ -28,3 +43,4 @@ export type Position = number;
 export type PositionRange = [from: Position, to: Position];
 
 export { CompilerError } from "./error";
+export * from "./helpers";
