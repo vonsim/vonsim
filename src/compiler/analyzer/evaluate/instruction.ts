@@ -31,7 +31,7 @@ import {
   MIN_BYTE_VALUE,
   MIN_MEMORY_ADDRESS,
   MIN_WORD_VALUE,
-} from "../../consts";
+} from "~/config";
 import type { LabelMap } from "../compact-labels";
 import type { WritableMemory } from "../compute-addresses";
 import type { ValidatedInstructionStatement } from "../validate";

@@ -1,7 +1,7 @@
 import { isMatching } from "ts-pattern";
 import { CompilerError, hex, safeForEach } from "~/compiler/common";
 import { dataDirectivePattern } from "~/compiler/common/patterns";
-import { MAX_MEMORY_ADDRESS } from "../consts";
+import { MAX_MEMORY_ADDRESS } from "~/config";
 import type { ValidatedStatement } from "./validate";
 
 export type LabelAddresses = Map<string, number>;

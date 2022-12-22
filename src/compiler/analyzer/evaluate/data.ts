@@ -1,5 +1,5 @@
 import { CompilerError } from "~/compiler/common";
-import { MAX_BYTE_VALUE, MAX_WORD_VALUE, MIN_BYTE_VALUE, MIN_WORD_VALUE } from "../../consts";
+import { MAX_BYTE_VALUE, MAX_WORD_VALUE, MIN_BYTE_VALUE, MIN_WORD_VALUE } from "~/config";
 import type { LabelMap } from "../compact-labels";
 import type { ValidatedDataStatement } from "../validate";
 import { evaluateExpression } from "./expression";

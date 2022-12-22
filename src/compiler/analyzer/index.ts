@@ -1,19 +1,19 @@
 import { klona } from "klona/json";
 import { hex, safeMap } from "~/compiler/common";
 import type { Statement } from "~/compiler/parser/grammar";
-import { INITIAL_IP } from "./consts";
-import { compactLabels } from "./steps/compact-labels";
-import { computeAddresses } from "./steps/compute-addresses";
-import { evaluateConstants, ProgramConstants } from "./steps/evaluate/constants";
-import { evaluateData, ProgramData } from "./steps/evaluate/data";
-import { evaluateInstruction, ProgramInstruction } from "./steps/evaluate/instruction";
-import { getLabelTypes } from "./steps/get-label-types";
+import { INITIAL_IP } from "~/config";
+import { compactLabels } from "./compact-labels";
+import { computeAddresses } from "./compute-addresses";
+import { evaluateConstants, ProgramConstants } from "./evaluate/constants";
+import { evaluateData, ProgramData } from "./evaluate/data";
+import { evaluateInstruction, ProgramInstruction } from "./evaluate/instruction";
+import { getLabelTypes } from "./get-label-types";
 import {
   ValidatedConstantStatement,
   ValidatedDataStatement,
   ValidatedInstructionStatement,
   validateStatement,
-} from "./steps/validate";
+} from "./validate";
 
 export type AnalysisResult =
   | {

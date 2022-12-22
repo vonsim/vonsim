@@ -1,11 +1,21 @@
-import { AnalysisResult, analyze } from "./analyzer";
+import { analyze } from "./analyzer";
+import type { ProgramConstants } from "./analyzer/evaluate/constants";
+import type { ProgramData } from "./analyzer/evaluate/data";
+import type { ProgramInstruction } from "./analyzer/evaluate/instruction";
 import { CompilerError } from "./common";
 import { Scanner } from "./lexer/scanner";
 import { Parser } from "./parser/parser";
 
 export { CompilerError };
+export type { ProgramConstants, ProgramData, ProgramInstruction };
 
-export type CompileResultSuccess = Extract<AnalysisResult, { success: true }>;
+export type Program = {
+  constants: ProgramConstants;
+  data: ProgramData[];
+  instructions: ProgramInstruction[];
+};
+
+export type CompileResultSuccess = { success: true } & Program;
 export type CompileResultError = {
   success: false;
   lineErrors: CompilerError[];
