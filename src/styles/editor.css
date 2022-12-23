@@ -34,6 +34,10 @@
     @apply text-slate-400;
   }
 
+  .cm-foldGutter {
+    @apply !hidden;
+  }
+
   .cm-activeLineGutter {
     @apply border-none bg-slate-500/50;
   }

@@ -4,7 +4,7 @@ import {
   StreamLanguage,
   syntaxHighlighting,
 } from "@codemirror/language";
-import { linter, lintGutter } from "@codemirror/lint";
+import { Diagnostic, linter, lintGutter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { isMatching } from "ts-pattern";
 import { compile } from "~/compiler";
@@ -113,12 +113,23 @@ const vonsimLinter = linter(
     if (result.success) {
       return [];
     } else {
-      return result.lineErrors.map(error => ({
+      const diagnostics: Diagnostic[] = result.lineErrors.map(error => ({
         from: error.from,
         to: error.to,
         message: error.message,
         severity: "error",
       }));
+
+      if (result.codeErrors.length > 0) {
+        diagnostics.push({
+          from: 0,
+          to: view.state.doc.length,
+          message: result.codeErrors.join("\n"),
+          severity: "error",
+        });
+      }
+
+      return diagnostics;
     }
   },
   {
