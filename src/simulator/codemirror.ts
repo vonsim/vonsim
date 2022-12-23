@@ -4,7 +4,7 @@ import {
   StreamLanguage,
   syntaxHighlighting,
 } from "@codemirror/language";
-import { linter } from "@codemirror/lint";
+import { linter, lintGutter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { isMatching } from "ts-pattern";
 import { compile } from "~/compiler";
@@ -83,7 +83,7 @@ const vonsimLanguage = StreamLanguage.define({
   },
   languageData: {
     commentTokens: { line: ";" },
-    closeBrackets: { brackets: ["(", ")", "[", "]"] },
+    closeBrackets: { brackets: ["(", "[", '"'] },
   },
   tokenTable: vonsimTags,
 });
@@ -107,20 +107,25 @@ const vonsimHighlighter = syntaxHighlighting(
   ]),
 );
 
-const vonsimLinter = linter(view => {
-  const result = compile(view.state.doc.toString());
-  if (result.success) {
-    return [];
-  } else {
-    return result.lineErrors.map(error => ({
-      from: error.from,
-      to: error.to,
-      message: error.message,
-      severity: "error",
-    }));
-  }
-});
+const vonsimLinter = linter(
+  view => {
+    const result = compile(view.state.doc.toString());
+    if (result.success) {
+      return [];
+    } else {
+      return result.lineErrors.map(error => ({
+        from: error.from,
+        to: error.to,
+        message: error.message,
+        severity: "error",
+      }));
+    }
+  },
+  {
+    delay: 100, // gotta go fast
+  },
+);
 
 export function VonSim() {
-  return new LanguageSupport(vonsimLanguage, [vonsimHighlighter, vonsimLinter]);
+  return new LanguageSupport(vonsimLanguage, [vonsimHighlighter, vonsimLinter, lintGutter()]);
 }

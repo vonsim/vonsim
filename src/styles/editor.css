@@ -37,4 +37,32 @@
   .cm-activeLineGutter {
     @apply border-none bg-slate-500/50;
   }
+
+  .cm-tooltip {
+    @apply border border-slate-600 bg-slate-800 text-sm text-slate-50;
+  }
+
+  .cm-diagnostic-error {
+    @apply border-l-4 border-red-500;
+  }
+
+  .cm-lintRange-error {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3"><path d="m0 2.5 l2 -1.5 l1 0 l2 1.5 l1 0" stroke="%23ef4444" fill="none" stroke-width=".7"/></svg>');
+  }
+
+  .cm-lintPoint-error:after {
+    @apply border-b-red-500;
+  }
+
+  .cm-lint-marker-error {
+    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="none" d="M9 10.555L10.555 9L23 21.444L21.444 23z"/><path fill="%23ef4444" d="M16 2A13.914 13.914 0 0 0 2 16a13.914 13.914 0 0 0 14 14a13.914 13.914 0 0 0 14-14A13.914 13.914 0 0 0 16 2Zm5.445 21L9 10.556L10.556 9L23 21.445Z"/></svg>');
+  }
+
+  &.cm-focused .cm-matchingBracket {
+    @apply bg-slate-400/30;
+  }
+
+  .cm-nonmatchingBracket {
+    @apply !bg-transparent;
+  }
 }
