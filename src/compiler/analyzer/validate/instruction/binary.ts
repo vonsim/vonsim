@@ -98,6 +98,13 @@ export function validateBinaryInstruction(
     })
     .with([{ type: "register" }, { type: "address", mode: "direct" }], ([out, src]) => {
       const outReg = typeGuardRegister(out);
+      if (src.size !== "auto" && outReg.size !== src.size) {
+        throw new CompilerError(
+          `The source (${src.size}) and destination (${outReg.size}) must be the same size.`,
+          ...instruction.position,
+        );
+      }
+
       return {
         type: instruction.instruction,
         meta: { label: instruction.label, start: 0, length: 4, position: instruction.position },
@@ -106,8 +113,15 @@ export function validateBinaryInstruction(
         src: { type: "memory", mode: "direct", address: src.value },
       };
     })
-    .with([{ type: "register" }, { type: "address", mode: "indirect" }], ([out]) => {
+    .with([{ type: "register" }, { type: "address", mode: "indirect" }], ([out, src]) => {
       const outReg = typeGuardRegister(out);
+      if (src.size !== "auto" && outReg.size !== src.size) {
+        throw new CompilerError(
+          `The source (${src.size}) and destination (${outReg.size}) must be the same size.`,
+          ...instruction.position,
+        );
+      }
+
       return {
         type: instruction.instruction,
         meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
