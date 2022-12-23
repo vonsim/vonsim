@@ -5,7 +5,7 @@ TODO
 ## To-do list
 
 - [ ] Finish basic implementation
-- [ ] Add history
+- [ ] Add history (https://github.com/charkour/zundo)
 - [ ] Support indirect access with offset
 - [ ] Add custom VonSim syntax to docs
 - [ ] Add I/O

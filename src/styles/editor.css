@@ -1,0 +1,40 @@
+.cm-editor {
+  @apply h-full w-full bg-slate-800 text-slate-50;
+
+  .cm-scroller {
+    @apply overflow-auto font-mono text-sm;
+  }
+
+  .cm-selectionMatch,
+  .cm-activeLine {
+    @apply bg-slate-700/50;
+  }
+
+  .cm-content {
+    @apply caret-slate-50;
+  }
+  &.cm-focused .cm-cursor {
+    @apply border-l-slate-50;
+  }
+
+  &.cm-focused .cm-selectionBackground,
+  ::selection {
+    @apply bg-slate-700;
+  }
+
+  &:not(.cm-focused) .cm-selectionBackground {
+    @apply bg-slate-700/50;
+  }
+
+  .cm-gutters {
+    @apply border-none bg-slate-700/50;
+  }
+
+  .cm-gutterElement {
+    @apply text-slate-400;
+  }
+
+  .cm-activeLineGutter {
+    @apply border-none bg-slate-500/50;
+  }
+}
