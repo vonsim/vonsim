@@ -1,19 +1,19 @@
 import { isMatching } from "ts-pattern";
 import { CompilerError, hex, safeForEach } from "~/compiler/common";
-import { dataDirectivePattern } from "~/compiler/common/patterns";
+import { instructionPattern } from "~/compiler/common/patterns";
 import { MAX_MEMORY_ADDRESS } from "~/config";
 import type { ValidatedStatement } from "./validate";
 
 export type LabelAddresses = Map<string, number>;
-export type WritableMemory = Set<number>;
+export type ReadonlyMemory = Set<number>;
 
 type ComputeAddressesResult =
-  | { success: true; writableMemory: WritableMemory; labelAddresses: LabelAddresses }
+  | { success: true; readonlyMemory: ReadonlyMemory; labelAddresses: LabelAddresses }
   | { success: false; errors: unknown[] };
 
 export function computeAddresses(statements: ValidatedStatement[]): ComputeAddressesResult {
   const occupiedMemory = new Set<number>();
-  const writableMemory: WritableMemory = new Set();
+  const readonlyMemory: ReadonlyMemory = new Set();
   const labelAddresses: LabelAddresses = new Map();
 
   let pointer: number | null = null;
@@ -46,6 +46,7 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
       );
     }
 
+    const isInstruction = isMatching(instructionPattern, statement.type);
     for (; pointer < finalPointer; pointer++) {
       if (occupiedMemory.has(pointer)) {
         throw new CompilerError(
@@ -55,10 +56,10 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
       }
 
       occupiedMemory.add(pointer);
-      if (isMatching(dataDirectivePattern, statement.type)) writableMemory.add(pointer);
+      if (isInstruction) readonlyMemory.add(pointer);
     }
   });
 
-  if (result.success) return { success: true, writableMemory, labelAddresses };
+  if (result.success) return { success: true, readonlyMemory, labelAddresses };
   else return result;
 }

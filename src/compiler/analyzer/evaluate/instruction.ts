@@ -33,7 +33,7 @@ import {
   MIN_WORD_VALUE,
 } from "~/config";
 import type { LabelMap } from "../compact-labels";
-import type { WritableMemory } from "../compute-addresses";
+import type { ReadonlyMemory } from "../compute-addresses";
 import type { ValidatedInstructionStatement } from "../validate";
 import { evaluateExpression } from "./expression";
 
@@ -76,7 +76,7 @@ export type ProgramInstruction =
 export function evaluateInstruction(
   statement: ValidatedInstructionStatement,
   labels: LabelMap,
-  writableMemory: WritableMemory,
+  readonlyMemory: ReadonlyMemory,
 ): ProgramInstruction {
   return match<ValidatedInstructionStatement, ProgramInstruction>(statement)
     .with({ type: zeroaryInstructionPattern }, statement => ({
@@ -92,7 +92,7 @@ export function evaluateInstruction(
           ? statement.out
           : {
               ...statement.out,
-              address: evaluateAddress(statement.out.address, labels, writableMemory),
+              address: evaluateAddress(statement.out.address, labels, readonlyMemory),
             },
       src:
         statement.src.type === "immediate"
@@ -104,7 +104,7 @@ export function evaluateInstruction(
           ? statement.src
           : {
               ...statement.src,
-              address: evaluateAddress(statement.src.address, labels, writableMemory),
+              address: evaluateAddress(statement.src.address, labels, readonlyMemory),
             },
     }))
     .with({ type: unaryInstructionPattern }, statement => ({
@@ -116,7 +116,7 @@ export function evaluateInstruction(
           ? statement.out
           : {
               ...statement.out,
-              address: evaluateAddress(statement.out.address, labels, writableMemory),
+              address: evaluateAddress(statement.out.address, labels, readonlyMemory),
             },
     }))
     .with({ type: stackInstructionPattern }, statement => ({
@@ -159,7 +159,7 @@ export function evaluateInstruction(
             }
           : {
               ...statement.port,
-              address: evaluateAddress(statement.port.address, labels, writableMemory),
+              address: evaluateAddress(statement.port.address, labels, readonlyMemory),
             },
     }))
     .with({ type: intInstructionPattern }, statement => {
@@ -192,15 +192,15 @@ function cleanMeta(statement: ValidatedInstructionStatement): InstructionMeta {
 function evaluateAddress(
   address: NumberExpression,
   labels: LabelMap,
-  writableMemory: WritableMemory,
+  readonlyMemory: ReadonlyMemory,
 ): number {
   const computed = evaluateExpression(address, labels);
   if (computed < MIN_MEMORY_ADDRESS || computed > MAX_MEMORY_ADDRESS) {
     throw new CompilerError(`Memory address ${address} is out of range.`, ...address.position);
   }
-  if (!writableMemory.has(computed)) {
+  if (readonlyMemory.has(computed)) {
     throw new CompilerError(
-      `Memory address ${hex(computed)} is not marked as writable data address.`,
+      `Memory address ${hex(computed)} is marked as a read-only data address.`,
       ...address.position,
     );
   }

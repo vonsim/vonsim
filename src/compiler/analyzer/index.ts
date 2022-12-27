@@ -40,7 +40,7 @@ export function analyze(statements: Statement[]): AnalysisResult {
   const computedAddresses = computeAddresses(validatedStatements);
 
   if (!computedAddresses.success) return computedAddresses;
-  const { labelAddresses, writableMemory } = computedAddresses;
+  const { labelAddresses, readonlyMemory } = computedAddresses;
 
   // Separate the statements into different categories.
   const constantStatements: ValidatedConstantStatement[] = [];
@@ -72,7 +72,7 @@ export function analyze(statements: Statement[]): AnalysisResult {
 
   // Evaluate data initial values.
   const instructionsResult = safeMap(instructionStatements, statement =>
-    evaluateInstruction(statement, labelMap, writableMemory),
+    evaluateInstruction(statement, labelMap, readonlyMemory),
   );
   if (!instructionsResult.success) return instructionsResult;
   const instructions = instructionsResult.result;
