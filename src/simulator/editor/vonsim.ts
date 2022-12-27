@@ -4,7 +4,7 @@ import {
   StreamLanguage,
   syntaxHighlighting,
 } from "@codemirror/language";
-import { Diagnostic, linter, lintGutter } from "@codemirror/lint";
+import { Diagnostic, linter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { isMatching } from "ts-pattern";
 import { compile } from "~/compiler";
@@ -13,6 +13,13 @@ import {
   instructionPattern,
   registerPattern,
 } from "~/compiler/common/patterns";
+import { useErrors } from "./store";
+
+/**
+ * This is the VonSim language definition.
+ * It is used to highlight the code in the editor.
+ * Also, it is used to lint the code.
+ */
 
 const vonsimTags = {
   comment: tags.comment,
@@ -110,6 +117,18 @@ const vonsimHighlighter = syntaxHighlighting(
 const vonsimLinter = linter(
   view => {
     const result = compile(view.state.doc.toString());
+    useErrors.setState(() => {
+      if (result.success) {
+        return { globalError: null, numberOfErrors: 0 };
+      }
+
+      const numberOfErrors = result.codeErrors.length + result.lineErrors.length;
+      return {
+        globalError: result.codeErrors[0] || null,
+        numberOfErrors,
+      };
+    });
+
     if (result.success) {
       return [];
     } else {
@@ -120,15 +139,6 @@ const vonsimLinter = linter(
         severity: "error",
       }));
 
-      if (result.codeErrors.length > 0) {
-        diagnostics.push({
-          from: 0,
-          to: view.state.doc.length,
-          message: result.codeErrors.join("\n"),
-          severity: "error",
-        });
-      }
-
       return diagnostics;
     }
   },
@@ -138,5 +148,5 @@ const vonsimLinter = linter(
 );
 
 export function VonSim() {
-  return new LanguageSupport(vonsimLanguage, [vonsimHighlighter, vonsimLinter, lintGutter()]);
+  return new LanguageSupport(vonsimLanguage, [vonsimHighlighter, vonsimLinter]);
 }

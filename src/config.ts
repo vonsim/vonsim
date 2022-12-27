@@ -1,4 +1,5 @@
-export const MAX_MEMORY_ADDRESS = 0x3fff;
+export const MEMORY_SIZE = 0x4000;
+export const MAX_MEMORY_ADDRESS = MEMORY_SIZE - 1;
 export const MIN_MEMORY_ADDRESS = 0;
 export const MAX_BYTE_VALUE = 0xff;
 export const MAX_WORD_VALUE = 0xffff;
