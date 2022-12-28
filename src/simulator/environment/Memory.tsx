@@ -1,52 +1,43 @@
-import { Fragment, useCallback, useMemo, useState } from "react";
-import create from "zustand";
-import { MAX_MEMORY_ADDRESS, MEMORY_SIZE } from "~/config";
+import clsx from "clsx";
+import { useCallback, useId, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
+import shallow from "zustand/shallow";
 
-type MemoryState = {
-  memory: number[];
-};
-
-export const useMemoryStore = create<MemoryState>()((set, get) => ({
-  memory: new Array(MEMORY_SIZE).fill(0).map(() => Math.round(Math.random() * 255)),
-}));
+import { MAX_MEMORY_ADDRESS } from "~/config";
+import { useComputer } from "./computer";
+import { useConfig } from "./config";
+import { renderAddress, renderMemoryCell } from "./helpers";
 
 export function Memory() {
-  const memory = useMemoryStore(store => store.memory);
+  const startId = useId();
+  const config = useConfig();
+  const memory = useComputer(state => state.memory, shallow);
 
-  const [mode, setMode] = useState<"uint" | "int" | "bin" | "hex" | "ascii">("hex");
-  const [start, setStart] = useState(0);
+  const [start, setStart] = useState(0x1000);
+  const [startValue, setStartValue] = useState("");
 
-  const handleStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const start = e.currentTarget.valueAsNumber;
-    if (!Number.isInteger(start)) return;
-    if (start < 0) return;
+  const handleStartChange = useCallback(() => {
+    const address = parseInt(startValue, 16);
+    if (!Number.isInteger(address) || address < 0) {
+      toast.error("El valor de inicio debe ser un número entero");
+      return;
+    }
 
-    if (start <= MAX_MEMORY_ADDRESS - 64) {
+    console.log(address);
+
+    if (address <= MAX_MEMORY_ADDRESS - 64) {
       // It should be something like 0x1000 or 0x1008
-      setStart(start - (start % 4));
+      setStart(address - (address % 4));
+      return;
     }
 
-    if (start <= MAX_MEMORY_ADDRESS) {
+    if (address <= MAX_MEMORY_ADDRESS) {
       setStart(MAX_MEMORY_ADDRESS - 64);
+      return;
     }
-  };
 
-  const parseValue = useCallback(
-    (value: number) => {
-      if (mode === "int") {
-        return value < 128 ? value : value - 256;
-      } else if (mode === "hex") {
-        return value.toString(16).padStart(2, "0").toUpperCase();
-      } else if (mode === "bin") {
-        return value.toString(2).padStart(8, "0");
-      } else if (mode === "ascii") {
-        return String.fromCharCode(value);
-      } else {
-        return value;
-      }
-    },
-    [mode],
-  );
+    toast.error(`El valor de inicio debe ser menor o igual a ${renderAddress(MAX_MEMORY_ADDRESS)}`);
+  }, [startValue]);
 
   const rows = useMemo(() => {
     const rows: { start: number; cols: number[] }[] = [];
@@ -56,34 +47,53 @@ export function Memory() {
       rows.push({ start: rowStart, cols });
     }
     return rows;
-  }, [start, mode]);
+  }, [start, memory]);
 
   return (
-    <div className="rounded-lg bg-white p-2">
+    <div className="rounded-lg bg-white px-4 py-2">
       <p className="font-extrabold uppercase tracking-wider text-gray-600">Memoria</p>
 
-      <div>
-        <button onClick={() => setMode("hex")}>Hex</button>
-        <button onClick={() => setMode("bin")}>Bin</button>
-        <button onClick={() => setMode("uint")}>BSS</button>
-        <button onClick={() => setMode("int")}>Ca2</button>
-        <button onClick={() => setMode("ascii")}>ASCII</button>
+      <label
+        htmlFor={startId}
+        className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-700"
+      >
+        Inicio
+      </label>
+      <div className="relative w-20 font-mono">
+        <input
+          id={startId}
+          placeholder={renderAddress(start, false)}
+          className="w-full border-b border-sky-400 pl-2 pr-5 text-right outline-sky-400"
+          maxLength={4}
+          value={startValue}
+          onChange={e => setStartValue(e.currentTarget.value)}
+          onKeyDown={e => {
+            if (e.key === "Enter") {
+              handleStartChange();
+            }
+          }}
+        />
+        <div className="pointer-events-none absolute right-2 top-0 bottom-0">
+          <span>h</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-5 items-center gap-y-1 font-mono">
-        {rows.map(({ start, cols }) => (
-          <Fragment key={start}>
-            <div className="text-center text-gray-600">
-              {start.toString(16).padStart(4, "0").toUpperCase()}h
-            </div>
-            {cols.map((col, i) => (
-              <div key={i} className="text-center text-gray-600">
-                {parseValue(col)}
-              </div>
-            ))}
-          </Fragment>
-        ))}
-      </div>
+      <table className="mt-4 border border-slate-200 font-mono">
+        <tbody className="divide-y">
+          {rows.map(({ start, cols }, i) => (
+            <tr key={start} className={clsx("divide-x", i % 2 === 1 && "bg-slate-100")}>
+              <td className="w-[7ch] text-center font-bold text-slate-800">
+                {renderAddress(start)}
+              </td>
+              {cols.map((col, i) => (
+                <td key={i} className="w-[10ch] text-center text-slate-600">
+                  {renderMemoryCell(col, config.memoryRepresentation)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

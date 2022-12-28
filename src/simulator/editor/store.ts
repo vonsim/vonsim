@@ -5,7 +5,7 @@ export type ErrorsStore = {
   numberOfErrors: number;
 };
 
-export const useErrors = create<ErrorsStore>(() => ({
+export const useErrors = create<ErrorsStore>()(() => ({
   globalError: null,
   numberOfErrors: 0,
 }));

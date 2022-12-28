@@ -143,7 +143,7 @@ const vonsimLinter = linter(
     }
   },
   {
-    delay: 100, // gotta go fast
+    delay: 200, // gotta go fast
   },
 );
 
