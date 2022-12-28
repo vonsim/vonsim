@@ -151,7 +151,6 @@ Los registros (_reg_) se denotan en binario de la siguiente manera:
 |  `BH`  | `01000001` |
 |  `CH`  | `01000010` |
 |  `DH`  | `01000011` |
-|  `DH`  | `01000011` |
 |  `AX`  | `10000000` |
 |  `BX`  | `10000001` |
 |  `CX`  | `10000010` |
@@ -160,7 +159,7 @@ Los registros (_reg_) se denotan en binario de la siguiente manera:
 |  `SP`  | `10100001` |
 |  `IR`  | `10100010` |
 | `MAR`  | `10100011` |
-| `MAB`  | `10100100` |
+| `MBR`  | `10100100` |
 
 A modo de ayuda memoria:
 
