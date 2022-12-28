@@ -71,7 +71,7 @@ export function validateBinaryInstruction(
           meta: {
             label: instruction.label,
             start: 0,
-            length: 2 + outReg.size === "word" ? 2 : 1,
+            length: 2 + (outReg.size === "word" ? 2 : 1),
             position: instruction.position,
           },
           opSize: outReg.size,
@@ -137,7 +137,7 @@ export function validateBinaryInstruction(
         meta: {
           label: instruction.label,
           start: 0,
-          length: 2 + outReg.size === "word" ? 2 : 1,
+          length: 2 + (outReg.size === "word" ? 2 : 1),
           position: instruction.position,
         },
         opSize: outReg.size,
@@ -196,7 +196,7 @@ export function validateBinaryInstruction(
         meta: {
           label: instruction.label,
           start: 0,
-          length: 3 + outSize === "word" ? 2 : 1,
+          length: 3 + (outSize === "word" ? 2 : 1),
           position: instruction.position,
         },
         opSize: outSize,
@@ -220,7 +220,7 @@ export function validateBinaryInstruction(
         meta: {
           label: instruction.label,
           start: 0,
-          length: 3 + outSize === "word" ? 2 : 1,
+          length: 3 + (outSize === "word" ? 2 : 1),
           position: instruction.position,
         },
         opSize: outSize,
@@ -271,7 +271,7 @@ export function validateBinaryInstruction(
           meta: {
             label: instruction.label,
             start: 0,
-            length: 3 + out.size === "word" ? 2 : 1,
+            length: 3 + (out.size === "word" ? 2 : 1),
             position: instruction.position,
           },
           opSize: out.size,
@@ -284,7 +284,7 @@ export function validateBinaryInstruction(
           meta: {
             label: instruction.label,
             start: 0,
-            length: 1 + out.size === "word" ? 2 : 1,
+            length: 1 + (out.size === "word" ? 2 : 1),
             position: instruction.position,
           },
           opSize: out.size,
@@ -307,7 +307,7 @@ export function validateBinaryInstruction(
           meta: {
             label: instruction.label,
             start: 0,
-            length: 3 + out.size === "word" ? 2 : 1,
+            length: 3 + (out.size === "word" ? 2 : 1),
             position: instruction.position,
           },
           opSize: out.size,
@@ -320,7 +320,7 @@ export function validateBinaryInstruction(
           meta: {
             label: instruction.label,
             start: 0,
-            length: 1 + out.size === "word" ? 2 : 1,
+            length: 1 + (out.size === "word" ? 2 : 1),
             position: instruction.position,
           },
           opSize: out.size,
