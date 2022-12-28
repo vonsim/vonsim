@@ -2,6 +2,7 @@ import create from "zustand";
 import type { Program } from "~/compiler";
 import { WordRegisterType } from "~/compiler/common";
 import { INITIAL_IP, MEMORY_SIZE } from "~/config";
+import { useConfig } from "../config";
 import { numberToWord } from "../helpers";
 import { programToBytecode } from "./bytecode";
 
@@ -26,5 +27,18 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
     MAR: numberToWord(0),
     MBR: numberToWord(0),
   },
-  loadProgram: program => set({ memory: programToBytecode(program) }),
+  loadProgram: program => {
+    const memoryConfig = useConfig.getState().memoryOnReset;
+
+    const memory: number[] =
+      memoryConfig === "empty"
+        ? new Array(MEMORY_SIZE).fill(0)
+        : memoryConfig === "random"
+        ? new Array(MEMORY_SIZE).fill(0).map(() => Math.round(Math.random() * 255))
+        : [...get().memory];
+
+    programToBytecode(memory, program);
+
+    set({ memory });
+  },
 }));

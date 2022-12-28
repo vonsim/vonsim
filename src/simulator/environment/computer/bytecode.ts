@@ -10,7 +10,6 @@ import {
   unaryInstructionPattern,
   zeroaryInstructionPattern,
 } from "~/compiler/common/patterns";
-import { MEMORY_SIZE } from "~/config";
 import { numberToWord } from "../helpers";
 
 export const INSTRUCTION_TO_OPCODE: { [key in InstructionType]: number } = {
@@ -85,18 +84,13 @@ export const REGISTER_TO_BINARY: { [key in RegisterType]: number } = {
   MBR: 0b1010_0100,
 };
 
-const randomMemory = () =>
-  new Array(MEMORY_SIZE).fill(0).map(() => Math.round(Math.random() * 255));
-
 const writeWord = (memory: number[], address: number, value: number): void => {
   const [low, high] = numberToWord(value);
   memory[address] = low;
   memory[address + 1] = high;
 };
 
-export function programToBytecode(program: Program): number[] {
-  const memory = randomMemory();
-
+export function programToBytecode(memory: number[], program: Program) {
   for (const data of program.data) {
     let address = data.meta.start;
 
@@ -190,6 +184,4 @@ export function programToBytecode(program: Program): number[] {
     console.log(instruction, bytecode.map(x => x.toString(2).padStart(8, "0")).join(" "));
     memory.splice(instruction.meta.start, bytecode.length, ...bytecode);
   }
-
-  return memory;
 }
