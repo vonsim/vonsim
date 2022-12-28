@@ -155,7 +155,7 @@ export function evaluateInstruction(
           : statement.port.type === "immediate"
           ? {
               ...statement.port,
-              value: evaluateImmediate(statement.port.value, statement.opSize, labels),
+              value: evaluateImmediate(statement.port.value, "byte", labels),
             }
           : {
               ...statement.port,
@@ -216,7 +216,10 @@ function evaluateImmediate(
   const min = size === "byte" ? MIN_BYTE_VALUE : MIN_WORD_VALUE;
   const computed = evaluateExpression(value, labels);
   if (computed < min || computed > max) {
-    throw new CompilerError(`Value ${value} is out of range for ${size} data.`, ...value.position);
+    throw new CompilerError(
+      `Value ${computed} is out of range for ${size} data.`,
+      ...value.position,
+    );
   }
   return computed;
 }
