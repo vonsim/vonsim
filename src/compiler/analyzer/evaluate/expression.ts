@@ -1,7 +1,32 @@
 import { match } from "ts-pattern";
 import { CompilerError } from "~/compiler/common";
 import type { NumberExpression } from "~/compiler/parser/grammar";
+import {
+  MAX_BYTE_VALUE,
+  MAX_WORD_VALUE,
+  MIN_SIGNED_BYTE_VALUE,
+  MIN_SIGNED_WORD_VALUE,
+} from "~/config";
 import type { LabelMap } from "../compact-labels";
+
+export function evaluateImmediate(expr: NumberExpression, size: "byte" | "word", labels: LabelMap) {
+  const max = size === "byte" ? MAX_BYTE_VALUE : MAX_WORD_VALUE;
+  const min = size === "byte" ? MIN_SIGNED_BYTE_VALUE : MIN_SIGNED_WORD_VALUE;
+
+  const computed = evaluateExpression(expr, labels);
+  if (computed < min || computed > max) {
+    throw new CompilerError(
+      `Value ${computed} is out of range for ${size} data.`,
+      ...expr.position,
+    );
+  }
+
+  if (computed < 0) {
+    return computed + max + 1; // 2's complement
+  } else {
+    return computed;
+  }
+}
 
 export function evaluateExpression(expr: NumberExpression, labels: LabelMap): number {
   return match(expr)

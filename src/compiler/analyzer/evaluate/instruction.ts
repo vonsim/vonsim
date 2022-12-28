@@ -23,19 +23,11 @@ import {
   zeroaryInstructionPattern,
 } from "~/compiler/common/patterns";
 import { NumberExpression } from "~/compiler/parser/grammar";
-import {
-  INTERRUPTIONS,
-  MAX_BYTE_VALUE,
-  MAX_MEMORY_ADDRESS,
-  MAX_WORD_VALUE,
-  MIN_BYTE_VALUE,
-  MIN_MEMORY_ADDRESS,
-  MIN_WORD_VALUE,
-} from "~/config";
+import { INTERRUPTIONS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
 import type { LabelMap } from "../compact-labels";
 import type { ReadonlyMemory } from "../compute-addresses";
 import type { ValidatedInstructionStatement } from "../validate";
-import { evaluateExpression } from "./expression";
+import { evaluateExpression, evaluateImmediate } from "./expression";
 
 type InstructionMeta = { start: number; length: number; position: PositionRange };
 type RegisterOperand = { type: "register"; register: RegisterType };
@@ -202,23 +194,6 @@ function evaluateAddress(
     throw new CompilerError(
       `Memory address ${hex(computed)} is marked as a read-only data address.`,
       ...address.position,
-    );
-  }
-  return computed;
-}
-
-function evaluateImmediate(
-  value: NumberExpression,
-  size: "byte" | "word",
-  labels: LabelMap,
-): number {
-  const max = size === "byte" ? MAX_BYTE_VALUE : MAX_WORD_VALUE;
-  const min = size === "byte" ? MIN_BYTE_VALUE : MIN_WORD_VALUE;
-  const computed = evaluateExpression(value, labels);
-  if (computed < min || computed > max) {
-    throw new CompilerError(
-      `Value ${computed} is out of range for ${size} data.`,
-      ...value.position,
     );
   }
   return computed;
