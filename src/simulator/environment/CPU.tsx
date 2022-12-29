@@ -52,7 +52,9 @@ export function CPU() {
           <tr className="divide-x">
             <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.IP)}</td>
             <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.SP)}</td>
-            <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.IR)}</td>
+            <td className="w-[11ch] text-center text-slate-600">
+              {renderMemoryCell(registers.IR, "bin")}b
+            </td>
             <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.MAR)}</td>
             <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.MBR)}</td>
           </tr>
