@@ -3,7 +3,7 @@ import { hex, safeMap } from "~/compiler/common";
 import type { Statement } from "~/compiler/parser/grammar";
 import { INITIAL_IP } from "~/config";
 import { compactLabels } from "./compact-labels";
-import { computeAddresses } from "./compute-addresses";
+import { computeAddresses, ReadonlyMemory } from "./compute-addresses";
 import { evaluateConstants, ProgramConstants } from "./evaluate/constants";
 import { evaluateData, ProgramData } from "./evaluate/data";
 import { evaluateInstruction, ProgramInstruction } from "./evaluate/instruction";
@@ -21,6 +21,7 @@ export type AnalysisResult =
       constants: ProgramConstants;
       data: ProgramData[];
       instructions: ProgramInstruction[];
+      readonlyMemory: ReadonlyMemory;
     }
   | { success: false; errors: unknown[] };
 
@@ -89,5 +90,5 @@ export function analyze(statements: Statement[]): AnalysisResult {
     );
   }
 
-  return klona({ success: true, constants, data, instructions });
+  return klona({ success: true, constants, data, instructions, readonlyMemory });
 }

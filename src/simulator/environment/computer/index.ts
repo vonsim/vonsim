@@ -56,6 +56,9 @@ export type ComputerStore = {
     size: "byte" | "word",
   ) => number;
 
+  encodeFlags: () => number;
+  decodeFlags: (bits: number) => void;
+
   loadProgram: (program: Program) => void;
   runInstruction: () => boolean;
 };
@@ -115,15 +118,25 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
 
   setMemory: (address, size, value) => {
     const memory = [...get().memory];
+    const program = get().program;
 
     if (size === "byte") {
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
       }
+      if (program && program.readonlyMemory.has(address)) {
+        throw new Error(`La dirección de memoria ${renderAddress(address)} es de solo lectura.`);
+      }
       memory[address] = value;
     } else {
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS - 1) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
+      }
+      if (
+        program &&
+        (program.readonlyMemory.has(address) || program.readonlyMemory.has(address + 1))
+      ) {
+        throw new Error(`La dirección de memoria ${renderAddress(address)} es de solo lectura.`);
       }
       const [low, high] = splitLowHigh(value);
       memory[address] = low;
@@ -237,6 +250,29 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
     }));
 
     return result;
+  },
+
+  encodeFlags: () => {
+    const flags = get().alu.flags;
+    let bits = 0b0000;
+    if (flags.carry) bits |= 0b1000;
+    if (flags.overflow) bits |= 0b0100;
+    if (flags.sign) bits |= 0b0010;
+    if (flags.zero) bits |= 0b0001;
+    return bits;
+  },
+
+  decodeFlags: bits => {
+    const flags = {
+      carry: (bits & 0b1000) !== 0,
+      overflow: (bits & 0b0100) !== 0,
+      sign: (bits & 0b0010) !== 0,
+      zero: (bits & 0b0001) !== 0,
+    };
+    set(state => ({
+      ...state,
+      alu: { ...state.alu, flags },
+    }));
   },
 
   loadProgram: program => {
