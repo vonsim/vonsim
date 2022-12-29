@@ -3,7 +3,7 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import shallow from "zustand/shallow";
 
-import { MAX_MEMORY_ADDRESS } from "~/config";
+import { MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
 import { useComputer } from "./computer";
 import { useConfig } from "./config";
 import { renderAddress, renderMemoryCell } from "./helpers";
@@ -18,12 +18,10 @@ export function Memory() {
 
   const handleStartChange = useCallback(() => {
     const address = parseInt(startValue, 16);
-    if (!Number.isInteger(address) || address < 0) {
+    if (!Number.isInteger(address) || address < MIN_MEMORY_ADDRESS) {
       toast.error("El valor de inicio debe ser un número entero");
       return;
     }
-
-    console.log(address);
 
     if (address <= MAX_MEMORY_ADDRESS - 64) {
       // It should be something like 0x1000 or 0x1008

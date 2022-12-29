@@ -1,15 +1,15 @@
 import clsx from "clsx";
 import { toast } from "react-hot-toast";
-import { useKey, useLongPress, useToggle } from "react-use";
+import { useLongPress, useToggle } from "react-use";
 import { compile } from "~/compiler";
 import DocumentationIcon from "~icons/carbon/document";
 import GitHubIcon from "~icons/carbon/logo-github";
 import Logo from "~icons/carbon/machine-learning";
-import CompileIcon from "~icons/carbon/workspace";
+import RunIcon from "~icons/carbon/skip-forward";
 import { useComputer } from "../environment/computer";
 
 export function Controls() {
-  const handleCompile = () => {
+  const handleCompile = async () => {
     if (!window.codemirror) return;
     const code = window.codemirror.state.doc.toString();
     const result = compile(code);
@@ -20,17 +20,18 @@ export function Controls() {
     }
 
     useComputer.getState().loadProgram(result);
-    toast.success("Compilación exitosa");
-  };
 
-  // Ctrl + S to compile
-  useKey(
-    ev => ev.key === "s" && (ev.ctrlKey || ev.metaKey),
-    ev => {
-      ev.preventDefault();
-      handleCompile();
-    },
-  );
+    const speed = 1000 / 8; // 8 Hz
+
+    while (true) {
+      const keepRunning = useComputer.getState().runInstruction();
+      if (!keepRunning) {
+        break;
+      } else {
+        await new Promise(resolve => setTimeout(resolve, speed));
+      }
+    }
+  };
 
   const [easterEgg, toggleEasterEgg] = useToggle(false);
   const easterEggEvents = useLongPress(
@@ -54,7 +55,7 @@ export function Controls() {
         className="flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30"
         onClick={handleCompile}
       >
-        <CompileIcon className="mr-2 h-5 w-5" /> Compilar
+        <RunIcon className="mr-2 h-5 w-5" /> Ejecutar
       </button>
 
       <div className="grow" />

@@ -15,6 +15,7 @@ import {
 import { Transition } from "@headlessui/react";
 import { useCallback, useEffect, useState } from "react";
 import { usePrevious } from "react-use";
+import { lineHighlightField } from "./line-highlight";
 import { ErrorsStore, useErrors } from "./store";
 import { VonSim } from "./vonsim";
 
@@ -51,6 +52,7 @@ export function Editor() {
           EditorState.tabSize.of(2),
 
           lineNumbers(),
+          lineHighlightField,
           highlightActiveLineGutter(),
           highlightSpecialChars(),
           history(),

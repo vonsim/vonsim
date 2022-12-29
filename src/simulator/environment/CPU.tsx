@@ -2,7 +2,7 @@ import shallow from "zustand/shallow";
 
 import { useComputer } from "./computer";
 import { useConfig } from "./config";
-import { renderAddress, renderMemoryCell, wordToNumber } from "./helpers";
+import { renderAddress, renderMemoryCell, splitLowHigh } from "./helpers";
 
 export function CPU() {
   const config = useConfig();
@@ -21,17 +21,20 @@ export function CPU() {
           </tr>
         </thead>
         <tbody className="divide-y">
-          {(["AX", "BX", "CX", "DX"] as const).map(reg => (
-            <tr className="divide-x" key={reg}>
-              <td className="w-[4ch] text-center font-bold text-slate-800">{reg}</td>
-              <td className="w-[10ch] text-center text-slate-600">
-                {renderMemoryCell(registers[reg][0], config.memoryRepresentation)}
-              </td>
-              <td className="w-[10ch] text-center text-slate-600">
-                {renderMemoryCell(registers[reg][1], config.memoryRepresentation)}
-              </td>
-            </tr>
-          ))}
+          {(["AX", "BX", "CX", "DX"] as const).map(reg => {
+            const [low, high] = splitLowHigh(registers[reg]);
+            return (
+              <tr className="divide-x" key={reg}>
+                <td className="w-[4ch] text-center font-bold text-slate-800">{reg}</td>
+                <td className="w-[10ch] text-center text-slate-600">
+                  {renderMemoryCell(low, config.memoryRepresentation)}
+                </td>
+                <td className="w-[10ch] text-center text-slate-600">
+                  {renderMemoryCell(high, config.memoryRepresentation)}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -47,21 +50,11 @@ export function CPU() {
         </thead>
         <tbody>
           <tr className="divide-x">
-            <td className="w-[7ch] text-center text-slate-600">
-              {renderAddress(wordToNumber(registers.IP))}
-            </td>
-            <td className="w-[7ch] text-center text-slate-600">
-              {renderAddress(wordToNumber(registers.SP))}
-            </td>
-            <td className="w-[7ch] text-center text-slate-600">
-              {renderAddress(wordToNumber(registers.IR))}
-            </td>
-            <td className="w-[7ch] text-center text-slate-600">
-              {renderAddress(wordToNumber(registers.MAR))}
-            </td>
-            <td className="w-[7ch] text-center text-slate-600">
-              {renderAddress(wordToNumber(registers.MBR))}
-            </td>
+            <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.IP)}</td>
+            <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.SP)}</td>
+            <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.IR)}</td>
+            <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.MAR)}</td>
+            <td className="w-[7ch] text-center text-slate-600">{renderAddress(registers.MBR)}</td>
           </tr>
         </tbody>
       </table>

@@ -10,7 +10,7 @@ import {
   unaryInstructionPattern,
   zeroaryInstructionPattern,
 } from "~/compiler/common/patterns";
-import { numberToWord } from "../helpers";
+import { splitLowHigh } from "../helpers";
 
 export const INSTRUCTION_TO_OPCODE: { [key in InstructionType]: number } = {
   // Zeroary
@@ -85,7 +85,7 @@ export const REGISTER_TO_BINARY: { [key in RegisterType]: number } = {
 };
 
 const writeWord = (memory: number[], address: number, value: number): void => {
-  const [low, high] = numberToWord(value);
+  const [low, high] = splitLowHigh(value);
   memory[address] = low;
   memory[address + 1] = high;
 };
@@ -117,16 +117,16 @@ export function programToBytecode(memory: number[], program: Program) {
         if (out.type === "register") {
           operands.push(REGISTER_TO_BINARY[out.register]);
         } else if (out.mode === "direct") {
-          operands.push(...numberToWord(out.address));
+          operands.push(...splitLowHigh(out.address));
         }
 
         if (src.type === "register") {
           operands.push(REGISTER_TO_BINARY[src.register]);
         } else if (src.type === "immediate") {
-          if (opSize === "word") operands.push(...numberToWord(src.value));
+          if (opSize === "word") operands.push(...splitLowHigh(src.value));
           else operands.push(src.value);
         } else if (src.mode === "direct") {
-          operands.push(...numberToWord(src.address));
+          operands.push(...splitLowHigh(src.address));
         }
 
         // Adds DDD part (see /docs/especificaciones/codificacion)
@@ -150,7 +150,7 @@ export function programToBytecode(memory: number[], program: Program) {
           operands.push(REGISTER_TO_BINARY[out.register]);
         } else if (out.mode === "direct") {
           opcode |= 0b0000_0010;
-          operands.push(...numberToWord(out.address));
+          operands.push(...splitLowHigh(out.address));
         } else {
           opcode |= 0b0000_0100;
         }
@@ -161,14 +161,14 @@ export function programToBytecode(memory: number[], program: Program) {
         operands.push(REGISTER_TO_BINARY[out]);
       })
       .with({ type: jumpInstructionPattern }, ({ jumpTo }) => {
-        operands.push(...numberToWord(jumpTo));
+        operands.push(...splitLowHigh(jumpTo));
       })
       .with({ type: ioInstructionPattern }, ({ opSize, port }) => {
         if (port.type === "immediate") {
           operands.push(port.value);
         } else if (port.type === "memory-direct") {
           opcode |= 0b0000_0010;
-          operands.push(...numberToWord(port.address));
+          operands.push(...splitLowHigh(port.address));
         } else {
           opcode |= 0b0000_0100;
         }
@@ -181,7 +181,6 @@ export function programToBytecode(memory: number[], program: Program) {
       .exhaustive();
 
     const bytecode = [opcode, ...operands];
-    console.log(instruction, bytecode.map(x => x.toString(2).padStart(8, "0")).join(" "));
     memory.splice(instruction.meta.start, bytecode.length, ...bytecode);
   }
 }
