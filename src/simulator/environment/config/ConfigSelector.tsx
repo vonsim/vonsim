@@ -1,10 +1,24 @@
 import { RadioGroup } from "@headlessui/react";
 import clsx from "clsx";
 import { useMemo } from "react";
+import { toast } from "react-hot-toast";
+import { useLongPress } from "react-use";
 import { useConfig } from ".";
+
+const speeds = new Array(7).fill(null).map((_, i) => 2 ** i); // From 1 Hz to 64 Hz
+const speedOptions = Object.fromEntries(speeds.map(speed => [speed.toString(), `${speed} Hz`]));
 
 export function ConfigSelector({ className }: { className?: string }) {
   const config = useConfig();
+  const longPressClockSpeed = useLongPress(
+    () => {
+      toast("Se activó el modo 8088.\nLa frecuencia de reloj se estableció en 5 MHz.", {
+        icon: "👾",
+      });
+      config.setClockSpeed(5_000_000);
+    },
+    { delay: 1500 },
+  );
 
   return (
     <div className={clsx("flex gap-x-4", className)}>
@@ -31,6 +45,15 @@ export function ConfigSelector({ className }: { className?: string }) {
           keep: "Mantener",
         }}
       />
+
+      <div {...longPressClockSpeed}>
+        <Radio
+          label="Frecuencia de reloj"
+          value={config.clockSpeed.toString()}
+          onChange={n => config.setClockSpeed(parseInt(n, 10))}
+          options={speedOptions}
+        />
+      </div>
     </div>
   );
 }
@@ -58,7 +81,7 @@ function Radio<T extends string>({
           <RadioGroup.Option
             key={i}
             value={value}
-            className="cursor-pointer select-none px-2 py-1 ui-checked:bg-sky-400 ui-checked:text-white"
+            className="cursor-pointer select-none whitespace-nowrap px-2 py-1 ui-checked:bg-sky-400 ui-checked:text-white"
           >
             {label}
           </RadioGroup.Option>

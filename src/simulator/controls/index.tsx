@@ -6,7 +6,9 @@ import DocumentationIcon from "~icons/carbon/document";
 import GitHubIcon from "~icons/carbon/logo-github";
 import Logo from "~icons/carbon/machine-learning";
 import RunIcon from "~icons/carbon/skip-forward";
+import { highlightLine, setReadOnly } from "../editor/methods";
 import { useComputer } from "../environment/computer";
+import { useConfig } from "../environment/config";
 
 export function Controls() {
   const handleCompile = async () => {
@@ -21,16 +23,22 @@ export function Controls() {
 
     useComputer.getState().loadProgram(result);
 
-    const speed = 1000 / 8; // 8 Hz
+    setReadOnly(true);
 
     while (true) {
       const keepRunning = useComputer.getState().runInstruction();
-      if (!keepRunning) {
-        break;
-      } else {
-        await new Promise(resolve => setTimeout(resolve, speed));
-      }
+      await new Promise(resolve => {
+        // I know it's not efficient, but it  doesn't
+        // affect the performance of the app
+        const ms = 1000 / useConfig.getState().clockSpeed;
+        setTimeout(resolve, ms);
+      });
+
+      if (!keepRunning) break;
     }
+
+    highlightLine(null);
+    setReadOnly(false);
   };
 
   const [easterEgg, toggleEasterEgg] = useToggle(false);
