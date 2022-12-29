@@ -1,7 +1,7 @@
 import { isMatching, match } from "ts-pattern";
 import type { Merge } from "type-fest";
 import { CompilerError, RegisterType, UnaryInstructionType } from "~/compiler/common";
-import { byteRegisterPattern } from "~/compiler/common/patterns";
+import { wordRegisterPattern } from "~/compiler/common/patterns";
 import type { InstructionStatement, NumberExpression, Operand } from "~/compiler/parser/grammar";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
@@ -92,10 +92,10 @@ export function validateUnaryInstruction(
 }
 
 function typeGuardRegister(reg: Extract<Operand, { type: "register" }>) {
-  if (isMatching(byteRegisterPattern, reg.value)) {
-    return { type: "register", size: "byte", value: reg.value, position: reg.position } as const;
-  } else {
+  if (isMatching(wordRegisterPattern, reg.value)) {
     return { type: "register", size: "word", value: reg.value, position: reg.position } as const;
+  } else {
+    return { type: "register", size: "byte", value: reg.value, position: reg.position } as const;
   }
 }
 

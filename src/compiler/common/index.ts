@@ -8,6 +8,7 @@ import type {
   ioInstructionPattern,
   jumpInstructionPattern,
   keywordPattern,
+  physicalRegisterPattern,
   registerPattern,
   stackInstructionPattern,
   unaryInstructionPattern,
@@ -18,6 +19,7 @@ import type {
 export type RegisterType = P.infer<typeof registerPattern>;
 export type ByteRegisterType = P.infer<typeof byteRegisterPattern>;
 export type WordRegisterType = P.infer<typeof wordRegisterPattern>;
+export type PhysicalRegisterType = P.infer<typeof physicalRegisterPattern>;
 
 export type DataDirectiveType = P.infer<typeof dataDirectivePattern>;
 export type InstructionType = P.infer<typeof instructionPattern>;

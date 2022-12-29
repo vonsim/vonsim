@@ -1,8 +1,9 @@
 import { isMatching, match } from "ts-pattern";
+import type { Split } from "type-fest";
 import create from "zustand";
 import type { Program } from "~/compiler";
-import { RegisterType, WordRegisterType } from "~/compiler/common";
-import { wordRegisterPattern } from "~/compiler/common/patterns";
+import { PhysicalRegisterType, RegisterType } from "~/compiler/common";
+import { partialRegisterPattern } from "~/compiler/common/patterns";
 import {
   INITIAL_IP,
   MAX_BYTE_VALUE,
@@ -26,7 +27,7 @@ export type ALUOperation = ArithmeticOperation | LogicalOperation;
 
 export type ComputerStore = {
   memory: number[];
-  registers: { [key in WordRegisterType]: number };
+  registers: { [key in PhysicalRegisterType]: number };
   alu: {
     left: number;
     right: number;
@@ -96,17 +97,20 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
   },
 
   getRegister: register => {
-    return match(register)
-      .with("AL", () => splitLowHigh(get().registers.AX)[0])
-      .with("AH", () => splitLowHigh(get().registers.AX)[1])
-      .with("BL", () => splitLowHigh(get().registers.BX)[0])
-      .with("BH", () => splitLowHigh(get().registers.BX)[1])
-      .with("CL", () => splitLowHigh(get().registers.CX)[0])
-      .with("CH", () => splitLowHigh(get().registers.CX)[1])
-      .with("DL", () => splitLowHigh(get().registers.DX)[0])
-      .with("DH", () => splitLowHigh(get().registers.DX)[1])
-      .with(wordRegisterPattern, reg => get().registers[reg])
-      .exhaustive();
+    if (isMatching(partialRegisterPattern, register)) {
+      return match(register)
+        .with("AL", () => splitLowHigh(get().registers.AX)[0])
+        .with("AH", () => splitLowHigh(get().registers.AX)[1])
+        .with("BL", () => splitLowHigh(get().registers.BX)[0])
+        .with("BH", () => splitLowHigh(get().registers.BX)[1])
+        .with("CL", () => splitLowHigh(get().registers.CX)[0])
+        .with("CH", () => splitLowHigh(get().registers.CX)[1])
+        .with("DL", () => splitLowHigh(get().registers.DX)[0])
+        .with("DH", () => splitLowHigh(get().registers.DX)[1])
+        .exhaustive();
+    } else {
+      return get().registers[register];
+    }
   },
 
   setMemory: (address, size, value) => {
@@ -130,24 +134,27 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
   },
 
   setRegister: (register, value) => {
-    if (isMatching(wordRegisterPattern, register)) {
-      set(state => ({
-        ...state,
-        registers: {
-          ...state.registers,
-          [register]: value,
-        },
-      }));
-    } else {
-      const wordRegister = (register[0] + "X") as WordRegisterType;
+    if (isMatching(partialRegisterPattern, register)) {
+      const [name, byte] = register.split("") as Split<typeof register, "">;
+      const wordRegister = `${name}X` as const;
+
       let [low, high] = splitLowHigh(get().registers[wordRegister]);
-      if (register[1] === "L") low = value;
-      else if (register[1] === "H") high = value;
+      if (byte === "L") low = value;
+      else if (byte === "H") high = value;
+
       set(state => ({
         ...state,
         registers: {
           ...state.registers,
           [wordRegister]: joinLowHigh(low, high),
+        },
+      }));
+    } else {
+      set(state => ({
+        ...state,
+        registers: {
+          ...state.registers,
+          [register]: value,
         },
       }));
     }

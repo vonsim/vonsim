@@ -4,7 +4,7 @@ import { P } from "ts-pattern";
 // # Registers                                                               #
 // #=========================================================================#
 
-const generalPurposeByteRegisterPattern = P.union(
+export const partialRegisterPattern = P.union(
   "AL" as const,
   "BL" as const,
   "CL" as const,
@@ -15,36 +15,25 @@ const generalPurposeByteRegisterPattern = P.union(
   "DH" as const,
 );
 
-const generalPurposeWordRegisterPattern = P.union(
+export const byteRegisterPattern = "IR" as const;
+
+export const wordRegisterPattern = P.union(
   "AX" as const,
   "BX" as const,
   "CX" as const,
   "DX" as const,
-);
-
-const generalPurposeRegisterPattern = P.union(
-  generalPurposeByteRegisterPattern,
-  generalPurposeWordRegisterPattern,
-);
-
-const specialPurposeRegisterPattern = P.union(
   "IP" as const,
   "SP" as const,
-  "IR" as const,
   "MAR" as const,
   "MBR" as const,
 );
 
+export const physicalRegisterPattern = P.union(byteRegisterPattern, wordRegisterPattern);
+
 export const registerPattern = P.union(
-  generalPurposeRegisterPattern,
-  specialPurposeRegisterPattern,
-);
-
-export const byteRegisterPattern = generalPurposeByteRegisterPattern;
-
-export const wordRegisterPattern = P.union(
-  generalPurposeWordRegisterPattern,
-  specialPurposeRegisterPattern,
+  partialRegisterPattern,
+  byteRegisterPattern,
+  wordRegisterPattern,
 );
 
 // #=========================================================================#
