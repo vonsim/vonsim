@@ -23,8 +23,9 @@ export function Controls() {
         execution.abort();
       } else {
         if (execution.state === "running") return;
-        if (execution.state === "stopped") execution.compile();
-        execution.runForever();
+        if (execution.state === "paused" || execution.compile()) {
+          execution.runForever();
+        }
       }
     },
     undefined,
@@ -35,8 +36,9 @@ export function Controls() {
     ev => {
       ev.preventDefault();
       if (execution.state === "running") return;
-      if (execution.state === "stopped") execution.compile();
-      execution.runStep();
+      if (execution.state === "paused" || execution.compile()) {
+        execution.runStep();
+      }
     },
     undefined,
     [execution],
@@ -65,8 +67,7 @@ export function Controls() {
           <>
             <Button
               onClick={() => {
-                execution.compile();
-                execution.runForever();
+                if (execution.compile()) execution.runForever();
               }}
               title="F5"
             >
@@ -75,8 +76,7 @@ export function Controls() {
 
             <Button
               onClick={() => {
-                execution.compile();
-                execution.runStep();
+                if (execution.compile()) execution.runStep();
               }}
               title="F11"
             >

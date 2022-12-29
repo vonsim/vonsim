@@ -8,7 +8,7 @@ import { useConfig } from "../environment/config";
 type ExecutionStore = {
   state: "running" | "paused" | "stopped";
   abortRequested: boolean;
-  compile: () => void;
+  compile: () => boolean;
   runForever: () => Promise<void>;
   runStep: () => void;
   abort: () => void;
@@ -24,11 +24,12 @@ export const useExecution = create<ExecutionStore>()((set, get) => ({
 
     if (!result.success) {
       toast.error("Error de compilación. Solucioná los errores y volvé a intentar");
-      return;
+      return false;
     }
 
     useComputer.getState().loadProgram(result);
     setReadOnly(true);
+    return true;
   },
   finish: () => {
     highlightLine(null);
