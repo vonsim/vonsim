@@ -1,45 +1,46 @@
 import clsx from "clsx";
-import { toast } from "react-hot-toast";
-import { useLongPress, useToggle } from "react-use";
-import { compile } from "~/compiler";
+import { useKey, useLongPress, useToggle } from "react-use";
+import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
 import GitHubIcon from "~icons/carbon/logo-github";
 import Logo from "~icons/carbon/machine-learning";
-import RunIcon from "~icons/carbon/skip-forward";
-import { highlightLine, setReadOnly } from "../editor/methods";
-import { useComputer } from "../environment/computer";
-import { useConfig } from "../environment/config";
+import PausedIcon from "~icons/carbon/pause";
+import RunIcon from "~icons/carbon/play";
+import RunningIcon from "~icons/carbon/settings";
+import FinishIcon from "~icons/carbon/skip-forward";
+import AbortIcon from "~icons/carbon/stop-sign";
+import { useExecution } from "./execution";
 
 export function Controls() {
-  const handleCompile = async () => {
-    if (!window.codemirror) return;
-    const code = window.codemirror.state.doc.toString();
-    const result = compile(code);
+  const execution = useExecution();
 
-    if (!result.success) {
-      toast.error("Error de compilación. Solucioná los errores y volvé a intentar");
-      return;
-    }
-
-    useComputer.getState().loadProgram(result);
-
-    setReadOnly(true);
-
-    while (true) {
-      const keepRunning = useComputer.getState().runInstruction();
-      await new Promise(resolve => {
-        // I know it's not efficient, but it  doesn't
-        // affect the performance of the app
-        const ms = 1000 / useConfig.getState().clockSpeed;
-        setTimeout(resolve, ms);
-      });
-
-      if (!keepRunning) break;
-    }
-
-    highlightLine(null);
-    setReadOnly(false);
-  };
+  useKey(
+    "F5",
+    ev => {
+      ev.preventDefault();
+      if (ev.shiftKey) {
+        if (execution.state === "stopped") return;
+        execution.abort();
+      } else {
+        if (execution.state === "running") return;
+        if (execution.state === "stopped") execution.compile();
+        execution.runForever();
+      }
+    },
+    undefined,
+    [execution],
+  );
+  useKey(
+    "F11",
+    ev => {
+      ev.preventDefault();
+      if (execution.state === "running") return;
+      if (execution.state === "stopped") execution.compile();
+      execution.runStep();
+    },
+    undefined,
+    [execution],
+  );
 
   const [easterEgg, toggleEasterEgg] = useToggle(false);
   const easterEggEvents = useLongPress(
@@ -59,12 +60,69 @@ export function Controls() {
         </h1>
       </div>
 
-      <button
-        className="flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30"
-        onClick={handleCompile}
-      >
-        <RunIcon className="mr-2 h-5 w-5" /> Ejecutar
-      </button>
+      <div className="flex h-full items-center gap-4">
+        {execution.state === "stopped" ? (
+          <>
+            <Button
+              onClick={() => {
+                execution.compile();
+                execution.runForever();
+              }}
+              title="F5"
+            >
+              <RunIcon /> Ejecutar
+            </Button>
+
+            <Button
+              onClick={() => {
+                execution.compile();
+                execution.runStep();
+              }}
+              title="F11"
+            >
+              <DebugIcon /> Depurar
+            </Button>
+          </>
+        ) : execution.state === "running" ? (
+          <>
+            <div className="flex h-6 w-32 select-none items-center justify-center rounded-lg bg-sky-500 text-white">
+              <RunningIcon className="mr-1 h-4 w-4 animate-spin" />
+              <span className="text-center text-xs font-bold uppercase tracking-wider">
+                Ejecutando
+              </span>
+            </div>
+
+            <div className="w-4" />
+
+            <Button onClick={execution.abort} title="Shift+F5">
+              <AbortIcon /> Abortar
+            </Button>
+          </>
+        ) : (
+          <>
+            <div className="flex h-6 w-32 animate-pulse select-none items-center justify-center rounded-lg bg-sky-500 text-white">
+              <PausedIcon className="mr-1 h-4 w-4" />
+              <span className="text-center text-xs font-bold uppercase tracking-wider">
+                Pausado
+              </span>
+            </div>
+
+            <div className="w-4" />
+
+            <Button onClick={execution.runStep} title="F11">
+              <RunIcon /> Siguiente
+            </Button>
+
+            <Button onClick={execution.runForever} title="F5">
+              <FinishIcon /> Finalizar
+            </Button>
+
+            <Button onClick={execution.abort} title="Shift+F5">
+              <AbortIcon /> Abortar
+            </Button>
+          </>
+        )}
+      </div>
 
       <div className="grow" />
 
@@ -85,5 +143,19 @@ export function Controls() {
         <GitHubIcon className="h-5 w-5" />
       </a>
     </header>
+  );
+}
+
+function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...props}
+      className={clsx(
+        "flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30",
+        "[&>svg]:mr-1 [&>svg]:h-5 [&>svg]:w-5",
+      )}
+    >
+      {children}
+    </button>
   );
 }
