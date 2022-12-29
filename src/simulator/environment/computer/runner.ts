@@ -4,7 +4,7 @@ import type { ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
 import { jumpInstructionPattern } from "~/compiler/common/patterns";
 import { useComputer } from ".";
-import { highlightLine } from "../../editor/line-highlight";
+import { highlightLine } from "../../editor/methods";
 import { renderAddress } from "../helpers";
 
 const computer = () => useComputer.getState();
