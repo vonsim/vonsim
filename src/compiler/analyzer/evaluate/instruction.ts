@@ -52,7 +52,7 @@ export type ProgramInstruction =
       opSize: "byte" | "word";
       out: RegisterOperand | MemoryOperand;
     }
-  | { type: StackInstructionType; meta: InstructionMeta; out: WordRegisterType }
+  | { type: StackInstructionType; meta: InstructionMeta; register: WordRegisterType }
   | { type: JumpInstructionType; meta: InstructionMeta; jumpTo: number }
   | {
       type: IOInstructionType;
@@ -114,7 +114,7 @@ export function evaluateInstruction(
     .with({ type: stackInstructionPattern }, statement => ({
       type: statement.type,
       meta: cleanMeta(statement),
-      out: statement.out,
+      register: statement.register,
     }))
     .with({ type: jumpInstructionPattern }, statement => {
       const label = labels.get(statement.jumpTo);

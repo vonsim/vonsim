@@ -8,7 +8,7 @@ import type { ValidatedMeta } from "../types";
 export type ValidatedStackInstruction = {
   type: StackInstructionType;
   meta: ValidatedMeta;
-  out: WordRegisterType;
+  register: WordRegisterType;
 };
 
 export function validateStackInstruction(
@@ -29,6 +29,6 @@ export function validateStackInstruction(
   return {
     type: instruction.instruction,
     meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
-    out: operand.value,
+    register: operand.value,
   };
 }
