@@ -84,13 +84,15 @@ export const REGISTER_TO_BINARY: { [key in RegisterType]: number } = {
   MBR: 0b1010_0100,
 };
 
-const writeWord = (memory: number[], address: number, value: number): void => {
-  const [low, high] = splitLowHigh(value);
-  memory[address] = low;
-  memory[address + 1] = high;
+const writeByte = (memory: ArrayBuffer, address: number, value: number): void => {
+  new DataView(memory).setUint8(address, value);
 };
 
-export function programToBytecode(memory: number[], program: Program) {
+const writeWord = (memory: ArrayBuffer, address: number, value: number): void => {
+  new DataView(memory).setUint16(address, value, true);
+};
+
+export function programToBytecode(memory: ArrayBuffer, program: Program) {
   for (const data of program.data) {
     let address = data.meta.start;
 
@@ -101,7 +103,7 @@ export function programToBytecode(memory: number[], program: Program) {
       }
     } else {
       for (const value of data.initialValues) {
-        if (typeof value === "number") memory[address] = value;
+        if (typeof value === "number") writeByte(memory, address, value);
         address += 1;
       }
     }
@@ -157,8 +159,8 @@ export function programToBytecode(memory: number[], program: Program) {
 
         if (opSize === "word") opcode |= 0b0000_0001;
       })
-      .with({ type: stackInstructionPattern }, ({ out }) => {
-        operands.push(REGISTER_TO_BINARY[out]);
+      .with({ type: stackInstructionPattern }, ({ register }) => {
+        operands.push(REGISTER_TO_BINARY[register]);
       })
       .with({ type: jumpInstructionPattern }, ({ jumpTo }) => {
         operands.push(...splitLowHigh(jumpTo));
@@ -180,7 +182,6 @@ export function programToBytecode(memory: number[], program: Program) {
       })
       .exhaustive();
 
-    const bytecode = [opcode, ...operands];
-    memory.splice(instruction.meta.start, bytecode.length, ...bytecode);
+    new Uint8Array(memory).set([opcode, ...operands], instruction.meta.start);
   }
 }

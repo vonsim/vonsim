@@ -1,3 +1,4 @@
+import { klona } from "klona";
 import { isMatching, match } from "ts-pattern";
 import type { Split } from "type-fest";
 import create from "zustand";
@@ -26,7 +27,7 @@ export type LogicalOperation = "AND" | "OR" | "XOR" | "NOT";
 export type ALUOperation = ArithmeticOperation | LogicalOperation;
 
 export type ComputerStore = {
-  memory: number[];
+  memory: ArrayBuffer;
   registers: { [key in PhysicalRegisterType]: number };
   alu: {
     left: number;
@@ -64,7 +65,7 @@ export type ComputerStore = {
 };
 
 export const useComputer = create<ComputerStore>()((set, get) => ({
-  memory: new Array(MEMORY_SIZE).fill(0),
+  memory: new ArrayBuffer(MEMORY_SIZE),
   registers: {
     AX: 0,
     BX: 0,
@@ -90,12 +91,12 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
       }
-      return get().memory[address];
+      return new DataView(get().memory).getUint8(address);
     } else {
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS - 1) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
       }
-      return joinLowHigh(get().memory[address], get().memory[address + 1]);
+      return new DataView(get().memory).getUint16(address, true);
     }
   },
 
@@ -117,7 +118,7 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
   },
 
   setMemory: (address, size, value) => {
-    const memory = [...get().memory];
+    const memory = klona(get().memory);
     const program = get().program;
 
     if (size === "byte") {
@@ -127,7 +128,7 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
       if (program && program.readonlyMemory.has(address)) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} es de solo lectura.`);
       }
-      memory[address] = value;
+      new DataView(memory).setUint8(address, value);
     } else {
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS - 1) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
@@ -138,9 +139,7 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
       ) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} es de solo lectura.`);
       }
-      const [low, high] = splitLowHigh(value);
-      memory[address] = low;
-      memory[address + 1] = high;
+      new DataView(memory).setUint16(address, value, true);
     }
 
     set({ memory });
@@ -278,12 +277,12 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
   loadProgram: program => {
     const memoryConfig = useConfig.getState().memoryOnReset;
 
-    const memory: number[] =
+    const memory: ArrayBuffer =
       memoryConfig === "empty"
-        ? new Array(MEMORY_SIZE).fill(0)
+        ? new ArrayBuffer(MEMORY_SIZE)
         : memoryConfig === "random"
-        ? new Array(MEMORY_SIZE).fill(0).map(() => Math.round(Math.random() * MAX_BYTE_VALUE))
-        : [...get().memory];
+        ? new Uint8Array(MEMORY_SIZE).map(() => Math.round(Math.random() * MAX_BYTE_VALUE)).buffer
+        : klona(get().memory);
 
     programToBytecode(memory, program);
 

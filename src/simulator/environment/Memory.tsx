@@ -15,7 +15,10 @@ export function Memory() {
   const [start, setStart] = useState(0x1000);
   const [startValue, setStartValue] = useState("");
 
-  const memory = useComputer(state => state.memory.slice(start, start + 64), shallow);
+  const memory = useComputer(
+    state => [...new Uint8Array(state.memory).slice(start, start + 64)],
+    shallow,
+  );
 
   const handleStartChange = useCallback(() => {
     const address = parseInt(startValue, 16);
