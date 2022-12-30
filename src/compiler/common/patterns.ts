@@ -118,6 +118,7 @@ export const keywordPattern = P.union(
   "BYTE" as const,
   "WORD" as const,
   "PTR" as const,
+  "END" as const,
   registerPattern,
   instructionPattern,
   dataDirectivePattern,

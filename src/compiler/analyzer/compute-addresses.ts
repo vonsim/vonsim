@@ -19,6 +19,7 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
   let pointer: number | null = null;
   const result = safeForEach(statements, statement => {
     if (statement.type === "EQU") return;
+    if (statement.type === "end") return;
 
     if (statement.type === "origin-change") {
       pointer = statement.newAddress;

@@ -7,6 +7,7 @@ export function getLabelTypes(statements: Statement[]): LabelTypes {
 
   for (const statement of statements) {
     if (statement.type === "origin-change") continue;
+    if (statement.type === "end") continue;
     if (!statement.label) continue;
 
     if (statement.type === "data") {

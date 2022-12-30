@@ -29,11 +29,11 @@ const vonsimTags = {
   label: tags.labelName,
   number: tags.number,
   operator: tags.operator,
-  origin: Tag.define(),
   offset: Tag.define(),
   "ptr-size": Tag.define(),
   punctuation: tags.punctuation,
   register: Tag.define(),
+  special: Tag.define(),
   string: tags.string,
   unassigned: Tag.define(),
 } as const;
@@ -74,7 +74,7 @@ const vonsimLanguage = StreamLanguage.define({
     if (stream.eat(/[a-z_]/i)) {
       stream.eatWhile(/[a-z0-9_]/i);
       const word = stream.current().toUpperCase();
-      if (word === "ORG") return "origin";
+      if (word === "ORG" || word === "END") return "special";
       if (word === "OFFSET") return "offset";
       if (word === "BYTE" || word === "WORD" || word === "PTR") return "ptr-size";
       if (isMatching(dataDirectivePattern, word)) return "data-directive";
@@ -104,11 +104,11 @@ const vonsimHighlighter = syntaxHighlighting(
     // { tag: vonsimTags.label, class: "" },
     { tag: vonsimTags.number, class: "text-sky-300" },
     { tag: vonsimTags.operator, class: "text-rose-400" },
-    { tag: vonsimTags.origin, class: "text-teal-200" },
     { tag: vonsimTags.offset, class: "text-slate-300 font-medium" },
     { tag: vonsimTags["ptr-size"], class: "text-slate-300 font-medium" },
     { tag: vonsimTags.punctuation, class: "text-slate-500" },
     { tag: vonsimTags.register, class: "text-red-300" },
+    { tag: vonsimTags.special, class: "text-teal-200" },
     { tag: vonsimTags.string, class: "text-emerald-400" },
     { tag: vonsimTags.unassigned, class: "text-rose-400" },
   ]),

@@ -32,6 +32,7 @@ import type {
 export function validateStatement(statement: Statement, labels: LabelTypes): ValidatedStatement {
   const result = match(statement)
     .with({ type: "origin-change" }, statement => statement)
+    .with({ type: "end" }, statement => statement)
     .with({ directive: "DB" }, validateDB)
     .with({ directive: "DW" }, validateDW)
     .with({ directive: "EQU" }, validateEQU)

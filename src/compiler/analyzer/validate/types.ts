@@ -1,5 +1,5 @@
 import type { PositionRange } from "~/compiler/common";
-import type { OriginChangeStatement } from "~/compiler/parser/grammar";
+import type { EndStatement, OriginChangeStatement } from "~/compiler/parser/grammar";
 import type { ValidatedDB } from "./data/DB";
 import type { ValidatedDW } from "./data/DW";
 import type { ValidatedEQU } from "./data/EQU";
@@ -25,6 +25,7 @@ export type ValidatedMeta = {
 
 export type ValidatedStatement =
   | OriginChangeStatement
+  | EndStatement
   | ValidatedDB
   | ValidatedDW
   | ValidatedEQU

@@ -1,7 +1,6 @@
 import { klona } from "klona/json";
-import { hex, safeMap } from "~/compiler/common";
+import { safeMap } from "~/compiler/common";
 import type { Statement } from "~/compiler/parser/grammar";
-import { INITIAL_IP } from "~/config";
 import { compactLabels } from "./compact-labels";
 import { computeAddresses, ReadonlyMemory } from "./compute-addresses";
 import { evaluateConstants, ProgramConstants } from "./evaluate/constants";
@@ -26,6 +25,10 @@ export type AnalysisResult =
   | { success: false; errors: unknown[] };
 
 export function analyze(statements: Statement[]): AnalysisResult {
+  if (statements.at(-1)?.type !== "end") {
+    throw new Error("Empty program. The program must have, at least, an END statement");
+  }
+
   // Get whether each label is a constant, a variable or an instruction.
   const labelTypes = getLabelTypes(statements);
 
@@ -50,6 +53,7 @@ export function analyze(statements: Statement[]): AnalysisResult {
 
   for (const statement of validatedStatements) {
     if (statement.type === "origin-change") continue;
+    if (statement.type === "end") continue;
     else if (statement.type === "EQU") constantStatements.push(statement);
     else if (statement.type === "DB" || statement.type === "DW") dataStatements.push(statement);
     else instructionStatements.push(statement);
@@ -77,18 +81,6 @@ export function analyze(statements: Statement[]): AnalysisResult {
   );
   if (!instructionsResult.success) return instructionsResult;
   const instructions = instructionsResult.result;
-
-  // Look for initial instruction.
-  const initialInstruction = instructions.find(
-    instruction => instruction.meta.start === INITIAL_IP,
-  );
-  if (!initialInstruction) {
-    throw new Error(
-      `No initial instruction found. Make sure to define an instruction at address ${hex(
-        INITIAL_IP,
-      )}.`,
-    );
-  }
 
   return klona({ success: true, constants, data, instructions, readonlyMemory });
 }

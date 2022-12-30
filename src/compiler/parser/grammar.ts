@@ -5,7 +5,11 @@ import type {
   RegisterType,
 } from "~/compiler/common";
 
-export type Statement = OriginChangeStatement | DataDirectiveStatement | InstructionStatement;
+export type Statement =
+  | OriginChangeStatement
+  | DataDirectiveStatement
+  | InstructionStatement
+  | EndStatement;
 
 export type OriginChangeStatement = {
   type: "origin-change";
@@ -26,6 +30,11 @@ export type InstructionStatement = {
   instruction: InstructionType;
   operands: Operand[];
   label: string | null;
+  position: PositionRange;
+};
+
+export type EndStatement = {
+  type: "end";
   position: PositionRange;
 };
 

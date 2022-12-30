@@ -60,7 +60,28 @@ export class Parser {
         continue;
       }
 
-      // First, parse ORG changes
+      // First, parse END labels
+      if (this.check("END")) {
+        const token = this.advance();
+
+        this.addStatement({
+          type: "end",
+          position: this.calculatePositionRange(token),
+        });
+
+        while (!this.isAtEnd()) {
+          if (this.check("EOL")) {
+            this.advance();
+            continue;
+          }
+
+          throw CompilerError.fromToken("END must be the last instruction", token);
+        }
+
+        continue;
+      }
+
+      // Then, parse ORG changes
       if (this.check("ORG")) {
         const token = this.advance();
         const addressToken = this.consume("NUMBER", "Expected address after ORG");
