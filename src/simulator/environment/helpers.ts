@@ -53,3 +53,10 @@ export function renderMemoryCell(n: number, representation: MemoryRepresentation
 export function renderAddress(address: number, withH = true): string {
   return address.toString(16).padStart(4, "0").toUpperCase() + (withH ? "h" : "");
 }
+
+export function renderWord(n: number): string {
+  return splitLowHigh(n)
+    .reverse()
+    .map(n => n.toString(2).padStart(8, "0"))
+    .join(" ");
+}

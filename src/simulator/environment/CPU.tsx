@@ -2,11 +2,12 @@ import shallow from "zustand/shallow";
 
 import { useComputer } from "./computer";
 import { useConfig } from "./config";
-import { renderAddress, renderMemoryCell, splitLowHigh } from "./helpers";
+import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "./helpers";
 
 export function CPU() {
   const config = useConfig();
   const registers = useComputer(state => state.registers, shallow);
+  const alu = useComputer(state => state.alu, shallow);
 
   return (
     <div className="rounded-lg bg-white px-4 py-2">
@@ -60,6 +61,39 @@ export function CPU() {
           </tr>
         </tbody>
       </table>
+
+      <div className="mt-4 rounded-lg border-[1rem] border-gray-200 px-2 py-1">
+        <p className="font-extrabold uppercase tracking-wider text-gray-600">ALU</p>
+
+        <div className="flex items-center justify-between">
+          <div className="grid w-min grid-cols-[auto_17ch] gap-x-3 text-right font-mono">
+            <div className="row-span-2 self-end font-bold text-slate-800">{alu.operation}</div>
+            <div className="">{renderWord(alu.left)}</div>
+            <div className="">{renderWord(alu.right)}</div>
+            <div className="col-span-2 border-t" />
+            <div className="col-span-2">{renderWord(alu.result)}</div>
+          </div>
+
+          <table className="font-mono">
+            <thead>
+              <tr className="divide-x border-b">
+                <th className="text-center font-bold text-slate-800">C</th>
+                <th className="text-center font-bold text-slate-800">O</th>
+                <th className="text-center font-bold text-slate-800">S</th>
+                <th className="text-center font-bold text-slate-800">Z</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="divide-x">
+                <td className="w-[3ch] text-center text-slate-600">{Number(alu.flags.carry)}</td>
+                <td className="w-[3ch] text-center text-slate-600">{Number(alu.flags.overflow)}</td>
+                <td className="w-[3ch] text-center text-slate-600">{Number(alu.flags.sign)}</td>
+                <td className="w-[3ch] text-center text-slate-600">{Number(alu.flags.zero)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

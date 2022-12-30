@@ -3,7 +3,7 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import shallow from "zustand/shallow";
 
-import { MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
+import { MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "~/config";
 import { useComputer } from "./computer";
 import { useConfig } from "./config";
 import { renderAddress, renderMemoryCell } from "./helpers";
@@ -11,10 +11,11 @@ import { renderAddress, renderMemoryCell } from "./helpers";
 export function Memory() {
   const startId = useId();
   const config = useConfig();
-  const memory = useComputer(state => state.memory, shallow);
 
   const [start, setStart] = useState(0x1000);
   const [startValue, setStartValue] = useState("");
+
+  const memory = useComputer(state => state.memory.slice(start, start + 64), shallow);
 
   const handleStartChange = useCallback(() => {
     const address = parseInt(startValue, 16);
@@ -23,26 +24,17 @@ export function Memory() {
       return;
     }
 
-    if (address <= MAX_MEMORY_ADDRESS - 64) {
-      // It should be something like 0x1000 or 0x1008
-      setStart(address - (address % 4));
-      return;
-    }
-
-    if (address <= MAX_MEMORY_ADDRESS) {
-      setStart(MAX_MEMORY_ADDRESS - 64);
-      return;
-    }
-
-    toast.error(`El valor de inicio debe ser menor o igual a ${renderAddress(MAX_MEMORY_ADDRESS)}`);
+    if (address < MEMORY_SIZE - 64) setStart(address);
+    else if (address <= MEMORY_SIZE) setStart(MEMORY_SIZE - 64);
+    else toast.error(`El valor de inicio debe ser menor o igual a ${renderAddress(MEMORY_SIZE)}`);
   }, [startValue]);
 
   const rows = useMemo(() => {
     const rows: { start: number; cols: number[] }[] = [];
     for (let i = 0; i < 16; i++) {
-      const rowStart = start + i * 4;
+      const rowStart = i * 4;
       const cols = memory.slice(rowStart, rowStart + 4);
-      rows.push({ start: rowStart, cols });
+      rows.push({ start: start + rowStart, cols });
     }
     return rows;
   }, [start, memory]);
