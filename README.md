@@ -4,7 +4,7 @@ TODO
 
 ## To-do list
 
-- [ ] Finish basic implementation
+- [x] Finish basic implementation
 - [ ] Add history (https://github.com/charkour/zundo)
 - [ ] Support indirect access with offset
 - [ ] Add custom VonSim syntax to docs
@@ -15,3 +15,12 @@ TODO
 - [ ] Perf measurements
 
 More suggestions: https://github.com/vonsim/vonsim/issues/26
+
+## Development setup
+
+You'll need [Node.js v18](https://nodejs.org/) and [pnpm v7](https://pnpm.io). Once you have them installed, you can run the following inside the repo:
+
+```bash
+$ pnpm install # only the first time, install the dependencies
+$ pnpm dev     # starts the development server
+```
