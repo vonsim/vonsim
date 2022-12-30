@@ -1,8 +1,13 @@
-import { isMatching, match, P } from "ts-pattern";
+import { isMatching, match } from "ts-pattern";
 import type { Merge } from "type-fest";
 import { BinaryInstructionType, CompilerError, RegisterType } from "~/compiler/common";
 import { wordRegisterPattern } from "~/compiler/common/patterns";
-import type { InstructionStatement, NumberExpression, Operand } from "~/compiler/parser/grammar";
+import {
+  InstructionStatement,
+  NumberExpression,
+  numberExpressionPattern,
+  Operand,
+} from "~/compiler/parser/grammar";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 
@@ -21,6 +26,26 @@ export type ValidatedBinaryInstruction = {
   src: RegisterOperand | MemoryOperand | ImmediateOperand;
 };
 
+/**
+ * Validates a binary instruction.
+ *
+ * The parser returns a generic instruction statement, with operands that can be
+ * - a register (`AX`, `BL`, etc...)
+ * - an address, that can be
+ *   - direct (`[1234h]`, `[OFFSET dataLabel]`, `[instruction_label]` etc...)
+ *     its value is always an expression that can be calculated at compile time
+ *   - indirect (`[BX]`)
+ * - an immediate value (`1234h`, `OFFSET dataLabel`, `instruction_label` etc...)
+ *   its value is always an expression that can be calculated at compile time
+ * - a data label (`dataLabel`)
+ *   it's a special case of an immediate value, quasi-equivalent to `[OFFSET dataLabel]`
+ *   although it isn't an expression, it comes from the parser as an expression
+ *   with just one label
+ *
+ * Notice that both immediate values and data labels are expressions can be
+ * expression with just one label, so we need to distinguish them.
+ */
+
 export function validateBinaryInstruction(
   instruction: Merge<InstructionStatement, { instruction: BinaryInstructionType }>,
   labels: LabelTypes,
@@ -32,9 +57,6 @@ export function validateBinaryInstruction(
   return match<[Operand, Operand], ValidatedBinaryInstruction>(
     instruction.operands as [Operand, Operand],
   )
-    .with([{ type: "immediate" }, P.any], ([out]) => {
-      throw new CompilerError("The destination can't be an immediate value.", ...out.position);
-    })
     .with([{ type: "register" }, { type: "register" }], ([out, src]) => {
       const outReg = typeGuardRegister(out);
       const srcReg = typeGuardRegister(src);
@@ -52,48 +74,6 @@ export function validateBinaryInstruction(
         opSize: outReg.size,
         out: { type: "register", register: outReg.value },
         src: { type: "register", register: srcReg.value },
-      };
-    })
-    .with([{ type: "register" }, { type: "label" }], ([out, src]) => {
-      const outReg = typeGuardRegister(out);
-      const srcType = getLabelType(src, labels);
-
-      if (srcType === "instruction") {
-        throw new CompilerError(
-          `Label ${src.label} doesn't point to a writable memory address — should point to a DB, DW or EQU declaration.`,
-          ...src.position,
-        );
-      }
-
-      if (srcType === "EQU") {
-        return {
-          type: instruction.instruction,
-          meta: {
-            label: instruction.label,
-            start: 0,
-            length: 2 + (outReg.size === "word" ? 2 : 1),
-            position: instruction.position,
-          },
-          opSize: outReg.size,
-          out: { type: "register", register: outReg.value },
-          src: labelToImmediate(src),
-        };
-      }
-
-      const srcSize = srcType === "DB" ? "byte" : "word";
-      if (outReg.size !== srcSize) {
-        throw new CompilerError(
-          `The source (${srcSize}) and destination (${outReg.size}) must be the same size.`,
-          ...instruction.position,
-        );
-      }
-
-      return {
-        type: instruction.instruction,
-        meta: { label: instruction.label, start: 0, length: 4, position: instruction.position },
-        opSize: outReg.size,
-        out: { type: "register", register: outReg.value },
-        src: labelToMemoryDirect(src),
       };
     })
     .with([{ type: "register" }, { type: "address", mode: "direct" }], ([out, src]) => {
@@ -130,8 +110,30 @@ export function validateBinaryInstruction(
         src: { type: "memory", mode: "indirect" },
       };
     })
-    .with([{ type: "register" }, { type: "immediate" }], ([out, src]) => {
+    .with([{ type: "register" }, numberExpressionPattern], ([out, src]) => {
       const outReg = typeGuardRegister(out);
+
+      // Can be a label pointing to a DB or DW
+      if (src.type === "label" && !src.offset) {
+        const srcSize = getLabelSize(src, labels);
+        if (srcSize) {
+          if (outReg.size !== srcSize) {
+            throw new CompilerError(
+              `The source (${srcSize}) and destination (${outReg.size}) must be the same size.`,
+              ...instruction.position,
+            );
+          }
+
+          return {
+            type: instruction.instruction,
+            meta: { label: instruction.label, start: 0, length: 4, position: instruction.position },
+            opSize: outReg.size,
+            out: { type: "register", register: outReg.value },
+            src: labelToMemoryDirect(src),
+          };
+        }
+      }
+
       return {
         type: instruction.instruction,
         meta: {
@@ -142,21 +144,108 @@ export function validateBinaryInstruction(
         },
         opSize: outReg.size,
         out: { type: "register", register: outReg.value },
-        src: { type: "immediate", value: src.value },
+        src: { type: "immediate", value: src },
       };
     })
-    .with([{ type: "label" }, { type: "register" }], ([out, src]) => {
-      const outType = getLabelType(out, labels);
+    .with([{ type: "address", mode: "direct" }, { type: "register" }], ([out, src]) => {
       const srcReg = typeGuardRegister(src);
-
-      const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
-      if (!outSize) {
+      return {
+        type: instruction.instruction,
+        meta: { label: instruction.label, start: 0, length: 4, position: instruction.position },
+        opSize: srcReg.size,
+        out: { type: "memory", mode: "direct", address: out.value },
+        src: { type: "register", register: srcReg.value },
+      };
+    })
+    .with([{ type: "address", mode: "indirect" }, { type: "register" }], ([_, src]) => {
+      const srcReg = typeGuardRegister(src);
+      return {
+        type: instruction.instruction,
+        meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
+        opSize: srcReg.size,
+        out: { type: "memory", mode: "indirect" },
+        src: { type: "register", register: srcReg.value },
+      };
+    })
+    .with([{ type: "address", mode: "direct" }, numberExpressionPattern], ([out, src]) => {
+      // Can be a label pointing to a DB or DW
+      if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
         throw new CompilerError(
-          `Label ${out.label} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
+          "Can't access to a memory location twice in the same instruction.",
+          ...instruction.position,
+        );
+      }
+
+      if (out.size === "auto") {
+        throw new CompilerError(
+          "Addressing an unknown memory address with an immediate operand requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
           ...out.position,
         );
       }
 
+      return {
+        type: instruction.instruction,
+        meta: {
+          label: instruction.label,
+          start: 0,
+          length: 3 + (out.size === "word" ? 2 : 1),
+          position: instruction.position,
+        },
+        opSize: out.size,
+        out: { type: "memory", mode: "direct", address: out.value },
+        src: { type: "immediate", value: src },
+      };
+    })
+    .with([{ type: "address", mode: "indirect" }, numberExpressionPattern], ([out, src]) => {
+      // Can be a label pointing to a DB or DW
+      if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
+        throw new CompilerError(
+          "Can't access to a memory location twice in the same instruction.",
+          ...instruction.position,
+        );
+      }
+
+      if (out.size === "auto") {
+        throw new CompilerError(
+          "Addressing an unknown memory address with an immediate operand requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
+          ...out.position,
+        );
+      }
+
+      return {
+        type: instruction.instruction,
+        meta: {
+          label: instruction.label,
+          start: 0,
+          length: 1 + (out.size === "word" ? 2 : 1),
+          position: instruction.position,
+        },
+        opSize: out.size,
+        out: { type: "memory", mode: "indirect" },
+        src: { type: "immediate", value: src },
+      };
+    })
+    .with([{ type: "address" }, { type: "address" }], () => {
+      throw new CompilerError(
+        "Can't access to a memory location twice in the same instruction.",
+        ...instruction.position,
+      );
+    })
+    .with([numberExpressionPattern, { type: "register" }], ([out, src]) => {
+      // Could be an immediate value
+      if (out.type !== "label" || out.offset) {
+        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+      }
+
+      const outSize = getLabelSize(out, labels);
+      if (!outSize) {
+        throw new CompilerError(
+          `Label ${out.value} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
+          ...out.position,
+        );
+      }
+
+      const srcReg = typeGuardRegister(src);
       if (outSize !== srcReg.size) {
         throw new CompilerError(
           `The source (${srcReg.size}) and destination (${outSize}) must be the same size.`,
@@ -172,23 +261,39 @@ export function validateBinaryInstruction(
         src: { type: "register", register: srcReg.value },
       };
     })
-    .with([{ type: "label" }, { type: "label" }], ([out, src]) => {
-      const outType = getLabelType(out, labels);
-      const srcType = getLabelType(src, labels);
+    .with([numberExpressionPattern, { type: "address" }], ([out]) => {
+      if (out.type !== "label" || out.offset || !getLabelSize(out, labels)) {
+        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+      } else {
+        throw new CompilerError(
+          "Can't access to a memory location twice in the same instruction.",
+          ...instruction.position,
+        );
+      }
+    })
+    .with([numberExpressionPattern, numberExpressionPattern], ([out, src]) => {
+      // Could be an immediate value
+      if (out.type !== "label" || out.offset) {
+        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+      }
 
-      const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
+      const outSize = getLabelSize(out, labels);
       if (!outSize) {
         throw new CompilerError(
-          `Label ${out.label} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
+          `Label ${out.value} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
           ...out.position,
         );
       }
 
-      if (srcType !== "EQU") {
-        throw new CompilerError(
-          `Label ${src.label} should point to a EQU declaration. Maybe you ment to write OFFSET ${src.label}.`,
-          ...out.position,
-        );
+      // Can be a label pointing to a DB or DW
+      if (src.type === "label" && !src.offset) {
+        const srcSize = getLabelSize(src, labels);
+        if (srcSize) {
+          throw new CompilerError(
+            "Can't access to a memory location twice in the same instruction.",
+            ...instruction.position,
+          );
+        }
       }
 
       return {
@@ -201,139 +306,8 @@ export function validateBinaryInstruction(
         },
         opSize: outSize,
         out: labelToMemoryDirect(out),
-        src: labelToImmediate(src),
+        src: { type: "immediate", value: src },
       };
-    })
-    .with([{ type: "label" }, { type: "immediate" }], ([out, src]) => {
-      const outType = getLabelType(out, labels);
-
-      const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
-      if (!outSize) {
-        throw new CompilerError(
-          `Label ${out.label} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
-          ...out.position,
-        );
-      }
-
-      return {
-        type: instruction.instruction,
-        meta: {
-          label: instruction.label,
-          start: 0,
-          length: 3 + (outSize === "word" ? 2 : 1),
-          position: instruction.position,
-        },
-        opSize: outSize,
-        out: labelToMemoryDirect(out),
-        src: { type: "immediate", value: src.value },
-      };
-    })
-    .with([{ type: "address" }, { type: "register" }], ([out, src]) => {
-      const srcReg = typeGuardRegister(src);
-      if (out.mode === "direct") {
-        return {
-          type: instruction.instruction,
-          meta: { label: instruction.label, start: 0, length: 4, position: instruction.position },
-          opSize: srcReg.size,
-          out: { type: "memory", mode: "direct", address: out.value },
-          src: { type: "register", register: srcReg.value },
-        };
-      } else {
-        return {
-          type: instruction.instruction,
-          meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
-          opSize: srcReg.size,
-          out: { type: "memory", mode: "indirect" },
-          src: { type: "register", register: srcReg.value },
-        };
-      }
-    })
-    .with([{ type: "address" }, { type: "label" }], ([out, src]) => {
-      const srcType = getLabelType(src, labels);
-
-      if (srcType !== "EQU") {
-        throw new CompilerError(
-          `Label ${src.label} should point to a EQU declaration. Maybe you ment to write OFFSET ${src.label}.`,
-          ...out.position,
-        );
-      }
-
-      if (out.size === "auto") {
-        throw new CompilerError(
-          "Addressing an unknown memory address with an immediate operand requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
-          ...out.position,
-        );
-      }
-
-      if (out.mode === "direct") {
-        return {
-          type: instruction.instruction,
-          meta: {
-            label: instruction.label,
-            start: 0,
-            length: 3 + (out.size === "word" ? 2 : 1),
-            position: instruction.position,
-          },
-          opSize: out.size,
-          out: { type: "memory", mode: "direct", address: out.value },
-          src: labelToImmediate(src),
-        };
-      } else {
-        return {
-          type: instruction.instruction,
-          meta: {
-            label: instruction.label,
-            start: 0,
-            length: 1 + (out.size === "word" ? 2 : 1),
-            position: instruction.position,
-          },
-          opSize: out.size,
-          out: { type: "memory", mode: "indirect" },
-          src: labelToImmediate(src),
-        };
-      }
-    })
-    .with([{ type: "address" }, { type: "immediate" }], ([out, src]) => {
-      if (out.size === "auto") {
-        throw new CompilerError(
-          "Addressing an unknown memory address with an immediate operand requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
-          ...out.position,
-        );
-      }
-
-      if (out.mode === "direct") {
-        return {
-          type: instruction.instruction,
-          meta: {
-            label: instruction.label,
-            start: 0,
-            length: 3 + (out.size === "word" ? 2 : 1),
-            position: instruction.position,
-          },
-          opSize: out.size,
-          out: { type: "memory", mode: "direct", address: out.value },
-          src: { type: "immediate", value: src.value },
-        };
-      } else {
-        return {
-          type: instruction.instruction,
-          meta: {
-            label: instruction.label,
-            start: 0,
-            length: 1 + (out.size === "word" ? 2 : 1),
-            position: instruction.position,
-          },
-          opSize: out.size,
-          out: { type: "memory", mode: "indirect" },
-          src: { type: "immediate", value: src.value },
-        };
-      }
-    })
-    .with([{ type: P.union("address", "label") }, { type: "address" }], () => {
-      throw new CompilerError(
-        "Can't access to a memory location twice in the same instruction.",
-        ...instruction.position,
-      );
     })
     .exhaustive();
 }
@@ -346,27 +320,29 @@ function typeGuardRegister(reg: Extract<Operand, { type: "register" }>) {
   }
 }
 
-function getLabelType(operand: Extract<Operand, { type: "label" }>, labels: LabelTypes) {
-  const labelType = labels.get(operand.label);
+/**
+ * Returns the size of the data directive, or false if it's an instruction label or a constant.
+ */
+function getLabelSize(label: Extract<NumberExpression, { type: "label" }>, labels: LabelTypes) {
+  const labelType = labels.get(label.value);
   if (!labelType) {
-    throw new CompilerError(`Label ${operand.label} is not defined.`, ...operand.position);
+    throw new CompilerError(`Label ${label.value} is not defined.`, ...label.position);
   }
-  return labelType;
+  return labelType === "DB" ? "byte" : labelType === "DW" ? "word" : false;
 }
 
-function labelToMemoryDirect(
-  label: Extract<Operand, { type: "label" }>,
-): Extract<MemoryOperand, { mode: "direct" }> {
+/**
+ * As previously stated, the operand `dataLabel` is essentially `[OFFSET dataLabel]`.
+ * For consistency, we convert it to a memory operand with a direct address.
+ */
+
+function labelToMemoryDirect({
+  value,
+  position,
+}: Extract<NumberExpression, { type: "label" }>): Extract<MemoryOperand, { mode: "direct" }> {
   return {
     type: "memory",
     mode: "direct",
-    address: { type: "label", offset: true, value: label.label, position: label.position },
-  };
-}
-
-function labelToImmediate(label: Extract<Operand, { type: "label" }>): ImmediateOperand {
-  return {
-    type: "immediate",
-    value: { type: "label", offset: false, value: label.label, position: label.position },
+    address: { type: "label", offset: true, value, position },
   };
 }

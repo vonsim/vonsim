@@ -2,7 +2,12 @@ import { isMatching, match } from "ts-pattern";
 import type { Merge } from "type-fest";
 import { CompilerError, RegisterType, UnaryInstructionType } from "~/compiler/common";
 import { wordRegisterPattern } from "~/compiler/common/patterns";
-import type { InstructionStatement, NumberExpression, Operand } from "~/compiler/parser/grammar";
+import {
+  InstructionStatement,
+  NumberExpression,
+  numberExpressionPattern,
+  Operand,
+} from "~/compiler/parser/grammar";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 
@@ -19,6 +24,27 @@ export type ValidatedUnaryInstruction = {
   out: RegisterOperand | MemoryOperand;
 };
 
+/**
+ * Validates a unary instruction.
+ *
+ * The parser returns a generic instruction statement, with operands that can be
+ * - a register (`AX`, `BL`, etc...)
+ * - an address, that can be
+ *   - direct (`[1234h]`, `[OFFSET dataLabel]`, `[instruction_label]` etc...)
+ *     its value is always an expression that can be calculated at compile time
+ *   - indirect (`[BX]`)
+ * - an immediate value (`1234h`, `OFFSET dataLabel`, `instruction_label` etc...)
+ *   its value is always an expression that can be calculated at compile time
+ *   those are invalid for unary instructions, so we throw an error
+ * - a data label (`dataLabel`)
+ *   it's a special case of an immediate value, quasi-equivalent to `[OFFSET dataLabel]`
+ *   although it isn't an expression, it comes from the parser as an expression
+ *   with just one label (see the patterns above)
+ *
+ * Notice that both immediate values and data labels are expressions can be
+ * expression with just one label, so we need to distinguish them.s
+ */
+
 export function validateUnaryInstruction(
   instruction: Merge<InstructionStatement, { instruction: UnaryInstructionType }>,
   labels: LabelTypes,
@@ -28,34 +54,16 @@ export function validateUnaryInstruction(
   }
 
   return match<Operand, ValidatedUnaryInstruction>(instruction.operands[0])
-    .with({ type: "immediate" }, out => {
-      throw new CompilerError("The destination can't be an immediate value.", ...out.position);
-    })
     .with({ type: "register" }, out => {
-      const reg = typeGuardRegister(out);
+      const reg = isMatching(wordRegisterPattern, out.value)
+        ? ({ type: "register", size: "word", value: out.value, position: out.position } as const)
+        : ({ type: "register", size: "byte", value: out.value, position: out.position } as const);
+
       return {
         type: instruction.instruction,
         meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
         opSize: reg.size,
         out: { type: "register", register: reg.value },
-      };
-    })
-    .with({ type: "label" }, out => {
-      const outType = getLabelType(out, labels);
-
-      const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
-      if (!outSize) {
-        throw new CompilerError(
-          `Label ${out.label} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
-          ...out.position,
-        );
-      }
-
-      return {
-        type: instruction.instruction,
-        meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
-        opSize: outSize,
-        out: labelToMemoryDirect(out),
       };
     })
     .with({ type: "address", mode: "direct" }, out => {
@@ -88,31 +96,38 @@ export function validateUnaryInstruction(
         out: { type: "memory", mode: "indirect" },
       };
     })
+    .with(numberExpressionPattern, out => {
+      if (out.type !== "label" || out.offset) {
+        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+      }
+
+      const outType = labels.get(out.value);
+      if (!outType) {
+        throw new CompilerError(`Label ${out.value} is not defined.`, ...out.position);
+      }
+
+      const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
+      if (!outSize) {
+        throw new CompilerError(
+          `Label ${out.value} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
+          ...out.position,
+        );
+      }
+
+      return {
+        type: instruction.instruction,
+        meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
+        opSize: outSize,
+        /**
+         * As previously stated, the operand `dataLabel` is essentially `[OFFSET dataLabel]`.
+         * For consistency, we convert it to a memory operand with a direct address.
+         */
+        out: {
+          type: "memory",
+          mode: "direct",
+          address: { type: "label", offset: true, value: out.value, position: out.position },
+        },
+      };
+    })
     .exhaustive();
-}
-
-function typeGuardRegister(reg: Extract<Operand, { type: "register" }>) {
-  if (isMatching(wordRegisterPattern, reg.value)) {
-    return { type: "register", size: "word", value: reg.value, position: reg.position } as const;
-  } else {
-    return { type: "register", size: "byte", value: reg.value, position: reg.position } as const;
-  }
-}
-
-function getLabelType(operand: Extract<Operand, { type: "label" }>, labels: LabelTypes) {
-  const labelType = labels.get(operand.label);
-  if (!labelType) {
-    throw new CompilerError(`Label ${operand.label} is not defined.`, ...operand.position);
-  }
-  return labelType;
-}
-
-function labelToMemoryDirect(
-  label: Extract<Operand, { type: "label" }>,
-): Extract<MemoryOperand, { mode: "direct" }> {
-  return {
-    type: "memory",
-    mode: "direct",
-    address: { type: "label", offset: true, value: label.label, position: label.position },
-  };
 }

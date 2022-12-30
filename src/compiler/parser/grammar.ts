@@ -1,3 +1,4 @@
+import { P } from "ts-pattern";
 import type {
   DataDirectiveType,
   InstructionType,
@@ -44,26 +45,13 @@ export type DataDirectiveValue =
   | { type: "unassigned"; position: PositionRange };
 
 export type Operand =
-  | {
-      type: "register";
-      value: RegisterType;
-      position: PositionRange;
-    }
-  | {
-      type: "label";
-      label: string;
-      position: PositionRange;
-    }
+  | NumberExpression
+  | { type: "register"; value: RegisterType; position: PositionRange }
   | ({
       type: "address";
       size: "byte" | "word" | "auto";
       position: PositionRange;
-    } & ({ mode: "indirect" } | { mode: "direct"; value: NumberExpression }))
-  | {
-      type: "immediate";
-      value: NumberExpression;
-      position: PositionRange;
-    };
+    } & ({ mode: "indirect" } | { mode: "direct"; value: NumberExpression }));
 
 /**
  * A number expression is a recursive data structure that represents a number
@@ -73,10 +61,10 @@ export type Operand =
  *
  * @example
  * 1 + 2 * 3
- * OFFSET data + 2
+ * OFFSET label + 2
  * -3
  * 2 * (3 + 4)
- * OFFSET data + (constant + 2) * 3
+ * OFFSET label + (constant + 2) * 3
  */
 export type NumberExpression =
   | { type: "number-literal"; value: number; position: PositionRange }
@@ -94,3 +82,10 @@ export type NumberExpression =
       operator: "+" | "-" | "*";
       position: PositionRange;
     };
+
+export const numberExpressionPattern = P.union(
+  { type: "number-literal" } as const,
+  { type: "label" } as const,
+  { type: "unary-operation" } as const,
+  { type: "binary-operation" } as const,
+);

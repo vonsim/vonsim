@@ -1,7 +1,12 @@
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 import type { Merge } from "type-fest";
 import { CompilerError, IOInstructionType } from "~/compiler/common";
-import type { InstructionStatement, NumberExpression, Operand } from "~/compiler/parser/grammar";
+import {
+  InstructionStatement,
+  NumberExpression,
+  numberExpressionPattern,
+  Operand,
+} from "~/compiler/parser/grammar";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 
@@ -27,7 +32,7 @@ export function validateIOInstruction(
   const external = instruction.operands[instruction.instruction === "IN" ? 1 : 0];
 
   if (internal.type !== "register" || (internal.value !== "AX" && internal.value !== "AL")) {
-    throw new CompilerError("IN expects AX or AL as its first operand.", ...internal.position);
+    throw new CompilerError("This operand should be AX or AL.", ...internal.position);
   }
 
   const opSize = internal.value === "AX" ? "word" : "byte";
@@ -45,64 +50,7 @@ export function validateIOInstruction(
         port: { type: "register", value: reg.value },
       };
     })
-    .with({ type: "immediate", value: P.select() }, value => {
-      return {
-        type: instruction.instruction,
-        meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
-        opSize,
-        port: { type: "immediate", value: value },
-      };
-    })
-    .with({ type: "label" }, external => {
-      const label = labels.get(external.label);
-
-      if (label === "EQU") {
-        return {
-          type: instruction.instruction,
-          meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
-          opSize,
-          port: {
-            type: "immediate",
-            value: {
-              type: "label",
-              offset: false,
-              value: external.label,
-              position: external.position,
-            },
-          },
-        };
-      }
-
-      if (label !== "DB") {
-        throw new CompilerError(
-          "The only label this instruction can accept is a DB declaration.",
-          ...external.position,
-        );
-      }
-
-      return {
-        type: instruction.instruction,
-        meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
-        opSize,
-        port: {
-          type: "memory-direct",
-          address: {
-            type: "label",
-            offset: true,
-            value: external.label,
-            position: external.position,
-          },
-        },
-      };
-    })
-    .with({ type: "address" }, external => {
-      if (external.mode === "indirect") {
-        throw new CompilerError(
-          "This instruction doesn't accept indirect address mode.",
-          ...external.position,
-        );
-      }
-
+    .with({ type: "address", mode: "direct" }, external => {
       if (external.size === "word") {
         throw new CompilerError(
           "This instruction doesn't accept word-sized operands.",
@@ -115,6 +63,46 @@ export function validateIOInstruction(
         meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
         opSize,
         port: { type: "memory-direct", address: external.value },
+      };
+    })
+    .with({ type: "address", mode: "indirect" }, external => {
+      throw new CompilerError(
+        "This instruction doesn't accept indirect address mode.",
+        ...external.position,
+      );
+    })
+    .with(numberExpressionPattern, external => {
+      if (external.type === "label" && !external.offset) {
+        const label = labels.get(external.value);
+        if (label === "DW") {
+          throw new CompilerError(
+            "This instruction can't accept a word-sized label.",
+            ...external.position,
+          );
+        }
+        if (label === "DB") {
+          return {
+            type: instruction.instruction,
+            meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
+            opSize,
+            port: {
+              type: "memory-direct",
+              address: {
+                type: "label",
+                offset: true,
+                value: external.value,
+                position: external.position,
+              },
+            },
+          };
+        }
+      }
+
+      return {
+        type: instruction.instruction,
+        meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
+        opSize,
+        port: { type: "immediate", value: external },
       };
     })
     .exhaustive();

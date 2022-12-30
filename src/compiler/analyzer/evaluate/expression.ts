@@ -36,18 +36,18 @@ export function evaluateExpression(expr: NumberExpression, labels: LabelMap): nu
       if (!label) throw new CompilerError(`Label "${l.value}" not found`, ...l.position);
 
       if (l.offset) {
-        if (label.type === "constant") {
-          throw new CompilerError(`OFFSET cannot be used with EQU labels`, ...l.position);
+        if (label.type !== "DB" && label.type !== "DW") {
+          throw new CompilerError(`OFFSET can only be use with data directives.`, ...l.position);
         }
         return label.address;
       } else {
-        if (label.type !== "constant") {
-          throw new CompilerError(
-            `Label ${l.value} should point to a EQU declaration. Maybe you ment to write OFFSET ${l.value}.`,
-            ...l.position,
-          );
-        }
-        return label.value;
+        if (label.type === "constant") return label.value;
+        else if (label.type === "instruction") return label.address;
+
+        throw new CompilerError(
+          `Label ${l.value} should point to a EQU declaration or to a instruction label. Maybe you ment to write OFFSET ${l.value}.`,
+          ...l.position,
+        );
       }
     })
     .with({ type: "unary-operation" }, op =>

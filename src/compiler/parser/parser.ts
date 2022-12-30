@@ -247,24 +247,37 @@ export class Parser {
   // #=========================================================================#
 
   private label(): string | null {
-    if (!this.check("IDENTIFIER") || !this.checkNext("COLON")) {
-      return null;
+    let labelToken: Token | null = null;
+
+    if (this.check("IDENTIFIER")) {
+      labelToken = this.advance();
+
+      if (!isMatching(dataDirectivePattern, this.peek().type)) {
+        throw CompilerError.fromToken(`Unexpected IDENTIFIER`, labelToken);
+      }
+    } else if (this.check("LABEL")) {
+      labelToken = this.advance();
+
+      while (this.check("EOL")) {
+        this.advance();
+      }
+
+      if (!isMatching(instructionPattern, this.peek().type)) {
+        throw CompilerError.fromToken(`Expected instruction after label`, this.peek());
+      }
     }
 
-    const labelToken = this.advance();
-    const label = labelToken.lexeme.toUpperCase(); // all labels are uppercase
-    const colonToken = this.advance();
+    if (!labelToken) return null;
+
+    let label = labelToken.lexeme.toUpperCase(); // all labels are uppercase
+    if (labelToken.type === "LABEL") label = label.slice(0, -1); // remove colon
 
     const duplicatedLabel = this.statements.find(s => "label" in s && s.label === label);
     if (duplicatedLabel) {
       throw new CompilerError(
         `Duplicated label: ${label}`,
-        ...this.calculatePositionRange(labelToken, colonToken),
+        ...this.calculatePositionRange(labelToken),
       );
-    }
-
-    while (this.check("EOL")) {
-      this.advance();
     }
 
     return label;
@@ -305,15 +318,6 @@ export class Parser {
       };
     }
 
-    if (this.check("IDENTIFIER")) {
-      const identifierToken = this.advance();
-      return {
-        type: "label",
-        label: identifierToken.lexeme.toUpperCase(),
-        position: this.calculatePositionRange(identifierToken),
-      };
-    }
-
     if (this.match("BYTE", "WORD", "LEFT_BRACKET")) {
       let size: "auto" | "byte" | "word";
       let start: Token;
@@ -349,12 +353,7 @@ export class Parser {
       }
     }
 
-    const calc = this.numberExpression();
-    return {
-      type: "immediate",
-      value: calc,
-      position: calc.position,
-    };
+    return this.numberExpression();
   }
 
   // #=========================================================================#

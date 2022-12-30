@@ -46,9 +46,6 @@ export class Scanner {
         case "?":
           this.addToken("QUESTION_MARK");
           continue;
-        case ":":
-          this.addToken("COLON");
-          continue;
         case "+":
           this.addToken("PLUS");
           continue;
@@ -145,8 +142,14 @@ export class Scanner {
 
         // Check if the identifier is a reserved word.
         const text = this.source.slice(this.start, this.current).toUpperCase();
-        if (isMatching(keywordPattern, text)) this.addToken(text);
-        else this.addToken("IDENTIFIER");
+        if (isMatching(keywordPattern, text)) {
+          this.addToken(text);
+        } else if (this.peek() === ":") {
+          this.advance();
+          this.addToken("LABEL");
+        } else {
+          this.addToken("IDENTIFIER");
+        }
 
         continue;
       }

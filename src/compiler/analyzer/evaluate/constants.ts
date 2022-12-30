@@ -27,13 +27,22 @@ export function evaluateConstants(
     return match(expr)
       .with({ type: "number-literal" }, n => n.value)
       .with({ type: "label" }, l => {
-        if (l.offset) {
-          const address = labels.get(l.value);
-          if (address === undefined) {
-            throw new CompilerError(`Label "${l.value}" not found`, ...l.position);
-          }
+        const label = labels.get(l.value);
 
-          return address;
+        if (l.offset) {
+          if (!label) throw new CompilerError(`Label "${l.value}" not found`, ...l.position);
+          if (label.type !== "DB" && label.type !== "DW") {
+            throw new CompilerError(`OFFSET can only be use with data directives.`, ...l.position);
+          }
+          return label.address;
+        } else if (label) {
+          if (label.type === "instruction") return label.address;
+          else {
+            throw new CompilerError(
+              `Label ${l.value} should point to a EQU declaration or to a instruction label. Maybe you ment to write OFFSET ${l.value}.`,
+              ...l.position,
+            );
+          }
         } else {
           const c = processed.get(l.value);
           if (!c) throw new CompilerError(`EQU "${l.value}" not found`, ...l.position);

@@ -4,7 +4,7 @@ import { instructionPattern } from "~/compiler/common/patterns";
 import { MAX_MEMORY_ADDRESS } from "~/config";
 import type { ValidatedStatement } from "./validate";
 
-export type LabelAddresses = Map<string, number>;
+export type LabelAddresses = Map<string, { type: "DB" | "DW" | "instruction"; address: number }>;
 export type ReadonlyMemory = Set<number>;
 
 type ComputeAddressesResult =
@@ -32,7 +32,10 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
     }
 
     if (statement.meta.label) {
-      labelAddresses.set(statement.meta.label, pointer);
+      labelAddresses.set(statement.meta.label, {
+        type: statement.type === "DB" || statement.type === "DW" ? statement.type : "instruction",
+        address: pointer,
+      });
     }
 
     statement.meta.start = pointer;

@@ -26,9 +26,9 @@ export function validateJumpInstruction(
     );
   }
 
-  const label = labels.get(operand.label);
+  const label = labels.get(operand.value);
   if (!label) {
-    throw new CompilerError(`Label ${operand.label} is not defined.`, ...operand.position);
+    throw new CompilerError(`Label ${operand.value} is not defined.`, ...operand.position);
   }
 
   if (label !== "instruction") {
@@ -41,6 +41,6 @@ export function validateJumpInstruction(
   return {
     type: instruction.instruction,
     meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
-    jumpTo: operand.label,
+    jumpTo: operand.value,
   };
 }

@@ -68,7 +68,7 @@ export function analyze(statements: Statement[]): AnalysisResult {
   }
 
   // Reorder the labels
-  const labelMap = compactLabels(labelTypes, labelAddresses, constants);
+  const labelMap = compactLabels(labelAddresses, constants);
 
   // Evaluate data initial values.
   const dataResult = safeMap(dataStatements, statement => evaluateData(statement, labelMap));

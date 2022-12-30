@@ -15,13 +15,13 @@ export type TokenType =
   | "LEFT_BRACKET"
   | "RIGHT_BRACKET"
   | "COMMA"
-  | "COLON"
   | "QUESTION_MARK"
   | "PLUS"
   | "MINUS"
   | "ASTERISK"
   // Literals.
   | "IDENTIFIER"
+  | "LABEL"
   | "STRING"
   | "NUMBER"
   // Keywords.
