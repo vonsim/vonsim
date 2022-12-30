@@ -16,7 +16,7 @@ import { Transition } from "@headlessui/react";
 import { useCallback, useEffect, useState } from "react";
 import { usePrevious } from "react-use";
 import { lineHighlightField, readOnly } from "./methods";
-import { ErrorsStore, useErrors } from "./store";
+import { ErrorsStore, PROGRAM_BACKUP_KEY, useErrors } from "./store";
 import { VonSim } from "./vonsim";
 
 /**
@@ -45,9 +45,11 @@ export function Editor() {
   useEffect(() => {
     if (!element) return;
 
+    const doc = localStorage.getItem(PROGRAM_BACKUP_KEY) || initialCode;
+
     window.codemirror = new EditorView({
       state: EditorState.create({
-        doc: initialCode,
+        doc,
         extensions: [
           EditorState.tabSize.of(2),
           readOnly.of(EditorState.readOnly.of(false)),

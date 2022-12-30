@@ -9,3 +9,5 @@ export const useErrors = create<ErrorsStore>()(() => ({
   globalError: null,
   numberOfErrors: 0,
 }));
+
+export const PROGRAM_BACKUP_KEY = "vonsim-program-backup";

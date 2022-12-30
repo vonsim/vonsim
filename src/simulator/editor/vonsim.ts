@@ -13,7 +13,7 @@ import {
   instructionPattern,
   registerPattern,
 } from "~/compiler/common/patterns";
-import { useErrors } from "./store";
+import { PROGRAM_BACKUP_KEY, useErrors } from "./store";
 
 /**
  * This is the VonSim language definition.
@@ -116,7 +116,8 @@ const vonsimHighlighter = syntaxHighlighting(
 
 const vonsimLinter = linter(
   view => {
-    const result = compile(view.state.doc.toString());
+    const source = view.state.doc.toString();
+    const result = compile(source);
     useErrors.setState(() => {
       if (result.success) {
         return { globalError: null, numberOfErrors: 0 };
@@ -128,6 +129,8 @@ const vonsimLinter = linter(
         numberOfErrors,
       };
     });
+
+    localStorage.setItem(PROGRAM_BACKUP_KEY, source);
 
     if (result.success) {
       return [];
