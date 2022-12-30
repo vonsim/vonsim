@@ -28,7 +28,7 @@ export function validateDW(dw: Merge<DataDirectiveStatement, { directive: "DW" }
 
   return {
     type: "DW",
-    meta: { label: dw.label, start: 0, length: initialValues.length, position: dw.position },
+    meta: { label: dw.label, start: 0, length: initialValues.length * 2, position: dw.position },
     initialValues,
   };
 }
