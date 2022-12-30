@@ -170,4 +170,4 @@ A modo de ayuda memoria:
 
 ## Flags
 
-Internamente, las flags de `C` (carry), `O` (overflow), `S` (sign) y `Z` (zero) se representan como `00`, `01`, `10` y `11` respectivamente. Eso explica la numeración de los jumps y la razón detrás de que `PUSHF` apile `COSZ`.
+Internamente, las flags de `C` (carry), `O` (overflow), `S` (sign) y `Z` (zero) se representan como `00`, `01`, `10` y `11` respectivamente. Eso explica la numeración de los jumps y la razón detrás de que `PUSHF` apile `0000 ZSOC`.

@@ -254,19 +254,19 @@ export const useComputer = create<ComputerStore>()((set, get) => ({
   encodeFlags: () => {
     const flags = get().alu.flags;
     let bits = 0b0000;
-    if (flags.carry) bits |= 0b1000;
-    if (flags.overflow) bits |= 0b0100;
-    if (flags.sign) bits |= 0b0010;
-    if (flags.zero) bits |= 0b0001;
+    if (flags.carry) bits |= 0b0001;
+    if (flags.overflow) bits |= 0b0010;
+    if (flags.sign) bits |= 0b0100;
+    if (flags.zero) bits |= 0b1000;
     return bits;
   },
 
   decodeFlags: bits => {
     const flags = {
-      carry: (bits & 0b1000) !== 0,
-      overflow: (bits & 0b0100) !== 0,
-      sign: (bits & 0b0010) !== 0,
-      zero: (bits & 0b0001) !== 0,
+      carry: (bits & 0b0001) !== 0,
+      overflow: (bits & 0b0010) !== 0,
+      sign: (bits & 0b0100) !== 0,
+      zero: (bits & 0b1000) !== 0,
     };
     set(state => ({
       ...state,
