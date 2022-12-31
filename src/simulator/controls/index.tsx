@@ -1,5 +1,7 @@
 import clsx from "clsx";
-import { useKey, useLongPress, useToggle } from "react-use";
+import { useCallback } from "react";
+import { useEvent, useLongPress, useToggle } from "react-use";
+import shallow from "zustand/shallow";
 import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
 import GitHubIcon from "~icons/carbon/logo-github";
@@ -9,40 +11,32 @@ import RunIcon from "~icons/carbon/play";
 import RunningIcon from "~icons/carbon/settings";
 import FinishIcon from "~icons/carbon/skip-forward";
 import AbortIcon from "~icons/carbon/stop-sign";
-import { useExecution } from "./execution";
+import { useComputer } from "../computer";
 
 export function Controls() {
-  const execution = useExecution();
+  const { state, dispatch } = useComputer(
+    state => ({
+      state: state.runnerState,
+      dispatch: state.dispatchRunner,
+    }),
+    shallow,
+  );
 
-  useKey(
-    "F5",
-    ev => {
-      ev.preventDefault();
-      if (ev.shiftKey) {
-        if (execution.state === "stopped") return;
-        execution.abort();
-      } else {
-        if (execution.state === "running") return;
-        if (execution.state === "paused" || execution.compile()) {
-          execution.runForever();
-        }
+  const onKeyDown = useCallback(
+    (ev: KeyboardEvent) => {
+      if (ev.key === "F5") {
+        ev.preventDefault();
+        if (ev.shiftKey) dispatch("stop");
+        else dispatch("run");
+      } else if (ev.key === "F11") {
+        ev.preventDefault();
+        dispatch("step");
       }
     },
-    undefined,
-    [execution],
+    [dispatch],
   );
-  useKey(
-    "F11",
-    ev => {
-      ev.preventDefault();
-      if (execution.state === "running") return;
-      if (execution.state === "paused" || execution.compile()) {
-        execution.runStep();
-      }
-    },
-    undefined,
-    [execution],
-  );
+
+  useEvent("keydown", onKeyDown, undefined, [dispatch]);
 
   const [easterEgg, toggleEasterEgg] = useToggle(false);
   const easterEggEvents = useLongPress(
@@ -63,27 +57,17 @@ export function Controls() {
       </div>
 
       <div className="flex h-full items-center gap-4">
-        {execution.state === "stopped" ? (
+        {state === "stopped" ? (
           <>
-            <Button
-              onClick={() => {
-                if (execution.compile()) execution.runForever();
-              }}
-              title="F5"
-            >
+            <Button onClick={() => dispatch("run")} title="F5">
               <RunIcon /> Ejecutar
             </Button>
 
-            <Button
-              onClick={() => {
-                if (execution.compile()) execution.runStep();
-              }}
-              title="F11"
-            >
+            <Button onClick={() => dispatch("step")} title="F11">
               <DebugIcon /> Depurar
             </Button>
           </>
-        ) : execution.state === "running" ? (
+        ) : state === "running" ? (
           <>
             <div className="flex h-6 w-32 select-none items-center justify-center rounded-lg bg-sky-500 text-white">
               <RunningIcon className="mr-1 h-4 w-4 animate-spin" />
@@ -94,7 +78,7 @@ export function Controls() {
 
             <div className="w-4" />
 
-            <Button onClick={execution.abort} title="Shift+F5">
+            <Button onClick={() => dispatch("stop")} title="Shift+F5">
               <AbortIcon /> Abortar
             </Button>
           </>
@@ -109,15 +93,15 @@ export function Controls() {
 
             <div className="w-4" />
 
-            <Button onClick={execution.runStep} title="F11">
+            <Button onClick={() => dispatch("step")} title="F11">
               <RunIcon /> Siguiente
             </Button>
 
-            <Button onClick={execution.runForever} title="F5">
+            <Button onClick={() => dispatch("run")} title="F5">
               <FinishIcon /> Finalizar
             </Button>
 
-            <Button onClick={execution.abort} title="Shift+F5">
+            <Button onClick={() => dispatch("stop")} title="Shift+F5">
               <AbortIcon /> Abortar
             </Button>
           </>

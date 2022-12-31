@@ -1,4 +1,4 @@
-import { ConfigSelector } from "./config/ConfigSelector";
+import { ConfigSelector } from "./ConfigSelector";
 import { CPU } from "./CPU";
 import { Memory } from "./Memory";
 

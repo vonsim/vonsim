@@ -4,13 +4,12 @@ import { toast } from "react-hot-toast";
 import shallow from "zustand/shallow";
 
 import { MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "~/config";
-import { useComputer } from "./computer";
-import { useConfig } from "./config";
+import { useComputer } from "../computer";
 import { renderAddress, renderMemoryCell } from "./helpers";
 
 export function Memory() {
   const startId = useId();
-  const config = useConfig();
+  const memoryRepresentation = useComputer(state => state.memoryRepresentation);
 
   const [start, setStart] = useState(0x1000);
   const [startValue, setStartValue] = useState("");
@@ -80,7 +79,7 @@ export function Memory() {
               </td>
               {cols.map((col, i) => (
                 <td key={i} className="w-[10ch] text-center text-slate-600">
-                  {renderMemoryCell(col, config.memoryRepresentation)}
+                  {renderMemoryCell(col, memoryRepresentation)}
                 </td>
               ))}
             </tr>

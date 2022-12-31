@@ -3,13 +3,25 @@ import clsx from "clsx";
 import { useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { useLongPress } from "react-use";
-import { useConfig } from ".";
+import shallow from "zustand/shallow";
+import { useComputer } from "../computer";
 
 const speeds = new Array(7).fill(null).map((_, i) => 2 ** i); // From 1 Hz to 64 Hz
 const speedOptions = Object.fromEntries(speeds.map(speed => [speed.toString(), `${speed} Hz`]));
 
 export function ConfigSelector({ className }: { className?: string }) {
-  const config = useConfig();
+  const config = useComputer(
+    state => ({
+      memoryRepresentation: state.memoryRepresentation,
+      setMemoryRepresentation: state.setMemoryRepresentation,
+      memoryOnReset: state.memoryOnReset,
+      setMemoryOnReset: state.setMemoryOnReset,
+      clockSpeed: state.clockSpeed,
+      setClockSpeed: state.setClockSpeed,
+    }),
+    shallow,
+  );
+
   const longPressClockSpeed = useLongPress(
     () => {
       toast("Se activó el modo 8088.\nLa frecuencia de reloj se estableció en 5 MHz.", {

@@ -1,11 +1,10 @@
 import shallow from "zustand/shallow";
 
-import { useComputer } from "./computer";
-import { useConfig } from "./config";
+import { useComputer } from "../computer";
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "./helpers";
 
 export function CPU() {
-  const config = useConfig();
+  const memoryRepresentation = useComputer(state => state.memoryRepresentation);
   const registers = useComputer(state => state.registers, shallow);
   const alu = useComputer(state => state.alu, shallow);
 
@@ -28,10 +27,10 @@ export function CPU() {
               <tr className="divide-x" key={reg}>
                 <td className="w-[4ch] text-center font-bold text-slate-800">{reg}</td>
                 <td className="w-[10ch] text-center text-slate-600">
-                  {renderMemoryCell(low, config.memoryRepresentation)}
+                  {renderMemoryCell(low, memoryRepresentation)}
                 </td>
                 <td className="w-[10ch] text-center text-slate-600">
-                  {renderMemoryCell(high, config.memoryRepresentation)}
+                  {renderMemoryCell(high, memoryRepresentation)}
                 </td>
               </tr>
             );
