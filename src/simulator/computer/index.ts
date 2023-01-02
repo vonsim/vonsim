@@ -39,7 +39,6 @@ export const useComputer = create<ComputerStore>()(
     {
       name: "userconfig",
       version: 0,
-      getStorage: () => localStorage,
       partialize: state => ({
         memoryRepresentation: state.memoryRepresentation,
         memoryOnReset: state.memoryOnReset,
