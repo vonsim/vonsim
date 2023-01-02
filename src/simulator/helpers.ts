@@ -1,6 +1,6 @@
 import { match } from "ts-pattern";
 import { MAX_SIGNED_BYTE_VALUE, MAX_SIGNED_WORD_VALUE } from "~/config";
-import type { MemoryRepresentation } from "./environment/config";
+import type { MemoryRepresentation } from "./computer/userconfig";
 
 // #=========================================================================#
 // # Byte/Word                                                               #
