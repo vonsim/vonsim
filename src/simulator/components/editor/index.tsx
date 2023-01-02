@@ -13,6 +13,7 @@ import {
   lineNumbers,
 } from "@codemirror/view";
 import { Transition } from "@headlessui/react";
+import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
 import { usePrevious } from "react-use";
 import { lineHighlightField, readOnly } from "./methods";
@@ -31,7 +32,7 @@ import { VonSim } from "./vonsim";
  * editor changes.
  */
 
-export function Editor() {
+export function Editor({ className }: { className?: string }) {
   const [element, setElement] = useState<HTMLElement>();
   const errors = useErrors();
   const prevErrors = usePrevious(errors);
@@ -93,7 +94,7 @@ export function Editor() {
   }, [element]);
 
   return (
-    <div className="flex w-[750px] flex-col">
+    <div className={clsx("flex flex-col", className)}>
       <div ref={ref} className="flex h-full overflow-auto font-mono" />
       <Transition
         className="overflow-hidden bg-red-500 px-2 py-1 text-white"

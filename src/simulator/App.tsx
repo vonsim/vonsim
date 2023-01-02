@@ -1,6 +1,8 @@
-import { Controls } from "./controls";
-import { Editor } from "./editor";
-import { Environment } from "./environment";
+import { ConfigSelector } from "./components/ConfigSelector";
+import { Controls } from "./components/Controls";
+import { CPU } from "./components/CPU";
+import { Editor } from "./components/editor";
+import { Memory } from "./components/Memory";
 
 function App() {
   return (
@@ -8,8 +10,25 @@ function App() {
       <Controls />
 
       <main className="flex grow overflow-auto">
-        <Editor />
-        <Environment />
+        <Editor className="lg:min-w-[550px] lg:max-w-[550px] xl:min-w-[700px] xl:max-w-[700px]" />
+
+        <div className="flow flow-col w-full overflow-auto bg-gray-100 p-8">
+          <ConfigSelector />
+
+          <hr className="my-4 border-slate-500/30" />
+
+          <Memory />
+
+          <div className="h-4" />
+
+          <CPU />
+
+          {/* <div className="h-4" />
+
+          <div className="col-span-2 rounded-lg bg-white p-2">
+            <p className="font-extrabold uppercase tracking-wider text-gray-600">Dispositivos</p>
+          </div> */}
+        </div>
       </main>
       <footer className="h-1 w-screen bg-sky-400" />
     </div>

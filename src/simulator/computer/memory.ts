@@ -1,7 +1,7 @@
 import { klona } from "klona";
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "~/config";
 import type { ComputerSlice } from ".";
-import { renderAddress } from "../environment/helpers";
+import { renderAddress } from "../helpers";
 
 export type MemorySlice = {
   memory: ArrayBuffer;

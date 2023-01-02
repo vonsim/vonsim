@@ -4,7 +4,7 @@ import { compile, ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
 import { MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
 import type { ComputerSlice } from ".";
-import { highlightLine, setReadOnly } from "../editor/methods";
+import { highlightLine, setReadOnly } from "../components/editor/methods";
 import { renderAddress } from "../helpers";
 
 export type RunnerAction = "run" | "step" | "stop";
