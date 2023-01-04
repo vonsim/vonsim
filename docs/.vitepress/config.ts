@@ -55,7 +55,10 @@ export default defineConfig({
       },
       {
         text: "Especificaciones",
-        items: [{ text: "Codificación", link: "/especificaciones/codificacion" }],
+        items: [
+          { text: "Codificación", link: "/especificaciones/codificacion" },
+          { text: "Consola", link: "/especificaciones/consola" },
+        ],
       },
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/vonsim/vonsim" }],

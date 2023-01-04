@@ -1,4 +1,5 @@
 import { ConfigSelector } from "./components/ConfigSelector";
+import { Console } from "./components/Console";
 import { Controls } from "./components/Controls";
 import { CPU } from "./components/CPU";
 import { Editor } from "./components/editor";
@@ -23,11 +24,9 @@ function App() {
 
           <CPU />
 
-          {/* <div className="h-4" />
+          <hr className="my-4 border-slate-500/30" />
 
-          <div className="col-span-2 rounded-lg bg-white p-2">
-            <p className="font-extrabold uppercase tracking-wider text-gray-600">Dispositivos</p>
-          </div> */}
+          <Console />
         </div>
       </main>
       <footer className="h-1 w-screen bg-sky-400" />

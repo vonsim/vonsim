@@ -16,7 +16,7 @@ import { useComputer } from "../computer";
 export function Controls() {
   const { state, dispatch } = useComputer(
     state => ({
-      state: state.runnerState,
+      state: state.runner.state,
       dispatch: state.dispatchRunner,
     }),
     shallow,
@@ -73,6 +73,21 @@ export function Controls() {
               <RunningIcon className="mr-1 h-4 w-4 animate-spin" />
               <span className="text-center text-xs font-bold uppercase tracking-wider">
                 Ejecutando
+              </span>
+            </div>
+
+            <div className="w-4" />
+
+            <Button onClick={() => dispatch("stop")} title="Shift+F5">
+              <AbortIcon /> Abortar
+            </Button>
+          </>
+        ) : state === "waiting-for-input" ? (
+          <>
+            <div className="flex h-6 w-32 animate-pulse select-none items-center justify-center rounded-lg bg-sky-500 text-white">
+              <PausedIcon className="mr-1 h-4 w-4" />
+              <span className="text-center text-xs font-bold uppercase tracking-wider">
+                Esperando
               </span>
             </div>
 

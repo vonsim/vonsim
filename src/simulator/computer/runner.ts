@@ -7,43 +7,51 @@ import type { ComputerSlice } from ".";
 import { highlightLine, setReadOnly } from "../components/editor/methods";
 import { renderAddress } from "../helpers";
 
+type InputListener = (ev: KeyboardEvent | null) => void;
+
 export type RunnerAction = "run" | "step" | "stop";
 
 export type RunnerSlice = {
-  runnerState: "running" | "paused" | "stopped";
-  stopRequested: boolean;
+  runner:
+    | { state: "running"; stopRequested: boolean }
+    | { state: "paused" }
+    | { state: "waiting-for-input"; listener: InputListener }
+    | { state: "stopped" };
   dispatchRunner: (action: RunnerAction) => void;
+  waitForInput: () => Promise<string | null>;
+
   /**
    * Executes a single instruction.
    * Returns true if the execution should continue, false otherwise.
    */
-  runInstruction: () => boolean;
+  runInstruction: () => Promise<boolean>;
 };
 
 export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
-  runnerState: "stopped",
-  stopRequested: false,
+  runner: { state: "stopped" },
+
   dispatchRunner: async action => {
-    const state = get().runnerState;
+    const runner = get().runner;
 
     const finish = () => {
       highlightLine(null);
       setReadOnly(false);
-      set({ runnerState: "stopped", stopRequested: false });
+      set({ runner: { state: "stopped" } });
     };
 
     if (action === "stop") {
-      if (state === "running") set({ stopRequested: true });
-      else if (state === "paused") finish();
+      if (runner.state === "running") set({ runner: { state: "running", stopRequested: true } });
+      else if (runner.state === "paused") finish();
+      else if (runner.state === "waiting-for-input") runner.listener(null);
 
       return;
     }
 
     // By now, we know that the action is either 'run' or 'step'
-    // If the state is 'running', we don't do anything
-    if (state === "running") return;
+    // If the state is 'running' or 'waiting-for-input', we don't do anything
+    if (runner.state === "running" || runner.state === "waiting-for-input") return;
 
-    if (state === "stopped") {
+    if (runner.state === "stopped") {
       const code = window.codemirror!.state.doc.toString();
       const result = compile(code);
 
@@ -57,15 +65,15 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
     }
 
     if (action === "step") {
-      const keepRunning = get().runInstruction();
+      const keepRunning = await get().runInstruction();
 
-      if (keepRunning) set({ runnerState: "paused" });
+      if (keepRunning) set({ runner: { state: "paused" } });
       else finish();
     } else {
-      set({ runnerState: "running" });
+      set({ runner: { state: "running", stopRequested: false } });
 
       while (true) {
-        const keepRunning = get().runInstruction();
+        const keepRunning = await get().runInstruction();
         await new Promise(resolve => {
           // I know it's not efficient, but it  doesn't
           // affect the performance of the app
@@ -73,13 +81,41 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
           setTimeout(resolve, ms);
         });
 
-        if (!keepRunning || get().stopRequested) break;
+        const runner = get().runner;
+        if (!keepRunning || runner.state !== "running" || runner.stopRequested) break;
       }
 
       finish();
     }
   },
-  runInstruction() {
+
+  waitForInput: () => {
+    const previous = get().runner;
+    if (previous.state !== "running" && previous.state !== "paused") {
+      throw new Error("La computadora no está corriendo.");
+    }
+
+    return new Promise(resolve => {
+      const listener: InputListener = ev => {
+        if (!ev) {
+          document.removeEventListener("keydown", listener);
+          resolve(null);
+          set({ runner: previous });
+        } else if (/^[\u0000-\u00FF]$/.test(ev.key)) {
+          document.removeEventListener("keydown", listener);
+          get().writeConsole(ev.key);
+          resolve(ev.key);
+          set({ runner: previous });
+        }
+      };
+
+      document.addEventListener("keydown", listener);
+
+      set({ runner: { state: "waiting-for-input", listener } });
+    });
+  },
+
+  async runInstruction() {
     try {
       const program = get().program;
       if (!program) throw new Error("No hay ningún programa cargado. Compilá antes de ejecutar.");
@@ -287,9 +323,31 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
         .with({ type: "OUT" }, () => {
           throw new Error("Sin implementación");
         })
-        .with({ type: "INT" }, () => {
-          throw new Error("Sin implementación");
-        })
+        .with({ type: "INT" }, ({ interruption }) =>
+          match(interruption)
+            .with(0, () => false)
+            .with(6, async () => {
+              const char = await get().waitForInput();
+
+              // Runner has been stopped
+              if (char === null) return false;
+
+              const address = get().getRegister("BX");
+              get().setMemory(address, "byte", char.charCodeAt(0));
+              return bumpIP();
+            })
+            .with(7, () => {
+              const start = get().getRegister("BX");
+              const len = get().getRegister("AL");
+              let text = "";
+              for (let i = 0; i < len; i++) {
+                text += String.fromCharCode(get().getMemory(i + start, "byte"));
+              }
+              get().writeConsole(text);
+              return bumpIP();
+            })
+            .exhaustive(),
+        )
         .with({ type: "IRET" }, () => {
           throw new Error("Sin implementación");
         })
