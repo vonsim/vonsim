@@ -13,17 +13,22 @@ export const createMemorySlice: ComputerSlice<MemorySlice> = (set, get) => ({
   memory: new ArrayBuffer(MEMORY_SIZE),
 
   getMemory: (address, size) => {
+    let value: number;
     if (size === "byte") {
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
       }
-      return new DataView(get().memory).getUint8(address);
+      value = new DataView(get().memory).getUint8(address);
     } else {
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS - 1) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
       }
-      return new DataView(get().memory).getUint16(address, true);
+      value = new DataView(get().memory).getUint16(address, true);
     }
+
+    get().setRegister("MAR", address);
+    get().setRegister("MBR", value);
+    return value;
   },
 
   setMemory: (address, size, value) => {
@@ -51,6 +56,8 @@ export const createMemorySlice: ComputerSlice<MemorySlice> = (set, get) => ({
       new DataView(memory).setUint16(address, value, true);
     }
 
+    get().setRegister("MAR", address);
+    get().setRegister("MBR", value);
     set({ memory });
   },
 });
