@@ -19,11 +19,6 @@ export type RunnerSlice = {
     | { state: "stopped" };
   dispatchRunner: (action: RunnerAction) => void;
   waitForInput: () => Promise<string | null>;
-
-  /**
-   * Executes a single instruction.
-   * Returns true if the execution should continue, false otherwise.
-   */
   runInstruction: () => Promise<boolean>;
 };
 
@@ -89,6 +84,11 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
     }
   },
 
+  /**
+   * Waits for the user to press a key.
+   * Returns the pressed key, or null if the the program is aborted.
+   * Writes the pressed key to the console.
+   */
   waitForInput: () => {
     const previous = get().runner;
     if (previous.state !== "running" && previous.state !== "paused") {
@@ -115,6 +115,10 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
     });
   },
 
+  /**
+   * Executes a single instruction.
+   * Returns true if the execution should continue, false otherwise.
+   */
   async runInstruction() {
     try {
       const program = get().program;
