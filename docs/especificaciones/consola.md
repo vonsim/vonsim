@@ -19,6 +19,7 @@ END
 ```
 
 Con la interrupción 7 (`INT 7`) se escribe una cadena de caracteres en la consola. Recibe dos parámetros:
+
 - `AL`: longitud de la cadena a imprimir
 - `BX`: dirección de memoria donde empieza la cadena
 
@@ -36,5 +37,6 @@ END
 ```
 
 Hay dos caracteres especiales:
+
 - el caracter de salto de línea (`LF`, 10 en decimal) imprime, en efecto, un salto de línea — útil para no imprimir todo en una sola línea;
 - el caracter de _form feed_ (`FF`, 12 en decimal) limpia la consola.
