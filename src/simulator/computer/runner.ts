@@ -98,15 +98,20 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
     return new Promise(resolve => {
       const listener: InputListener = ev => {
         if (!ev) {
-          document.removeEventListener("keydown", listener);
           resolve(null);
-          set({ runner: previous });
         } else if (/^[\u0000-\u00FF]$/.test(ev.key)) {
-          document.removeEventListener("keydown", listener);
           get().writeConsole(ev.key);
           resolve(ev.key);
-          set({ runner: previous });
+        } else if (ev.key === "Enter") {
+          get().writeConsole("\n");
+          resolve("\n");
+        } else {
+          return;
         }
+
+        ev?.preventDefault();
+        document.removeEventListener("keydown", listener);
+        set({ runner: previous });
       };
 
       document.addEventListener("keydown", listener);
