@@ -22,7 +22,7 @@ import {
   zeroaryInstructionPattern,
 } from "~/compiler/common/patterns";
 import { NumberExpression } from "~/compiler/parser/grammar";
-import { INTERRUPTIONS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
+import { INTERRUPTS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
 import type { LabelMap } from "../compact-labels";
 import type { ReadonlyMemory } from "../compute-addresses";
 import type { ValidatedInstructionStatement } from "../validate";
@@ -62,7 +62,7 @@ export type ProgramInstruction =
         | { type: "memory-direct"; address: number }
         | { type: "immediate"; value: number };
     }
-  | { type: IntInstructionType; meta: InstructionMeta; interruption: typeof INTERRUPTIONS[number] };
+  | { type: IntInstructionType; meta: InstructionMeta; interrupt: typeof INTERRUPTS[number] };
 
 export function evaluateInstruction(
   statement: ValidatedInstructionStatement,
@@ -152,16 +152,16 @@ export function evaluateInstruction(
             },
     }))
     .with({ type: intInstructionPattern }, statement => {
-      const int = evaluateExpression(statement.interruption, labels);
+      const int = evaluateExpression(statement.interrupt, labels);
 
-      if (!isMatching(P.union(...INTERRUPTIONS), int)) {
-        throw new CompilerError("invalid-interruption", ...statement.interruption.position, int);
+      if (!isMatching(P.union(...INTERRUPTS), int)) {
+        throw new CompilerError("invalid-interrupt", ...statement.interrupt.position, int);
       }
 
       return {
         type: statement.type,
         meta: cleanMeta(statement),
-        interruption: int,
+        interrupt: int,
       };
     })
     .exhaustive();

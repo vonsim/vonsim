@@ -72,8 +72,8 @@ export const ERROR_LIST = {
   "invalid-decimal": () => ({
     en: "Invalid decimal number. It should only contain digits.",
   }),
-  "invalid-interruption": (interruption: number) => ({
-    en: `Invalid interruption number ${interruption}.`,
+  "invalid-interrupt": (interrupt: number) => ({
+    en: `Invalid interrupt number ${interrupt}.`,
   }),
   "label-not-found": (label: string) => ({
     en: `Label "${label}" has not been defined.`,

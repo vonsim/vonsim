@@ -124,8 +124,8 @@ export const createProgramSlice: ComputerSlice<ProgramSlice> = (set, get) => ({
 
           if (opSize === "word") opcode |= 0b0000_0001;
         })
-        .with({ type: intInstructionPattern }, ({ interruption }) => {
-          operands.push(interruption);
+        .with({ type: intInstructionPattern }, ({ interrupt }) => {
+          operands.push(interrupt);
         })
         .exhaustive();
 

@@ -11,7 +11,7 @@ import type { ValidatedMeta } from "../types";
 export type ValidatedIntInstruction = {
   type: IntInstructionType;
   meta: ValidatedMeta;
-  interruption: NumberExpression;
+  interrupt: NumberExpression;
 };
 
 export function validateIntInstruction(
@@ -30,6 +30,6 @@ export function validateIntInstruction(
   return {
     type: instruction.instruction,
     meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
-    interruption: operand,
+    interrupt: operand,
   };
 }

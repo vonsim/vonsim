@@ -8,7 +8,7 @@ export const MAX_SIGNED_WORD_VALUE = 0x7fff;
 export const MIN_SIGNED_BYTE_VALUE = -0x80;
 export const MIN_SIGNED_WORD_VALUE = -0x8000;
 export const INITIAL_IP = 0x2000;
-export const INTERRUPTIONS = [0, 6, 7] as const;
+export const INTERRUPTS = [0, 6, 7] as const;
 export const LANGUAGES = ["en"] as const;
 
 export type Language = typeof LANGUAGES[number];

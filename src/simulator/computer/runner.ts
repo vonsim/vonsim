@@ -332,8 +332,8 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
         .with({ type: "OUT" }, () => {
           throw new Error("Sin implementación");
         })
-        .with({ type: "INT" }, ({ interruption }) =>
-          match(interruption)
+        .with({ type: "INT" }, ({ interrupt }) =>
+          match(interrupt)
             .with(0, () => false)
             .with(6, async () => {
               const char = await get().waitForInput();
