@@ -1,5 +1,5 @@
 import { analyze } from "./analyzer";
-import type { ReadonlyMemory } from "./analyzer/compute-addresses";
+import type { CodeMemory } from "./analyzer/compute-addresses";
 import type { ProgramConstants } from "./analyzer/evaluate/constants";
 import type { ProgramData } from "./analyzer/evaluate/data";
 import type { ProgramInstruction } from "./analyzer/evaluate/instruction";
@@ -14,7 +14,7 @@ export type Program = {
   constants: ProgramConstants;
   data: ProgramData[];
   instructions: ProgramInstruction[];
-  readonlyMemory: ReadonlyMemory;
+  codeMemory: CodeMemory;
 };
 
 export type CompileResultSuccess = { success: true } & Program;

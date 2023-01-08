@@ -2,7 +2,7 @@ import { klona } from "klona/json";
 import { safeMap } from "~/compiler/common";
 import type { Statement } from "~/compiler/parser/grammar";
 import { compactLabels } from "./compact-labels";
-import { computeAddresses, ReadonlyMemory } from "./compute-addresses";
+import { CodeMemory, computeAddresses } from "./compute-addresses";
 import { evaluateConstants, ProgramConstants } from "./evaluate/constants";
 import { evaluateData, ProgramData } from "./evaluate/data";
 import { evaluateInstruction, ProgramInstruction } from "./evaluate/instruction";
@@ -20,7 +20,7 @@ export type AnalysisResult =
       constants: ProgramConstants;
       data: ProgramData[];
       instructions: ProgramInstruction[];
-      readonlyMemory: ReadonlyMemory;
+      codeMemory: CodeMemory;
     }
   | { success: false; errors: unknown[] };
 
@@ -44,7 +44,7 @@ export function analyze(statements: Statement[]): AnalysisResult {
   const computedAddresses = computeAddresses(validatedStatements);
 
   if (!computedAddresses.success) return computedAddresses;
-  const { labelAddresses, readonlyMemory } = computedAddresses;
+  const { labelAddresses, codeMemory } = computedAddresses;
 
   // Separate the statements into different categories.
   const constantStatements: ValidatedConstantStatement[] = [];
@@ -77,10 +77,10 @@ export function analyze(statements: Statement[]): AnalysisResult {
 
   // Evaluate data initial values.
   const instructionsResult = safeMap(instructionStatements, statement =>
-    evaluateInstruction(statement, labelMap, readonlyMemory),
+    evaluateInstruction(statement, labelMap, codeMemory),
   );
   if (!instructionsResult.success) return instructionsResult;
   const instructions = instructionsResult.result;
 
-  return klona({ success: true, constants, data, instructions, readonlyMemory });
+  return klona({ success: true, constants, data, instructions, codeMemory });
 }

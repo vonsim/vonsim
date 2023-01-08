@@ -39,7 +39,7 @@ export const createMemorySlice: ComputerSlice<MemorySlice> = (set, get) => ({
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
       }
-      if (program && program.readonlyMemory.has(address)) {
+      if (program && program.codeMemory.has(address)) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} es de solo lectura.`);
       }
       new DataView(memory).setUint8(address, value);
@@ -47,10 +47,7 @@ export const createMemorySlice: ComputerSlice<MemorySlice> = (set, get) => ({
       if (address < MIN_MEMORY_ADDRESS || address > MAX_MEMORY_ADDRESS - 1) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} está fuera de rango.`);
       }
-      if (
-        program &&
-        (program.readonlyMemory.has(address) || program.readonlyMemory.has(address + 1))
-      ) {
+      if (program && (program.codeMemory.has(address) || program.codeMemory.has(address + 1))) {
         throw new Error(`La dirección de memoria ${renderAddress(address)} es de solo lectura.`);
       }
       new DataView(memory).setUint16(address, value, true);

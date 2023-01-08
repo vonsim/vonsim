@@ -5,15 +5,15 @@ import { MAX_MEMORY_ADDRESS } from "~/config";
 import type { ValidatedStatement } from "./validate";
 
 export type LabelAddresses = Map<string, { type: "DB" | "DW" | "instruction"; address: number }>;
-export type ReadonlyMemory = Set<number>;
+export type CodeMemory = Set<number>;
 
 type ComputeAddressesResult =
-  | { success: true; readonlyMemory: ReadonlyMemory; labelAddresses: LabelAddresses }
+  | { success: true; codeMemory: CodeMemory; labelAddresses: LabelAddresses }
   | { success: false; errors: unknown[] };
 
 export function computeAddresses(statements: ValidatedStatement[]): ComputeAddressesResult {
   const occupiedMemory = new Set<number>();
-  const readonlyMemory: ReadonlyMemory = new Set();
+  const codeMemory: CodeMemory = new Set();
   const labelAddresses: LabelAddresses = new Map();
 
   let pointer: number | null = null;
@@ -49,10 +49,10 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
       }
 
       occupiedMemory.add(pointer);
-      if (isInstruction) readonlyMemory.add(pointer);
+      if (isInstruction) codeMemory.add(pointer);
     }
   });
 
-  if (result.success) return { success: true, readonlyMemory, labelAddresses };
+  if (result.success) return { success: true, codeMemory, labelAddresses };
   else return result;
 }
