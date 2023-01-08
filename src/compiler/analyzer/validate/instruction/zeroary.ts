@@ -12,10 +12,7 @@ export function validateZeroaryInstruction(
   instruction: Merge<InstructionStatement, { instruction: ZeroaryInstructionType }>,
 ): ValidatedZeroaryInstruction {
   if (instruction.operands.length > 0) {
-    throw new CompilerError(
-      "This instruction doesn't accept any operands.",
-      ...instruction.position,
-    );
+    throw new CompilerError("expects-no-operands", ...instruction.position);
   }
 
   return {

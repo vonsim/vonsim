@@ -75,7 +75,7 @@ export class Parser {
             continue;
           }
 
-          throw CompilerError.fromToken("END must be the last instruction", token);
+          throw CompilerError.fromToken("end-must-be-the-last-statement", token);
         }
 
         continue;
@@ -148,7 +148,7 @@ export class Parser {
         continue;
       }
 
-      throw CompilerError.fromToken(`Expected instruction, got ${token.type}`, token);
+      throw CompilerError.fromToken("expected-token", token, "instruction", token.type);
     }
 
     return this.statements;
@@ -186,11 +186,13 @@ export class Parser {
     return this.peekNext().type === type;
   }
 
-  private consume<T extends TokenType>(type: T, onError?: string): Merge<Token, { type: T }> {
+  private consume<T extends TokenType>(type: T, expected?: string): Merge<Token, { type: T }> {
     if (!this.check(type)) {
       throw CompilerError.fromToken(
-        (onError || `Expected ${type}`) + `, got ${this.peek().lexeme}`,
+        "expected-token",
         this.peek(),
+        expected || type,
+        this.peek().type,
       );
     }
     return this.advance() as any;
@@ -199,7 +201,7 @@ export class Parser {
   private expectEOL() {
     if (this.isAtEnd()) return;
     if (this.check("EOL")) return this.advance();
-    throw CompilerError.fromToken(`Expected EOL, got ${this.peek().type}`, this.peek());
+    throw CompilerError.fromToken("expected-token", this.peek(), "EOL", this.peek().type);
   }
 
   private isAtEnd() {
@@ -253,7 +255,7 @@ export class Parser {
       labelToken = this.advance();
 
       if (!isMatching(dataDirectivePattern, this.peek().type)) {
-        throw CompilerError.fromToken(`Unexpected IDENTIFIER`, labelToken);
+        throw CompilerError.fromToken("unexpected-token", labelToken, "identifier");
       }
     } else if (this.check("LABEL")) {
       labelToken = this.advance();
@@ -263,7 +265,12 @@ export class Parser {
       }
 
       if (!isMatching(instructionPattern, this.peek().type)) {
-        throw CompilerError.fromToken(`Expected instruction after label`, this.peek());
+        throw CompilerError.fromToken(
+          `expected-token`,
+          this.peek(),
+          "instruction after label",
+          this.peek().type,
+        );
       }
     }
 
@@ -275,8 +282,9 @@ export class Parser {
     const duplicatedLabel = this.statements.find(s => "label" in s && s.label === label);
     if (duplicatedLabel) {
       throw new CompilerError(
-        `Duplicated label: ${label}`,
+        "duplicated-label",
         ...this.calculatePositionRange(labelToken),
+        "label",
       );
     }
 
@@ -327,13 +335,13 @@ export class Parser {
       } else {
         size = this.check("BYTE") ? "byte" : "word";
         start = this.advance();
-        this.consume("PTR", `Expected "PTR" after "${size.toUpperCase()}"`);
-        this.consume("LEFT_BRACKET", `Expected "[" after "${size.toUpperCase()} PTR"`);
+        this.consume("PTR", `"PTR" after "${size.toUpperCase()}"`);
+        this.consume("LEFT_BRACKET", `"[" after "${size.toUpperCase()} PTR"`);
       }
 
       if (this.check("BX")) {
         this.advance();
-        const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after "BX"');
+        const rbracket = this.consume("RIGHT_BRACKET", '"]" after "BX"');
         return {
           type: "address",
           size,
@@ -342,7 +350,7 @@ export class Parser {
         };
       } else {
         const calc = this.numberExpression();
-        const rbracket = this.consume("RIGHT_BRACKET", 'Expected "]" after expression');
+        const rbracket = this.consume("RIGHT_BRACKET", '"]" after expression');
         return {
           type: "address",
           size,
@@ -388,7 +396,7 @@ export class Parser {
 
     if (this.check("OFFSET")) {
       const offsetToken = this.advance();
-      const identifierToken = this.consume("IDENTIFIER", "Expected label after OFFSET");
+      const identifierToken = this.consume("IDENTIFIER", "label after OFFSET");
       return {
         type: "label",
         value: identifierToken.lexeme.toUpperCase(),
@@ -410,14 +418,14 @@ export class Parser {
     if (this.check("LEFT_PAREN")) {
       const lparen = this.advance();
       let expression = this.numberExpression();
-      const rparen = this.consume("RIGHT_PAREN", "Expected )");
+      const rparen = this.consume("RIGHT_PAREN", ")");
       return {
         ...expression,
         position: this.calculatePositionRange(lparen, rparen),
       };
     }
 
-    throw CompilerError.fromToken("Expected argument", this.peek());
+    throw CompilerError.fromToken("expected-argument", this.peek());
   }
 
   private factorNE(): NumberExpression {

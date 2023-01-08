@@ -12,16 +12,16 @@ export function validateEQU(
   equ: Merge<DataDirectiveStatement, { directive: "EQU" }>,
 ): ValidatedEQU {
   if (equ.values.length !== 1) {
-    throw new CompilerError("EQU needs exaclty one operand.", ...equ.position);
+    throw new CompilerError("must-have-one-value", ...equ.position, "EQU");
   }
   if (equ.values[0].type === "string") {
-    throw new CompilerError("EQU can't accept strings.", ...equ.values[0].position);
+    throw new CompilerError("cannot-accept-strings", ...equ.values[0].position, "EQU");
   }
   if (equ.values[0].type === "unassigned") {
-    throw new CompilerError("EQU can't be unassigned.", ...equ.values[0].position);
+    throw new CompilerError("cannot-be-unassinged", ...equ.values[0].position, "EQU");
   }
   if (!equ.label) {
-    throw new CompilerError("EQU must have a label.", ...equ.position);
+    throw new CompilerError("must-have-a-label", ...equ.position, "EQU");
   }
 
   return {

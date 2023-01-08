@@ -20,7 +20,7 @@ export type Program = {
 export type CompileResultSuccess = { success: true } & Program;
 export type CompileResultError = {
   success: false;
-  lineErrors: CompilerError[];
+  lineErrors: CompilerError<any>[];
   codeErrors: string[];
 };
 export type CompileResult = CompileResultSuccess | CompileResultError;
@@ -43,7 +43,7 @@ export function compile(source: string): CompileResult {
 }
 
 function groupErrors({ errors }: { success: false; errors: unknown[] }): CompileResultError {
-  const lineErrors: CompilerError[] = [];
+  const lineErrors: CompilerError<any>[] = [];
   const codeErrors: string[] = [];
 
   for (const error of errors) {

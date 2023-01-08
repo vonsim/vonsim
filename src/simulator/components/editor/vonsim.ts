@@ -138,7 +138,7 @@ const vonsimLinter = linter(
       const diagnostics: Diagnostic[] = result.lineErrors.map(error => ({
         from: error.from,
         to: error.to,
-        message: error.message,
+        message: error.message("en"),
         severity: "error",
       }));
 

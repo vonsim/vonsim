@@ -15,27 +15,21 @@ export function validateJumpInstruction(
   labels: LabelTypes,
 ): ValidatedJumpInstruction {
   if (instruction.operands.length !== 1) {
-    throw new CompilerError("This instruction expects one operand.", ...instruction.position);
+    throw new CompilerError("expects-one-operand", ...instruction.position);
   }
 
   const operand = instruction.operands[0];
   if (operand.type !== "label") {
-    throw new CompilerError(
-      "This instruction expects a label pointing to an instruction.",
-      ...operand.position,
-    );
+    throw new CompilerError("expects-label", ...operand.position);
   }
 
   const label = labels.get(operand.value);
   if (!label) {
-    throw new CompilerError(`Label ${operand.value} is not defined.`, ...operand.position);
+    throw new CompilerError("label-not-found", ...operand.position, operand.value);
   }
 
   if (label !== "instruction") {
-    throw new CompilerError(
-      "This instruction expects a label pointing to an instruction.",
-      ...operand.position,
-    );
+    throw new CompilerError("label-should-be-an-instruction", ...operand.position, operand.value);
   }
 
   return {

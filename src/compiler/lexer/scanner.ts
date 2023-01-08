@@ -60,14 +60,10 @@ export class Scanner {
         case '"':
           while (this.peek() !== '"') {
             if (this.isAtEnd() || this.peek() === "\n") {
-              throw new CompilerError("Unterminated string.", this.start, this.current);
+              throw new CompilerError("unterminated-string", this.start, this.current);
             }
             if (this.peek().charCodeAt(0) > 255) {
-              throw new CompilerError(
-                "Only ASCII character are supported for string.",
-                this.current,
-                this.current + 1,
-              );
+              throw new CompilerError("only-ascii", this.current, this.current + 1);
             }
             this.advance();
           }
@@ -112,20 +108,12 @@ export class Scanner {
           if (text.at(-1) === "b" || text.at(-1) === "B") {
             // Should be a binary number.
             if (!/^[01]+b$/i.test(text)) {
-              throw new CompilerError(
-                "Invalid binary number. It should only contain 0s and 1s.",
-                this.start,
-                this.current,
-              );
+              throw new CompilerError("invalid-binary", this.start, this.current);
             }
           } else {
             // Should be a decimal number.
             if (!/^\d+$/.test(text)) {
-              throw new CompilerError(
-                "Invalid decimal number. It should only contain digits.",
-                this.start,
-                this.current,
-              );
+              throw new CompilerError("invalid-decimal", this.start, this.current);
             }
           }
         }
@@ -154,7 +142,7 @@ export class Scanner {
         continue;
       }
 
-      throw new CompilerError(`Unexpected character "${c}".`, this.start, this.current);
+      throw new CompilerError("unexpected-character", this.start, this.current, c);
     }
 
     this.start = this.current;

@@ -31,7 +31,7 @@ export function validateDB(db: Merge<DataDirectiveStatement, { directive: "DB" }
   }
 
   if (initialValues.length === 0) {
-    throw new CompilerError("DB must have at least one value.", ...db.position);
+    throw new CompilerError("must-have-one-or-more-values", ...db.position, "DB");
   }
 
   return {

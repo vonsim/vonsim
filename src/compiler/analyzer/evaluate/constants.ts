@@ -30,22 +30,17 @@ export function evaluateConstants(
         const label = labels.get(l.value);
 
         if (l.offset) {
-          if (!label) throw new CompilerError(`Label "${l.value}" not found`, ...l.position);
+          if (!label) throw new CompilerError("label-not-found", ...l.position, l.value);
           if (label.type !== "DB" && label.type !== "DW") {
-            throw new CompilerError(`OFFSET can only be use with data directives.`, ...l.position);
+            throw new CompilerError("offset-only-with-data-directive", ...l.position);
           }
           return label.address;
         } else if (label) {
           if (label.type === "instruction") return label.address;
-          else {
-            throw new CompilerError(
-              `Label ${l.value} should point to a EQU declaration or to a instruction label. Maybe you ment to write OFFSET ${l.value}.`,
-              ...l.position,
-            );
-          }
+          else throw new CompilerError("label-should-be-a-number", ...l.position, l.value);
         } else {
           const c = processed.get(l.value);
-          if (!c) throw new CompilerError(`EQU "${l.value}" not found`, ...l.position);
+          if (!c) throw new CompilerError("equ-not-found", ...l.position, l.value);
 
           if (c.status === "processed") return c.value;
           if (c.status === "not-processed") {
@@ -55,7 +50,7 @@ export function evaluateConstants(
             return value;
           }
 
-          throw new CompilerError(`Circular reference detected`, ...l.position);
+          throw new CompilerError("circular-reference", ...l.position);
         }
       })
       .with({ type: "unary-operation" }, op =>
@@ -79,7 +74,7 @@ export function evaluateConstants(
     const constant = processed.get(label)!;
     if (constant.status === "processed") continue;
     if (constant.status === "processing") {
-      throw new CompilerError(`Circular reference detected`, ...constant.meta.position);
+      throw new CompilerError("circular-reference", ...constant.meta.position);
     }
 
     processed.set(label, { status: "processing", value: constant.value, meta: constant.meta });

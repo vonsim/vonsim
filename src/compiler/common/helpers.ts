@@ -36,8 +36,3 @@ export function safeForEach<T>(
   if (errors.length === 0) return { success: true };
   else return { success: false, errors };
 }
-
-/** Express number as hex */
-export function hex(address: number) {
-  return address.toString(16).toUpperCase() + "h";
-}

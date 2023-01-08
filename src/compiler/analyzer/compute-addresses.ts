@@ -1,5 +1,5 @@
 import { isMatching } from "ts-pattern";
-import { CompilerError, hex, safeForEach } from "~/compiler/common";
+import { CompilerError, safeForEach } from "~/compiler/common";
 import { instructionPattern } from "~/compiler/common/patterns";
 import { MAX_MEMORY_ADDRESS } from "~/config";
 import type { ValidatedStatement } from "./validate";
@@ -25,10 +25,7 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
       pointer = statement.newAddress;
       return;
     } else if (pointer === null) {
-      throw new CompilerError(
-        "No ORG before this instruction; cannot determine its location in memory.",
-        ...statement.meta.position,
-      );
+      throw new CompilerError("missing-org", ...statement.meta.position);
     }
 
     if (statement.meta.label) {
@@ -42,21 +39,13 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
 
     const finalPointer = pointer + statement.meta.length;
     if (finalPointer > MAX_MEMORY_ADDRESS) {
-      throw new CompilerError(
-        `This instruction would be placed in address ${hex(
-          finalPointer,
-        )}, which is outside the memory range (${hex(MAX_MEMORY_ADDRESS)}).`,
-        ...statement.meta.position,
-      );
+      throw new CompilerError("instruction-out-of-range", ...statement.meta.position, finalPointer);
     }
 
     const isInstruction = isMatching(instructionPattern, statement.type);
     for (; pointer < finalPointer; pointer++) {
       if (occupiedMemory.has(pointer)) {
-        throw new CompilerError(
-          `This instruction would be placed in address ${hex(pointer)}, which is already occupied.`,
-          ...statement.meta.position,
-        );
+        throw new CompilerError("occupied-address", ...statement.meta.position, pointer);
       }
 
       occupiedMemory.add(pointer);

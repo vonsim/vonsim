@@ -50,7 +50,7 @@ export function validateUnaryInstruction(
   labels: LabelTypes,
 ): ValidatedUnaryInstruction {
   if (instruction.operands.length !== 1) {
-    throw new CompilerError("This instruction expects one operand.", ...instruction.position);
+    throw new CompilerError("expects-one-operand", ...instruction.position);
   }
 
   return match<Operand, ValidatedUnaryInstruction>(instruction.operands[0])
@@ -68,10 +68,7 @@ export function validateUnaryInstruction(
     })
     .with({ type: "address", mode: "direct" }, out => {
       if (out.size === "auto") {
-        throw new CompilerError(
-          "Addressing an unknown memory address requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
-          ...out.position,
-        );
+        throw new CompilerError("unknown-size", ...out.position);
       }
 
       return {
@@ -83,10 +80,7 @@ export function validateUnaryInstruction(
     })
     .with({ type: "address", mode: "indirect" }, out => {
       if (out.size === "auto") {
-        throw new CompilerError(
-          "Addressing an unknown memory address requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
-          ...out.position,
-        );
+        throw new CompilerError("unknown-size", ...out.position);
       }
 
       return {
@@ -98,20 +92,17 @@ export function validateUnaryInstruction(
     })
     .with(numberExpressionPattern, out => {
       if (out.type !== "label" || out.offset) {
-        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
       }
 
       const outType = labels.get(out.value);
       if (!outType) {
-        throw new CompilerError(`Label ${out.value} is not defined.`, ...out.position);
+        throw new CompilerError("label-not-found", ...out.position, out.value);
       }
 
       const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
       if (!outSize) {
-        throw new CompilerError(
-          `Label ${out.value} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
-          ...out.position,
-        );
+        throw new CompilerError("label-should-be-writable", ...out.position, out.value);
       }
 
       return {

@@ -25,14 +25,14 @@ export function validateIOInstruction(
   labels: LabelTypes,
 ): ValidatedIOInstruction {
   if (instruction.operands.length !== 2) {
-    throw new CompilerError("This instruction expects two operands.", ...instruction.position);
+    throw new CompilerError("expects-two-operands", ...instruction.position);
   }
 
   const internal = instruction.operands[instruction.instruction === "IN" ? 0 : 1];
   const external = instruction.operands[instruction.instruction === "IN" ? 1 : 0];
 
   if (internal.type !== "register" || (internal.value !== "AX" && internal.value !== "AL")) {
-    throw new CompilerError("This operand should be AX or AL.", ...internal.position);
+    throw new CompilerError("expects-ax", ...internal.position);
   }
 
   const opSize = internal.value === "AX" ? "word" : "byte";
@@ -40,7 +40,7 @@ export function validateIOInstruction(
   return match<Operand, ValidatedIOInstruction>(external)
     .with({ type: "register" }, reg => {
       if (reg.value !== "DX") {
-        throw new CompilerError("The only valid register is DX.", ...reg.position);
+        throw new CompilerError("expects-dx", ...reg.position);
       }
 
       return {
@@ -52,10 +52,7 @@ export function validateIOInstruction(
     })
     .with({ type: "address", mode: "direct" }, external => {
       if (external.size === "word") {
-        throw new CompilerError(
-          "This instruction doesn't accept word-sized operands.",
-          ...external.position,
-        );
+        throw new CompilerError("cannot-be-word", ...external.position);
       }
 
       return {
@@ -66,19 +63,13 @@ export function validateIOInstruction(
       };
     })
     .with({ type: "address", mode: "indirect" }, external => {
-      throw new CompilerError(
-        "This instruction doesn't accept indirect address mode.",
-        ...external.position,
-      );
+      throw new CompilerError("cannot-be-indirect", ...external.position);
     })
     .with(numberExpressionPattern, external => {
       if (external.type === "label" && !external.offset) {
         const label = labels.get(external.value);
         if (label === "DW") {
-          throw new CompilerError(
-            "This instruction can't accept a word-sized label.",
-            ...external.position,
-          );
+          throw new CompilerError("cannot-be-word", ...external.position);
         }
         if (label === "DB") {
           return {

@@ -2,7 +2,6 @@ import { isMatching, match, P } from "ts-pattern";
 import {
   BinaryInstructionType,
   CompilerError,
-  hex,
   IntInstructionType,
   IOInstructionType,
   JumpInstructionType,
@@ -119,15 +118,13 @@ export function evaluateInstruction(
     .with({ type: jumpInstructionPattern }, statement => {
       const label = labels.get(statement.jumpTo);
       if (!label) {
-        throw new CompilerError(
-          `Label ${statement.jumpTo} is not defined.`,
-          ...statement.meta.position,
-        );
+        throw new CompilerError("label-not-found", ...statement.meta.position, statement.jumpTo);
       }
       if (label.type !== "instruction") {
         throw new CompilerError(
-          `Label ${statement.jumpTo} is not an instruction label.`,
+          "label-should-be-an-instruction",
           ...statement.meta.position,
+          statement.jumpTo,
         );
       }
 
@@ -158,10 +155,7 @@ export function evaluateInstruction(
       const int = evaluateExpression(statement.interruption, labels);
 
       if (!isMatching(P.union(...INTERRUPTIONS), int)) {
-        throw new CompilerError(
-          `Invalid interruption number ${int}.`,
-          ...statement.interruption.position,
-        );
+        throw new CompilerError("invalid-interruption", ...statement.interruption.position, int);
       }
 
       return {
@@ -188,13 +182,10 @@ function evaluateAddress(
 ): number {
   const computed = evaluateExpression(address, labels);
   if (computed < MIN_MEMORY_ADDRESS || computed > MAX_MEMORY_ADDRESS) {
-    throw new CompilerError(`Memory address ${address} is out of range.`, ...address.position);
+    throw new CompilerError("address-out-of-range", ...address.position, computed);
   }
   if (readonlyMemory.has(computed)) {
-    throw new CompilerError(
-      `Memory address ${hex(computed)} is marked as a read-only data address.`,
-      ...address.position,
-    );
+    throw new CompilerError("address-has-code", ...address.position, computed);
   }
   return computed;
 }

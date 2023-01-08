@@ -15,15 +15,12 @@ export function validateStackInstruction(
   instruction: Merge<InstructionStatement, { instruction: StackInstructionType }>,
 ): ValidatedStackInstruction {
   if (instruction.operands.length !== 1) {
-    throw new CompilerError("This instruction expects one operand.", ...instruction.position);
+    throw new CompilerError("expects-one-operand", ...instruction.position);
   }
 
   const operand = instruction.operands[0];
   if (operand.type !== "register" || !isMatching(wordRegisterPattern, operand.value)) {
-    throw new CompilerError(
-      "This instruction expects a 16 bit register as its operand.",
-      ...operand.position,
-    );
+    throw new CompilerError("expects-word-register", ...operand.position);
   }
 
   return {

@@ -14,7 +14,7 @@ export function validateDW(dw: Merge<DataDirectiveStatement, { directive: "DW" }
 
   for (const value of dw.values) {
     if (value.type === "string") {
-      throw new CompilerError("DW can't accept strings.", ...value.position);
+      throw new CompilerError("cannot-accept-strings", ...value.position, "DW");
     } else if (value.type === "unassigned") {
       initialValues.push(null);
     } else {
@@ -23,7 +23,7 @@ export function validateDW(dw: Merge<DataDirectiveStatement, { directive: "DW" }
   }
 
   if (initialValues.length === 0) {
-    throw new CompilerError("DW must have at least one value.", ...dw.position);
+    throw new CompilerError("must-have-one-or-more-values", ...dw.position, "DW");
   }
 
   return {

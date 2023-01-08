@@ -51,7 +51,7 @@ export function validateBinaryInstruction(
   labels: LabelTypes,
 ): ValidatedBinaryInstruction {
   if (instruction.operands.length !== 2) {
-    throw new CompilerError("This instruction expects two operands.", ...instruction.position);
+    throw new CompilerError("expects-two-operands", ...instruction.position);
   }
 
   return match<[Operand, Operand], ValidatedBinaryInstruction>(
@@ -62,10 +62,7 @@ export function validateBinaryInstruction(
       const srcReg = typeGuardRegister(src);
 
       if (outReg.size !== srcReg.size) {
-        throw new CompilerError(
-          `The source (${srcReg.size}) and destination (${outReg.size}) must be the same size.`,
-          ...instruction.position,
-        );
+        throw new CompilerError("size-mismatch", ...instruction.position, srcReg.size, outReg.size);
       }
 
       return {
@@ -79,10 +76,7 @@ export function validateBinaryInstruction(
     .with([{ type: "register" }, { type: "address", mode: "direct" }], ([out, src]) => {
       const outReg = typeGuardRegister(out);
       if (src.size !== "auto" && outReg.size !== src.size) {
-        throw new CompilerError(
-          `The source (${src.size}) and destination (${outReg.size}) must be the same size.`,
-          ...instruction.position,
-        );
+        throw new CompilerError("size-mismatch", ...instruction.position, src.size, outReg.size);
       }
 
       return {
@@ -96,10 +90,7 @@ export function validateBinaryInstruction(
     .with([{ type: "register" }, { type: "address", mode: "indirect" }], ([out, src]) => {
       const outReg = typeGuardRegister(out);
       if (src.size !== "auto" && outReg.size !== src.size) {
-        throw new CompilerError(
-          `The source (${src.size}) and destination (${outReg.size}) must be the same size.`,
-          ...instruction.position,
-        );
+        throw new CompilerError("size-mismatch", ...instruction.position, src.size, outReg.size);
       }
 
       return {
@@ -118,10 +109,7 @@ export function validateBinaryInstruction(
         const srcSize = getLabelSize(src, labels);
         if (srcSize) {
           if (outReg.size !== srcSize) {
-            throw new CompilerError(
-              `The source (${srcSize}) and destination (${outReg.size}) must be the same size.`,
-              ...instruction.position,
-            );
+            throw new CompilerError("size-mismatch", ...instruction.position, srcSize, outReg.size);
           }
 
           return {
@@ -170,17 +158,11 @@ export function validateBinaryInstruction(
     .with([{ type: "address", mode: "direct" }, numberExpressionPattern], ([out, src]) => {
       // Can be a label pointing to a DB or DW
       if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
-        throw new CompilerError(
-          "Can't access to a memory location twice in the same instruction.",
-          ...instruction.position,
-        );
+        throw new CompilerError("double-memory-access", ...instruction.position);
       }
 
       if (out.size === "auto") {
-        throw new CompilerError(
-          "Addressing an unknown memory address with an immediate operand requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
-          ...out.position,
-        );
+        throw new CompilerError("unknown-size", ...out.position);
       }
 
       return {
@@ -199,17 +181,11 @@ export function validateBinaryInstruction(
     .with([{ type: "address", mode: "indirect" }, numberExpressionPattern], ([out, src]) => {
       // Can be a label pointing to a DB or DW
       if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
-        throw new CompilerError(
-          "Can't access to a memory location twice in the same instruction.",
-          ...instruction.position,
-        );
+        throw new CompilerError("double-memory-access", ...instruction.position);
       }
 
       if (out.size === "auto") {
-        throw new CompilerError(
-          "Addressing an unknown memory address with an immediate operand requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
-          ...out.position,
-        );
+        throw new CompilerError("unknown-size", ...out.position);
       }
 
       return {
@@ -226,31 +202,22 @@ export function validateBinaryInstruction(
       };
     })
     .with([{ type: "address" }, { type: "address" }], () => {
-      throw new CompilerError(
-        "Can't access to a memory location twice in the same instruction.",
-        ...instruction.position,
-      );
+      throw new CompilerError("double-memory-access", ...instruction.position);
     })
     .with([numberExpressionPattern, { type: "register" }], ([out, src]) => {
       // Could be an immediate value
       if (out.type !== "label" || out.offset) {
-        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
       }
 
       const outSize = getLabelSize(out, labels);
       if (!outSize) {
-        throw new CompilerError(
-          `Label ${out.value} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
-          ...out.position,
-        );
+        throw new CompilerError("label-should-be-writable", ...out.position, out.value);
       }
 
       const srcReg = typeGuardRegister(src);
       if (outSize !== srcReg.size) {
-        throw new CompilerError(
-          `The source (${srcReg.size}) and destination (${outSize}) must be the same size.`,
-          ...instruction.position,
-        );
+        throw new CompilerError("size-mismatch", ...instruction.position, srcReg.size, outSize);
       }
 
       return {
@@ -263,36 +230,27 @@ export function validateBinaryInstruction(
     })
     .with([numberExpressionPattern, { type: "address" }], ([out]) => {
       if (out.type !== "label" || out.offset || !getLabelSize(out, labels)) {
-        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
       } else {
-        throw new CompilerError(
-          "Can't access to a memory location twice in the same instruction.",
-          ...instruction.position,
-        );
+        throw new CompilerError("double-memory-access", ...instruction.position);
       }
     })
     .with([numberExpressionPattern, numberExpressionPattern], ([out, src]) => {
       // Could be an immediate value
       if (out.type !== "label" || out.offset) {
-        throw new CompilerError("The destination can't be an immediate value.", ...out.position);
+        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
       }
 
       const outSize = getLabelSize(out, labels);
       if (!outSize) {
-        throw new CompilerError(
-          `Label ${out.value} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
-          ...out.position,
-        );
+        throw new CompilerError("label-should-be-writable", ...out.position, out.value);
       }
 
       // Can be a label pointing to a DB or DW
       if (src.type === "label" && !src.offset) {
         const srcSize = getLabelSize(src, labels);
         if (srcSize) {
-          throw new CompilerError(
-            "Can't access to a memory location twice in the same instruction.",
-            ...instruction.position,
-          );
+          throw new CompilerError("double-memory-access", ...instruction.position);
         }
       }
 
@@ -326,7 +284,7 @@ function typeGuardRegister(reg: Extract<Operand, { type: "register" }>) {
 function getLabelSize(label: Extract<NumberExpression, { type: "label" }>, labels: LabelTypes) {
   const labelType = labels.get(label.value);
   if (!labelType) {
-    throw new CompilerError(`Label ${label.value} is not defined.`, ...label.position);
+    throw new CompilerError("label-not-found", ...label.position, label.value);
   }
   return labelType === "DB" ? "byte" : labelType === "DW" ? "word" : false;
 }
