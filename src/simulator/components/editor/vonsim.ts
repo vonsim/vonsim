@@ -125,7 +125,7 @@ const vonsimLinter = linter(
 
       const numberOfErrors = result.codeErrors.length + result.lineErrors.length;
       return {
-        globalError: result.codeErrors[0].message("en") || null,
+        globalError: result.codeErrors.at(0)?.message("en") || null,
         numberOfErrors,
       };
     });
