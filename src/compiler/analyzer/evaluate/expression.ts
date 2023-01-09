@@ -1,5 +1,5 @@
 import { match } from "ts-pattern";
-import { CompilerError } from "~/compiler/common";
+import { LineError } from "~/compiler/common";
 import type { NumberExpression } from "~/compiler/parser/grammar";
 import {
   MAX_BYTE_VALUE,
@@ -15,7 +15,7 @@ export function evaluateImmediate(expr: NumberExpression, size: "byte" | "word",
 
   const computed = evaluateExpression(expr, labels);
   if (computed < min || computed > max) {
-    throw new CompilerError("value-out-of-range", ...expr.position, computed, size);
+    throw new LineError("value-out-of-range", computed, size, ...expr.position);
   }
 
   if (computed < 0) {
@@ -30,18 +30,18 @@ export function evaluateExpression(expr: NumberExpression, labels: LabelMap): nu
     .with({ type: "number-literal" }, n => n.value)
     .with({ type: "label" }, l => {
       const label = labels.get(l.value);
-      if (!label) throw new CompilerError("label-not-found", ...l.position, l.value);
+      if (!label) throw new LineError("label-not-found", l.value, ...l.position);
 
       if (l.offset) {
         if (label.type !== "DB" && label.type !== "DW") {
-          throw new CompilerError("offset-only-with-data-directive", ...l.position);
+          throw new LineError("offset-only-with-data-directive", ...l.position);
         }
         return label.address;
       } else {
         if (label.type === "constant") return label.value;
         else if (label.type === "instruction") return label.address;
 
-        throw new CompilerError("label-should-be-a-number", ...l.position, l.value);
+        throw new LineError("label-should-be-a-number", l.value, ...l.position);
       }
     })
     .with({ type: "unary-operation" }, op =>

@@ -3,11 +3,11 @@ import type { CodeMemory } from "./analyzer/compute-addresses";
 import type { ProgramConstants } from "./analyzer/evaluate/constants";
 import type { ProgramData } from "./analyzer/evaluate/data";
 import type { ProgramInstruction } from "./analyzer/evaluate/instruction";
-import { CompilerError } from "./common";
+import { CompilerError, LineError } from "./common";
 import { Scanner } from "./lexer/scanner";
 import { Parser } from "./parser/parser";
 
-export { CompilerError };
+export { CompilerError, LineError };
 export type { ProgramConstants, ProgramData, ProgramInstruction };
 
 export type Program = {
@@ -20,8 +20,8 @@ export type Program = {
 export type CompileResultSuccess = { success: true } & Program;
 export type CompileResultError = {
   success: false;
-  lineErrors: CompilerError<any>[];
-  codeErrors: string[];
+  lineErrors: LineError<any>[];
+  codeErrors: CompilerError<any>[];
 };
 export type CompileResult = CompileResultSuccess | CompileResultError;
 
@@ -43,14 +43,16 @@ export function compile(source: string): CompileResult {
 }
 
 function groupErrors({ errors }: { success: false; errors: unknown[] }): CompileResultError {
-  const lineErrors: CompilerError<any>[] = [];
-  const codeErrors: string[] = [];
+  const lineErrors: LineError<any>[] = [];
+  const codeErrors: CompilerError<any>[] = [];
 
   for (const error of errors) {
-    if (error instanceof CompilerError) {
+    if (error instanceof LineError) {
       lineErrors.push(error);
+    } else if (error instanceof CompilerError) {
+      codeErrors.push(error);
     } else {
-      codeErrors.push(String(error));
+      codeErrors.push(new CompilerError("unexpected-error", error));
     }
   }
 

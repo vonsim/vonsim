@@ -1,5 +1,5 @@
 import { isMatching } from "ts-pattern";
-import { CompilerError, safeForEach } from "~/compiler/common";
+import { LineError, safeForEach } from "~/compiler/common";
 import { instructionPattern } from "~/compiler/common/patterns";
 import { MAX_MEMORY_ADDRESS } from "~/config";
 import type { ValidatedStatement } from "./validate";
@@ -25,7 +25,7 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
       pointer = statement.newAddress;
       return;
     } else if (pointer === null) {
-      throw new CompilerError("missing-org", ...statement.meta.position);
+      throw new LineError("missing-org", ...statement.meta.position);
     }
 
     if (statement.meta.label) {
@@ -39,13 +39,13 @@ export function computeAddresses(statements: ValidatedStatement[]): ComputeAddre
 
     const finalPointer = pointer + statement.meta.length;
     if (finalPointer > MAX_MEMORY_ADDRESS) {
-      throw new CompilerError("instruction-out-of-range", ...statement.meta.position, finalPointer);
+      throw new LineError("instruction-out-of-range", finalPointer, ...statement.meta.position);
     }
 
     const isInstruction = isMatching(instructionPattern, statement.type);
     for (; pointer < finalPointer; pointer++) {
       if (occupiedMemory.has(pointer)) {
-        throw new CompilerError("occupied-address", ...statement.meta.position, pointer);
+        throw new LineError("occupied-address", pointer, ...statement.meta.position);
       }
 
       occupiedMemory.add(pointer);

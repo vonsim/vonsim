@@ -1,5 +1,5 @@
 import type { Merge } from "type-fest";
-import { CompilerError, JumpInstructionType } from "~/compiler/common";
+import { JumpInstructionType, LineError } from "~/compiler/common";
 import type { InstructionStatement } from "~/compiler/parser/grammar";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
@@ -15,21 +15,21 @@ export function validateJumpInstruction(
   labels: LabelTypes,
 ): ValidatedJumpInstruction {
   if (instruction.operands.length !== 1) {
-    throw new CompilerError("expects-one-operand", ...instruction.position);
+    throw new LineError("expects-one-operand", ...instruction.position);
   }
 
   const operand = instruction.operands[0];
   if (operand.type !== "label") {
-    throw new CompilerError("expects-label", ...operand.position);
+    throw new LineError("expects-label", ...operand.position);
   }
 
   const label = labels.get(operand.value);
   if (!label) {
-    throw new CompilerError("label-not-found", ...operand.position, operand.value);
+    throw new LineError("label-not-found", operand.value, ...operand.position);
   }
 
   if (label !== "instruction") {
-    throw new CompilerError("label-should-be-an-instruction", ...operand.position, operand.value);
+    throw new LineError("label-should-be-an-instruction", operand.value, ...operand.position);
   }
 
   return {

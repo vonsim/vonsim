@@ -1,5 +1,5 @@
 import { klona } from "klona/json";
-import { safeMap } from "~/compiler/common";
+import { CompilerError, safeMap } from "~/compiler/common";
 import type { Statement } from "~/compiler/parser/grammar";
 import { compactLabels } from "./compact-labels";
 import { CodeMemory, computeAddresses } from "./compute-addresses";
@@ -26,7 +26,7 @@ export type AnalysisResult =
 
 export function analyze(statements: Statement[]): AnalysisResult {
   if (statements.at(-1)?.type !== "end") {
-    throw new Error("Empty program. The program must have, at least, an END statement");
+    throw new CompilerError("empty-program");
   }
 
   // Get whether each label is a constant, a variable or an instruction.

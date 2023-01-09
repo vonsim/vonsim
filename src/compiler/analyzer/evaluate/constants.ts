@@ -1,5 +1,5 @@
 import { match } from "ts-pattern";
-import { CompilerError } from "~/compiler/common";
+import { LineError } from "~/compiler/common";
 import type { NumberExpression } from "~/compiler/parser/grammar";
 import type { LabelAddresses } from "../compute-addresses";
 import type { ValidatedConstantStatement } from "../validate";
@@ -30,17 +30,17 @@ export function evaluateConstants(
         const label = labels.get(l.value);
 
         if (l.offset) {
-          if (!label) throw new CompilerError("label-not-found", ...l.position, l.value);
+          if (!label) throw new LineError("label-not-found", l.value, ...l.position);
           if (label.type !== "DB" && label.type !== "DW") {
-            throw new CompilerError("offset-only-with-data-directive", ...l.position);
+            throw new LineError("offset-only-with-data-directive", ...l.position);
           }
           return label.address;
         } else if (label) {
           if (label.type === "instruction") return label.address;
-          else throw new CompilerError("label-should-be-a-number", ...l.position, l.value);
+          else throw new LineError("label-should-be-a-number", l.value, ...l.position);
         } else {
           const c = processed.get(l.value);
-          if (!c) throw new CompilerError("equ-not-found", ...l.position, l.value);
+          if (!c) throw new LineError("equ-not-found", l.value, ...l.position);
 
           if (c.status === "processed") return c.value;
           if (c.status === "not-processed") {
@@ -50,7 +50,7 @@ export function evaluateConstants(
             return value;
           }
 
-          throw new CompilerError("circular-reference", ...l.position);
+          throw new LineError("circular-reference", ...l.position);
         }
       })
       .with({ type: "unary-operation" }, op =>
@@ -74,7 +74,7 @@ export function evaluateConstants(
     const constant = processed.get(label)!;
     if (constant.status === "processed") continue;
     if (constant.status === "processing") {
-      throw new CompilerError("circular-reference", ...constant.meta.position);
+      throw new LineError("circular-reference", ...constant.meta.position);
     }
 
     processed.set(label, { status: "processing", value: constant.value, meta: constant.meta });

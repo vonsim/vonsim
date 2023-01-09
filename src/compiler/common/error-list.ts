@@ -43,6 +43,9 @@ export const ERROR_LIST = {
   "duplicated-label": (label: string) => ({
     en: `Duplicated label "${label}".`,
   }),
+  "empty-program": () => ({
+    en: "Empty program. The program must have, at least, an END statement.",
+  }),
   "end-must-be-the-last-statement": () => ({
     en: "END must be the last statement.",
   }),
@@ -113,6 +116,9 @@ export const ERROR_LIST = {
   }),
   "unexpected-character": (char: string) => ({
     en: `Unexpected character "${char}".`,
+  }),
+  "unexpected-error": (err: unknown) => ({
+    en: `Unexpected error: ${String(err)}`,
   }),
   "unexpected-token": (token: string) => ({
     en: `Unexpected "${token}".`,

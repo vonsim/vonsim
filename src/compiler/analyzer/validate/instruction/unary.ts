@@ -1,6 +1,6 @@
 import { isMatching, match } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { CompilerError, RegisterType, UnaryInstructionType } from "~/compiler/common";
+import { LineError, RegisterType, UnaryInstructionType } from "~/compiler/common";
 import { wordRegisterPattern } from "~/compiler/common/patterns";
 import {
   InstructionStatement,
@@ -50,7 +50,7 @@ export function validateUnaryInstruction(
   labels: LabelTypes,
 ): ValidatedUnaryInstruction {
   if (instruction.operands.length !== 1) {
-    throw new CompilerError("expects-one-operand", ...instruction.position);
+    throw new LineError("expects-one-operand", ...instruction.position);
   }
 
   return match<Operand, ValidatedUnaryInstruction>(instruction.operands[0])
@@ -68,7 +68,7 @@ export function validateUnaryInstruction(
     })
     .with({ type: "address", mode: "direct" }, out => {
       if (out.size === "auto") {
-        throw new CompilerError("unknown-size", ...out.position);
+        throw new LineError("unknown-size", ...out.position);
       }
 
       return {
@@ -80,7 +80,7 @@ export function validateUnaryInstruction(
     })
     .with({ type: "address", mode: "indirect" }, out => {
       if (out.size === "auto") {
-        throw new CompilerError("unknown-size", ...out.position);
+        throw new LineError("unknown-size", ...out.position);
       }
 
       return {
@@ -92,17 +92,17 @@ export function validateUnaryInstruction(
     })
     .with(numberExpressionPattern, out => {
       if (out.type !== "label" || out.offset) {
-        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
+        throw new LineError("destination-cannot-be-immediate", ...out.position);
       }
 
       const outType = labels.get(out.value);
       if (!outType) {
-        throw new CompilerError("label-not-found", ...out.position, out.value);
+        throw new LineError("label-not-found", out.value, ...out.position);
       }
 
       const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
       if (!outSize) {
-        throw new CompilerError("label-should-be-writable", ...out.position, out.value);
+        throw new LineError("label-should-be-writable", out.value, ...out.position);
       }
 
       return {

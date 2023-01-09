@@ -1,6 +1,6 @@
 import { isMatching, match } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { BinaryInstructionType, CompilerError, RegisterType } from "~/compiler/common";
+import { BinaryInstructionType, LineError, RegisterType } from "~/compiler/common";
 import { wordRegisterPattern } from "~/compiler/common/patterns";
 import {
   InstructionStatement,
@@ -51,7 +51,7 @@ export function validateBinaryInstruction(
   labels: LabelTypes,
 ): ValidatedBinaryInstruction {
   if (instruction.operands.length !== 2) {
-    throw new CompilerError("expects-two-operands", ...instruction.position);
+    throw new LineError("expects-two-operands", ...instruction.position);
   }
 
   return match<[Operand, Operand], ValidatedBinaryInstruction>(
@@ -62,7 +62,7 @@ export function validateBinaryInstruction(
       const srcReg = typeGuardRegister(src);
 
       if (outReg.size !== srcReg.size) {
-        throw new CompilerError("size-mismatch", ...instruction.position, srcReg.size, outReg.size);
+        throw new LineError("size-mismatch", srcReg.size, outReg.size, ...instruction.position);
       }
 
       return {
@@ -76,7 +76,7 @@ export function validateBinaryInstruction(
     .with([{ type: "register" }, { type: "address", mode: "direct" }], ([out, src]) => {
       const outReg = typeGuardRegister(out);
       if (src.size !== "auto" && outReg.size !== src.size) {
-        throw new CompilerError("size-mismatch", ...instruction.position, src.size, outReg.size);
+        throw new LineError("size-mismatch", src.size, outReg.size, ...instruction.position);
       }
 
       return {
@@ -90,7 +90,7 @@ export function validateBinaryInstruction(
     .with([{ type: "register" }, { type: "address", mode: "indirect" }], ([out, src]) => {
       const outReg = typeGuardRegister(out);
       if (src.size !== "auto" && outReg.size !== src.size) {
-        throw new CompilerError("size-mismatch", ...instruction.position, src.size, outReg.size);
+        throw new LineError("size-mismatch", src.size, outReg.size, ...instruction.position);
       }
 
       return {
@@ -109,7 +109,7 @@ export function validateBinaryInstruction(
         const srcSize = getLabelSize(src, labels);
         if (srcSize) {
           if (outReg.size !== srcSize) {
-            throw new CompilerError("size-mismatch", ...instruction.position, srcSize, outReg.size);
+            throw new LineError("size-mismatch", srcSize, outReg.size, ...instruction.position);
           }
 
           return {
@@ -158,11 +158,11 @@ export function validateBinaryInstruction(
     .with([{ type: "address", mode: "direct" }, numberExpressionPattern], ([out, src]) => {
       // Can be a label pointing to a DB or DW
       if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
-        throw new CompilerError("double-memory-access", ...instruction.position);
+        throw new LineError("double-memory-access", ...instruction.position);
       }
 
       if (out.size === "auto") {
-        throw new CompilerError("unknown-size", ...out.position);
+        throw new LineError("unknown-size", ...out.position);
       }
 
       return {
@@ -181,11 +181,11 @@ export function validateBinaryInstruction(
     .with([{ type: "address", mode: "indirect" }, numberExpressionPattern], ([out, src]) => {
       // Can be a label pointing to a DB or DW
       if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
-        throw new CompilerError("double-memory-access", ...instruction.position);
+        throw new LineError("double-memory-access", ...instruction.position);
       }
 
       if (out.size === "auto") {
-        throw new CompilerError("unknown-size", ...out.position);
+        throw new LineError("unknown-size", ...out.position);
       }
 
       return {
@@ -202,22 +202,22 @@ export function validateBinaryInstruction(
       };
     })
     .with([{ type: "address" }, { type: "address" }], () => {
-      throw new CompilerError("double-memory-access", ...instruction.position);
+      throw new LineError("double-memory-access", ...instruction.position);
     })
     .with([numberExpressionPattern, { type: "register" }], ([out, src]) => {
       // Could be an immediate value
       if (out.type !== "label" || out.offset) {
-        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
+        throw new LineError("destination-cannot-be-immediate", ...out.position);
       }
 
       const outSize = getLabelSize(out, labels);
       if (!outSize) {
-        throw new CompilerError("label-should-be-writable", ...out.position, out.value);
+        throw new LineError("label-should-be-writable", out.value, ...out.position);
       }
 
       const srcReg = typeGuardRegister(src);
       if (outSize !== srcReg.size) {
-        throw new CompilerError("size-mismatch", ...instruction.position, srcReg.size, outSize);
+        throw new LineError("size-mismatch", srcReg.size, outSize, ...instruction.position);
       }
 
       return {
@@ -230,27 +230,27 @@ export function validateBinaryInstruction(
     })
     .with([numberExpressionPattern, { type: "address" }], ([out]) => {
       if (out.type !== "label" || out.offset || !getLabelSize(out, labels)) {
-        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
+        throw new LineError("destination-cannot-be-immediate", ...out.position);
       } else {
-        throw new CompilerError("double-memory-access", ...instruction.position);
+        throw new LineError("double-memory-access", ...instruction.position);
       }
     })
     .with([numberExpressionPattern, numberExpressionPattern], ([out, src]) => {
       // Could be an immediate value
       if (out.type !== "label" || out.offset) {
-        throw new CompilerError("destination-cannot-be-immediate", ...out.position);
+        throw new LineError("destination-cannot-be-immediate", ...out.position);
       }
 
       const outSize = getLabelSize(out, labels);
       if (!outSize) {
-        throw new CompilerError("label-should-be-writable", ...out.position, out.value);
+        throw new LineError("label-should-be-writable", out.value, ...out.position);
       }
 
       // Can be a label pointing to a DB or DW
       if (src.type === "label" && !src.offset) {
         const srcSize = getLabelSize(src, labels);
         if (srcSize) {
-          throw new CompilerError("double-memory-access", ...instruction.position);
+          throw new LineError("double-memory-access", ...instruction.position);
         }
       }
 
@@ -284,7 +284,7 @@ function typeGuardRegister(reg: Extract<Operand, { type: "register" }>) {
 function getLabelSize(label: Extract<NumberExpression, { type: "label" }>, labels: LabelTypes) {
   const labelType = labels.get(label.value);
   if (!labelType) {
-    throw new CompilerError("label-not-found", ...label.position, label.value);
+    throw new LineError("label-not-found", label.value, ...label.position);
   }
   return labelType === "DB" ? "byte" : labelType === "DW" ? "word" : false;
 }

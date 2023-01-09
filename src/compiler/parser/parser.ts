@@ -1,7 +1,7 @@
 import { klona } from "klona/json";
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { CompilerError, PositionRange, RegisterType } from "~/compiler/common";
+import { LineError, PositionRange, RegisterType } from "~/compiler/common";
 import {
   dataDirectivePattern,
   instructionPattern,
@@ -75,7 +75,7 @@ export class Parser {
             continue;
           }
 
-          throw CompilerError.fromToken("end-must-be-the-last-statement", token);
+          throw LineError.fromToken("end-must-be-the-last-statement", token);
         }
 
         continue;
@@ -148,7 +148,7 @@ export class Parser {
         continue;
       }
 
-      throw CompilerError.fromToken("expected-token", token, "instruction", token.type);
+      throw LineError.fromToken("expected-token", "instruction", token.type, token);
     }
 
     return this.statements;
@@ -188,12 +188,7 @@ export class Parser {
 
   private consume<T extends TokenType>(type: T, expected?: string): Merge<Token, { type: T }> {
     if (!this.check(type)) {
-      throw CompilerError.fromToken(
-        "expected-token",
-        this.peek(),
-        expected || type,
-        this.peek().type,
-      );
+      throw LineError.fromToken("expected-token", expected || type, this.peek().type, this.peek());
     }
     return this.advance() as any;
   }
@@ -201,7 +196,7 @@ export class Parser {
   private expectEOL() {
     if (this.isAtEnd()) return;
     if (this.check("EOL")) return this.advance();
-    throw CompilerError.fromToken("expected-token", this.peek(), "EOL", this.peek().type);
+    throw LineError.fromToken("expected-token", "EOL", this.peek().type, this.peek());
   }
 
   private isAtEnd() {
@@ -255,7 +250,7 @@ export class Parser {
       labelToken = this.advance();
 
       if (!isMatching(dataDirectivePattern, this.peek().type)) {
-        throw CompilerError.fromToken("unexpected-token", labelToken, "identifier");
+        throw LineError.fromToken("unexpected-token", "identifier", labelToken);
       }
     } else if (this.check("LABEL")) {
       labelToken = this.advance();
@@ -265,11 +260,11 @@ export class Parser {
       }
 
       if (!isMatching(instructionPattern, this.peek().type)) {
-        throw CompilerError.fromToken(
+        throw LineError.fromToken(
           `expected-token`,
-          this.peek(),
           "instruction after label",
           this.peek().type,
+          this.peek(),
         );
       }
     }
@@ -281,11 +276,7 @@ export class Parser {
 
     const duplicatedLabel = this.statements.find(s => "label" in s && s.label === label);
     if (duplicatedLabel) {
-      throw new CompilerError(
-        "duplicated-label",
-        ...this.calculatePositionRange(labelToken),
-        "label",
-      );
+      throw new LineError("duplicated-label", "label", ...this.calculatePositionRange(labelToken));
     }
 
     return label;
@@ -410,7 +401,7 @@ export class Parser {
       };
     }
 
-    throw CompilerError.fromToken("expected-argument", this.peek());
+    throw LineError.fromToken("expected-argument", this.peek());
   }
 
   private unaryNE(): NumberExpression {
@@ -419,11 +410,11 @@ export class Parser {
 
       // Prevent ambiguous cases like `(--1)` or `(+-1)`
       if (this.match("PLUS", "MINUS")) {
-        throw CompilerError.fromToken(
+        throw LineError.fromToken(
           "expected-token",
-          this.peek(),
           "number expression",
           this.peek().type,
+          this.peek(),
         );
       }
 

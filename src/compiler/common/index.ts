@@ -44,5 +44,5 @@ export type Position = number;
  */
 export type PositionRange = [from: Position, to: Position];
 
-export { CompilerError } from "./error";
+export { CompilerError, LineError } from "./error";
 export * from "./helpers";
