@@ -11,7 +11,7 @@ import {
   unaryInstructionPattern,
   zeroaryInstructionPattern,
 } from "~/compiler/common/patterns";
-import { INITIAL_IP, MAX_BYTE_VALUE, MAX_WORD_VALUE, MEMORY_SIZE } from "~/config";
+import { INITIAL_IP, MAX_VALUE, MEMORY_SIZE } from "~/config";
 import type { ComputerSlice } from ".";
 import { splitLowHigh } from "../helpers";
 
@@ -37,7 +37,7 @@ export const createProgramSlice: ComputerSlice<ProgramSlice> = (set, get) => ({
       memoryConfig === "empty"
         ? new ArrayBuffer(MEMORY_SIZE)
         : memoryConfig === "random"
-        ? new Uint8Array(MEMORY_SIZE).map(() => Math.round(Math.random() * MAX_BYTE_VALUE)).buffer
+        ? new Uint8Array(MEMORY_SIZE).map(() => Math.round(Math.random() * MAX_VALUE.byte)).buffer
         : klona(get().memory);
 
     for (const data of program.data) {
@@ -145,10 +145,10 @@ export const createProgramSlice: ComputerSlice<ProgramSlice> = (set, get) => ({
           ? { AX: 0, BX: 0, CX: 0, DX: 0 }
           : memoryConfig === "random"
           ? {
-              AX: Math.random() * MAX_WORD_VALUE,
-              BX: Math.random() * MAX_WORD_VALUE,
-              CX: Math.random() * MAX_WORD_VALUE,
-              DX: Math.random() * MAX_WORD_VALUE,
+              AX: Math.random() * MAX_VALUE.word,
+              BX: Math.random() * MAX_VALUE.word,
+              CX: Math.random() * MAX_VALUE.word,
+              DX: Math.random() * MAX_VALUE.word,
             }
           : {
               AX: get().registers.AX,

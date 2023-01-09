@@ -22,7 +22,7 @@ import {
   zeroaryInstructionPattern,
 } from "~/compiler/common/patterns";
 import { NumberExpression } from "~/compiler/parser/grammar";
-import { INTERRUPTS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
+import { Interrupt, INTERRUPTS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
 import type { LabelMap } from "../compact-labels";
 import type { CodeMemory } from "../compute-addresses";
 import type { ValidatedInstructionStatement } from "../validate";
@@ -41,14 +41,14 @@ export type ProgramInstruction =
   | {
       type: BinaryInstructionType;
       meta: InstructionMeta;
-      opSize: "byte" | "word";
+      opSize: Size;
       out: RegisterOperand | MemoryOperand;
       src: RegisterOperand | MemoryOperand | ImmediateOperand;
     }
   | {
       type: UnaryInstructionType;
       meta: InstructionMeta;
-      opSize: "byte" | "word";
+      opSize: Size;
       out: RegisterOperand | MemoryOperand;
     }
   | { type: StackInstructionType; meta: InstructionMeta; register: WordRegisterType }
@@ -56,13 +56,13 @@ export type ProgramInstruction =
   | {
       type: IOInstructionType;
       meta: InstructionMeta;
-      opSize: "byte" | "word";
+      opSize: Size;
       port:
         | { type: "register"; value: "DX" }
         | { type: "memory-direct"; address: number }
         | { type: "immediate"; value: number };
     }
-  | { type: IntInstructionType; meta: InstructionMeta; interrupt: typeof INTERRUPTS[number] };
+  | { type: IntInstructionType; meta: InstructionMeta; interrupt: Interrupt };
 
 export function evaluateInstruction(
   statement: ValidatedInstructionStatement,

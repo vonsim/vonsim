@@ -1,11 +1,4 @@
-import {
-  Language,
-  MAX_BYTE_VALUE,
-  MAX_MEMORY_ADDRESS,
-  MAX_WORD_VALUE,
-  MIN_SIGNED_BYTE_VALUE,
-  MIN_SIGNED_WORD_VALUE,
-} from "~/config";
+import { Language, MAX_MEMORY_ADDRESS, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
 
 export type CompilerErrorCode = keyof typeof ERROR_LIST;
 export type CompilerErrorParams<Code extends CompilerErrorCode> = Parameters<
@@ -111,7 +104,7 @@ export const ERROR_LIST = {
   "only-ascii": () => ({
     en: "Only ASCII character are supported for string.",
   }),
-  "size-mismatch": (src: "byte" | "word", out: "byte" | "word") => ({
+  "size-mismatch": (src: Size, out: Size) => ({
     en: `The source (${src}) and destination (${out}) must be the same size.`,
   }),
   "unexpected-character": (char: string) => ({
@@ -129,16 +122,14 @@ export const ERROR_LIST = {
   "unterminated-string": () => ({
     en: "Unterminated string.",
   }),
-  "value-out-of-range": (value: number, size: "byte" | "word") => {
+  "value-out-of-range": (value: number, size: Size) => {
     if (value >= 0) {
-      const max = size === "byte" ? MAX_BYTE_VALUE : MAX_WORD_VALUE;
       return {
-        en: `Value ${value} is too big for ${size} data. The maximum value is ${max}.`,
+        en: `Value ${value} is too big for ${size} data. The maximum value is ${MAX_VALUE[size]}.`,
       };
     } else {
-      const min = size === "byte" ? MIN_SIGNED_BYTE_VALUE : MIN_SIGNED_WORD_VALUE;
       return {
-        en: `Value ${value} is too negative for ${size} data. The minimum value is ${min}.`,
+        en: `Value ${value} is too negative for ${size} data. The minimum value is ${MIN_SIGNED_VALUE[size]}.`,
       };
     }
   },

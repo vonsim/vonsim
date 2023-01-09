@@ -1,12 +1,12 @@
 import { klona } from "klona";
-import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "~/config";
+import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS, Size } from "~/config";
 import type { ComputerSlice } from ".";
 import { renderAddress } from "../helpers";
 
 export type MemorySlice = {
   memory: ArrayBuffer;
-  getMemory(address: number, size: "byte" | "word"): number;
-  setMemory: (address: number, size: "byte" | "word", value: number) => void;
+  getMemory(address: number, size: Size): number;
+  setMemory: (address: number, size: Size, value: number) => void;
 };
 
 export const createMemorySlice: ComputerSlice<MemorySlice> = (set, get) => ({

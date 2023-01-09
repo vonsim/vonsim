@@ -8,6 +8,7 @@ import {
   registerPattern,
 } from "~/compiler/common/patterns";
 import type { Token, TokenType } from "~/compiler/lexer/tokens";
+import { Size } from "~/config";
 import type { DataDirectiveValue, NumberExpression, Operand, Statement } from "./grammar";
 
 /**
@@ -318,7 +319,7 @@ export class Parser {
     }
 
     if (this.match("BYTE", "WORD", "LEFT_BRACKET")) {
-      let size: "auto" | "byte" | "word";
+      let size: Size | "auto";
       let start: Token;
       if (this.check("LEFT_BRACKET")) {
         size = "auto";

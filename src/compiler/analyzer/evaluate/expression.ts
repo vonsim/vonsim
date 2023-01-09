@@ -1,25 +1,17 @@
 import { match } from "ts-pattern";
 import { LineError } from "~/compiler/common";
 import type { NumberExpression } from "~/compiler/parser/grammar";
-import {
-  MAX_BYTE_VALUE,
-  MAX_WORD_VALUE,
-  MIN_SIGNED_BYTE_VALUE,
-  MIN_SIGNED_WORD_VALUE,
-} from "~/config";
+import { MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
 import type { LabelMap } from "../compact-labels";
 
-export function evaluateImmediate(expr: NumberExpression, size: "byte" | "word", labels: LabelMap) {
-  const max = size === "byte" ? MAX_BYTE_VALUE : MAX_WORD_VALUE;
-  const min = size === "byte" ? MIN_SIGNED_BYTE_VALUE : MIN_SIGNED_WORD_VALUE;
-
+export function evaluateImmediate(expr: NumberExpression, size: Size, labels: LabelMap) {
   const computed = evaluateExpression(expr, labels);
-  if (computed < min || computed > max) {
+  if (computed < MIN_SIGNED_VALUE[size] || computed > MAX_VALUE[size]) {
     throw new LineError("value-out-of-range", computed, size, ...expr.position);
   }
 
   if (computed < 0) {
-    return computed + max + 1; // 2's complement
+    return computed + MAX_VALUE[size] + 1; // 2's complement
   } else {
     return computed;
   }

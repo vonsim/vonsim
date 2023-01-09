@@ -2,7 +2,7 @@ import { toast } from "react-hot-toast";
 import { match, P } from "ts-pattern";
 import { compile, ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
-import { MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS } from "~/config";
+import { MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
 import type { ComputerSlice } from ".";
 import { highlightLine, setReadOnly } from "../components/editor/methods";
 import { renderAddress } from "../helpers";
@@ -151,7 +151,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
       // #=========================================================================#
       const getOperandValue = (
         operand: Extract<ProgramInstruction, { type: BinaryInstructionType }>["src"],
-        opSize: "byte" | "word",
+        opSize: Size,
       ): number =>
         match(operand)
           .with({ type: "register" }, ({ register }) => get().getRegister(register))
@@ -167,7 +167,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
 
       const saveInOperand = (
         operand: Extract<ProgramInstruction, { type: BinaryInstructionType }>["out"],
-        opSize: "byte" | "word",
+        opSize: Size,
         value: number,
       ) =>
         match(operand)

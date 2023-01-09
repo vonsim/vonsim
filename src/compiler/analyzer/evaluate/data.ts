@@ -1,10 +1,11 @@
+import type { Size } from "~/config";
 import type { LabelMap } from "../compact-labels";
 import type { ValidatedDataStatement } from "../validate";
 import { evaluateImmediate } from "./expression";
 
 export type ProgramData = {
   meta: { start: number; length: number };
-  size: "byte" | "word";
+  size: Size;
   initialValues: (number | null)[];
 };
 

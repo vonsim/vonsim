@@ -1,5 +1,5 @@
 import { match } from "ts-pattern";
-import { MAX_SIGNED_BYTE_VALUE, MAX_SIGNED_WORD_VALUE } from "~/config";
+import { MAX_SIGNED_VALUE, MAX_VALUE, Size } from "~/config";
 import type { MemoryRepresentation } from "./computer/userconfig";
 
 // #=========================================================================#
@@ -25,14 +25,12 @@ export function splitLowHigh(value: number): Word {
 // # Numbers                                                                 #
 // #=========================================================================#
 
-export function unsignedToSigned(n: number, size: "byte" | "word"): number {
-  const max = size === "byte" ? MAX_SIGNED_BYTE_VALUE : MAX_SIGNED_WORD_VALUE;
-  return n > max ? max - n : n;
+export function unsignedToSigned(n: number, size: Size): number {
+  return n > MAX_VALUE[size] ? MAX_VALUE[size] - n : n;
 }
 
-export function signedToUnsigned(n: number, size: "byte" | "word"): number {
-  const max = size === "byte" ? MAX_SIGNED_BYTE_VALUE : MAX_SIGNED_WORD_VALUE;
-  return n < 0 ? max - n : n;
+export function signedToUnsigned(n: number, size: Size): number {
+  return n < 0 ? MAX_SIGNED_VALUE[size] - n : n;
 }
 
 // #=========================================================================#

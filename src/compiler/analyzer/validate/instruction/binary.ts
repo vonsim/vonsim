@@ -8,6 +8,7 @@ import {
   numberExpressionPattern,
   Operand,
 } from "~/compiler/parser/grammar";
+import type { Size } from "~/config";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 
@@ -21,7 +22,7 @@ type ImmediateOperand = { type: "immediate"; value: NumberExpression };
 export type ValidatedBinaryInstruction = {
   type: BinaryInstructionType;
   meta: ValidatedMeta;
-  opSize: "byte" | "word";
+  opSize: Size;
   out: RegisterOperand | MemoryOperand;
   src: RegisterOperand | MemoryOperand | ImmediateOperand;
 };

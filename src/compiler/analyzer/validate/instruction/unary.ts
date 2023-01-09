@@ -8,6 +8,7 @@ import {
   numberExpressionPattern,
   Operand,
 } from "~/compiler/parser/grammar";
+import type { Size } from "~/config";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 
@@ -20,7 +21,7 @@ type MemoryOperand = { type: "memory" } & (
 export type ValidatedUnaryInstruction = {
   type: UnaryInstructionType;
   meta: ValidatedMeta;
-  opSize: "byte" | "word";
+  opSize: Size;
   out: RegisterOperand | MemoryOperand;
 };
 

@@ -7,13 +7,14 @@ import {
   numberExpressionPattern,
   Operand,
 } from "~/compiler/parser/grammar";
+import type { Size } from "~/config";
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 
 export type ValidatedIOInstruction = {
   type: IOInstructionType;
   meta: ValidatedMeta;
-  opSize: "byte" | "word";
+  opSize: Size;
   port:
     | { type: "register"; value: "DX" }
     | { type: "memory-direct"; address: NumberExpression }

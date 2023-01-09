@@ -5,6 +5,7 @@ import type {
   PositionRange,
   RegisterType,
 } from "~/compiler/common";
+import type { Size } from "~/config";
 
 export type Statement =
   | OriginChangeStatement
@@ -49,7 +50,7 @@ export type Operand =
   | { type: "register"; value: RegisterType; position: PositionRange }
   | ({
       type: "address";
-      size: "byte" | "word" | "auto";
+      size: Size | "auto";
       position: PositionRange;
     } & ({ mode: "indirect" } | { mode: "direct"; value: NumberExpression }));
 

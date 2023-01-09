@@ -1,12 +1,5 @@
 import { match } from "ts-pattern";
-import {
-  MAX_BYTE_VALUE,
-  MAX_SIGNED_BYTE_VALUE,
-  MAX_SIGNED_WORD_VALUE,
-  MAX_WORD_VALUE,
-  MIN_SIGNED_BYTE_VALUE,
-  MIN_SIGNED_WORD_VALUE,
-} from "~/config";
+import { MAX_SIGNED_VALUE, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
 import type { ComputerSlice } from ".";
 import { unsignedToSigned } from "../helpers";
 
@@ -27,14 +20,9 @@ export type ALUSlice = {
     operation: ArithmeticOperation,
     left: number,
     right: number,
-    size: "byte" | "word",
+    size: Size,
   ) => number;
-  executeLogical: (
-    operation: LogicalOperation,
-    left: number,
-    right: number,
-    size: "byte" | "word",
-  ) => number;
+  executeLogical: (operation: LogicalOperation, left: number, right: number, size: Size) => number;
 
   encodeFlags: () => number;
   decodeFlags: (bits: number) => void;
@@ -69,19 +57,15 @@ export const createALUSlice: ComputerSlice<ALUSlice> = (set, get) => ({
       .with("SBB", () => left - right - Number(get().alu.flags.carry))
       .exhaustive();
 
-    const max = size === "byte" ? MAX_BYTE_VALUE : MAX_WORD_VALUE;
-    const maxSigned = size === "byte" ? MAX_SIGNED_BYTE_VALUE : MAX_SIGNED_WORD_VALUE;
-    const minSigned = size === "byte" ? MIN_SIGNED_BYTE_VALUE : MIN_SIGNED_WORD_VALUE;
-
     const flags = {
-      carry: uresult < 0 || uresult > max,
-      overflow: result < minSigned || result > maxSigned,
+      carry: uresult < 0 || uresult > MAX_VALUE[size],
+      overflow: result < MIN_SIGNED_VALUE[size] || result > MAX_SIGNED_VALUE[size],
       sign: result < 0,
       zero: result === 0,
     };
 
-    if (uresult > max) uresult = uresult - max - 1; // overflow
-    else if (uresult < 0) uresult = uresult + max + 1; // underflow
+    if (uresult > MAX_VALUE[size]) uresult = uresult - MAX_VALUE[size] - 1; // overflow
+    else if (uresult < 0) uresult = uresult + MAX_VALUE[size] + 1; // underflow
 
     set(state => ({
       ...state,
