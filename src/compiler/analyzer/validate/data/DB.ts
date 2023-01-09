@@ -1,5 +1,5 @@
 import type { Merge } from "type-fest";
-import { LineError } from "~/compiler/common";
+import { LineError, PositionRange } from "~/compiler/common";
 import type { DataDirectiveStatement, NumberExpression } from "~/compiler/parser/grammar";
 import type { ValidatedMeta } from "../types";
 
@@ -20,7 +20,7 @@ export function validateDB(db: Merge<DataDirectiveStatement, { directive: "DB" }
         initialValues.push({
           type: "number-literal",
           value: str.charCodeAt(i),
-          position: [pos, pos + 1],
+          position: [pos, pos + 1] as PositionRange,
         });
       }
     } else if (value.type === "unassigned") {

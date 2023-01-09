@@ -1,7 +1,7 @@
 import { klona } from "klona/json";
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { LineError, PositionRange, RegisterType } from "~/compiler/common";
+import { LineError, Position, PositionRange, RegisterType } from "~/compiler/common";
 import {
   dataDirectivePattern,
   instructionPattern,
@@ -175,7 +175,7 @@ export class Parser {
       else if (token.position > rightmost.position) rightmost = token;
     }
 
-    return [leftmost.position, rightmost.position + rightmost.lexeme.length];
+    return [leftmost.position, (rightmost.position + rightmost.lexeme.length) as Position];
   }
 
   private check(type: TokenType) {

@@ -45,7 +45,12 @@ export class LineError<Code extends CompilerErrorCode> extends CompilerError<Cod
   ) {
     const params = args.slice(0, -1) as CompilerErrorParams<Code>;
     const token = args.at(-1) as Token;
-    return new LineError(code, ...params, token.position, token.position + token.lexeme.length);
+    return new LineError(
+      code,
+      ...params,
+      token.position,
+      (token.position + token.lexeme.length) as Position,
+    );
   }
 
   toString() {

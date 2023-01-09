@@ -13,8 +13,8 @@ import { Token, TokenType } from "./tokens";
 
 export class Scanner {
   private tokens: Token[] = [];
-  private current: Position = 0;
-  private start: Position = 0;
+  private current = 0 as Position;
+  private start = 0 as Position;
   private scanned = false;
 
   constructor(private source: string) {}
@@ -63,7 +63,7 @@ export class Scanner {
               throw new LineError("unterminated-string", this.start, this.current);
             }
             if (this.peek().charCodeAt(0) > 255) {
-              throw new LineError("only-ascii", this.current, this.current + 1);
+              throw new LineError("only-ascii", this.current, (this.current + 1) as Position);
             }
             this.advance();
           }

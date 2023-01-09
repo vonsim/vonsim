@@ -1,4 +1,5 @@
 import type { P } from "ts-pattern";
+import type { Opaque } from "type-fest";
 import type {
   binaryInstructionPattern,
   byteRegisterPattern,
@@ -34,8 +35,11 @@ export type IntInstructionType = P.infer<typeof intInstructionPattern>;
 
 export type KeywordType = P.infer<typeof keywordPattern>;
 
-/** A number representing a position in the source code, counting from the beginning. */
-export type Position = number;
+/**
+ * A number representing a position in the source code, counting from the beginning.
+ * @see https://codemix.com/opaque-types-in-javascript/
+ */
+export type Position = Opaque<number, "source code position">;
 
 /**
  * A range of positions in the source code, represented as a tuple of two positions.
