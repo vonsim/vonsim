@@ -368,21 +368,6 @@ export class Parser {
   // # Parse number expression (NE)                                            #
   // #=========================================================================#
 
-  private unaryNE(): NumberExpression {
-    if (this.match("PLUS", "MINUS")) {
-      const operatorToken = this.advance();
-      const right = this.unaryNE();
-      return {
-        type: "unary-operation",
-        operator: operatorToken.type === "PLUS" ? "+" : "-",
-        right,
-        position: [operatorToken.position, right.position[1]],
-      };
-    }
-
-    return this.primaryNE();
-  }
-
   private primaryNE(): NumberExpression {
     if (this.check("NUMBER")) {
       const numberToken = this.advance();
@@ -426,6 +411,32 @@ export class Parser {
     }
 
     throw CompilerError.fromToken("expected-argument", this.peek());
+  }
+
+  private unaryNE(): NumberExpression {
+    if (this.match("PLUS", "MINUS")) {
+      const operatorToken = this.advance();
+
+      // Prevent ambiguous cases like `(--1)` or `(+-1)`
+      if (this.match("PLUS", "MINUS")) {
+        throw CompilerError.fromToken(
+          "expected-token",
+          this.peek(),
+          "number expression",
+          this.peek().type,
+        );
+      }
+
+      const right = this.unaryNE();
+      return {
+        type: "unary-operation",
+        operator: operatorToken.type === "PLUS" ? "+" : "-",
+        right,
+        position: [operatorToken.position, right.position[1]],
+      };
+    }
+
+    return this.primaryNE();
   }
 
   private factorNE(): NumberExpression {
