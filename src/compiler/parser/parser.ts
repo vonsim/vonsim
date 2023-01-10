@@ -1,7 +1,13 @@
 import { klona } from "klona/json";
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { LineError, Position, PositionRange, RegisterType } from "~/compiler/common";
+import {
+  CompilerErrorMessages,
+  LineError,
+  Position,
+  PositionRange,
+  RegisterType,
+} from "~/compiler/common";
 import {
   dataDirectivePattern,
   instructionPattern,
@@ -56,14 +62,11 @@ export class Parser {
     this.statements = [];
 
     while (!this.isAtEnd()) {
-      if (this.check("EOL")) {
-        this.advance();
-        continue;
-      }
+      if (this.match("EOL")) continue;
 
       // First, parse END labels
-      if (this.check("END")) {
-        const token = this.advance();
+      if (this.match("END")) {
+        const token = this.previous();
 
         this.addStatement({
           type: "end",
@@ -71,21 +74,21 @@ export class Parser {
         });
 
         while (!this.isAtEnd()) {
-          if (this.check("EOL")) {
-            this.advance();
-            continue;
-          }
+          if (this.match("EOL")) continue;
 
-          throw LineError.fromToken("end-must-be-the-last-statement", token);
+          throw new LineError(
+            "end-must-be-the-last-statement",
+            ...this.calculatePositionRange(token),
+          );
         }
 
         continue;
       }
 
       // Then, parse ORG changes
-      if (this.check("ORG")) {
-        const token = this.advance();
-        const addressToken = this.consume("NUMBER", "Expected address after ORG");
+      if (this.match("ORG")) {
+        const token = this.previous();
+        const addressToken = this.consume("NUMBER", { en: "Expected address after ORG." });
         const address = this.parseNumber(addressToken);
 
         this.addStatement({
@@ -94,7 +97,7 @@ export class Parser {
           position: this.calculatePositionRange(token, addressToken),
         });
 
-        this.expectEOL();
+        this.endOfStatement();
         continue;
       }
 
@@ -110,13 +113,11 @@ export class Parser {
           position: this.calculatePositionRange(token),
         } satisfies Statement;
 
-        while (this.check("COMMA")) {
-          this.advance();
+        while (this.match("COMMA")) {
           statement.values.push(this.dataDirectiveValue());
         }
 
-        this.expectEOL();
-
+        this.endOfStatement();
         this.addStatement(statement);
         continue;
       }
@@ -138,18 +139,20 @@ export class Parser {
           statement.operands.push(this.instructionOperand());
         }
 
-        while (this.check("COMMA")) {
-          this.advance();
+        while (this.match("COMMA")) {
           statement.operands.push(this.instructionOperand());
         }
 
-        this.expectEOL();
-
+        this.endOfStatement();
         this.addStatement(statement);
         continue;
       }
 
-      throw LineError.fromToken("expected-token", "instruction", token.type, token);
+      throw new LineError(
+        "custom",
+        { en: `Expected instruction, got ${token.type}.` },
+        ...this.calculatePositionRange(token),
+      );
     }
 
     return this.statements;
@@ -176,32 +179,46 @@ export class Parser {
       else if (token.position > rightmost.position) rightmost = token;
     }
 
-    return [leftmost.position, (rightmost.position + rightmost.lexeme.length) as Position];
+    const from = leftmost.position;
+    const to = (rightmost.position + rightmost.lexeme.length) as Position;
+
+    return [from, to];
   }
 
-  private check(type: TokenType) {
-    return this.peek().type === type;
+  private check(...types: TokenType[]) {
+    if (this.isAtEnd()) return false;
+
+    for (const type of types) {
+      if (this.peek().type === type) return true;
+    }
+
+    return false;
   }
 
-  private checkNext(type: TokenType) {
-    return this.peekNext().type === type;
-  }
-
-  private consume<T extends TokenType>(type: T, expected?: string): Merge<Token, { type: T }> {
+  private consume<T extends TokenType>(
+    type: T,
+    messages?: CompilerErrorMessages,
+  ): Merge<Token, { type: T }> {
     if (!this.check(type)) {
-      throw LineError.fromToken("expected-token", expected || type, this.peek().type, this.peek());
+      messages ||= { en: `Expected ${type}, got ${this.peek().type}.` };
+      throw new LineError("custom", messages, ...this.calculatePositionRange(this.peek()));
     }
     return this.advance() as any;
   }
 
-  private expectEOL() {
+  private endOfStatement() {
     if (this.isAtEnd()) return;
     if (this.check("EOL")) return this.advance();
-    throw LineError.fromToken("expected-token", "EOL", this.peek().type, this.peek());
+
+    throw new LineError(
+      "custom",
+      { en: "Expected end of statement." },
+      ...this.calculatePositionRange(this.peek()),
+    );
   }
 
   private isAtEnd() {
-    return this.check("EOF");
+    return this.peek().type === "EOF";
   }
 
   private isAtEndOfStatement() {
@@ -209,13 +226,8 @@ export class Parser {
   }
 
   private match(...types: TokenType[]) {
-    for (const type of types) {
-      if (this.check(type)) {
-        return true;
-      }
-    }
-
-    return false;
+    if (this.check(...types)) return this.advance();
+    else return null;
   }
 
   private parseNumber(t: Token) {
@@ -236,8 +248,8 @@ export class Parser {
     return this.tokens[this.current];
   }
 
-  private peekNext() {
-    return this.tokens[this.current + 1];
+  private previous() {
+    return this.tokens[this.current - 1];
   }
 
   // #=========================================================================#
@@ -247,25 +259,27 @@ export class Parser {
   private label(): string | null {
     let labelToken: Token | null = null;
 
-    if (this.check("IDENTIFIER")) {
-      labelToken = this.advance();
+    if (this.match("IDENTIFIER")) {
+      labelToken = this.previous();
 
       if (!isMatching(dataDirectivePattern, this.peek().type)) {
-        throw LineError.fromToken("unexpected-token", "identifier", labelToken);
+        throw new LineError(
+          "custom",
+          { en: `Expected identifier, got ${labelToken.type}.` },
+          ...this.calculatePositionRange(labelToken),
+        );
       }
-    } else if (this.check("LABEL")) {
-      labelToken = this.advance();
+    } else if (this.match("LABEL")) {
+      labelToken = this.previous();
 
-      while (this.check("EOL")) {
-        this.advance();
-      }
+      while (this.match("EOL")) {}
 
-      if (!isMatching(instructionPattern, this.peek().type)) {
-        throw LineError.fromToken(
-          `expected-token`,
-          "instruction after label",
-          this.peek().type,
-          this.peek(),
+      const next = this.peek();
+      if (!isMatching(instructionPattern, next.type)) {
+        throw new LineError(
+          "custom",
+          { en: `Expected instruction after label, got ${next.type}.` },
+          ...this.calculatePositionRange(next),
         );
       }
     }
@@ -288,8 +302,8 @@ export class Parser {
   // #=========================================================================#
 
   private dataDirectiveValue(): DataDirectiveValue {
-    if (this.check("STRING")) {
-      const stringToken = this.advance();
+    if (this.match("STRING")) {
+      const stringToken = this.previous();
       return {
         type: "string",
         value: this.parseString(stringToken),
@@ -297,8 +311,8 @@ export class Parser {
       };
     }
 
-    if (this.check("QUESTION_MARK")) {
-      const questionMarkToken = this.advance();
+    if (this.match("QUESTION_MARK")) {
+      const questionMarkToken = this.previous();
       return {
         type: "unassigned",
         position: this.calculatePositionRange(questionMarkToken),
@@ -319,21 +333,18 @@ export class Parser {
     }
 
     if (this.match("BYTE", "WORD", "LEFT_BRACKET")) {
+      const start: Token = this.previous();
       let size: Size | "auto";
-      let start: Token;
-      if (this.check("LEFT_BRACKET")) {
+      if (start.type === "LEFT_BRACKET") {
         size = "auto";
-        start = this.advance();
       } else {
-        size = this.check("BYTE") ? "byte" : "word";
-        start = this.advance();
-        this.consume("PTR", `"PTR" after "${size.toUpperCase()}"`);
-        this.consume("LEFT_BRACKET", `"[" after "${size.toUpperCase()} PTR"`);
+        size = start.type === "BYTE" ? "byte" : "word";
+        this.consume("PTR", { en: `Expected "PTR" after "${size.toUpperCase()}".` });
+        this.consume("LEFT_BRACKET", { en: `Expected "[" after "${size.toUpperCase()} PTR".` });
       }
 
-      if (this.check("BX")) {
-        this.advance();
-        const rbracket = this.consume("RIGHT_BRACKET", '"]" after "BX"');
+      if (this.match("BX")) {
+        const rbracket = this.consume("RIGHT_BRACKET", { en: 'Expected "]" after "BX".' });
         return {
           type: "address",
           size,
@@ -342,7 +353,7 @@ export class Parser {
         };
       } else {
         const calc = this.numberExpression();
-        const rbracket = this.consume("RIGHT_BRACKET", '"]" after expression');
+        const rbracket = this.consume("RIGHT_BRACKET", { en: 'Expected "]" after expression.' });
         return {
           type: "address",
           size,
@@ -361,8 +372,8 @@ export class Parser {
   // #=========================================================================#
 
   private primaryNE(): NumberExpression {
-    if (this.check("NUMBER")) {
-      const numberToken = this.advance();
+    if (this.match("NUMBER")) {
+      const numberToken = this.previous();
       const value = this.parseNumber(numberToken);
       return {
         type: "number-literal",
@@ -371,9 +382,9 @@ export class Parser {
       };
     }
 
-    if (this.check("OFFSET")) {
-      const offsetToken = this.advance();
-      const identifierToken = this.consume("IDENTIFIER", "label after OFFSET");
+    if (this.match("OFFSET")) {
+      const offsetToken = this.previous();
+      const identifierToken = this.consume("IDENTIFIER", { en: "Expected label after OFFSET." });
       return {
         type: "label",
         value: identifierToken.lexeme.toUpperCase(),
@@ -382,8 +393,8 @@ export class Parser {
       };
     }
 
-    if (this.check("IDENTIFIER")) {
-      const identifierToken = this.advance();
+    if (this.match("IDENTIFIER")) {
+      const identifierToken = this.previous();
       return {
         type: "label",
         value: identifierToken.lexeme.toUpperCase(),
@@ -392,30 +403,29 @@ export class Parser {
       };
     }
 
-    if (this.check("LEFT_PAREN")) {
-      const lparen = this.advance();
+    if (this.match("LEFT_PAREN")) {
+      const lparen = this.previous();
       let expression = this.numberExpression();
-      const rparen = this.consume("RIGHT_PAREN", ")");
+      const rparen = this.consume("RIGHT_PAREN", { en: "Unclosed parenthesis." });
       return {
         ...expression,
         position: this.calculatePositionRange(lparen, rparen),
       };
     }
 
-    throw LineError.fromToken("expected-argument", this.peek());
+    throw new LineError("expected-argument", ...this.calculatePositionRange(this.peek()));
   }
 
   private unaryNE(): NumberExpression {
     if (this.match("PLUS", "MINUS")) {
-      const operatorToken = this.advance();
+      const operatorToken = this.previous();
 
       // Prevent ambiguous cases like `(--1)` or `(+-1)`
-      if (this.match("PLUS", "MINUS")) {
-        throw LineError.fromToken(
-          "expected-token",
-          "number expression",
-          this.peek().type,
+      if (this.check("PLUS", "MINUS")) {
+        throw new LineError(
+          "unexpected-token",
           this.peek(),
+          ...this.calculatePositionRange(this.peek()),
         );
       }
 
@@ -435,7 +445,6 @@ export class Parser {
     let expression = this.unaryNE();
 
     while (this.match("ASTERISK")) {
-      this.advance();
       const right = this.unaryNE();
       expression = {
         type: "binary-operation",
@@ -453,7 +462,7 @@ export class Parser {
     let expression = this.factorNE();
 
     while (this.match("PLUS", "MINUS")) {
-      const operatorToken = this.advance();
+      const operatorToken = this.previous();
       const right = this.factorNE();
       expression = {
         type: "binary-operation",

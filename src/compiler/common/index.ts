@@ -49,4 +49,5 @@ export type Position = Opaque<number, "source code position">;
 export type PositionRange = [from: Position, to: Position];
 
 export { CompilerError, LineError } from "./error";
+export type { CompilerErrorMessages } from "./error-list";
 export * from "./helpers";

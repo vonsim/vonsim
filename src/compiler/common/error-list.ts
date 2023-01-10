@@ -1,9 +1,11 @@
+import type { Token } from "~/compiler/lexer/tokens";
 import { Language, MAX_MEMORY_ADDRESS, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
 
 export type CompilerErrorCode = keyof typeof ERROR_LIST;
 export type CompilerErrorParams<Code extends CompilerErrorCode> = Parameters<
   typeof ERROR_LIST[Code]
 >;
+export type CompilerErrorMessages = { [key in Language]: string };
 
 export const ERROR_LIST = {
   "address-has-code": (address: number) => ({
@@ -46,9 +48,6 @@ export const ERROR_LIST = {
     en: `EQU "${label}" not found.`,
   }),
   "expected-argument": () => ({ en: "Expected argument." }),
-  "expected-token": (expected: string, got: string) => ({
-    en: `Expected ${expected}, got ${got}.`,
-  }),
   "expects-ax": () => ({ en: "This operand should be AX or AL." }),
   "expects-dx": () => ({ en: "The only valid register is DX." }),
   "expects-immediate": () => ({ en: "This operand should be immediate." }),
@@ -113,8 +112,8 @@ export const ERROR_LIST = {
   "unexpected-error": (err: unknown) => ({
     en: `Unexpected error: ${String(err)}`,
   }),
-  "unexpected-token": (token: string) => ({
-    en: `Unexpected "${token}".`,
+  "unexpected-token": (token: Token) => ({
+    en: `Unexpected ${token.type}.`,
   }),
   "unknown-size": () => ({
     en: "Addressing an unknown memory address with an immediate operand requires specifying the type of pointer with WORD PTR or BYTE PTR before the address.",
@@ -133,7 +132,10 @@ export const ERROR_LIST = {
       };
     }
   },
-} satisfies { [key: string]: (...a: any[]) => { [key in Language]: string } };
+
+  /** Try not to use, unless you need some basic 'Expected X, got Y' */
+  custom: (messages: CompilerErrorMessages) => messages,
+} satisfies { [key: string]: (...a: any[]) => CompilerErrorMessages };
 
 function hex(template: TemplateStringsArray, ...args: number[]) {
   let result = template.raw[0];

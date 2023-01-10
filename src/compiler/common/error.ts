@@ -1,4 +1,3 @@
-import type { Token } from "~/compiler/lexer/tokens";
 import { Language } from "~/config";
 import { CompilerErrorCode, CompilerErrorParams, ERROR_LIST } from "./error-list";
 import type { Position, PositionRange } from "./index";
@@ -37,20 +36,6 @@ export class LineError<Code extends CompilerErrorCode> extends CompilerError<Cod
     super(code, ...params);
     this.from = from;
     this.to = to;
-  }
-
-  static fromToken<Code extends CompilerErrorCode>(
-    code: Code,
-    ...args: [...params: CompilerErrorParams<Code>, token: Token]
-  ) {
-    const params = args.slice(0, -1) as CompilerErrorParams<Code>;
-    const token = args.at(-1) as Token;
-    return new LineError(
-      code,
-      ...params,
-      token.position,
-      (token.position + token.lexeme.length) as Position,
-    );
   }
 
   toString() {
