@@ -4,6 +4,7 @@ import { useEvent, useLongPress, useToggle } from "react-use";
 import shallow from "zustand/shallow";
 import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
+import KeyboardIcon from "~icons/carbon/keyboard";
 import GitHubIcon from "~icons/carbon/logo-github";
 import Logo from "~icons/carbon/machine-learning";
 import PausedIcon from "~icons/carbon/pause";
@@ -57,6 +58,8 @@ export function Controls() {
       </div>
 
       <div className="flex h-full items-center gap-4">
+        <State />
+
         {state === "stopped" ? (
           <>
             <Button onClick={() => dispatch("run")} title="F5">
@@ -67,52 +70,13 @@ export function Controls() {
               <DebugIcon /> Depurar
             </Button>
           </>
-        ) : state === "running" ? (
-          <>
-            <div className="flex h-6 w-32 select-none items-center justify-center rounded-lg bg-sky-500 text-white">
-              <RunningIcon className="mr-1 h-4 w-4 animate-spin" />
-              <span className="text-center text-xs font-bold uppercase tracking-wider">
-                Ejecutando
-              </span>
-            </div>
-
-            <div className="w-4" />
-
-            <Button onClick={() => dispatch("stop")} title="Shift+F5">
-              <AbortIcon /> Abortar
-            </Button>
-          </>
-        ) : state === "waiting-for-input" ? (
-          <>
-            <div className="flex h-6 w-32 animate-pulse select-none items-center justify-center rounded-lg bg-sky-500 text-white">
-              <PausedIcon className="mr-1 h-4 w-4" />
-              <span className="text-center text-xs font-bold uppercase tracking-wider">
-                Esperando
-              </span>
-            </div>
-
-            <div className="w-4" />
-
-            <Button onClick={() => dispatch("stop")} title="Shift+F5">
-              <AbortIcon /> Abortar
-            </Button>
-          </>
         ) : (
           <>
-            <div className="flex h-6 w-32 animate-pulse select-none items-center justify-center rounded-lg bg-sky-500 text-white">
-              <PausedIcon className="mr-1 h-4 w-4" />
-              <span className="text-center text-xs font-bold uppercase tracking-wider">
-                Pausado
-              </span>
-            </div>
-
-            <div className="w-4" />
-
-            <Button onClick={() => dispatch("step")} title="F11">
+            <Button onClick={() => dispatch("step")} title="F11" disabled={state !== "paused"}>
               <RunIcon /> Siguiente
             </Button>
 
-            <Button onClick={() => dispatch("run")} title="F5">
+            <Button onClick={() => dispatch("run")} title="F5" disabled={state !== "paused"}>
               <FinishIcon /> Finalizar
             </Button>
 
@@ -151,10 +115,50 @@ function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HT
       {...props}
       className={clsx(
         "flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30",
+        "disabled:border-slate-500 disabled:text-slate-500 disabled:hover:bg-transparent",
         "[&>svg]:mr-1 [&>svg]:h-5 [&>svg]:w-5",
       )}
     >
       {children}
     </button>
+  );
+}
+
+function State() {
+  const state = useComputer(state => state.runner.state);
+
+  return (
+    <div
+      className={clsx(
+        "mr-4 flex h-6 w-40 select-none items-center justify-center gap-1 rounded-full",
+        "text-center text-sm font-semibold",
+        state === "running" && "bg-emerald-200 text-emerald-700",
+        state === "paused" && "bg-amber-200 text-amber-700",
+        state === "waiting-for-input" && "bg-amber-200 text-amber-700",
+        state === "stopped" && "bg-sky-200 text-sky-700",
+      )}
+    >
+      {state === "running" ? (
+        <>
+          <RunningIcon className="h-4 w-4 animate-spin" />
+          <span>Ejecutando</span>
+        </>
+      ) : state === "paused" ? (
+        <>
+          <PausedIcon className="h-4 w-4 animate-pulse" />
+          <span>Pausado</span>
+        </>
+      ) : state === "waiting-for-input" ? (
+        <>
+          <KeyboardIcon className="h-4 w-4 animate-bounce" />
+          <span>Esperando tecla</span>
+        </>
+      ) : (
+        <>
+          <PausedIcon className="h-4 w-4" />
+          <span>Esperando</span>
+        </>
+      )}
+    </div>
   );
 }
