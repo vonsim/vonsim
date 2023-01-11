@@ -4,6 +4,7 @@ import { compile, ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
 import { MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
 import type { ComputerSlice } from ".";
+import { CONSOLE_ID } from "../components/Console";
 import { highlightLine, setReadOnly } from "../components/editor/methods";
 import { renderAddress } from "../helpers";
 
@@ -115,6 +116,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
       };
 
       document.addEventListener("keydown", listener);
+      document.getElementById(CONSOLE_ID)?.scrollIntoView({ behavior: "smooth" });
 
       set({ runner: { state: "waiting-for-input", listener } });
     });
