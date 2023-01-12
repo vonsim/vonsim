@@ -149,7 +149,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
         }
 
         // Clear action
-        set(state => ({ ...state, __runnerInternal: { ...state.__runnerInternal, action: null } }));
+        set(state => ({ __runnerInternal: { ...state.__runnerInternal, action: null } }));
 
         // Await next tick
         await sleep(resolution);
@@ -169,19 +169,19 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
 
     if (runner === "stopped") {
       if (action === "stop") return Promise.reject(new Error("Invalid action"));
-      set(state => ({ ...state, __runnerInternal: { ...state.__runnerInternal, action } }));
+      set(state => ({ __runnerInternal: { ...state.__runnerInternal, action } }));
       return get().__runnerInternal.loop();
     } else {
       // If runner isn't paused and action is 'run' or 'step'
-      if (runner !== "paused" && action !== "stop")
+      if (runner !== "paused" && action !== "stop") {
         return Promise.reject(new Error("Invalid action"));
-      set(state => ({ ...state, __runnerInternal: { ...state.__runnerInternal, action } }));
+      }
+      set(state => ({ __runnerInternal: { ...state.__runnerInternal, action } }));
       return Promise.resolve();
     }
   },
 
   runInstruction() {
-    const program = get().program;
     if (!program) {
       return Err(new Error("No hay ningún programa cargado. Compilá antes de ejecutar."));
     }

@@ -52,7 +52,6 @@ export const createRegistersSlice: ComputerSlice<RegistersSlice> = (set, get) =>
       else if (byte === "H") high = value;
 
       set(state => ({
-        ...state,
         registers: {
           ...state.registers,
           [wordRegister]: joinLowHigh(low, high),
@@ -60,7 +59,6 @@ export const createRegistersSlice: ComputerSlice<RegistersSlice> = (set, get) =>
       }));
     } else {
       set(state => ({
-        ...state,
         registers: {
           ...state.registers,
           [register]: value,

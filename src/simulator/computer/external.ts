@@ -17,7 +17,6 @@ export const createExternalSlice: ComputerSlice<ExternalSlice> = set => ({
     const formFeed = value.lastIndexOf("\f");
     if (formFeed === -1) {
       set(state => ({
-        ...state,
         external: {
           ...state.external,
           console: state.external.console + value,
@@ -26,7 +25,6 @@ export const createExternalSlice: ComputerSlice<ExternalSlice> = set => ({
       }));
     } else {
       set(state => ({
-        ...state,
         external: {
           ...state.external,
           console: value.slice(formFeed + 1),

@@ -67,17 +67,15 @@ export const createALUSlice: ComputerSlice<ALUSlice> = (set, get) => ({
     if (uresult > MAX_VALUE[size]) uresult = uresult - MAX_VALUE[size] - 1; // overflow
     else if (uresult < 0) uresult = uresult + MAX_VALUE[size] + 1; // underflow
 
-    set(state => ({
-      ...state,
+    set({
       alu: {
-        ...state.alu,
         left,
         right,
         result: uresult,
         operation,
         flags,
       },
-    }));
+    });
 
     return uresult;
   },
@@ -97,17 +95,15 @@ export const createALUSlice: ComputerSlice<ALUSlice> = (set, get) => ({
       zero: result === 0,
     };
 
-    set(state => ({
-      ...state,
+    set({
       alu: {
-        ...state.alu,
         left,
         right,
         result,
         operation,
         flags,
       },
-    }));
+    });
 
     return result;
   },
@@ -130,7 +126,6 @@ export const createALUSlice: ComputerSlice<ALUSlice> = (set, get) => ({
       zero: (bits & 0b1000) !== 0,
     };
     set(state => ({
-      ...state,
       alu: { ...state.alu, flags },
     }));
   },
