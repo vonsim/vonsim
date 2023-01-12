@@ -10,27 +10,43 @@ import { CONSOLE_ID } from "../components/Console";
 import { highlightLine, setReadOnly } from "../components/editor/methods";
 import { renderAddress, sleep } from "../helpers";
 
-type InputListener = (ev: KeyboardEvent) => void;
-
-type InstructionReturn = "continue" | "halt" | "start-debugger" | "wait-for-input";
+type StepReturn = Result<"continue" | "halt" | "start-debugger" | "wait-for-input", Error>;
 
 export type RunnerAction = "run" | "step" | "stop";
 
 export type RunnerSlice = {
   runner: "running" | "paused" | "waiting-for-input" | "stopped";
+  dispatchRunner: (action: RunnerAction) => Promise<void>;
   __runnerInternal: {
     action: RunnerAction | null;
     loop: () => Promise<void>;
+    step: () => StepReturn;
   };
-  dispatchRunner: (action: RunnerAction) => Promise<void>;
-  runInstruction: () => Result<InstructionReturn, Error>;
 };
 
 export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
   runner: "stopped",
 
+  dispatchRunner: action => {
+    const runner = get().runner;
+
+    if (runner === "stopped") {
+      if (action === "stop") return Promise.reject(new Error("Invalid action"));
+      set(tdeep("__runnerInternal.action", action));
+      return get().__runnerInternal.loop();
+    } else {
+      // If runner isn't paused and action is 'run' or 'step'
+      if (runner !== "paused" && action !== "stop") {
+        return Promise.reject(new Error("Invalid action"));
+      }
+      set(tdeep("__runnerInternal.action", action));
+      return Promise.resolve();
+    }
+  },
+
   __runnerInternal: {
     action: null,
+
     loop: async () => {
       // This is how many milliseconds we'll tick the simulator clock,
       // which is lower than any clock speed the user can set. This way,
@@ -42,7 +58,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
       let instructionsExecuted = 0;
 
       const inputEvent = "keydown" as const;
-      let inputListener: InputListener | null = null;
+      let inputListener: ((ev: KeyboardEvent) => void) | null = null;
 
       while (true) {
         let action = get().__runnerInternal.action;
@@ -106,7 +122,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
         // bumped in the previous iteration
 
         if (runInstruction) {
-          const result = get().runInstruction();
+          const result = get().__runnerInternal.step();
 
           if (result.isErr()) {
             toast.error(result.unwrapErr().message);
@@ -165,262 +181,249 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
         document.removeEventListener(inputEvent, inputListener);
       }
     },
-  },
 
-  dispatchRunner: action => {
-    const runner = get().runner;
-
-    if (runner === "stopped") {
-      if (action === "stop") return Promise.reject(new Error("Invalid action"));
-      set(tdeep("__runnerInternal.action", action));
-      return get().__runnerInternal.loop();
-    } else {
-      // If runner isn't paused and action is 'run' or 'step'
-      if (runner !== "paused" && action !== "stop") {
-        return Promise.reject(new Error("Invalid action"));
+    step() {
+      const program = get().program;
+      if (!program) {
+        return Err(new Error("No hay ningún programa cargado. Compilá antes de ejecutar."));
       }
-      set(tdeep("__runnerInternal.action", action));
-      return Promise.resolve();
-    }
-  },
 
-  runInstruction() {
-    const program = get().program;
-    if (!program) {
-      return Err(new Error("No hay ningún programa cargado. Compilá antes de ejecutar."));
-    }
+      const IP = get().registers.IP;
 
-    const IP = get().registers.IP;
+      const instruction = program.instructions.find(instruction => instruction.meta.start === IP);
+      if (!instruction) {
+        return Err(
+          new Error(
+            `Se esperaba una instrucción en la dirección de memoria ${renderAddress(
+              IP,
+            )} pero no se encontró ninguna.`,
+          ),
+        );
+      }
 
-    const instruction = program.instructions.find(instruction => instruction.meta.start === IP);
-    if (!instruction) {
-      return Err(
-        new Error(
-          `Se esperaba una instrucción en la dirección de memoria ${renderAddress(
-            IP,
-          )} pero no se encontró ninguna.`,
-        ),
-      );
-    }
+      highlightLine(instruction.meta.position[0]);
 
-    highlightLine(instruction.meta.position[0]);
+      // Update the instruction register
+      const IR = get().getMemory(IP, "byte");
+      get().setRegister("IR", IR);
 
-    // Update the instruction register
-    const IR = get().getMemory(IP, "byte");
-    get().setRegister("IR", IR);
+      // #=========================================================================#
+      // # Helpers                                                                 #
+      // #=========================================================================#
+      const getOperandValue = (
+        operand: Extract<ProgramInstruction, { type: BinaryInstructionType }>["src"],
+        opSize: Size,
+      ): number =>
+        match(operand)
+          .with({ type: "register" }, ({ register }) => get().getRegister(register))
+          .with({ type: "memory", mode: "direct" }, ({ address }) =>
+            get().getMemory(address, opSize),
+          )
+          .with({ type: "memory", mode: "indirect" }, () => {
+            const address = get().getRegister("BX");
+            return get().getMemory(address, opSize);
+          })
+          .with({ type: "immediate" }, ({ value }) => value)
+          .exhaustive();
 
-    // #=========================================================================#
-    // # Helpers                                                                 #
-    // #=========================================================================#
-    const getOperandValue = (
-      operand: Extract<ProgramInstruction, { type: BinaryInstructionType }>["src"],
-      opSize: Size,
-    ): number =>
-      match(operand)
-        .with({ type: "register" }, ({ register }) => get().getRegister(register))
-        .with({ type: "memory", mode: "direct" }, ({ address }) => get().getMemory(address, opSize))
-        .with({ type: "memory", mode: "indirect" }, () => {
-          const address = get().getRegister("BX");
-          return get().getMemory(address, opSize);
+      const saveInOperand = (
+        operand: Extract<ProgramInstruction, { type: BinaryInstructionType }>["out"],
+        opSize: Size,
+        value: number,
+      ) =>
+        match(operand)
+          .with({ type: "register" }, ({ register }) => {
+            get().setRegister(register, value);
+          })
+          .with({ type: "memory", mode: "direct" }, ({ address }) => {
+            get().setMemory(address, opSize, value);
+          })
+          .with({ type: "memory", mode: "indirect" }, () => {
+            const address = get().getRegister("BX");
+            get().setMemory(address, opSize, value);
+          })
+          .exhaustive();
+
+      // Most instructions ends in a IP bump with a `return 'continue'`.
+      // It also allows passing a custom IP (for example, for jumps)
+      const bumpIP = (overwrite?: number): StepReturn => {
+        get().setRegister(
+          "IP",
+          typeof overwrite === "number" ? overwrite : IP + instruction.meta.length,
+        );
+        return Ok("continue");
+      };
+
+      // #=========================================================================#
+      // # Comptue each instruction                                                #
+      // #=========================================================================#
+
+      return match<ProgramInstruction, StepReturn>(instruction)
+        .with({ type: "MOV" }, ({ opSize, out, src }) => {
+          const value = getOperandValue(src, opSize);
+          saveInOperand(out, opSize, value);
+
+          return bumpIP();
         })
-        .with({ type: "immediate" }, ({ value }) => value)
-        .exhaustive();
+        .with({ type: P.union("ADD", "ADC", "SUB", "SBB") }, ({ type, opSize, out, src }) => {
+          const left = getOperandValue(out, opSize);
+          const right = getOperandValue(src, opSize);
+          const result = get().executeArithmetic(type, left, right, opSize);
+          saveInOperand(out, opSize, result);
 
-    const saveInOperand = (
-      operand: Extract<ProgramInstruction, { type: BinaryInstructionType }>["out"],
-      opSize: Size,
-      value: number,
-    ) =>
-      match(operand)
-        .with({ type: "register" }, ({ register }) => {
+          return bumpIP();
+        })
+        .with({ type: P.union("AND", "OR", "XOR") }, ({ type, opSize, out, src }) => {
+          const left = getOperandValue(out, opSize);
+          const right = getOperandValue(src, opSize);
+          const result = get().executeLogical(type, left, right, opSize);
+          saveInOperand(out, opSize, result);
+
+          return bumpIP();
+        })
+        .with({ type: "NOT" }, ({ type, opSize, out }) => {
+          const right = getOperandValue(out, opSize);
+          const result = get().executeLogical(type, 0, right, opSize);
+          saveInOperand(out, opSize, result);
+
+          return bumpIP();
+        })
+        .with({ type: "CMP" }, ({ opSize, out, src }) => {
+          const left = getOperandValue(out, opSize);
+          const right = getOperandValue(src, opSize);
+          get().executeArithmetic("SUB", left, right, opSize);
+
+          return bumpIP();
+        })
+        .with({ type: "INC" }, ({ opSize, out }) => {
+          const left = getOperandValue(out, opSize);
+          const result = get().executeArithmetic("ADD", left, 1, opSize);
+          saveInOperand(out, opSize, result);
+
+          return bumpIP();
+        })
+        .with({ type: "DEC" }, ({ opSize, out }) => {
+          const left = getOperandValue(out, opSize);
+          const result = get().executeArithmetic("SUB", left, 1, opSize);
+          saveInOperand(out, opSize, result);
+
+          return bumpIP();
+        })
+        .with({ type: "NEG" }, ({ opSize, out }) => {
+          const right = getOperandValue(out, opSize);
+          const result = get().executeArithmetic("SUB", 0, right, opSize);
+          saveInOperand(out, opSize, result);
+
+          return bumpIP();
+        })
+        .with({ type: "PUSH" }, ({ register }) => {
+          let SP = get().getRegister("SP");
+          SP -= 2;
+          if (SP < MIN_MEMORY_ADDRESS) return Err(new Error("Stack overflow"));
+          get().setRegister("SP", SP);
+          const value = get().getRegister(register);
+          get().setMemory(SP, "word", value);
+
+          return bumpIP();
+        })
+        .with({ type: "POP" }, ({ register }) => {
+          let SP = get().getRegister("SP");
+          if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new Error("Stack underflow"));
+          const value = get().getMemory(SP, "word");
           get().setRegister(register, value);
+          SP += 2;
+          get().setRegister("SP", SP);
+
+          return bumpIP();
         })
-        .with({ type: "memory", mode: "direct" }, ({ address }) => {
-          get().setMemory(address, opSize, value);
+        .with({ type: "PUSHF" }, () => {
+          let SP = get().getRegister("SP");
+          SP -= 2;
+          if (SP < MIN_MEMORY_ADDRESS) return Err(new Error("Stack overflow"));
+          get().setRegister("SP", SP);
+          const flags = get().encodeFlags();
+          get().setMemory(SP, "word", flags);
+
+          return bumpIP();
         })
-        .with({ type: "memory", mode: "indirect" }, () => {
-          const address = get().getRegister("BX");
-          get().setMemory(address, opSize, value);
+        .with({ type: "POPF" }, ({}) => {
+          let SP = get().getRegister("SP");
+          if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new Error("Stack underflow"));
+          const flags = get().getMemory(SP, "word");
+          get().decodeFlags(flags);
+          SP += 2;
+          get().setRegister("SP", SP);
+
+          return bumpIP();
         })
+        .with({ type: "CALL" }, ({ jumpTo, meta }) => {
+          let SP = get().getRegister("SP");
+          SP -= 2;
+          if (SP < MIN_MEMORY_ADDRESS) return Err(new Error("Stack overflow"));
+          get().setRegister("SP", SP);
+
+          const returnAddress = IP + meta.length;
+          get().setMemory(SP, "word", returnAddress);
+
+          return bumpIP(jumpTo);
+        })
+        .with({ type: "RET" }, () => {
+          let SP = get().getRegister("SP");
+          if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new Error("Stack underflow"));
+          const returnAddress = get().getMemory(SP, "word");
+          SP += 2;
+          get().setRegister("SP", SP);
+
+          return bumpIP(returnAddress);
+        })
+        .with({ type: "JMP" }, ({ jumpTo }) => bumpIP(jumpTo))
+        .with({ type: "JZ" }, ({ jumpTo }) => bumpIP(get().alu.flags.zero ? jumpTo : undefined))
+        .with({ type: "JNZ" }, ({ jumpTo }) => bumpIP(!get().alu.flags.zero ? jumpTo : undefined))
+        .with({ type: "JS" }, ({ jumpTo }) => bumpIP(get().alu.flags.sign ? jumpTo : undefined))
+        .with({ type: "JNS" }, ({ jumpTo }) => bumpIP(!get().alu.flags.sign ? jumpTo : undefined))
+        .with({ type: "JC" }, ({ jumpTo }) => bumpIP(get().alu.flags.carry ? jumpTo : undefined))
+        .with({ type: "JNC" }, ({ jumpTo }) => bumpIP(!get().alu.flags.carry ? jumpTo : undefined))
+        .with({ type: "JO" }, ({ jumpTo }) => bumpIP(get().alu.flags.overflow ? jumpTo : undefined))
+        .with({ type: "JNO" }, ({ jumpTo }) =>
+          bumpIP(!get().alu.flags.overflow ? jumpTo : undefined),
+        )
+        .with({ type: "IN" }, () => Err(new Error("Sin implementación")))
+        .with({ type: "OUT" }, () => Err(new Error("Sin implementación")))
+        .with({ type: "INT" }, ({ interrupt }) =>
+          match<Interrupt, StepReturn>(interrupt)
+            .with(0, () => Ok("halt"))
+            .with(3, () => {
+              bumpIP();
+              return Ok("start-debugger");
+            })
+            .with(6, () => {
+              bumpIP();
+              return Ok("wait-for-input");
+            })
+            .with(7, () => {
+              const start = get().getRegister("BX");
+              const len = get().getRegister("AL");
+              let text = "";
+              for (let i = 0; i < len; i++) {
+                text += String.fromCharCode(get().getMemory(i + start, "byte"));
+              }
+              get().devices.writeConsole(text);
+              return bumpIP();
+            })
+            .exhaustive(),
+        )
+        .with({ type: "IRET" }, () => Err(new Error("Sin implementación")))
+        .with({ type: "CLI" }, () => {
+          get().disableInterrupts();
+          return bumpIP();
+        })
+        .with({ type: "STI" }, () => {
+          get().enableInterrupts();
+          return bumpIP();
+        })
+        .with({ type: "NOP" }, () => bumpIP())
+        .with({ type: "HLT" }, () => Ok("halt"))
         .exhaustive();
-
-    // Most instructions ends in a IP bump with a `return true`.
-    // It also allows passing a custom IP (for example, for jumps)
-    const bumpIP = (overwrite?: number): ReturnType<RunnerSlice["runInstruction"]> => {
-      get().setRegister(
-        "IP",
-        typeof overwrite === "number" ? overwrite : IP + instruction.meta.length,
-      );
-      return Ok("continue");
-    };
-
-    // #=========================================================================#
-    // # Comptue each instruction                                                #
-    // #=========================================================================#
-
-    return match<ProgramInstruction, ReturnType<RunnerSlice["runInstruction"]>>(instruction)
-      .with({ type: "MOV" }, ({ opSize, out, src }) => {
-        const value = getOperandValue(src, opSize);
-        saveInOperand(out, opSize, value);
-
-        return bumpIP();
-      })
-      .with({ type: P.union("ADD", "ADC", "SUB", "SBB") }, ({ type, opSize, out, src }) => {
-        const left = getOperandValue(out, opSize);
-        const right = getOperandValue(src, opSize);
-        const result = get().executeArithmetic(type, left, right, opSize);
-        saveInOperand(out, opSize, result);
-
-        return bumpIP();
-      })
-      .with({ type: P.union("AND", "OR", "XOR") }, ({ type, opSize, out, src }) => {
-        const left = getOperandValue(out, opSize);
-        const right = getOperandValue(src, opSize);
-        const result = get().executeLogical(type, left, right, opSize);
-        saveInOperand(out, opSize, result);
-
-        return bumpIP();
-      })
-      .with({ type: "NOT" }, ({ type, opSize, out }) => {
-        const right = getOperandValue(out, opSize);
-        const result = get().executeLogical(type, 0, right, opSize);
-        saveInOperand(out, opSize, result);
-
-        return bumpIP();
-      })
-      .with({ type: "CMP" }, ({ opSize, out, src }) => {
-        const left = getOperandValue(out, opSize);
-        const right = getOperandValue(src, opSize);
-        get().executeArithmetic("SUB", left, right, opSize);
-
-        return bumpIP();
-      })
-      .with({ type: "INC" }, ({ opSize, out }) => {
-        const left = getOperandValue(out, opSize);
-        const result = get().executeArithmetic("ADD", left, 1, opSize);
-        saveInOperand(out, opSize, result);
-
-        return bumpIP();
-      })
-      .with({ type: "DEC" }, ({ opSize, out }) => {
-        const left = getOperandValue(out, opSize);
-        const result = get().executeArithmetic("SUB", left, 1, opSize);
-        saveInOperand(out, opSize, result);
-
-        return bumpIP();
-      })
-      .with({ type: "NEG" }, ({ opSize, out }) => {
-        const right = getOperandValue(out, opSize);
-        const result = get().executeArithmetic("SUB", 0, right, opSize);
-        saveInOperand(out, opSize, result);
-
-        return bumpIP();
-      })
-      .with({ type: "PUSH" }, ({ register }) => {
-        let SP = get().getRegister("SP");
-        SP -= 2;
-        if (SP < MIN_MEMORY_ADDRESS) return Err(new Error("Stack overflow"));
-        get().setRegister("SP", SP);
-        const value = get().getRegister(register);
-        get().setMemory(SP, "word", value);
-
-        return bumpIP();
-      })
-      .with({ type: "POP" }, ({ register }) => {
-        let SP = get().getRegister("SP");
-        if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new Error("Stack underflow"));
-        const value = get().getMemory(SP, "word");
-        get().setRegister(register, value);
-        SP += 2;
-        get().setRegister("SP", SP);
-
-        return bumpIP();
-      })
-      .with({ type: "PUSHF" }, () => {
-        let SP = get().getRegister("SP");
-        SP -= 2;
-        if (SP < MIN_MEMORY_ADDRESS) return Err(new Error("Stack overflow"));
-        get().setRegister("SP", SP);
-        const flags = get().encodeFlags();
-        get().setMemory(SP, "word", flags);
-
-        return bumpIP();
-      })
-      .with({ type: "POPF" }, ({}) => {
-        let SP = get().getRegister("SP");
-        if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new Error("Stack underflow"));
-        const flags = get().getMemory(SP, "word");
-        get().decodeFlags(flags);
-        SP += 2;
-        get().setRegister("SP", SP);
-
-        return bumpIP();
-      })
-      .with({ type: "CALL" }, ({ jumpTo, meta }) => {
-        let SP = get().getRegister("SP");
-        SP -= 2;
-        if (SP < MIN_MEMORY_ADDRESS) return Err(new Error("Stack overflow"));
-        get().setRegister("SP", SP);
-
-        const returnAddress = IP + meta.length;
-        get().setMemory(SP, "word", returnAddress);
-
-        return bumpIP(jumpTo);
-      })
-      .with({ type: "RET" }, () => {
-        let SP = get().getRegister("SP");
-        if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new Error("Stack underflow"));
-        const returnAddress = get().getMemory(SP, "word");
-        SP += 2;
-        get().setRegister("SP", SP);
-
-        return bumpIP(returnAddress);
-      })
-      .with({ type: "JMP" }, ({ jumpTo }) => bumpIP(jumpTo))
-      .with({ type: "JZ" }, ({ jumpTo }) => bumpIP(get().alu.flags.zero ? jumpTo : undefined))
-      .with({ type: "JNZ" }, ({ jumpTo }) => bumpIP(!get().alu.flags.zero ? jumpTo : undefined))
-      .with({ type: "JS" }, ({ jumpTo }) => bumpIP(get().alu.flags.sign ? jumpTo : undefined))
-      .with({ type: "JNS" }, ({ jumpTo }) => bumpIP(!get().alu.flags.sign ? jumpTo : undefined))
-      .with({ type: "JC" }, ({ jumpTo }) => bumpIP(get().alu.flags.carry ? jumpTo : undefined))
-      .with({ type: "JNC" }, ({ jumpTo }) => bumpIP(!get().alu.flags.carry ? jumpTo : undefined))
-      .with({ type: "JO" }, ({ jumpTo }) => bumpIP(get().alu.flags.overflow ? jumpTo : undefined))
-      .with({ type: "JNO" }, ({ jumpTo }) => bumpIP(!get().alu.flags.overflow ? jumpTo : undefined))
-      .with({ type: "IN" }, () => Err(new Error("Sin implementación")))
-      .with({ type: "OUT" }, () => Err(new Error("Sin implementación")))
-      .with({ type: "INT" }, ({ interrupt }) =>
-        match<Interrupt, ReturnType<RunnerSlice["runInstruction"]>>(interrupt)
-          .with(0, () => Ok("halt"))
-          .with(3, () => {
-            bumpIP();
-            return Ok("start-debugger");
-          })
-          .with(6, () => {
-            bumpIP();
-            return Ok("wait-for-input");
-          })
-          .with(7, () => {
-            const start = get().getRegister("BX");
-            const len = get().getRegister("AL");
-            let text = "";
-            for (let i = 0; i < len; i++) {
-              text += String.fromCharCode(get().getMemory(i + start, "byte"));
-            }
-            get().devices.writeConsole(text);
-            return bumpIP();
-          })
-          .exhaustive(),
-      )
-      .with({ type: "IRET" }, () => Err(new Error("Sin implementación")))
-      .with({ type: "CLI" }, () => {
-        get().disableInterrupts();
-        return bumpIP();
-      })
-      .with({ type: "STI" }, () => {
-        get().enableInterrupts();
-        return bumpIP();
-      })
-      .with({ type: "NOP" }, () => bumpIP())
-      .with({ type: "HLT" }, () => Ok("halt"))
-      .exhaustive();
+    },
   },
 });
