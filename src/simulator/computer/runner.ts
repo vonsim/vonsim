@@ -1,5 +1,6 @@
 import { toast } from "react-hot-toast";
 import { Err, Ok, Result } from "rust-optionals";
+import { tdeep } from "tdeep";
 import { match, P } from "ts-pattern";
 import { compile, ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
@@ -150,7 +151,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
 
         // Clear action
         if (action !== null) {
-          set(state => ({ __runnerInternal: { ...state.__runnerInternal, action: null } }));
+          set(tdeep("__runnerInternal.action", null));
         }
 
         // Await next tick
@@ -171,14 +172,14 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
 
     if (runner === "stopped") {
       if (action === "stop") return Promise.reject(new Error("Invalid action"));
-      set(state => ({ __runnerInternal: { ...state.__runnerInternal, action } }));
+      set(tdeep("__runnerInternal.action", action));
       return get().__runnerInternal.loop();
     } else {
       // If runner isn't paused and action is 'run' or 'step'
       if (runner !== "paused" && action !== "stop") {
         return Promise.reject(new Error("Invalid action"));
       }
-      set(state => ({ __runnerInternal: { ...state.__runnerInternal, action } }));
+      set(tdeep("__runnerInternal.action", action));
       return Promise.resolve();
     }
   },

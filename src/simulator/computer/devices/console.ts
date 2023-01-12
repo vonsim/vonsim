@@ -1,3 +1,4 @@
+import { tdeep } from "tdeep";
 import type { DeviceSlice } from ".";
 
 export type ConsoleSlice = {
@@ -10,12 +11,11 @@ export const createConsoleSlice: DeviceSlice<ConsoleSlice> = set => ({
     console: "",
     writeConsole: value => {
       const formFeed = value.lastIndexOf("\f");
-      set(state => {
-        const console = formFeed === -1 ? state.devices.console + value : value.slice(formFeed + 1);
-        return {
-          devices: { ...state.devices, console },
-        };
-      });
+      set(
+        tdeep("devices.console", prev =>
+          formFeed === -1 ? prev + value : value.slice(formFeed + 1),
+        ),
+      );
     },
   },
 });

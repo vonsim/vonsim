@@ -1,3 +1,4 @@
+import { tdeep } from "tdeep";
 import { isMatching, match } from "ts-pattern";
 import type { Split } from "type-fest";
 import type { PhysicalRegisterType, RegisterType } from "~/compiler/common";
@@ -51,19 +52,9 @@ export const createRegistersSlice: ComputerSlice<RegistersSlice> = (set, get) =>
       if (byte === "L") low = value;
       else if (byte === "H") high = value;
 
-      set(state => ({
-        registers: {
-          ...state.registers,
-          [wordRegister]: joinLowHigh(low, high),
-        },
-      }));
+      set(tdeep(`registers.${wordRegister}`, joinLowHigh(low, high)));
     } else {
-      set(state => ({
-        registers: {
-          ...state.registers,
-          [register]: value,
-        },
-      }));
+      set(tdeep(`registers.${register}`, value));
     }
   },
 });

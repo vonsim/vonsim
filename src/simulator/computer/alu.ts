@@ -1,3 +1,4 @@
+import { tdeep } from "tdeep";
 import { match } from "ts-pattern";
 import { MAX_SIGNED_VALUE, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
 import type { ComputerSlice } from ".";
@@ -125,8 +126,6 @@ export const createALUSlice: ComputerSlice<ALUSlice> = (set, get) => ({
       sign: (bits & 0b0100) !== 0,
       zero: (bits & 0b1000) !== 0,
     };
-    set(state => ({
-      alu: { ...state.alu, flags },
-    }));
+    set(tdeep("alu.flags", flags));
   },
 });
