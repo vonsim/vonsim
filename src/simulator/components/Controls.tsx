@@ -72,12 +72,12 @@ export function Controls() {
           </>
         ) : (
           <>
-            <Button onClick={() => dispatch("step")} title="F11" disabled={state !== "paused"}>
-              <RunIcon /> Siguiente
-            </Button>
-
             <Button onClick={() => dispatch("run")} title="F5" disabled={state !== "paused"}>
               <FinishIcon /> Finalizar
+            </Button>
+
+            <Button onClick={() => dispatch("step")} title="F11" disabled={state !== "paused"}>
+              <RunIcon /> Siguiente
             </Button>
 
             <Button onClick={() => dispatch("stop")} title="Shift+F5">
