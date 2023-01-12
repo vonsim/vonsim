@@ -182,6 +182,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
   },
 
   runInstruction() {
+    const program = get().program;
     if (!program) {
       return Err(new Error("No hay ningún programa cargado. Compilá antes de ejecutar."));
     }
