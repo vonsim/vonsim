@@ -80,16 +80,15 @@ Los primeros dos requieren un registro _reg_ de 16 bit. Los otros dos no reciben
 
 | Instrucción |   Opcode    |
 | :---------: | :---------: |
-|    `IN`     | `1101 0PPW` |
-|    `OUT`    | `1101 1PPW` |
+|    `IN`     | `1100 10PW` |
+|    `OUT`    | `1100 11PW` |
 
-_PP_ indica si fuente o destino (según si es `IN` o `OUT` respectivamente). A continuación se detalla qué significa cada valor de _PP_ y los operandos que requiere.
+_P_ indica si fuente o destino (según si es `IN` o `OUT` respectivamente) es variable o fijo:
 
-| Descripción               | _PP_ | [Operandos](#operandos)  |
-| :------------------------ | :--: | :----------------------- |
-| Puerto fijo               | `00` | _op.inm_ puerto (1 byte) |
-| Puerto alojado en memoria | `01` | _mem_ puerto             |
-| `DX`                      | `10` |                          |
+| Descripción                       | _P_ | [Operandos](#operandos)  |
+| :-------------------------------- | :-: | :----------------------- |
+| Puerto fijo                       | `0` | _op.inm_ puerto (1 byte) |
+| Puerto variable (alojado en `DX`) | `1` |                          |
 
 _W_ indica si la operación es de tipo byte (`W=0`) o de tipo word (`W=1`).
 

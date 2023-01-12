@@ -113,13 +113,10 @@ export const createProgramSlice: ComputerSlice<ProgramSlice> = (set, get) => ({
           operands.push(...splitLowHigh(jumpTo));
         })
         .with({ type: ioInstructionPattern }, ({ opSize, port }) => {
-          if (port.type === "immediate") {
+          if (port.type === "fixed") {
             operands.push(port.value);
-          } else if (port.type === "memory-direct") {
+          } else if (port.type === "variable") {
             opcode |= 0b0000_0010;
-            operands.push(...splitLowHigh(port.address));
-          } else {
-            opcode |= 0b0000_0100;
           }
 
           if (opSize === "word") opcode |= 0b0000_0001;
@@ -205,9 +202,9 @@ export const INSTRUCTION_TO_OPCODE: { [key in InstructionType]: number } = {
   JO: 0b1110_1010,
   JNO: 0b1110_1011,
 
-  // I/O - last three bits are 0b000 as a placeholder
-  IN: 0b1101_0000,
-  OUT: 0b1101_1000,
+  // I/O - last two bits are 0b00 as a placeholder
+  IN: 0b1100_1000,
+  OUT: 0b1100_1100,
 
   // Interrupt
   INT: 0b1111_1010,

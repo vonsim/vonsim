@@ -15,10 +15,7 @@ export type ValidatedIOInstruction = {
   type: IOInstructionType;
   meta: ValidatedMeta;
   opSize: Size;
-  port:
-    | { type: "register"; value: "DX" }
-    | { type: "memory-direct"; address: NumberExpression }
-    | { type: "immediate"; value: NumberExpression };
+  port: { type: "fixed"; value: NumberExpression } | { type: "variable" };
 };
 
 export function validateIOInstruction(
@@ -48,45 +45,18 @@ export function validateIOInstruction(
         type: instruction.instruction,
         meta: { label: instruction.label, start: 0, length: 1, position: instruction.position },
         opSize,
-        port: { type: "register", value: reg.value },
+        port: { type: "variable" },
       };
     })
-    .with({ type: "address", mode: "direct" }, external => {
-      if (external.size === "word") {
-        throw new LineError("cannot-be-word", ...external.position);
-      }
-
-      return {
-        type: instruction.instruction,
-        meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
-        opSize,
-        port: { type: "memory-direct", address: external.value },
-      };
-    })
-    .with({ type: "address", mode: "indirect" }, external => {
-      throw new LineError("cannot-be-indirect", ...external.position);
+    .with({ type: "address" }, external => {
+      throw new LineError("expects-immediate", ...external.position);
     })
     .with(numberExpressionPattern, external => {
+      // Can be a label pointing to a DB or DW
       if (external.type === "label" && !external.offset) {
         const label = labels.get(external.value);
-        if (label === "DW") {
-          throw new LineError("cannot-be-word", ...external.position);
-        }
-        if (label === "DB") {
-          return {
-            type: instruction.instruction,
-            meta: { label: instruction.label, start: 0, length: 3, position: instruction.position },
-            opSize,
-            port: {
-              type: "memory-direct",
-              address: {
-                type: "label",
-                offset: true,
-                value: external.value,
-                position: external.position,
-              },
-            },
-          };
+        if (label === "DB" || label === "DW") {
+          throw new LineError("label-should-be-a-number", external.value, ...external.position);
         }
       }
 
@@ -94,7 +64,7 @@ export function validateIOInstruction(
         type: instruction.instruction,
         meta: { label: instruction.label, start: 0, length: 2, position: instruction.position },
         opSize,
-        port: { type: "immediate", value: external },
+        port: { type: "fixed", value: external },
       };
     })
     .exhaustive();

@@ -57,10 +57,7 @@ export type ProgramInstruction =
       type: IOInstructionType;
       meta: InstructionMeta;
       opSize: Size;
-      port:
-        | { type: "register"; value: "DX" }
-        | { type: "memory-direct"; address: number }
-        | { type: "immediate"; value: number };
+      port: { type: "fixed"; value: number } | { type: "variable" };
     }
   | { type: IntInstructionType; meta: InstructionMeta; interrupt: Interrupt };
 
@@ -139,17 +136,9 @@ export function evaluateInstruction(
       meta: cleanMeta(statement),
       opSize: statement.opSize,
       port:
-        statement.port.type === "register"
-          ? statement.port
-          : statement.port.type === "immediate"
-          ? {
-              ...statement.port,
-              value: evaluateImmediate(statement.port.value, "byte", labels),
-            }
-          : {
-              ...statement.port,
-              address: evaluateAddress(statement.port.address, labels, codeMemory),
-            },
+        statement.port.type === "variable"
+          ? { type: "variable" }
+          : { type: "fixed", value: evaluateImmediate(statement.port.value, "byte", labels) },
     }))
     .with({ type: intInstructionPattern }, statement => {
       const int = evaluateExpression(statement.interrupt, labels);
