@@ -11,7 +11,7 @@ import create, { StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { ALUSlice, createALUSlice } from "./alu";
-import { createExternalSlice, ExternalSlice } from "./external";
+import { createDevicesSlice, DevicesSlice } from "./devices";
 import { createMemorySlice, MemorySlice } from "./memory";
 import { createProgramSlice, ProgramSlice } from "./program";
 import { createRegistersSlice, RegistersSlice } from "./registers";
@@ -19,7 +19,7 @@ import { createRunnerSlice, RunnerSlice } from "./runner";
 import { createUserConfigSlice, UserConfigSlice } from "./userconfig";
 
 export type ComputerStore = ALUSlice &
-  ExternalSlice &
+  DevicesSlice &
   MemorySlice &
   ProgramSlice &
   RegistersSlice &
@@ -32,7 +32,7 @@ export const useComputer = create<ComputerStore>()(
   persist(
     (...a) => ({
       ...createALUSlice(...a),
-      ...createExternalSlice(...a),
+      ...createDevicesSlice(...a),
       ...createMemorySlice(...a),
       ...createProgramSlice(...a),
       ...createRegistersSlice(...a),

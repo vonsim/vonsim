@@ -5,7 +5,7 @@ import { Card } from "./Card";
 export const CONSOLE_ID = "vonsim-console";
 
 export function Console() {
-  const contents = useComputer(state => state.external.console);
+  const contents = useComputer(state => state.devices.console);
   const watingForInput = useComputer(state => state.runner === "waiting-for-input");
 
   return (

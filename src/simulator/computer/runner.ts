@@ -134,7 +134,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
 
               const address = get().getRegister("BX");
               get().setMemory(address, "byte", char.charCodeAt(0));
-              get().writeConsole(char);
+              get().devices.writeConsole(char);
 
               inputListener = null;
               set({ runner: previousState });
@@ -149,7 +149,9 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
         }
 
         // Clear action
-        set(state => ({ __runnerInternal: { ...state.__runnerInternal, action: null } }));
+        if (action !== null) {
+          set(state => ({ __runnerInternal: { ...state.__runnerInternal, action: null } }));
+        }
 
         // Await next tick
         await sleep(resolution);
@@ -402,7 +404,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
             for (let i = 0; i < len; i++) {
               text += String.fromCharCode(get().getMemory(i + start, "byte"));
             }
-            get().writeConsole(text);
+            get().devices.writeConsole(text);
             return bumpIP();
           })
           .exhaustive(),
