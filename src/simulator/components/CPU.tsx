@@ -1,4 +1,4 @@
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 
 import { useComputer } from "../computer";
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "../helpers";

@@ -1,7 +1,7 @@
 import { useId, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useMeasure } from "react-use";
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "~/config";
 import { useComputer } from "../computer";
