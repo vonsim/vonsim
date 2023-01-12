@@ -155,8 +155,8 @@ function State() {
         </>
       ) : (
         <>
-          <PausedIcon className="h-4 w-4" />
-          <span>Esperando</span>
+          <AbortIcon className="h-4 w-4" />
+          <span>Detenido</span>
         </>
       )}
     </div>
