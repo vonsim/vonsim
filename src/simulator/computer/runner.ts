@@ -54,6 +54,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
       // one loop.
       const resolution = 10;
 
+      const instructionTime = 1000 / get().clockSpeed; // in milliseconds
       let timeElapsed = 0;
       let instructionsExecuted = 0;
 
@@ -72,7 +73,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
             throw new Error("Invalid action");
           }
 
-          const timeToNextInstruction = (1000 / get().clockSpeed) * instructionsExecuted;
+          const timeToNextInstruction = instructionTime * instructionsExecuted;
           if (timeElapsed >= timeToNextInstruction) {
             runInstruction = true;
           }
@@ -88,7 +89,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
           if (action !== null) {
             runInstruction = true;
             // If an instruction was executed, add the time that would have passed
-            timeElapsed += 1000 / get().clockSpeed;
+            timeElapsed += instructionTime;
           }
         } else if (runner === "waiting-for-input") {
           if (action === "run" || action === "step") {

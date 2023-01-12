@@ -19,6 +19,8 @@ export function ConfigSelector() {
     shallow,
   );
 
+  const runner = useComputer(state => state.runner);
+
   return (
     <div className="flex flex-wrap gap-y-2 gap-x-4">
       <Radio
@@ -50,6 +52,7 @@ export function ConfigSelector() {
         value={config.clockSpeed.toString()}
         onChange={n => config.setClockSpeed(parseInt(n, 10))}
         options={speedOptions}
+        disabled={runner !== "stopped"}
       />
     </div>
   );
@@ -60,16 +63,18 @@ function Radio<T extends string>({
   value,
   onChange,
   options,
+  disabled = false,
 }: {
   label: string;
   value: T;
   onChange: (value: T) => void;
   options: { [key in T]: string };
+  disabled?: boolean;
 }) {
   const entries = useMemo(() => Object.entries(options) as [T, string][], [options]);
 
   return (
-    <RadioGroup value={value} onChange={onChange} className="w-min">
+    <RadioGroup value={value} onChange={onChange} className="w-min" disabled={disabled}>
       <RadioGroup.Label className="text-xs font-bold uppercase tracking-wider text-slate-700">
         {label}
       </RadioGroup.Label>
@@ -78,7 +83,7 @@ function Radio<T extends string>({
           <RadioGroup.Option
             key={i}
             value={value}
-            className="cursor-pointer select-none whitespace-nowrap px-2 py-1 ui-checked:bg-sky-400 ui-checked:text-white"
+            className="cursor-pointer select-none whitespace-nowrap px-2 py-1 ui-checked:bg-sky-400 ui-checked:text-white ui-disabled:cursor-default ui-disabled:opacity-50"
           >
             {label}
           </RadioGroup.Option>
