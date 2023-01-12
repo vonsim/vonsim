@@ -411,8 +411,14 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
           .exhaustive(),
       )
       .with({ type: "IRET" }, () => Err(new Error("Sin implementación")))
-      .with({ type: "CLI" }, () => Err(new Error("Sin implementación")))
-      .with({ type: "STI" }, () => Err(new Error("Sin implementación")))
+      .with({ type: "CLI" }, () => {
+        get().disableInterrupts();
+        return bumpIP();
+      })
+      .with({ type: "STI" }, () => {
+        get().enableInterrupts();
+        return bumpIP();
+      })
       .with({ type: "NOP" }, () => bumpIP())
       .with({ type: "HLT" }, () => Ok("halt"))
       .exhaustive();

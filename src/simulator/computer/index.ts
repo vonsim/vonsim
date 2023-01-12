@@ -7,11 +7,12 @@
  * @see https://github.com/pmndrs/zustand/blob/main/docs/guides/slices-pattern.md
  */
 
-import create, { StateCreator } from "zustand";
+import { create, StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { ALUSlice, createALUSlice } from "./alu";
 import { createDevicesSlice, DevicesSlice } from "./devices";
+import { createInterruptsSlice, InterruptsSlice } from "./interrupts";
 import { createMemorySlice, MemorySlice } from "./memory";
 import { createProgramSlice, ProgramSlice } from "./program";
 import { createRegistersSlice, RegistersSlice } from "./registers";
@@ -20,6 +21,7 @@ import { createUserConfigSlice, UserConfigSlice } from "./userconfig";
 
 export type ComputerStore = ALUSlice &
   DevicesSlice &
+  InterruptsSlice &
   MemorySlice &
   ProgramSlice &
   RegistersSlice &
@@ -33,6 +35,7 @@ export const useComputer = create<ComputerStore>()(
     (...a) => ({
       ...createALUSlice(...a),
       ...createDevicesSlice(...a),
+      ...createInterruptsSlice(...a),
       ...createMemorySlice(...a),
       ...createProgramSlice(...a),
       ...createRegistersSlice(...a),
