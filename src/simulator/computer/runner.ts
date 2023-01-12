@@ -1,141 +1,186 @@
 import { toast } from "react-hot-toast";
-import { Err, None, Ok, Option, Result, Some } from "rust-optionals";
+import { Err, Ok, Result } from "rust-optionals";
 import { match, P } from "ts-pattern";
-import type { Promisable } from "type-fest";
 import { compile, ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
-import { MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
+import { Interrupt, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
 import type { ComputerSlice } from ".";
 import { CONSOLE_ID } from "../components/Console";
 import { highlightLine, setReadOnly } from "../components/editor/methods";
-import { renderAddress } from "../helpers";
+import { renderAddress, sleep } from "../helpers";
 
-type InputListener = (ev: KeyboardEvent | null) => void;
+type InputListener = (ev: KeyboardEvent) => void;
+
+type InstructionReturn = "continue" | "halt" | "start-debugger" | "wait-for-input";
 
 export type RunnerAction = "run" | "step" | "stop";
 
 export type RunnerSlice = {
-  runner:
-    | { state: "running"; stopRequested: boolean }
-    | { state: "paused" }
-    | { state: "waiting-for-input"; listener: InputListener }
-    | { state: "stopped" };
-  dispatchRunner: (action: RunnerAction) => void;
-  waitForInput: () => Promise<Option<string>>;
-  runInstruction: () => Promise<Result<{ continue: boolean }, Error>>;
+  runner: "running" | "paused" | "waiting-for-input" | "stopped";
+  __runnerInternal: {
+    action: RunnerAction | null;
+    loop: () => Promise<void>;
+  };
+  dispatchRunner: (action: RunnerAction) => Promise<void>;
+  runInstruction: () => Result<InstructionReturn, Error>;
 };
 
 export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
-  runner: { state: "stopped" },
+  runner: "stopped",
 
-  dispatchRunner: async action => {
-    const runner = get().runner;
+  __runnerInternal: {
+    action: null,
+    loop: async () => {
+      // This is how many milliseconds we'll tick the simulator clock,
+      // which is lower than any clock speed the user can set. This way,
+      // we can tick all the clocks (CPU, Timer, Printer, etc...) inside
+      // one loop.
+      const resolution = 10;
 
-    const finish = () => {
-      highlightLine(null);
-      setReadOnly(false);
-      set({ runner: { state: "stopped" } });
-    };
+      let timeElapsed = 0;
+      let instructionsExecuted = 0;
 
-    if (action === "stop") {
-      if (runner.state === "running") set({ runner: { state: "running", stopRequested: true } });
-      else if (runner.state === "paused") finish();
-      else if (runner.state === "waiting-for-input") runner.listener(null);
-
-      return;
-    }
-
-    // By now, we know that the action is either 'run' or 'step'
-    // If the state is 'running' or 'waiting-for-input', we don't do anything
-    if (runner.state === "running" || runner.state === "waiting-for-input") return;
-
-    if (runner.state === "stopped") {
-      const code = window.codemirror!.state.doc.toString();
-      const result = compile(code);
-
-      if (!result.success) {
-        toast.error("Error de compilación. Solucioná los errores y volvé a intentar");
-        return;
-      }
-
-      get().loadProgram(result);
-      setReadOnly(true);
-    }
-
-    if (action === "step") {
-      const result = await get().runInstruction();
-
-      if (result.isOk()) {
-        if (result.unwrap().continue) set({ runner: { state: "paused" } });
-        else finish();
-      } else {
-        toast.error(result.unwrapErr().message);
-        finish();
-      }
-    } else {
-      set({ runner: { state: "running", stopRequested: false } });
+      const inputEvent = "keydown" as const;
+      let inputListener: InputListener | null = null;
 
       while (true) {
-        const result = await get().runInstruction();
+        let action = get().__runnerInternal.action;
+        let runner = get().runner;
+        let runInstruction = false;
 
-        if (result.isErr()) {
-          toast.error(result.unwrapErr().message);
-          break;
+        if (action === "stop") break;
+
+        if (runner === "running") {
+          if (action === "run" || action === "step") {
+            throw new Error("Invalid action");
+          }
+
+          const timeToNextInstruction = (1000 / get().clockSpeed) * instructionsExecuted;
+          if (timeElapsed >= timeToNextInstruction) {
+            runInstruction = true;
+          }
+
+          // Add the resolution time, no matter if the instruction was executed or not
+          timeElapsed += resolution;
+        } else if (runner === "paused") {
+          if (action === "run") {
+            set({ runner: "running" });
+            runner = "running";
+          }
+
+          if (action !== null) {
+            runInstruction = true;
+            // If an instruction was executed, add the time that would have passed
+            timeElapsed += 1000 / get().clockSpeed;
+          }
+        } else if (runner === "waiting-for-input") {
+          if (action === "run" || action === "step") {
+            throw new Error("Invalid action");
+          }
+        } else {
+          // runner === 'stop'
+          if (action === null) return;
+
+          const code = window.codemirror!.state.doc.toString();
+          const result = compile(code);
+
+          if (!result.success) {
+            toast.error("Error de compilación. Solucioná los errores y volvé a intentar");
+            break;
+          }
+
+          get().loadProgram(result);
+          setReadOnly(true);
+
+          if (action === "run") {
+            set({ runner: "running" });
+            runner = "running";
+          } else if (action === "step") {
+            set({ runner: "paused" });
+            runner = "paused";
+          }
         }
 
-        await new Promise(resolve => {
-          // I know it's not efficient, but it  doesn't
-          // affect the performance of the app
-          const ms = 1000 / get().clockSpeed;
-          setTimeout(resolve, ms);
-        });
+        // For the 'wait-for-input' state we do nothing. The time should have been
+        // bumped in the previous iteration
 
-        const runner = get().runner;
-        if (!result.unwrap().continue || runner.state !== "running" || runner.stopRequested) break;
+        if (runInstruction) {
+          const result = get().runInstruction();
+
+          if (result.isErr()) {
+            toast.error(result.unwrapErr().message);
+            break;
+          }
+
+          instructionsExecuted++;
+
+          const ret = result.unwrap();
+          if (ret === "continue") {
+            // Do nothing
+          } else if (ret === "start-debugger") {
+            set({ runner: "paused" });
+          } else if (ret === "wait-for-input") {
+            const previousState = get().runner;
+            set({ runner: "waiting-for-input" });
+
+            inputListener = ev => {
+              let char: string;
+              if (/^[\u0000-\u00FF]$/.test(ev.key)) char = ev.key;
+              else if (ev.key === "Enter") char = "\n";
+              else return;
+
+              ev.preventDefault();
+              document.removeEventListener(inputEvent, inputListener!);
+
+              const address = get().getRegister("BX");
+              get().setMemory(address, "byte", char.charCodeAt(0));
+              get().writeConsole(char);
+
+              inputListener = null;
+              set({ runner: previousState });
+            };
+
+            document.addEventListener("keydown", inputListener);
+            document.getElementById(CONSOLE_ID)?.scrollIntoView({ behavior: "smooth" });
+          } else {
+            // ret = 'halt'
+            break;
+          }
+        }
+
+        // Clear action
+        set(state => ({ ...state, __runnerInternal: { ...state.__runnerInternal, action: null } }));
+
+        // Await next tick
+        await sleep(resolution);
       }
 
-      finish();
+      highlightLine(null);
+      setReadOnly(false);
+      set({ runner: "stopped" });
+      if (inputListener) {
+        document.removeEventListener(inputEvent, inputListener);
+      }
+    },
+  },
+
+  dispatchRunner: action => {
+    const runner = get().runner;
+
+    if (runner === "stopped") {
+      if (action === "stop") return Promise.reject(new Error("Invalid action"));
+      set(state => ({ ...state, __runnerInternal: { ...state.__runnerInternal, action } }));
+      return get().__runnerInternal.loop();
+    } else {
+      // If runner isn't paused and action is 'run' or 'step'
+      if (runner !== "paused" && action !== "stop")
+        return Promise.reject(new Error("Invalid action"));
+      set(state => ({ ...state, __runnerInternal: { ...state.__runnerInternal, action } }));
+      return Promise.resolve();
     }
   },
 
-  /**
-   * Waits for the user to press a key.
-   * Returns the pressed key, or None if the the program is aborted.
-   * Writes the pressed key to the console.
-   */
-  waitForInput: () => {
-    const previous = get().runner;
-    if (previous.state !== "running" && previous.state !== "paused") {
-      throw new Error("La computadora no está corriendo.");
-    }
-
-    return new Promise(resolve => {
-      const listener: InputListener = ev => {
-        if (!ev) {
-          resolve(None());
-        } else if (/^[\u0000-\u00FF]$/.test(ev.key)) {
-          get().writeConsole(ev.key);
-          resolve(Some(ev.key));
-        } else if (ev.key === "Enter") {
-          get().writeConsole("\n");
-          resolve(Some("\n"));
-        } else {
-          return;
-        }
-
-        ev?.preventDefault();
-        document.removeEventListener("keydown", listener);
-        set({ runner: previous });
-      };
-
-      document.addEventListener("keydown", listener);
-      document.getElementById(CONSOLE_ID)?.scrollIntoView({ behavior: "smooth" });
-
-      set({ runner: { state: "waiting-for-input", listener } });
-    });
-  },
-
-  async runInstruction() {
+  runInstruction() {
     const program = get().program;
     if (!program) {
       return Err(new Error("No hay ningún programa cargado. Compilá antes de ejecutar."));
@@ -197,19 +242,19 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
 
     // Most instructions ends in a IP bump with a `return true`.
     // It also allows passing a custom IP (for example, for jumps)
-    const bumpIP = (overwrite?: number) => {
+    const bumpIP = (overwrite?: number): ReturnType<RunnerSlice["runInstruction"]> => {
       get().setRegister(
         "IP",
         typeof overwrite === "number" ? overwrite : IP + instruction.meta.length,
       );
-      return Ok({ continue: true });
+      return Ok("continue");
     };
 
     // #=========================================================================#
     // # Comptue each instruction                                                #
     // #=========================================================================#
 
-    return match<ProgramInstruction, Promisable<Result<{ continue: boolean }, Error>>>(instruction)
+    return match<ProgramInstruction, ReturnType<RunnerSlice["runInstruction"]>>(instruction)
       .with({ type: "MOV" }, ({ opSize, out, src }) => {
         const value = getOperandValue(src, opSize);
         saveInOperand(out, opSize, value);
@@ -339,17 +384,15 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
       .with({ type: "IN" }, () => Err(new Error("Sin implementación")))
       .with({ type: "OUT" }, () => Err(new Error("Sin implementación")))
       .with({ type: "INT" }, ({ interrupt }) =>
-        match(interrupt)
-          .with(0, () => Ok({ continue: false }))
-          .with(6, async () => {
-            const char = await get().waitForInput();
-
-            // Runner has been stopped
-            if (char.isNone()) return Ok({ continue: false });
-
-            const address = get().getRegister("BX");
-            get().setMemory(address, "byte", char.unwrap().charCodeAt(0));
-            return bumpIP();
+        match<Interrupt, ReturnType<RunnerSlice["runInstruction"]>>(interrupt)
+          .with(0, () => Ok("halt"))
+          .with(3, () => {
+            bumpIP();
+            return Ok("start-debugger");
+          })
+          .with(6, () => {
+            bumpIP();
+            return Ok("wait-for-input");
           })
           .with(7, () => {
             const start = get().getRegister("BX");
@@ -367,7 +410,7 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
       .with({ type: "CLI" }, () => Err(new Error("Sin implementación")))
       .with({ type: "STI" }, () => Err(new Error("Sin implementación")))
       .with({ type: "NOP" }, () => bumpIP())
-      .with({ type: "HLT" }, () => Ok({ continue: false }))
+      .with({ type: "HLT" }, () => Ok("halt"))
       .exhaustive();
   },
 });

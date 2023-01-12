@@ -58,3 +58,5 @@ export function renderWord(n: number): string {
     .map(n => n.toString(2).padStart(8, "0"))
     .join(" ");
 }
+
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

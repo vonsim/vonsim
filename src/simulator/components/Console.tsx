@@ -6,7 +6,7 @@ export const CONSOLE_ID = "vonsim-console";
 
 export function Console() {
   const contents = useComputer(state => state.external.console);
-  const watingForInput = useComputer(state => state.runner.state === "waiting-for-input");
+  const watingForInput = useComputer(state => state.runner === "waiting-for-input");
 
   return (
     <Card title="Consola" noPadding>

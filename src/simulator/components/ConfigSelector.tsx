@@ -1,7 +1,5 @@
 import { RadioGroup } from "@headlessui/react";
 import { useMemo } from "react";
-import { toast } from "react-hot-toast";
-import { useLongPress } from "react-use";
 import shallow from "zustand/shallow";
 import { useComputer } from "../computer";
 
@@ -19,16 +17,6 @@ export function ConfigSelector() {
       setClockSpeed: state.setClockSpeed,
     }),
     shallow,
-  );
-
-  const longPressClockSpeed = useLongPress(
-    () => {
-      toast("Se activó el modo 8088.\nLa frecuencia de reloj se estableció en 5 MHz.", {
-        icon: "👾",
-      });
-      config.setClockSpeed(5_000_000);
-    },
-    { delay: 1500 },
   );
 
   return (
@@ -57,14 +45,12 @@ export function ConfigSelector() {
         }}
       />
 
-      <div {...longPressClockSpeed}>
-        <Radio
-          label="Frecuencia de reloj"
-          value={config.clockSpeed.toString()}
-          onChange={n => config.setClockSpeed(parseInt(n, 10))}
-          options={speedOptions}
-        />
-      </div>
+      <Radio
+        label="Frecuencia de reloj"
+        value={config.clockSpeed.toString()}
+        onChange={n => config.setClockSpeed(parseInt(n, 10))}
+        options={speedOptions}
+      />
     </div>
   );
 }

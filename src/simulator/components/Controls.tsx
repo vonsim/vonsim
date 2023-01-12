@@ -17,7 +17,7 @@ import { useComputer } from "../computer";
 export function Controls() {
   const { state, dispatch } = useComputer(
     state => ({
-      state: state.runner.state,
+      state: state.runner,
       dispatch: state.dispatchRunner,
     }),
     shallow,
@@ -125,7 +125,7 @@ function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HT
 }
 
 function State() {
-  const state = useComputer(state => state.runner.state);
+  const state = useComputer(state => state.runner);
 
   return (
     <div
