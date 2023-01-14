@@ -43,8 +43,8 @@ const vonsimLanguage = StreamLanguage.define({
   token: (stream): keyof typeof vonsimTags | null => {
     if (stream.eatSpace()) return null;
 
-    if (stream.eat(/[0-9]/)) {
-      stream.eatWhile(/[a-h0-9]/i);
+    if (stream.eat(/\d/)) {
+      stream.eatWhile(/[a-h\d]/i);
       return "number";
     }
 
@@ -72,7 +72,7 @@ const vonsimLanguage = StreamLanguage.define({
     }
 
     if (stream.eat(/[a-z_]/i)) {
-      stream.eatWhile(/[a-z0-9_]/i);
+      stream.eatWhile(/\w/);
       const word = stream.current().toUpperCase();
       if (word === "ORG" || word === "END") return "special";
       if (word === "OFFSET") return "offset";

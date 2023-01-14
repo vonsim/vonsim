@@ -15,9 +15,10 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:regexp/recommended",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["import", "react", "react-hooks", "prettier"],
+  "plugins": ["import", "react", "react-hooks", "regexp", "prettier"],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
