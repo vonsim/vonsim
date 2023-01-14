@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useCallback } from "react";
 import { useEvent, useLongPress, useToggle } from "react-use";
 import { shallow } from "zustand/shallow";
+import { useComputer } from "~/simulator";
 import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
 import KeyboardIcon from "~icons/carbon/keyboard";
@@ -12,7 +13,6 @@ import RunIcon from "~icons/carbon/play";
 import RunningIcon from "~icons/carbon/settings";
 import FinishIcon from "~icons/carbon/skip-forward";
 import AbortIcon from "~icons/carbon/stop-sign";
-import { useComputer } from "../computer";
 
 export function Controls() {
   const { state, dispatch } = useComputer(

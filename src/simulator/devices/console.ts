@@ -1,5 +1,5 @@
 import { tdeep } from "tdeep";
-import type { DeviceSlice } from ".";
+import type { DeviceSlice } from "~/simulator/devices";
 
 export type ConsoleSlice = {
   console: string;

@@ -12,8 +12,8 @@ import {
   zeroaryInstructionPattern,
 } from "~/compiler/common/patterns";
 import { INITIAL_IP, MEMORY_SIZE } from "~/config";
-import type { ComputerSlice } from ".";
-import { randomByte, randomWord, splitLowHigh } from "../helpers";
+import { randomByte, randomWord, splitLowHigh } from "~/helpers";
+import type { ComputerSlice } from "~/simulator";
 
 export type ProgramSlice = {
   program: Program | null;

@@ -5,10 +5,10 @@ import { match, P } from "ts-pattern";
 import { compile, ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
 import { Interrupt, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
-import type { ComputerSlice } from ".";
-import { CONSOLE_ID } from "../components/Console";
-import { highlightLine, setReadOnly } from "../components/editor/methods";
-import { renderAddress, sleep } from "../helpers";
+import { renderAddress, sleep } from "~/helpers";
+import type { ComputerSlice } from "~/simulator";
+import { CONSOLE_ID } from "~/ui/components/Console";
+import { highlightLine, setReadOnly } from "~/ui/components/editor/methods";
 
 type StepReturn = Result<"continue" | "halt" | "start-debugger" | "wait-for-input", Error>;
 
