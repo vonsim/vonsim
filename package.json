@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier -w .",
-    "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.esm,.cjs,.ts,.tsx .",
     "bench": "vitest bench --run",
     "test": "vitest --run --reporter verbose",
     "docs:dev": "vitepress dev docs",

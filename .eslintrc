@@ -32,5 +32,18 @@
     "react/react-in-jsx-scope": "off",
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*.{js,ts,tsx}"],
+      "env": { "node": true }
+    },
+    {
+      "files": ["*.cjs"],
+      "env": { "node": true, "commonjs": true },
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }
