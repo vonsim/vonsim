@@ -388,8 +388,18 @@ export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
         .with({ type: "JNO" }, ({ jumpTo }) =>
           bumpIP(!get().alu.flags.overflow ? jumpTo : undefined),
         )
-        .with({ type: "IN" }, () => Err(new Error("Sin implementación")))
-        .with({ type: "OUT" }, () => Err(new Error("Sin implementación")))
+        .with({ type: "IN" }, ({ opSize, port }) => {
+          const address = port.type === "fixed" ? port.value : get().getRegister("DX");
+          const value = get().getIOMemory(address, opSize);
+          get().setRegister(opSize === "byte" ? "AL" : "AX", value);
+          return bumpIP();
+        })
+        .with({ type: "OUT" }, ({ opSize, port }) => {
+          const address = port.type === "fixed" ? port.value : get().getRegister("DX");
+          const value = get().getRegister(opSize === "byte" ? "AL" : "AX");
+          get().setIOMemory(address, opSize, value);
+          return bumpIP();
+        })
         .with({ type: "INT" }, ({ interrupt }) =>
           match<Interrupt, StepReturn>(interrupt)
             .with(0, () => Ok("halt"))
