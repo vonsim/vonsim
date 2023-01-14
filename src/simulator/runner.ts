@@ -13,6 +13,8 @@ import { highlightLine, setReadOnly } from "@/ui/components/editor/methods";
 
 type StepReturn = Result<"continue" | "halt" | "start-debugger" | "wait-for-input", Error>;
 
+type InputListener = (ev: KeyboardEvent) => void;
+
 export type RunnerAction = "run" | "step" | "stop";
 
 export type RunnerSlice = {
@@ -21,9 +23,15 @@ export type RunnerSlice = {
   __runnerInternal: {
     action: RunnerAction | null;
     loop: () => Promise<void>;
+
+    instructionsRan: number;
+    inputListener: InputListener | null;
+    runInstruction: (timeElapsed: number) => void;
     step: () => StepReturn;
   };
 };
+
+const INPUT_LISTENER_EVENT = "keydown" as const;
 
 export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
   runner: "stopped",
@@ -46,57 +54,39 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
   },
 
   __runnerInternal: {
+    // #=========================================================================#
+    // # Main loop                                                               #
+    // #=========================================================================#
     action: null,
-
     loop: async () => {
       // This is how many milliseconds we'll tick the simulator clock,
       // which is lower than any clock speed the user can set. This way,
       // we can tick all the clocks (CPU, Timer, Printer, etc...) inside
       // one loop.
       const resolution = 10;
-
-      const instructionTime = 1000 / get().clockSpeed; // in milliseconds
       let timeElapsed = 0;
-      let instructionsExecuted = 0;
 
-      const inputEvent = "keydown" as const;
-      let inputListener: ((ev: KeyboardEvent) => void) | null = null;
+      set(tdeep("__runnerInternal.instructionsRan", 0));
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const action = get().__runnerInternal.action;
-        let runner = get().runner;
-        let runInstruction = false;
+        const runner = get().runner;
 
         if (action === "stop") break;
 
         if (runner === "running") {
-          if (action === "run" || action === "step") {
-            throw new Error("Invalid action");
-          }
+          if (action !== null) throw new Error("Invalid action");
 
-          const timeToNextInstruction = instructionTime * instructionsExecuted;
-          if (timeElapsed >= timeToNextInstruction) {
-            runInstruction = true;
-          }
-
-          // Add the resolution time, no matter if the instruction was executed or not
+          // Add the resolution time, since we're running continuously
           timeElapsed += resolution;
         } else if (runner === "paused") {
-          if (action === "run") {
-            set({ runner: "running" });
-            runner = "running";
-          }
+          if (action === "run") set({ runner: "running" });
 
-          if (action !== null) {
-            runInstruction = true;
-            // If an instruction was executed, add the time that would have passed
-            timeElapsed += instructionTime;
-          }
+          // Add the time that one instruction would take ONLY IF an instruction gets executed
+          if (action !== null) timeElapsed += 1000 / get().clockSpeed;
         } else if (runner === "waiting-for-input") {
-          if (action === "run" || action === "step") {
-            throw new Error("Invalid action");
-          }
+          if (action !== null) throw new Error("Invalid action");
         } else {
           // runner === 'stop'
           if (action === null) return;
@@ -112,61 +102,15 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
           get().loadProgram(result);
           setReadOnly(true);
 
-          if (action === "run") {
-            set({ runner: "running" });
-            runner = "running";
-          } else if (action === "step") {
-            set({ runner: "paused" });
-            runner = "paused";
-          }
+          if (action === "run") set({ runner: "running" });
+          else if (action === "step") set({ runner: "paused" });
         }
 
         // For the 'wait-for-input' state we do nothing. The time should have been
-        // bumped in the previous iteration
+        // bumped in the previous iteration and it should not be bumped until the
+        // user presses a key.
 
-        if (runInstruction) {
-          const result = get().__runnerInternal.step();
-
-          if (result.isErr()) {
-            toast.error(result.unwrapErr().message);
-            break;
-          }
-
-          instructionsExecuted++;
-
-          const ret = result.unwrap();
-          if (ret === "continue") {
-            // Do nothing
-          } else if (ret === "start-debugger") {
-            set({ runner: "paused" });
-          } else if (ret === "wait-for-input") {
-            const previousState = get().runner;
-            set({ runner: "waiting-for-input" });
-
-            inputListener = ev => {
-              let char: string;
-              if (/^[\x20-\xFF]$/.test(ev.key)) char = ev.key;
-              else if (ev.key === "Enter") char = "\n";
-              else return;
-
-              ev.preventDefault();
-              document.removeEventListener(inputEvent, inputListener!);
-
-              const address = get().getRegister("BX");
-              get().setMemory(address, "byte", char.charCodeAt(0));
-              get().devices.writeConsole(char);
-
-              inputListener = null;
-              set({ runner: previousState });
-            };
-
-            document.addEventListener("keydown", inputListener);
-            document.getElementById(CONSOLE_ID)?.scrollIntoView({ behavior: "smooth" });
-          } else {
-            // ret = 'halt'
-            break;
-          }
-        }
+        get().__runnerInternal.runInstruction(timeElapsed);
 
         // Clear action
         if (action !== null) {
@@ -180,8 +124,68 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       highlightLine(null);
       setReadOnly(false);
       set({ runner: "stopped" });
+
+      const inputListener = get().__runnerInternal.inputListener;
       if (inputListener) {
-        document.removeEventListener(inputEvent, inputListener);
+        document.removeEventListener(INPUT_LISTENER_EVENT, inputListener);
+      }
+    },
+
+    // #=========================================================================#
+    // # Instruction runner                                                      #
+    // #=========================================================================#
+    instructionsRan: 0,
+    inputListener: null,
+    runInstruction: timeElapsed => {
+      const instructionTime = 1000 / get().clockSpeed; // in milliseconds
+      const instructionsRan = get().__runnerInternal.instructionsRan;
+
+      const timeToNextInstruction = instructionTime * instructionsRan;
+      if (timeElapsed < timeToNextInstruction) return;
+
+      const result = get().__runnerInternal.step();
+
+      set(tdeep("__runnerInternal.instructionsRan", instructionsRan + 1));
+
+      if (result.isErr()) {
+        toast.error(result.unwrapErr().message);
+        set({ runner: "stopped" });
+        return;
+      }
+
+      const ret = result.unwrap();
+      if (ret === "continue") {
+        // Do nothing
+      } else if (ret === "start-debugger") {
+        set({ runner: "paused" });
+      } else if (ret === "wait-for-input") {
+        const previousState = get().runner;
+        set({ runner: "waiting-for-input" });
+
+        const inputListener: InputListener = ev => {
+          let char: string;
+          if (/^[\x20-\xFF]$/.test(ev.key)) char = ev.key;
+          else if (ev.key === "Enter") char = "\n";
+          else return;
+
+          ev.preventDefault();
+          document.removeEventListener(INPUT_LISTENER_EVENT, inputListener!);
+
+          const address = get().getRegister("BX");
+          get().setMemory(address, "byte", char.charCodeAt(0));
+          get().devices.writeConsole(char);
+
+          set(state => ({
+            runner: previousState,
+            __runnerInternal: { ...state.__runnerInternal, inputListener: null },
+          }));
+        };
+
+        document.addEventListener(INPUT_LISTENER_EVENT, inputListener);
+        document.getElementById(CONSOLE_ID)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        // ret = 'halt'
+        set({ runner: "stopped" });
       }
     },
 
