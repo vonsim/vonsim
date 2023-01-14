@@ -5,10 +5,13 @@ TODO
 ## To-do list
 
 - [x] Finish basic implementation
-- [ ] Add history (https://github.com/charkour/zundo)
+- [ ] Devices
+  - [ ] Hardware interrupts
+  - [x] Lights and Switches
+  - [ ] Printer
+  - [ ] Printer w/Handshake
 - [ ] Support indirect access with offset
 - [ ] Add custom VonSim syntax to docs
-- [ ] Add I/O
 - [ ] Add mobile support
 - [ ] Add advanced filesave support
 - [ ] Add ✨ animations ✨
