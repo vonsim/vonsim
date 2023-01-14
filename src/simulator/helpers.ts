@@ -33,8 +33,11 @@ export function signedToUnsigned(n: number, size: Size): number {
   return n < 0 ? MAX_SIGNED_VALUE[size] - n : n;
 }
 
+export const randomByte = () => Math.floor(Math.random() * MAX_VALUE.byte);
+export const randomWord = () => Math.floor(Math.random() * MAX_VALUE.word);
+
 // #=========================================================================#
-// # Other                                                                   #
+// # Render                                                                  #
 // #=========================================================================#
 
 export function renderMemoryCell(n: number, representation: MemoryRepresentation): string {
@@ -58,5 +61,9 @@ export function renderWord(n: number): string {
     .map(n => n.toString(2).padStart(8, "0"))
     .join(" ");
 }
+
+// #=========================================================================#
+// # Others                                                                  #
+// #=========================================================================#
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

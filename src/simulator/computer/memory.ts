@@ -5,7 +5,7 @@ import { renderAddress } from "../helpers";
 
 export type MemorySlice = {
   memory: ArrayBuffer;
-  getMemory(address: number, size: Size): number;
+  getMemory: (address: number, size: Size) => number;
   setMemory: (address: number, size: Size, value: number) => void;
 };
 
