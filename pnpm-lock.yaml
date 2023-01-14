@@ -20,7 +20,7 @@ specifiers:
   klona: ^2.0.5
   postcss: ^8.4.21
   prettier: ^2.8.2
-  prettier-plugin-organize-imports: ^3.2.1
+  prettier-plugin-organize-imports: ^3.2.2
   prettier-plugin-tailwindcss: ^0.2.1
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -28,7 +28,7 @@ specifiers:
   react-use: ^17.4.0
   rust-optionals: ^3.0.0
   tailwindcss: ^3.2.4
-  tdeep: link:../../misc/tdeep
+  tdeep: ^0.1.0
   ts-pattern: ^4.1.3
   type-fest: ^3.5.1
   typescript: ~4.9.4
@@ -36,7 +36,7 @@ specifiers:
   vite: ^4.0.4
   vitepress: 1.0.0-alpha.36
   vitest: ^0.27.1
-  zustand: ^4.3.1
+  zustand: ^4.3.2
 
 dependencies:
   '@codemirror/commands': 6.1.3
@@ -53,9 +53,9 @@ dependencies:
   react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
   react-use: 17.4.0_biqbaboplfbrettd7655fr4n2y
   rust-optionals: 3.0.0
-  tdeep: link:../../misc/tdeep
+  tdeep: 0.1.0
   ts-pattern: 4.1.3
-  zustand: 4.3.1_react@18.2.0
+  zustand: 4.3.2_react@18.2.0
 
 devDependencies:
   '@headlessui/tailwindcss': 0.1.2_tailwindcss@3.2.4
@@ -68,7 +68,7 @@ devDependencies:
   autoprefixer: 10.4.13_postcss@8.4.21
   postcss: 8.4.21
   prettier: 2.8.2
-  prettier-plugin-organize-imports: 3.2.1_7zh76q2qrt7th5cvcxurl33jgy
+  prettier-plugin-organize-imports: 3.2.2_7zh76q2qrt7th5cvcxurl33jgy
   prettier-plugin-tailwindcss: 0.2.1_prettier@2.8.2
   tailwindcss: 3.2.4_postcss@8.4.21
   type-fest: 3.5.1
@@ -2138,8 +2138,8 @@ packages:
     resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
     dev: true
 
-  /prettier-plugin-organize-imports/3.2.1_7zh76q2qrt7th5cvcxurl33jgy:
-    resolution: {integrity: sha512-bty7C2Ecard5EOXirtzeCAqj4FU4epeuWrQt/Z+sh8UVEpBlBZ3m3KNPz2kFu7KgRTQx/C9o4/TdquPD1jOqjQ==}
+  /prettier-plugin-organize-imports/3.2.2_7zh76q2qrt7th5cvcxurl33jgy:
+    resolution: {integrity: sha512-e97lE6odGSiHonHJMTYC0q0iLXQyw0u5z/PJpvP/3vRy6/Zi9kLBwFAbEGjDzIowpjQv8b+J04PDamoUSQbzGA==}
     peerDependencies:
       '@volar/vue-language-plugin-pug': ^1.0.4
       '@volar/vue-typescript': ^1.0.4
@@ -2476,6 +2476,10 @@ packages:
     transitivePeerDependencies:
       - ts-node
     dev: true
+
+  /tdeep/0.1.0:
+    resolution: {integrity: sha512-lPfbo0CK/Qe4UcDSZqMA3bsOBmXG3wXJZlYSyejRjK1aIJOJrn6ww9FInd0q0wc0WN8qPkYI0pTYdTpixlzEAQ==}
+    dev: false
 
   /throttle-debounce/3.0.1:
     resolution: {integrity: sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==}
@@ -2820,8 +2824,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zustand/4.3.1_react@18.2.0:
-    resolution: {integrity: sha512-EVyo/eLlOTcJm/X5M00rwtbYFXwRVTaRteSvhtbTZUCQFJkNfIyHPiJ6Ke68MSWzcKHpPzvqNH4gC2ZS/sbNqw==}
+  /zustand/4.3.2_react@18.2.0:
+    resolution: {integrity: sha512-rd4haDmlwMTVWVqwvgy00ny8rtti/klRoZjFbL/MAcDnmD5qSw/RZc+Vddstdv90M5Lv6RPgWvm1Hivyn0QgJw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       immer: '>=9.0'
