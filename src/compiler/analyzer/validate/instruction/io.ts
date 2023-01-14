@@ -1,13 +1,15 @@
 import { match } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { IOInstructionType, LineError } from "~/compiler/common";
+
+import { IOInstructionType, LineError } from "@/compiler/common";
 import {
   InstructionStatement,
   NumberExpression,
   numberExpressionPattern,
   Operand,
-} from "~/compiler/parser/grammar";
-import type { Size } from "~/config";
+} from "@/compiler/parser/grammar";
+import type { Size } from "@/config";
+
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 

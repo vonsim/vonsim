@@ -1,7 +1,8 @@
 import { shallow } from "zustand/shallow";
 
-import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "~/helpers";
-import { useSimulator } from "~/simulator";
+import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
+import { useSimulator } from "@/simulator";
+
 import { Card } from "./Card";
 
 const generalRegisters = ["AX", "BX", "CX", "DX"] as const;

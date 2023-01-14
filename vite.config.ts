@@ -6,6 +6,6 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react(), Icons({ compiler: "jsx", jsx: "react" })],
   resolve: {
-    alias: { "~/": "/src/" },
+    alias: { "@/": "/src/" },
   },
 });

@@ -1,7 +1,8 @@
 import { klona } from "klona";
-import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS, Size } from "~/config";
-import { renderAddress } from "~/helpers";
-import type { SimulatorSlice } from "~/simulator";
+
+import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS, Size } from "@/config";
+import { renderAddress } from "@/helpers";
+import type { SimulatorSlice } from "@/simulator";
 
 export type MemorySlice = {
   memory: ArrayBuffer;

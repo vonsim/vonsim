@@ -1,5 +1,6 @@
-import type { PositionRange } from "~/compiler/common";
-import type { EndStatement, OriginChangeStatement } from "~/compiler/parser/grammar";
+import type { PositionRange } from "@/compiler/common";
+import type { EndStatement, OriginChangeStatement } from "@/compiler/parser/grammar";
+
 import type { ValidatedDB } from "./data/DB";
 import type { ValidatedDW } from "./data/DW";
 import type { ValidatedEQU } from "./data/EQU";

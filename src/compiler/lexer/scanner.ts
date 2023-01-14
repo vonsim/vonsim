@@ -1,6 +1,8 @@
 import { isMatching } from "ts-pattern";
-import { LineError, Position } from "~/compiler/common";
-import { keywordPattern } from "~/compiler/common/patterns";
+
+import { LineError, Position } from "@/compiler/common";
+import { keywordPattern } from "@/compiler/common/patterns";
+
 import { Token, TokenType } from "./tokens";
 
 /**

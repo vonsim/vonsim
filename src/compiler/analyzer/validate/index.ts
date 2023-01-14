@@ -1,5 +1,6 @@
 import { klona } from "klona/json";
 import { match } from "ts-pattern";
+
 import {
   binaryInstructionPattern,
   intInstructionPattern,
@@ -8,8 +9,9 @@ import {
   stackInstructionPattern,
   unaryInstructionPattern,
   zeroaryInstructionPattern,
-} from "~/compiler/common/patterns";
-import type { Statement } from "~/compiler/parser/grammar";
+} from "@/compiler/common/patterns";
+import type { Statement } from "@/compiler/parser/grammar";
+
 import type { LabelTypes } from "../get-label-types";
 import { validateDB } from "./data/DB";
 import { validateDW } from "./data/DW";

@@ -1,14 +1,16 @@
 import { isMatching, match } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { LineError, RegisterType, UnaryInstructionType } from "~/compiler/common";
-import { wordRegisterPattern } from "~/compiler/common/patterns";
+
+import { LineError, RegisterType, UnaryInstructionType } from "@/compiler/common";
+import { wordRegisterPattern } from "@/compiler/common/patterns";
 import {
   InstructionStatement,
   NumberExpression,
   numberExpressionPattern,
   Operand,
-} from "~/compiler/parser/grammar";
-import type { Size } from "~/config";
+} from "@/compiler/parser/grammar";
+import type { Size } from "@/config";
+
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 

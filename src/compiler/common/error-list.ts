@@ -1,5 +1,5 @@
-import type { Token } from "~/compiler/lexer/tokens";
-import { Language, MAX_MEMORY_ADDRESS, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
+import type { Token } from "@/compiler/lexer/tokens";
+import { Language, MAX_MEMORY_ADDRESS, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "@/config";
 
 export type CompilerErrorCode = keyof typeof ERROR_LIST;
 export type CompilerErrorParams<Code extends CompilerErrorCode> = Parameters<

@@ -1,9 +1,10 @@
+import "@/ui/styles/index.css";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Toaster } from "react-hot-toast";
-import App from "~/ui/App";
 
-import "~/ui/styles/index.css";
+import App from "@/ui/App";
 
 // Initialize CodeMirror as null
 window.codemirror = null;

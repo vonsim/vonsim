@@ -1,11 +1,13 @@
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { IntInstructionType, LineError } from "~/compiler/common";
+
+import { IntInstructionType, LineError } from "@/compiler/common";
 import {
   InstructionStatement,
   NumberExpression,
   numberExpressionPattern,
-} from "~/compiler/parser/grammar";
+} from "@/compiler/parser/grammar";
+
 import type { ValidatedMeta } from "../types";
 
 export type ValidatedIntInstruction = {

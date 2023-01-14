@@ -1,4 +1,4 @@
-import type { KeywordType, Position } from "~/compiler/common";
+import type { KeywordType, Position } from "@/compiler/common";
 
 export type Token = {
   type: TokenType;

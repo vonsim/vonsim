@@ -2,7 +2,8 @@ import clsx from "clsx";
 import { useCallback } from "react";
 import { useEvent, useLongPress, useToggle } from "react-use";
 import { shallow } from "zustand/shallow";
-import { useSimulator } from "~/simulator";
+
+import { useSimulator } from "@/simulator";
 import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
 import KeyboardIcon from "~icons/carbon/keyboard";

@@ -1,6 +1,8 @@
 import type { Merge } from "type-fest";
-import { JumpInstructionType, LineError } from "~/compiler/common";
-import type { InstructionStatement } from "~/compiler/parser/grammar";
+
+import { JumpInstructionType, LineError } from "@/compiler/common";
+import type { InstructionStatement } from "@/compiler/parser/grammar";
+
 import type { LabelTypes } from "../../get-label-types";
 import type { ValidatedMeta } from "../types";
 

@@ -1,6 +1,7 @@
 import { readdir, readFile } from "fs/promises";
 import { bench, describe } from "vitest";
-import { compile } from "~/compiler";
+
+import { compile } from "@/compiler";
 
 describe("Compiler benchmarks", async () => {
   const path = new URL("../fixtures/", import.meta.url);

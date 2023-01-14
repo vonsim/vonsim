@@ -1,5 +1,7 @@
 import clsx from "clsx";
-import { useSimulator } from "~/simulator";
+
+import { useSimulator } from "@/simulator";
+
 import { Card } from "./Card";
 
 export const CONSOLE_ID = "vonsim-console";

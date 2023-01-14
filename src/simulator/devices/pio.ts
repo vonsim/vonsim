@@ -1,5 +1,5 @@
-import { randomByte } from "~/helpers";
-import type { DeviceSlice } from "~/simulator/devices";
+import { randomByte } from "@/helpers";
+import type { DeviceSlice } from "@/simulator/devices";
 
 export type PIOSlice = {
   pio: {

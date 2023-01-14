@@ -3,9 +3,10 @@ import { toast } from "react-hot-toast";
 import { useMeasure } from "react-use";
 import { shallow } from "zustand/shallow";
 
-import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "~/config";
-import { renderAddress, renderMemoryCell } from "~/helpers";
-import { useSimulator } from "~/simulator";
+import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
+import { renderAddress, renderMemoryCell } from "@/helpers";
+import { useSimulator } from "@/simulator";
+
 import { Card } from "./Card";
 
 export function Memory() {

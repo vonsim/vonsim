@@ -1,4 +1,4 @@
-import type { SimulatorSlice } from "~/simulator";
+import type { SimulatorSlice } from "@/simulator";
 
 export type InterruptsSlice = {
   interruptsEnabled: boolean;

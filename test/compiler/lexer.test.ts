@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Scanner } from "~/compiler/lexer/scanner";
+
+import { Scanner } from "@/compiler/lexer/scanner";
 
 const lex = (input: string) => new Scanner(input).scanTokens();
 

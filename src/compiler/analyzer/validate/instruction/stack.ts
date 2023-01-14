@@ -1,8 +1,10 @@
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
-import { LineError, StackInstructionType, WordRegisterType } from "~/compiler/common";
-import { wordRegisterPattern } from "~/compiler/common/patterns";
-import type { InstructionStatement } from "~/compiler/parser/grammar";
+
+import { LineError, StackInstructionType, WordRegisterType } from "@/compiler/common";
+import { wordRegisterPattern } from "@/compiler/common/patterns";
+import type { InstructionStatement } from "@/compiler/parser/grammar";
+
 import type { ValidatedMeta } from "../types";
 
 export type ValidatedStackInstruction = {

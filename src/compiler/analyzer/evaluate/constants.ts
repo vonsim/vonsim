@@ -1,6 +1,8 @@
 import { match } from "ts-pattern";
-import { LineError } from "~/compiler/common";
-import type { NumberExpression } from "~/compiler/parser/grammar";
+
+import { LineError } from "@/compiler/common";
+import type { NumberExpression } from "@/compiler/parser/grammar";
+
 import type { LabelAddresses } from "../compute-addresses";
 import type { ValidatedConstantStatement } from "../validate";
 

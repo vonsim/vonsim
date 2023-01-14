@@ -1,11 +1,12 @@
 import { tdeep } from "tdeep";
 import { isMatching, match } from "ts-pattern";
 import type { Split } from "type-fest";
-import type { PhysicalRegisterType, RegisterType } from "~/compiler/common";
-import { partialRegisterPattern } from "~/compiler/common/patterns";
-import { INITIAL_IP, MEMORY_SIZE } from "~/config";
-import { joinLowHigh, splitLowHigh } from "~/helpers";
-import type { SimulatorSlice } from "~/simulator";
+
+import type { PhysicalRegisterType, RegisterType } from "@/compiler/common";
+import { partialRegisterPattern } from "@/compiler/common/patterns";
+import { INITIAL_IP, MEMORY_SIZE } from "@/config";
+import { joinLowHigh, splitLowHigh } from "@/helpers";
+import type { SimulatorSlice } from "@/simulator";
 
 export type RegistersSlice = {
   registers: { [key in PhysicalRegisterType]: number };

@@ -2,13 +2,14 @@ import { toast } from "react-hot-toast";
 import { Err, Ok, Result } from "rust-optionals";
 import { tdeep } from "tdeep";
 import { match, P } from "ts-pattern";
-import { compile, ProgramInstruction } from "~/compiler";
-import type { BinaryInstructionType } from "~/compiler/common";
-import { Interrupt, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
-import { renderAddress, sleep } from "~/helpers";
-import type { SimulatorSlice } from "~/simulator";
-import { CONSOLE_ID } from "~/ui/components/Console";
-import { highlightLine, setReadOnly } from "~/ui/components/editor/methods";
+
+import { compile, ProgramInstruction } from "@/compiler";
+import type { BinaryInstructionType } from "@/compiler/common";
+import { Interrupt, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "@/config";
+import { renderAddress, sleep } from "@/helpers";
+import type { SimulatorSlice } from "@/simulator";
+import { CONSOLE_ID } from "@/ui/components/Console";
+import { highlightLine, setReadOnly } from "@/ui/components/editor/methods";
 
 type StepReturn = Result<"continue" | "halt" | "start-debugger" | "wait-for-input", Error>;
 

@@ -1,5 +1,6 @@
 import type { P } from "ts-pattern";
 import type { Opaque } from "type-fest";
+
 import type {
   binaryInstructionPattern,
   byteRegisterPattern,

@@ -1,6 +1,8 @@
 import type { Merge } from "type-fest";
-import { LineError, PositionRange } from "~/compiler/common";
-import type { DataDirectiveStatement, NumberExpression } from "~/compiler/parser/grammar";
+
+import { LineError, PositionRange } from "@/compiler/common";
+import type { DataDirectiveStatement, NumberExpression } from "@/compiler/parser/grammar";
+
 import type { ValidatedMeta } from "../types";
 
 export type ValidatedDB = {

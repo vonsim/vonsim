@@ -7,12 +7,14 @@ import {
 import { Diagnostic, linter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { isMatching } from "ts-pattern";
-import { compile } from "~/compiler";
+
+import { compile } from "@/compiler";
 import {
   dataDirectivePattern,
   instructionPattern,
   registerPattern,
-} from "~/compiler/common/patterns";
+} from "@/compiler/common/patterns";
+
 import { PROGRAM_BACKUP_KEY, useErrors } from "./store";
 
 /**

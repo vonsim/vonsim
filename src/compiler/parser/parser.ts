@@ -1,20 +1,22 @@
 import { klona } from "klona/json";
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
+
 import {
   CompilerErrorMessages,
   LineError,
   Position,
   PositionRange,
   RegisterType,
-} from "~/compiler/common";
+} from "@/compiler/common";
 import {
   dataDirectivePattern,
   instructionPattern,
   registerPattern,
-} from "~/compiler/common/patterns";
-import type { Token, TokenType } from "~/compiler/lexer/tokens";
-import { Size } from "~/config";
+} from "@/compiler/common/patterns";
+import type { Token, TokenType } from "@/compiler/lexer/tokens";
+import { Size } from "@/config";
+
 import type { DataDirectiveValue, NumberExpression, Operand, Statement } from "./grammar";
 
 /**

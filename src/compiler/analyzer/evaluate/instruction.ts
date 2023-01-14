@@ -1,4 +1,5 @@
 import { isMatching, match, P } from "ts-pattern";
+
 import {
   BinaryInstructionType,
   IntInstructionType,
@@ -11,7 +12,7 @@ import {
   UnaryInstructionType,
   WordRegisterType,
   ZeroaryInstructionType,
-} from "~/compiler/common";
+} from "@/compiler/common";
 import {
   binaryInstructionPattern,
   intInstructionPattern,
@@ -20,9 +21,10 @@ import {
   stackInstructionPattern,
   unaryInstructionPattern,
   zeroaryInstructionPattern,
-} from "~/compiler/common/patterns";
-import { NumberExpression } from "~/compiler/parser/grammar";
-import { Interrupt, INTERRUPTS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
+} from "@/compiler/common/patterns";
+import { NumberExpression } from "@/compiler/parser/grammar";
+import { Interrupt, INTERRUPTS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "@/config";
+
 import type { LabelMap } from "../compact-labels";
 import type { CodeMemory } from "../compute-addresses";
 import type { ValidatedInstructionStatement } from "../validate";

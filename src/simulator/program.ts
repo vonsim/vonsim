@@ -1,7 +1,8 @@
 import { klona } from "klona";
 import { match } from "ts-pattern";
-import type { Program } from "~/compiler";
-import type { InstructionType, RegisterType } from "~/compiler/common";
+
+import type { Program } from "@/compiler";
+import type { InstructionType, RegisterType } from "@/compiler/common";
 import {
   binaryInstructionPattern,
   intInstructionPattern,
@@ -10,10 +11,10 @@ import {
   stackInstructionPattern,
   unaryInstructionPattern,
   zeroaryInstructionPattern,
-} from "~/compiler/common/patterns";
-import { INITIAL_IP, MEMORY_SIZE } from "~/config";
-import { randomByte, randomWord, splitLowHigh } from "~/helpers";
-import type { SimulatorSlice } from "~/simulator";
+} from "@/compiler/common/patterns";
+import { INITIAL_IP, MEMORY_SIZE } from "@/config";
+import { randomByte, randomWord, splitLowHigh } from "@/helpers";
+import type { SimulatorSlice } from "@/simulator";
 
 export type ProgramSlice = {
   program: Program | null;

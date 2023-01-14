@@ -1,8 +1,9 @@
 import { tdeep } from "tdeep";
 import { match } from "ts-pattern";
-import { MAX_SIGNED_VALUE, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
-import { unsignedToSigned } from "~/helpers";
-import type { SimulatorSlice } from "~/simulator";
+
+import { MAX_SIGNED_VALUE, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "@/config";
+import { unsignedToSigned } from "@/helpers";
+import type { SimulatorSlice } from "@/simulator";
 
 export type ArithmeticOperation = "ADD" | "ADC" | "SUB" | "SBB";
 export type LogicalOperation = "AND" | "OR" | "XOR" | "NOT";

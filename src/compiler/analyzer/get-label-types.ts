@@ -1,4 +1,4 @@
-import type { Statement } from "~/compiler/parser/grammar";
+import type { Statement } from "@/compiler/parser/grammar";
 
 export type LabelTypes = Map<string, "DB" | "DW" | "EQU" | "instruction">;
 

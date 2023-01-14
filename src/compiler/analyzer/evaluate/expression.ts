@@ -1,7 +1,9 @@
 import { match } from "ts-pattern";
-import { LineError } from "~/compiler/common";
-import type { NumberExpression } from "~/compiler/parser/grammar";
-import { MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
+
+import { LineError } from "@/compiler/common";
+import type { NumberExpression } from "@/compiler/parser/grammar";
+import { MAX_VALUE, MIN_SIGNED_VALUE, Size } from "@/config";
+
 import type { LabelMap } from "../compact-labels";
 
 export function evaluateImmediate(expr: NumberExpression, size: Size, labels: LabelMap) {

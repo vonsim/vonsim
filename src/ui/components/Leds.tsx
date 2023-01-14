@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { useSimulator } from "~/simulator";
+
+import { useSimulator } from "@/simulator";
+
 import { Card } from "./Card";
 
 export function Leds() {

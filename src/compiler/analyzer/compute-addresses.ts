@@ -1,7 +1,9 @@
 import { isMatching } from "ts-pattern";
-import { LineError, safeForEach } from "~/compiler/common";
-import { instructionPattern } from "~/compiler/common/patterns";
-import { MAX_MEMORY_ADDRESS } from "~/config";
+
+import { LineError, safeForEach } from "@/compiler/common";
+import { instructionPattern } from "@/compiler/common/patterns";
+import { MAX_MEMORY_ADDRESS } from "@/config";
+
 import type { ValidatedStatement } from "./validate";
 
 export type LabelAddresses = Map<string, { type: "DB" | "DW" | "instruction"; address: number }>;

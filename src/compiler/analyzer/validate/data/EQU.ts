@@ -1,6 +1,7 @@
 import type { Merge } from "type-fest";
-import { LineError, PositionRange } from "~/compiler/common";
-import type { DataDirectiveStatement, NumberExpression } from "~/compiler/parser/grammar";
+
+import { LineError, PositionRange } from "@/compiler/common";
+import type { DataDirectiveStatement, NumberExpression } from "@/compiler/parser/grammar";
 
 export type ValidatedEQU = {
   type: "EQU";

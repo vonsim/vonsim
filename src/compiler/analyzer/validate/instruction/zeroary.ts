@@ -1,6 +1,8 @@
 import type { Merge } from "type-fest";
-import { LineError, ZeroaryInstructionType } from "~/compiler/common";
-import type { InstructionStatement } from "~/compiler/parser/grammar";
+
+import { LineError, ZeroaryInstructionType } from "@/compiler/common";
+import type { InstructionStatement } from "@/compiler/parser/grammar";
+
 import type { ValidatedMeta } from "../types";
 
 export type ValidatedZeroaryInstruction = {

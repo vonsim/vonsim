@@ -1,11 +1,12 @@
 import { P } from "ts-pattern";
+
 import type {
   DataDirectiveType,
   InstructionType,
   PositionRange,
   RegisterType,
-} from "~/compiler/common";
-import type { Size } from "~/config";
+} from "@/compiler/common";
+import type { Size } from "@/config";
 
 export type Statement =
   | OriginChangeStatement

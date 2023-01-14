@@ -1,6 +1,8 @@
 import { klona } from "klona/json";
-import { CompilerError, safeMap } from "~/compiler/common";
-import type { Statement } from "~/compiler/parser/grammar";
+
+import { CompilerError, safeMap } from "@/compiler/common";
+import type { Statement } from "@/compiler/parser/grammar";
+
 import { compactLabels } from "./compact-labels";
 import { CodeMemory, computeAddresses } from "./compute-addresses";
 import { evaluateConstants, ProgramConstants } from "./evaluate/constants";

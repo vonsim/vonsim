@@ -1,6 +1,7 @@
 import { readdir, readFile } from "fs/promises";
 import { describe, expect, it } from "vitest";
-import { compile } from "~/compiler";
+
+import { compile } from "@/compiler";
 
 describe("Fixtures", async () => {
   const path = new URL("../fixtures/", import.meta.url);

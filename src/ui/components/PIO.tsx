@@ -1,7 +1,8 @@
 import { shallow } from "zustand/shallow";
 
-import { renderMemoryCell } from "~/helpers";
-import { useSimulator } from "~/simulator";
+import { renderMemoryCell } from "@/helpers";
+import { useSimulator } from "@/simulator";
+
 import { Card } from "./Card";
 
 export function PIO() {

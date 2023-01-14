@@ -1,8 +1,10 @@
 import { tdeep } from "tdeep";
 import { match } from "ts-pattern";
-import type { Size } from "~/config";
-import { joinLowHigh, renderAddress, splitLowHigh } from "~/helpers";
-import type { SimulatorSlice } from "~/simulator";
+
+import type { Size } from "@/config";
+import { joinLowHigh, renderAddress, splitLowHigh } from "@/helpers";
+import type { SimulatorSlice } from "@/simulator";
+
 import { ConsoleSlice, createConsoleSlice } from "./console";
 import { createPIOSlice, PIOSlice } from "./pio";
 

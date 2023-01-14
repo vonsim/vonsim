@@ -2,7 +2,9 @@ import { Switch } from "@headlessui/react";
 import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { tdeep } from "tdeep";
-import { useSimulator } from "~/simulator";
+
+import { useSimulator } from "@/simulator";
+
 import { Card } from "./Card";
 
 export function Switches() {

@@ -1,7 +1,8 @@
 import { RadioGroup } from "@headlessui/react";
 import { useMemo } from "react";
 import { shallow } from "zustand/shallow";
-import { useSimulator } from "~/simulator";
+
+import { useSimulator } from "@/simulator";
 
 const speeds = new Array(7).fill(null).map((_, i) => 2 ** i); // From 1 Hz to 64 Hz
 const speedOptions = Object.fromEntries(speeds.map(speed => [speed.toString(), `${speed} Hz`]));

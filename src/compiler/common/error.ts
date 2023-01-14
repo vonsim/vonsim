@@ -1,4 +1,5 @@
-import { Language } from "~/config";
+import { Language } from "@/config";
+
 import { CompilerErrorCode, CompilerErrorParams, ERROR_LIST } from "./error-list";
 import type { Position, PositionRange } from "./index";
 

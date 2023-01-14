@@ -1,4 +1,4 @@
-import type { SimulatorSlice } from "~/simulator";
+import type { SimulatorSlice } from "@/simulator";
 
 export type MemoryRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
 export type MemoryOnReset = "empty" | "random" | "keep";

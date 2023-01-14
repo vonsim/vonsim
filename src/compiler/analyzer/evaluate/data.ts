@@ -1,4 +1,5 @@
-import type { Size } from "~/config";
+import type { Size } from "@/config";
+
 import type { LabelMap } from "../compact-labels";
 import type { ValidatedDataStatement } from "../validate";
 import { evaluateImmediate } from "./expression";
