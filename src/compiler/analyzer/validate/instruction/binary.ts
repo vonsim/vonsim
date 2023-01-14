@@ -146,7 +146,7 @@ export function validateBinaryInstruction(
         src: { type: "register", register: srcReg.value },
       };
     })
-    .with([{ type: "address", mode: "indirect" }, { type: "register" }], ([_, src]) => {
+    .with([{ type: "address", mode: "indirect" }, { type: "register" }], ([, src]) => {
       const srcReg = typeGuardRegister(src);
       return {
         type: instruction.instruction,

@@ -58,7 +58,7 @@ const vonsimLanguage = StreamLanguage.define({
       return "operator";
     }
 
-    if (stream.eat(/[(),\[\]]/)) {
+    if (stream.eat(/[(),[\]]/)) {
       return "punctuation";
     }
 

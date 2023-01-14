@@ -5,8 +5,6 @@ import { tdeep } from "tdeep";
 import { useSimulator } from "~/simulator";
 import { Card } from "./Card";
 
-let cache: any = [];
-
 export function Switches() {
   const PA = useSimulator(state => state.devices.pio.PA);
   const CA = useSimulator(state => state.devices.pio.CA);
@@ -15,7 +13,7 @@ export function Switches() {
   );
 
   const enabled = useMemo(() => {
-    let enabled: boolean[] = [];
+    const enabled: boolean[] = [];
     for (let i = 0; i < 8; i++) {
       const mask = 0b1000_0000 >> i;
       // if === 0, the bit is an output, hence, it's disabled
@@ -25,7 +23,7 @@ export function Switches() {
   }, [CA]);
 
   useEffect(() => {
-    let changes: (boolean | null)[] = [];
+    const changes: (boolean | null)[] = [];
     for (let i = 0; i < 8; i++) {
       const mask = 0b1000_0000 >> i;
 
@@ -34,14 +32,14 @@ export function Switches() {
       else changes.push(false);
     }
     setSwitches(switches => switches.map((on, i) => changes[i] ?? on));
-  }, [...enabled, PA]);
+  }, [enabled, PA]);
 
   const toggle = useCallback(
     (i: number) => {
       const mask = 0b1000_0000 >> i;
       if (enabled[i]) useSimulator.setState(tdeep("devices.pio.PA", PA ^ mask));
     },
-    [...enabled, PA],
+    [enabled, PA],
   );
 
   return (

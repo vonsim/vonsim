@@ -18,7 +18,7 @@ export const lineHighlightField = StateField.define({
   },
   update(oldLines, tr) {
     let lines = oldLines.map(tr.changes);
-    for (let e of tr.effects) {
+    for (const e of tr.effects) {
       if (e.is(addLineHighlight)) {
         lines = Decoration.none;
         if (e.value !== null) {

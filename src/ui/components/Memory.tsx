@@ -28,7 +28,7 @@ export function Memory() {
     const cells = cols * rows;
     const offset = MAX_MEMORY_ADDRESS - cells < start ? MAX_MEMORY_ADDRESS - cells : start;
     return { cols, cells, rows, offset };
-  }, [start, width, window.devicePixelRatio]);
+  }, [start, width]);
 
   const memory = useSimulator(
     state => [...new Uint8Array(state.memory).slice(offset, offset + cells)],

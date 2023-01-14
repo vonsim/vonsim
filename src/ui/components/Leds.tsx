@@ -11,7 +11,7 @@ export function Leds() {
   );
 
   useEffect(() => {
-    let changes: (boolean | null)[] = [];
+    const changes: (boolean | null)[] = [];
     for (let i = 0; i < 8; i++) {
       const mask = 0b1000_0000 >> i;
 

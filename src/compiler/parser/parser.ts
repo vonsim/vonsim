@@ -272,7 +272,9 @@ export class Parser {
     } else if (this.match("LABEL")) {
       labelToken = this.previous();
 
-      while (this.match("EOL")) {}
+      while (this.match("EOL")) {
+        continue;
+      }
 
       const next = this.peek();
       if (!isMatching(instructionPattern, next.type)) {
@@ -405,7 +407,7 @@ export class Parser {
 
     if (this.match("LEFT_PAREN")) {
       const lparen = this.previous();
-      let expression = this.numberExpression();
+      const expression = this.numberExpression();
       const rparen = this.consume("RIGHT_PAREN", { en: "Unclosed parenthesis." });
       return {
         ...expression,

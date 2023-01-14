@@ -11,7 +11,7 @@ export type PIOSlice = {
   };
 };
 
-export const createPIOSlice: DeviceSlice<PIOSlice> = set => ({
+export const createPIOSlice: DeviceSlice<PIOSlice> = () => ({
   devices: {
     pio: {
       configuration: "lights-and-switches",

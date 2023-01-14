@@ -58,7 +58,7 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
 
     for (const instruction of program.instructions) {
       let opcode: number = INSTRUCTION_TO_OPCODE[instruction.type];
-      let operands: number[] = [];
+      const operands: number[] = [];
 
       match(instruction)
         .with({ type: zeroaryInstructionPattern }, () => [])

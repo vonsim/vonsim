@@ -102,6 +102,7 @@ export function Controls() {
         href="https://github.com/vonsim/vonsim"
         target="_blank"
         title="GitHub"
+        rel="noreferrer"
       >
         <GitHubIcon className="h-5 w-5" />
       </a>
@@ -117,6 +118,7 @@ function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HT
         "flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30",
         "disabled:border-slate-500 disabled:text-slate-500 disabled:hover:bg-transparent",
         "[&>svg]:mr-1 [&>svg]:h-5 [&>svg]:w-5",
+        className,
       )}
     >
       {children}

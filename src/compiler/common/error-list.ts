@@ -3,7 +3,7 @@ import { Language, MAX_MEMORY_ADDRESS, MAX_VALUE, MIN_SIGNED_VALUE, Size } from 
 
 export type CompilerErrorCode = keyof typeof ERROR_LIST;
 export type CompilerErrorParams<Code extends CompilerErrorCode> = Parameters<
-  typeof ERROR_LIST[Code]
+  (typeof ERROR_LIST)[Code]
 >;
 export type CompilerErrorMessages = { [key in Language]: string };
 

@@ -61,8 +61,9 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       const inputEvent = "keydown" as const;
       let inputListener: ((ev: KeyboardEvent) => void) | null = null;
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
-        let action = get().__runnerInternal.action;
+        const action = get().__runnerInternal.action;
         let runner = get().runner;
         let runInstruction = false;
 
@@ -143,7 +144,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
             inputListener = ev => {
               let char: string;
-              if (/^[\u0000-\u00FF]$/.test(ev.key)) char = ev.key;
+              if (/^[\x20-\xFF]$/.test(ev.key)) char = ev.key;
               else if (ev.key === "Enter") char = "\n";
               else return;
 
@@ -347,7 +348,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
           return bumpIP();
         })
-        .with({ type: "POPF" }, ({}) => {
+        .with({ type: "POPF" }, () => {
           let SP = get().getRegister("SP");
           if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new Error("Stack underflow"));
           const flags = get().getMemory(SP, "word");
