@@ -5,7 +5,7 @@ import type { PhysicalRegisterType, RegisterType } from "~/compiler/common";
 import { partialRegisterPattern } from "~/compiler/common/patterns";
 import { INITIAL_IP, MEMORY_SIZE } from "~/config";
 import { joinLowHigh, splitLowHigh } from "~/helpers";
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 
 export type RegistersSlice = {
   registers: { [key in PhysicalRegisterType]: number };
@@ -13,7 +13,7 @@ export type RegistersSlice = {
   setRegister: (register: RegisterType, value: number) => void;
 };
 
-export const createRegistersSlice: ComputerSlice<RegistersSlice> = (set, get) => ({
+export const createRegistersSlice: SimulatorSlice<RegistersSlice> = (set, get) => ({
   registers: {
     AX: 0,
     BX: 0,

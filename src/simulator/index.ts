@@ -1,5 +1,5 @@
 /**
- * Here we define the state of the computer.
+ * Here we define the state of the simulator.
  *
  * We use the zustand library to manage the state. It's a very simple yet powerful library.
  * We follow the "slices pattern" to keep the state organized.
@@ -19,7 +19,7 @@ import { createRegistersSlice, RegistersSlice } from "./registers";
 import { createRunnerSlice, RunnerSlice } from "./runner";
 import { createUserConfigSlice, UserConfigSlice } from "./userconfig";
 
-export type ComputerStore = ALUSlice &
+export type SimulatorStore = ALUSlice &
   DevicesSlice &
   InterruptsSlice &
   MemorySlice &
@@ -28,9 +28,9 @@ export type ComputerStore = ALUSlice &
   RunnerSlice &
   UserConfigSlice;
 
-export type ComputerSlice<T> = StateCreator<ComputerStore, [["zustand/persist", unknown]], [], T>;
+export type SimulatorSlice<T> = StateCreator<SimulatorStore, [["zustand/persist", unknown]], [], T>;
 
-export const useComputer = create<ComputerStore>()(
+export const useSimulator = create<SimulatorStore>()(
   persist(
     (...a) => ({
       ...createALUSlice(...a),

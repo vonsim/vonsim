@@ -1,12 +1,12 @@
 import clsx from "clsx";
-import { useComputer } from "~/simulator";
+import { useSimulator } from "~/simulator";
 import { Card } from "./Card";
 
 export const CONSOLE_ID = "vonsim-console";
 
 export function Console() {
-  const contents = useComputer(state => state.devices.console);
-  const watingForInput = useComputer(state => state.runner === "waiting-for-input");
+  const contents = useSimulator(state => state.devices.console);
+  const watingForInput = useSimulator(state => state.runner === "waiting-for-input");
 
   return (
     <Card title="Consola" noPadding>

@@ -2,14 +2,14 @@ import { Switch } from "@headlessui/react";
 import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { tdeep } from "tdeep";
-import { useComputer } from "~/simulator";
+import { useSimulator } from "~/simulator";
 import { Card } from "./Card";
 
 let cache: any = [];
 
 export function Switches() {
-  const PA = useComputer(state => state.devices.pio.PA);
-  const CA = useComputer(state => state.devices.pio.CA);
+  const PA = useSimulator(state => state.devices.pio.PA);
+  const CA = useSimulator(state => state.devices.pio.CA);
   const [switches, setSwitches] = useState(() =>
     Array.from({ length: 8 }, (_, i) => (PA & (0b1000_0000 >> i)) !== 0),
   );
@@ -39,7 +39,7 @@ export function Switches() {
   const toggle = useCallback(
     (i: number) => {
       const mask = 0b1000_0000 >> i;
-      if (enabled[i]) useComputer.setState(tdeep("devices.pio.PA", PA ^ mask));
+      if (enabled[i]) useSimulator.setState(tdeep("devices.pio.PA", PA ^ mask));
     },
     [...enabled, PA],
   );

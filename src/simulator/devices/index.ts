@@ -2,11 +2,11 @@ import { tdeep } from "tdeep";
 import { match } from "ts-pattern";
 import type { Size } from "~/config";
 import { joinLowHigh, renderAddress, splitLowHigh } from "~/helpers";
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 import { ConsoleSlice, createConsoleSlice } from "./console";
 import { createPIOSlice, PIOSlice } from "./pio";
 
-export type DeviceSlice<T> = ComputerSlice<{ devices: T }>;
+export type DeviceSlice<T> = SimulatorSlice<{ devices: T }>;
 
 export type DevicesSlice = {
   devices: ConsoleSlice & PIOSlice;
@@ -14,7 +14,7 @@ export type DevicesSlice = {
   setIOMemory: (address: number, size: Size, value: number) => void;
 };
 
-export const createDevicesSlice: ComputerSlice<DevicesSlice> = (...a) => ({
+export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
   devices: {
     ...createConsoleSlice(...a).devices,
     ...createPIOSlice(...a).devices,

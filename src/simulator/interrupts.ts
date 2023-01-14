@@ -1,4 +1,4 @@
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 
 export type InterruptsSlice = {
   interruptsEnabled: boolean;
@@ -6,7 +6,7 @@ export type InterruptsSlice = {
   disableInterrupts: () => void;
 };
 
-export const createInterruptsSlice: ComputerSlice<InterruptsSlice> = set => ({
+export const createInterruptsSlice: SimulatorSlice<InterruptsSlice> = set => ({
   interruptsEnabled: true,
   enableInterrupts: () => set({ interruptsEnabled: true }),
   disableInterrupts: () => set({ interruptsEnabled: false }),

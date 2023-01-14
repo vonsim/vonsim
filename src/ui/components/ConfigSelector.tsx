@@ -1,13 +1,13 @@
 import { RadioGroup } from "@headlessui/react";
 import { useMemo } from "react";
 import { shallow } from "zustand/shallow";
-import { useComputer } from "~/simulator";
+import { useSimulator } from "~/simulator";
 
 const speeds = new Array(7).fill(null).map((_, i) => 2 ** i); // From 1 Hz to 64 Hz
 const speedOptions = Object.fromEntries(speeds.map(speed => [speed.toString(), `${speed} Hz`]));
 
 export function ConfigSelector() {
-  const config = useComputer(
+  const config = useSimulator(
     state => ({
       memoryRepresentation: state.memoryRepresentation,
       setMemoryRepresentation: state.setMemoryRepresentation,
@@ -19,7 +19,7 @@ export function ConfigSelector() {
     shallow,
   );
 
-  const runner = useComputer(state => state.runner);
+  const runner = useSimulator(state => state.runner);
 
   return (
     <div className="flex flex-wrap gap-y-2 gap-x-4">

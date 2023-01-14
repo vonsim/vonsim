@@ -1,11 +1,11 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { useComputer } from "~/simulator";
+import { useSimulator } from "~/simulator";
 import { Card } from "./Card";
 
 export function Leds() {
-  const PB = useComputer(state => state.devices.pio.PB);
-  const CB = useComputer(state => state.devices.pio.CB);
+  const PB = useSimulator(state => state.devices.pio.PB);
+  const CB = useSimulator(state => state.devices.pio.CB);
   const [leds, setLeds] = useState(() =>
     Array.from({ length: 8 }, (_, i) => (PB & (0b1000_0000 >> i)) !== 0),
   );

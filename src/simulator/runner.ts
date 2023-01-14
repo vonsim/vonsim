@@ -6,7 +6,7 @@ import { compile, ProgramInstruction } from "~/compiler";
 import type { BinaryInstructionType } from "~/compiler/common";
 import { Interrupt, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "~/config";
 import { renderAddress, sleep } from "~/helpers";
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 import { CONSOLE_ID } from "~/ui/components/Console";
 import { highlightLine, setReadOnly } from "~/ui/components/editor/methods";
 
@@ -24,7 +24,7 @@ export type RunnerSlice = {
   };
 };
 
-export const createRunnerSlice: ComputerSlice<RunnerSlice> = (set, get) => ({
+export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
   runner: "stopped",
 
   dispatchRunner: action => {

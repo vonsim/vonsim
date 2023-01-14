@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useCallback } from "react";
 import { useEvent, useLongPress, useToggle } from "react-use";
 import { shallow } from "zustand/shallow";
-import { useComputer } from "~/simulator";
+import { useSimulator } from "~/simulator";
 import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
 import KeyboardIcon from "~icons/carbon/keyboard";
@@ -15,7 +15,7 @@ import FinishIcon from "~icons/carbon/skip-forward";
 import AbortIcon from "~icons/carbon/stop-sign";
 
 export function Controls() {
-  const { state, dispatch } = useComputer(
+  const { state, dispatch } = useSimulator(
     state => ({
       state: state.runner,
       dispatch: state.dispatchRunner,
@@ -125,7 +125,7 @@ function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HT
 }
 
 function State() {
-  const state = useComputer(state => state.runner);
+  const state = useSimulator(state => state.runner);
 
   return (
     <div

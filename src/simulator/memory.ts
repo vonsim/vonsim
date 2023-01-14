@@ -1,7 +1,7 @@
 import { klona } from "klona";
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS, Size } from "~/config";
 import { renderAddress } from "~/helpers";
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 
 export type MemorySlice = {
   memory: ArrayBuffer;
@@ -9,7 +9,7 @@ export type MemorySlice = {
   setMemory: (address: number, size: Size, value: number) => void;
 };
 
-export const createMemorySlice: ComputerSlice<MemorySlice> = (set, get) => ({
+export const createMemorySlice: SimulatorSlice<MemorySlice> = (set, get) => ({
   memory: new ArrayBuffer(MEMORY_SIZE),
 
   getMemory: (address, size) => {

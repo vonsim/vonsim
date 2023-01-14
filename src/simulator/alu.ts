@@ -2,7 +2,7 @@ import { tdeep } from "tdeep";
 import { match } from "ts-pattern";
 import { MAX_SIGNED_VALUE, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "~/config";
 import { unsignedToSigned } from "~/helpers";
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 
 export type ArithmeticOperation = "ADD" | "ADC" | "SUB" | "SBB";
 export type LogicalOperation = "AND" | "OR" | "XOR" | "NOT";
@@ -29,7 +29,7 @@ export type ALUSlice = {
   decodeFlags: (bits: number) => void;
 };
 
-export const createALUSlice: ComputerSlice<ALUSlice> = (set, get) => ({
+export const createALUSlice: SimulatorSlice<ALUSlice> = (set, get) => ({
   alu: {
     left: 0,
     right: 0,

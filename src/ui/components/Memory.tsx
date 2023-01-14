@@ -5,11 +5,11 @@ import { shallow } from "zustand/shallow";
 
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "~/config";
 import { renderAddress, renderMemoryCell } from "~/helpers";
-import { useComputer } from "~/simulator";
+import { useSimulator } from "~/simulator";
 import { Card } from "./Card";
 
 export function Memory() {
-  const memoryRepresentation = useComputer(state => state.memoryRepresentation);
+  const memoryRepresentation = useSimulator(state => state.memoryRepresentation);
 
   const startId = useId();
   const [start, setStart] = useState(0x1000);
@@ -30,7 +30,7 @@ export function Memory() {
     return { cols, cells, rows, offset };
   }, [start, width, window.devicePixelRatio]);
 
-  const memory = useComputer(
+  const memory = useSimulator(
     state => [...new Uint8Array(state.memory).slice(offset, offset + cells)],
     shallow,
   );

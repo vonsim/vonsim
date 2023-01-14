@@ -13,7 +13,7 @@ import {
 } from "~/compiler/common/patterns";
 import { INITIAL_IP, MEMORY_SIZE } from "~/config";
 import { randomByte, randomWord, splitLowHigh } from "~/helpers";
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 
 export type ProgramSlice = {
   program: Program | null;
@@ -28,7 +28,7 @@ const writeWord = (memory: ArrayBuffer, address: number, value: number): void =>
   new DataView(memory).setUint16(address, value, true);
 };
 
-export const createProgramSlice: ComputerSlice<ProgramSlice> = (set, get) => ({
+export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
   program: null,
   loadProgram: program => {
     const memoryConfig = get().memoryOnReset;

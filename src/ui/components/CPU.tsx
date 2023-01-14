@@ -1,15 +1,15 @@
 import { shallow } from "zustand/shallow";
 
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "~/helpers";
-import { useComputer } from "~/simulator";
+import { useSimulator } from "~/simulator";
 import { Card } from "./Card";
 
 const generalRegisters = ["AX", "BX", "CX", "DX"] as const;
 
 export function CPU() {
-  const memoryRepresentation = useComputer(state => state.memoryRepresentation);
-  const registers = useComputer(state => state.registers, shallow);
-  const alu = useComputer(state => state.alu, shallow);
+  const memoryRepresentation = useSimulator(state => state.memoryRepresentation);
+  const registers = useSimulator(state => state.registers, shallow);
+  const alu = useSimulator(state => state.alu, shallow);
 
   return (
     <Card title="CPU">

@@ -1,4 +1,4 @@
-import type { ComputerSlice } from "~/simulator";
+import type { SimulatorSlice } from "~/simulator";
 
 export type MemoryRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
 export type MemoryOnReset = "empty" | "random" | "keep";
@@ -12,7 +12,7 @@ export type UserConfigSlice = {
   setClockSpeed: (speed: number) => void;
 };
 
-export const createUserConfigSlice: ComputerSlice<UserConfigSlice> = set => ({
+export const createUserConfigSlice: SimulatorSlice<UserConfigSlice> = set => ({
   memoryRepresentation: "hex",
   memoryOnReset: "random",
   clockSpeed: 1,
