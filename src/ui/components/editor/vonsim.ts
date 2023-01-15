@@ -14,6 +14,7 @@ import {
   instructionPattern,
   registerPattern,
 } from "@/compiler/common/patterns";
+import { useSimulator } from "@/simulator";
 
 import { PROGRAM_BACKUP_KEY, useErrors } from "./store";
 
@@ -120,6 +121,7 @@ const vonsimLinter = linter(
   view => {
     const source = view.state.doc.toString();
     const result = compile(source);
+    const lang = useSimulator.getState().language;
     useErrors.setState(() => {
       if (result.success) {
         return { globalError: null, numberOfErrors: 0 };
@@ -127,7 +129,7 @@ const vonsimLinter = linter(
 
       const numberOfErrors = result.codeErrors.length + result.lineErrors.length;
       return {
-        globalError: result.codeErrors.at(0)?.translate("en") || null,
+        globalError: result.codeErrors.at(0)?.translate(lang) || null,
         numberOfErrors,
       };
     });
@@ -140,7 +142,7 @@ const vonsimLinter = linter(
       const diagnostics: Diagnostic[] = result.lineErrors.map(error => ({
         from: error.from,
         to: error.to,
-        message: error.translate("en"),
+        message: error.translate(lang),
         severity: "error",
       }));
 

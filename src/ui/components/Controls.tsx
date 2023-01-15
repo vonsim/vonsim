@@ -15,6 +15,8 @@ import RunningIcon from "~icons/carbon/settings";
 import FinishIcon from "~icons/carbon/skip-forward";
 import AbortIcon from "~icons/carbon/stop-sign";
 
+import { LangPicker } from "./LangPicker";
+
 export function Controls() {
   const { state, dispatch } = useSimulator(
     state => ({
@@ -90,6 +92,7 @@ export function Controls() {
 
       <div className="grow" />
 
+      <LangPicker />
       <a
         className="flex h-full items-center p-2 transition hover:bg-slate-500/30"
         href="/docs"

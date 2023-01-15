@@ -49,6 +49,7 @@ export const useSimulator = create<SimulatorStore>()(
         memoryRepresentation: state.memoryRepresentation,
         memoryOnReset: state.memoryOnReset,
         clockSpeed: state.clockSpeed,
+        language: state.language,
       }),
     },
   ),

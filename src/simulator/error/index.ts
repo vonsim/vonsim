@@ -2,6 +2,7 @@ import { toast } from "react-hot-toast";
 import { Result } from "rust-optionals";
 
 import { Language } from "@/config";
+import { useSimulator } from "@/simulator";
 
 import { ERROR_LIST, SimulatorErrorCode, SimulatorErrorParams } from "./list";
 
@@ -29,7 +30,8 @@ export class SimulatorError<Code extends SimulatorErrorCode> extends Error {
   }
 
   notify() {
-    toast.error(this.message);
+    const message = this.translate(useSimulator.getState().language);
+    toast.error(message);
   }
 }
 
