@@ -8,7 +8,6 @@ module.exports = {
   jsxSingleQuote: false,
   tabWidth: 2,
   plugins: [
-    require.resolve("prettier-plugin-organize-imports"),
     require.resolve("prettier-plugin-tailwindcss"), // MUST come last
   ],
   pluginSearchDirs: false,
