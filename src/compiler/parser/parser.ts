@@ -90,7 +90,10 @@ export class Parser {
       // Then, parse ORG changes
       if (this.match("ORG")) {
         const token = this.previous();
-        const addressToken = this.consume("NUMBER", { en: "Expected address after ORG." });
+        const addressToken = this.consume("NUMBER", {
+          en: "Expected address after ORG.",
+          es: "Se esperaba una dirección después de ORG.",
+        });
         const address = this.parseNumber(addressToken);
 
         this.addStatement({
@@ -152,7 +155,10 @@ export class Parser {
 
       throw new LineError(
         "custom",
-        { en: `Expected instruction, got ${token.type}.` },
+        {
+          en: `Expected instruction, got ${token.type}.`,
+          es: `Se esperaba una instrucción, se obtuvo ${token.type}.`,
+        },
         ...this.calculatePositionRange(token),
       );
     }
@@ -202,7 +208,10 @@ export class Parser {
     messages?: CompilerErrorMessages,
   ): Merge<Token, { type: T }> {
     if (!this.check(type)) {
-      messages ||= { en: `Expected ${type}, got ${this.peek().type}.` };
+      messages ||= {
+        en: `Expected ${type}, got ${this.peek().type}.`,
+        es: `Se esperaba ${type}, se obtuvo ${this.peek().type}.`,
+      };
       throw new LineError("custom", messages, ...this.calculatePositionRange(this.peek()));
     }
     return this.advance() as any;
@@ -214,7 +223,7 @@ export class Parser {
 
     throw new LineError(
       "custom",
-      { en: "Expected end of statement." },
+      { en: "Expected end of statement.", es: "Se esperaba que la instrucción termine." },
       ...this.calculatePositionRange(this.peek()),
     );
   }
@@ -267,7 +276,10 @@ export class Parser {
       if (!isMatching(dataDirectivePattern, this.peek().type)) {
         throw new LineError(
           "custom",
-          { en: `Expected identifier, got ${labelToken.type}.` },
+          {
+            en: `Expected identifier, got ${labelToken.type}.`,
+            es: `Se esperaba un identificador, se obtuvo ${labelToken.type}.`,
+          },
           ...this.calculatePositionRange(labelToken),
         );
       }
@@ -282,7 +294,10 @@ export class Parser {
       if (!isMatching(instructionPattern, next.type)) {
         throw new LineError(
           "custom",
-          { en: `Expected instruction after label, got ${next.type}.` },
+          {
+            en: `Expected instruction after label, got ${next.type}.`,
+            es: `Se esperaba una instrucción después de la etiqueta, se obtuvo ${next.type}.`,
+          },
           ...this.calculatePositionRange(next),
         );
       }
@@ -343,12 +358,21 @@ export class Parser {
         size = "auto";
       } else {
         size = start.type === "BYTE" ? "byte" : "word";
-        this.consume("PTR", { en: `Expected "PTR" after "${size.toUpperCase()}".` });
-        this.consume("LEFT_BRACKET", { en: `Expected "[" after "${size.toUpperCase()} PTR".` });
+        this.consume("PTR", {
+          en: `Expected "PTR" after "${size.toUpperCase()}".`,
+          es: `Se esperaba "PTR" después de "${size.toUpperCase()}".`,
+        });
+        this.consume("LEFT_BRACKET", {
+          en: `Expected "[" after "${size.toUpperCase()} PTR".`,
+          es: `Se esperaba "[" después de "${size.toUpperCase()} PTR".`,
+        });
       }
 
       if (this.match("BX")) {
-        const rbracket = this.consume("RIGHT_BRACKET", { en: 'Expected "]" after "BX".' });
+        const rbracket = this.consume("RIGHT_BRACKET", {
+          en: 'Expected "]" after "BX".',
+          es: 'Se esperaba "]" después de "BX".',
+        });
         return {
           type: "address",
           size,
@@ -357,7 +381,10 @@ export class Parser {
         };
       } else {
         const calc = this.numberExpression();
-        const rbracket = this.consume("RIGHT_BRACKET", { en: 'Expected "]" after expression.' });
+        const rbracket = this.consume("RIGHT_BRACKET", {
+          en: 'Expected "]" after expression.',
+          es: 'Se esperaba "]" después de la expresión.',
+        });
         return {
           type: "address",
           size,
@@ -388,7 +415,10 @@ export class Parser {
 
     if (this.match("OFFSET")) {
       const offsetToken = this.previous();
-      const identifierToken = this.consume("IDENTIFIER", { en: "Expected label after OFFSET." });
+      const identifierToken = this.consume("IDENTIFIER", {
+        en: "Expected label after OFFSET.",
+        es: "Se esperaba una etiqueta después de OFFSET.",
+      });
       return {
         type: "label",
         value: identifierToken.lexeme.toUpperCase(),
@@ -410,7 +440,10 @@ export class Parser {
     if (this.match("LEFT_PAREN")) {
       const lparen = this.previous();
       const expression = this.numberExpression();
-      const rparen = this.consume("RIGHT_PAREN", { en: "Unclosed parenthesis." });
+      const rparen = this.consume("RIGHT_PAREN", {
+        en: "Unclosed parenthesis.",
+        es: "Paréntesis sin cerrar.",
+      });
       return {
         ...expression,
         position: this.calculatePositionRange(lparen, rparen),

@@ -2,7 +2,7 @@ import type { TupleToUnion } from "type-fest";
 
 export const SIZES = ["byte", "word"] as const;
 export const INTERRUPTS = [0, 3, 6, 7] as const;
-export const LANGUAGES = ["en"] as const;
+export const LANGUAGES = ["en", "es"] as const;
 
 export type Size = TupleToUnion<typeof SIZES>;
 export type Interrupt = TupleToUnion<typeof INTERRUPTS>;
