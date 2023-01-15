@@ -21,12 +21,12 @@
                    POP AX
                    RET
 
-                   ; Caracter por pila
+                   ; Carácter por pila
                    ; Si es vocal, AH=FFh; de lo contrario, AH=00h
     ES_VOCAL:      PUSH BX
                    MOV BX, SP
                    ADD BX, 2 + 2
-                   MOV AL, [BX] ; Caracter en AL
+                   MOV AL, [BX] ; Carácter en AL
                    MOV BX, OFFSET vocales - 1
                    MOV AH, 00h
     ES_VOCAL_LOOP: INC BX

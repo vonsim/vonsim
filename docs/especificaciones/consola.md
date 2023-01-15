@@ -2,7 +2,7 @@
 
 El simulador cuenta con una consola para escribir y leer caracteres. Esta es un dispositivo externo y el CPU puede comunicarse con esta mediante interrupciones de software.
 
-Con la interrupción 6 (`INT 6`) se detiene la ejecución del código hasta que se escriba un caracter en la consola. El caracter que se escriba será guardado en la dirección de memoria almacenada en `BX` según su representación en ASCII.
+Con la interrupción 6 (`INT 6`) se detiene la ejecución del código hasta que se escriba un carácter en la consola. El carácter que se escriba será guardado en la dirección de memoria almacenada en `BX` según su representación en ASCII.
 
 ```asm
 ORG 1000h
@@ -11,7 +11,7 @@ car DB ?
 ORG 2000h
 MOV BX, OFFSET car
 INT 6
-; Escribe un caracter
+; Escribe un carácter
 INT 0
 END
 
@@ -38,5 +38,5 @@ END
 
 Hay dos caracteres especiales:
 
-- el caracter de salto de línea (`LF`, 10 en decimal) imprime, en efecto, un salto de línea — útil para no imprimir todo en una sola línea;
-- el caracter de _form feed_ (`FF`, 12 en decimal) limpia la consola.
+- el carácter de salto de línea (`LF`, 10 en decimal) imprime, en efecto, un salto de línea — útil para no imprimir todo en una sola línea;
+- el carácter de _form feed_ (`FF`, 12 en decimal) limpia la consola.

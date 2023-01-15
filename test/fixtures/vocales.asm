@@ -5,7 +5,7 @@
                fin_texto DB ?
 
                ORG 3000h
-               ; Caracter en AL
+               ; Carácter en AL
                ; Si es vocal, AH=FFh; de lo contrario, AH=00h
 ES_VOCAL:      MOV BX, OFFSET vocales - 1
                MOV AH, 00h
