@@ -1,9 +1,11 @@
+import { Err, Ok } from "rust-optionals";
 import { tdeep } from "tdeep";
 import { match } from "ts-pattern";
 
 import type { Size } from "@/config";
-import { joinLowHigh, renderAddress, splitLowHigh } from "@/helpers";
+import { joinLowHigh, splitLowHigh } from "@/helpers";
 import type { SimulatorSlice } from "@/simulator";
+import { SimulatorError, SimulatorResult } from "@/simulator/error";
 
 import { ConsoleSlice, createConsoleSlice } from "./console";
 import { createPIOSlice, PIOSlice } from "./pio";
@@ -12,8 +14,8 @@ export type DeviceSlice<T> = SimulatorSlice<{ devices: T }>;
 
 export type DevicesSlice = {
   devices: ConsoleSlice & PIOSlice;
-  getIOMemory: (address: number, size: Size) => number;
-  setIOMemory: (address: number, size: Size, value: number) => void;
+  getIOMemory: (address: number, size: Size) => SimulatorResult<number>;
+  setIOMemory: (address: number, size: Size, value: number) => SimulatorResult<void>;
 };
 
 export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
@@ -26,42 +28,46 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
     const [, get] = a;
 
     const byte = (address: number) =>
-      match(address)
-        .with(0x30, () => get().devices.pio.PA)
-        .with(0x31, () => get().devices.pio.PB)
-        .with(0x32, () => get().devices.pio.CA)
-        .with(0x33, () => get().devices.pio.CB)
-        .otherwise(() => {
-          throw new Error(
-            `La dirección de memoria E/S ${renderAddress(address)} no está implementada.`,
-          );
-        });
+      match<number, SimulatorResult<number>>(address)
+        .with(0x30, () => Ok(get().devices.pio.PA))
+        .with(0x31, () => Ok(get().devices.pio.PB))
+        .with(0x32, () => Ok(get().devices.pio.CA))
+        .with(0x33, () => Ok(get().devices.pio.CB))
+        .otherwise(() => Err(new SimulatorError("io-memory-not-implemented", address)));
 
-    if (size === "byte") return byte(address);
-    else return joinLowHigh(byte(address), byte(address + 1));
+    if (size === "byte") {
+      return byte(address);
+    } else {
+      const low = byte(address);
+      if (low.isErr()) return low;
+
+      const high = byte(address + 1);
+      if (high.isErr()) return high;
+
+      return Ok(joinLowHigh(low.unwrap(), high.unwrap()));
+    }
   },
 
   setIOMemory: (address, size, value) => {
     const [set] = a;
 
     const byte = (address: number, value: number) =>
-      match(address)
-        .with(0x30, () => set(tdeep("devices.pio.PA", value)))
-        .with(0x31, () => set(tdeep("devices.pio.PB", value)))
-        .with(0x32, () => set(tdeep("devices.pio.CA", value)))
-        .with(0x33, () => set(tdeep("devices.pio.CB", value)))
-        .otherwise(() => {
-          throw new Error(
-            `La dirección de memoria E/S ${renderAddress(address)} no está implementada.`,
-          );
-        });
+      match<number, SimulatorResult<void>>(address)
+        .with(0x30, () => Ok(set(tdeep("devices.pio.PA", value))))
+        .with(0x31, () => Ok(set(tdeep("devices.pio.PB", value))))
+        .with(0x32, () => Ok(set(tdeep("devices.pio.CA", value))))
+        .with(0x33, () => Ok(set(tdeep("devices.pio.CB", value))))
+        .otherwise(() => Err(new SimulatorError("io-memory-not-implemented", address)));
 
     if (size === "byte") {
-      byte(address, value);
+      return byte(address, value);
     } else {
       const [low, high] = splitLowHigh(value);
-      byte(address, low);
-      byte(address + 1, high);
+
+      const lowResult = byte(address, low);
+      if (lowResult.isErr()) return lowResult;
+
+      return byte(address + 1, high);
     }
   },
 });
