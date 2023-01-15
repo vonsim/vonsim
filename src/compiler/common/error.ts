@@ -3,22 +3,27 @@ import { Language } from "@/config";
 import { CompilerErrorCode, CompilerErrorParams, ERROR_LIST } from "./error-list";
 import type { Position, PositionRange } from "./index";
 
-export class CompilerError<Code extends CompilerErrorCode> {
+export class CompilerError<Code extends CompilerErrorCode> extends Error {
   public readonly code: Code;
   private readonly params: CompilerErrorParams<Code>;
 
   constructor(code: Code, ...params: CompilerErrorParams<Code>) {
+    super();
     this.code = code;
     this.params = params;
   }
 
-  message(lang: Language) {
+  translate(lang: Language) {
     // @ts-expect-error - TypeScript doesn't like '...this.params', for some reason.
     return ERROR_LIST[this.code](...this.params)[lang];
   }
 
+  get message() {
+    return this.translate("en");
+  }
+
   toString() {
-    return this.message("en");
+    return this.message;
   }
 }
 
@@ -39,7 +44,7 @@ export class LineError<Code extends CompilerErrorCode> extends CompilerError<Cod
     this.to = to;
   }
 
-  toString() {
-    return super.toString() + ` (${this.from} - ${this.toString})`;
+  get message() {
+    return `${super.message} (${this.from}:${this.to})`;
   }
 }

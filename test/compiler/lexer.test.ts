@@ -50,25 +50,15 @@ describe("Strings", () => {
   });
 
   it("unterminated strings", () => {
-    expect(() => lex('"My unterminated string')).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "unterminated-string",
-        "from": 0,
-        "params": [],
-        "to": 23,
-      }
-    `);
+    expect(() => lex('"My unterminated string')).toThrowErrorMatchingInlineSnapshot(
+      '"Unterminated string. (0:23)"',
+    );
   });
 
   it("only ASCII", () => {
-    expect(() => lex('"My Unicode string αβγ"')).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "only-ascii",
-        "from": 19,
-        "params": [],
-        "to": 20,
-      }
-    `);
+    expect(() => lex('"My Unicode string αβγ"')).toThrowErrorMatchingInlineSnapshot(
+      '"Only ASCII character are supported for strings. (19:20)"',
+    );
   });
 });
 
@@ -119,37 +109,18 @@ describe("Numbers", () => {
   });
 
   it("decimal with hex characters", () => {
-    expect(() => lex("4a")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "invalid-decimal",
-        "from": 0,
-        "params": [],
-        "to": 2,
-      }
-    `);
+    expect(() => lex("4a")).toThrowErrorMatchingInlineSnapshot(
+      '"Invalid decimal number. It should only contain digits. (0:2)"',
+    );
   });
 
   it("no decimal points", () => {
-    expect(() => lex("1.2")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "unexpected-character",
-        "from": 1,
-        "params": [
-          ".",
-        ],
-        "to": 2,
-      }
-    `);
-    expect(() => lex(".1")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "unexpected-character",
-        "from": 0,
-        "params": [
-          ".",
-        ],
-        "to": 1,
-      }
-    `);
+    expect(() => lex("1.2")).toThrowErrorMatchingInlineSnapshot(
+      '"Unexpected character \\".\\". (1:2)"',
+    );
+    expect(() => lex(".1")).toThrowErrorMatchingInlineSnapshot(
+      '"Unexpected character \\".\\". (0:1)"',
+    );
   });
 
   it("binary", () => {
@@ -184,22 +155,12 @@ describe("Numbers", () => {
   });
 
   it("invalid binary", () => {
-    expect(() => lex("02b")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "invalid-binary",
-        "from": 0,
-        "params": [],
-        "to": 3,
-      }
-    `);
-    expect(() => lex("60b")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "invalid-binary",
-        "from": 0,
-        "params": [],
-        "to": 3,
-      }
-    `);
+    expect(() => lex("02b")).toThrowErrorMatchingInlineSnapshot(
+      '"Invalid binary number. It should only contain 0s and 1s. (0:3)"',
+    );
+    expect(() => lex("60b")).toThrowErrorMatchingInlineSnapshot(
+      '"Invalid binary number. It should only contain 0s and 1s. (0:3)"',
+    );
   });
 
   it("hexadecimal", () => {

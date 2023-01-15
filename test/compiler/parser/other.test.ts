@@ -8,18 +8,9 @@ const parse = (input: string) => new Parser(lex(input)).parseTokens();
 
 describe("ORG", () => {
   it("must have a value", () => {
-    expect(() => parse("ORG")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 3,
-        "params": [
-          {
-            "en": "Expected address after ORG.",
-          },
-        ],
-        "to": 3,
-      }
-    `);
+    expect(() => parse("ORG")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected address after ORG. (3:3)"',
+    );
   });
   it("accepts any number literal", () => {
     expect(parse("ORG 10")).toMatchInlineSnapshot(`
@@ -48,72 +39,34 @@ describe("ORG", () => {
     `);
   });
   it("doesn't accept negatives", () => {
-    expect(() => parse("ORG -10")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 4,
-        "params": [
-          {
-            "en": "Expected address after ORG.",
-          },
-        ],
-        "to": 5,
-      }
-    `);
+    expect(() => parse("ORG -10")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected address after ORG. (4:5)"',
+    );
   });
   it("doesn't accept labels", () => {
-    expect(() => parse("ORG label")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 4,
-        "params": [
-          {
-            "en": "Expected address after ORG.",
-          },
-        ],
-        "to": 9,
-      }
-    `);
+    expect(() => parse("ORG label")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected address after ORG. (4:9)"',
+    );
   });
 });
 
 describe("END", () => {
   it("only one END", () => {
-    expect(() => parse("END\nEND")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "end-must-be-the-last-statement",
-        "from": 0,
-        "params": [],
-        "to": 3,
-      }
-    `);
-    expect(() => parse("END END")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "end-must-be-the-last-statement",
-        "from": 0,
-        "params": [],
-        "to": 3,
-      }
-    `);
-    expect(() => parse("ORG 1000h\nEND\nMOV AX, BX\nEND")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "end-must-be-the-last-statement",
-        "from": 10,
-        "params": [],
-        "to": 13,
-      }
-    `);
+    expect(() => parse("END\nEND")).toThrowErrorMatchingInlineSnapshot(
+      '"END must be the last statement. (0:3)"',
+    );
+    expect(() => parse("END END")).toThrowErrorMatchingInlineSnapshot(
+      '"END must be the last statement. (0:3)"',
+    );
+    expect(() => parse("ORG 1000h\nEND\nMOV AX, BX\nEND")).toThrowErrorMatchingInlineSnapshot(
+      '"END must be the last statement. (10:13)"',
+    );
   });
 
   it("END must be the last instruction", () => {
-    expect(() => parse("ORG 1000h\nEND\nMOV AX, BX")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "end-must-be-the-last-statement",
-        "from": 10,
-        "params": [],
-        "to": 13,
-      }
-    `);
+    expect(() => parse("ORG 1000h\nEND\nMOV AX, BX")).toThrowErrorMatchingInlineSnapshot(
+      '"END must be the last statement. (10:13)"',
+    );
     expect(parse("END")).toMatchInlineSnapshot(`
       [
         {
@@ -163,36 +116,15 @@ describe("END", () => {
 
 describe("Labels", () => {
   it("no duplicates", () => {
-    expect(() => parse("data DB 1 \n data DW 1")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "duplicated-label",
-        "from": 12,
-        "params": [
-          "label",
-        ],
-        "to": 16,
-      }
-    `);
-    expect(() => parse("DATA DB 1 \n data DW 1")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "duplicated-label",
-        "from": 12,
-        "params": [
-          "label",
-        ],
-        "to": 16,
-      }
-    `);
-    expect(() => parse("label DB 1 \n label: HLT")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "duplicated-label",
-        "from": 13,
-        "params": [
-          "label",
-        ],
-        "to": 19,
-      }
-    `);
+    expect(() => parse("data DB 1 \n data DW 1")).toThrowErrorMatchingInlineSnapshot(
+      '"Duplicated label \\"label\\". (12:16)"',
+    );
+    expect(() => parse("DATA DB 1 \n data DW 1")).toThrowErrorMatchingInlineSnapshot(
+      '"Duplicated label \\"label\\". (12:16)"',
+    );
+    expect(() => parse("label DB 1 \n label: HLT")).toThrowErrorMatchingInlineSnapshot(
+      '"Duplicated label \\"label\\". (13:19)"',
+    );
     expect(parse("DATA DB 1\ndata2 DW 1")).toMatchInlineSnapshot(`
       [
         {
@@ -238,69 +170,24 @@ describe("Labels", () => {
   });
 
   it("one label per line", () => {
-    expect(() => parse("data data DB 1")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 0,
-        "params": [
-          {
-            "en": "Expected identifier, got IDENTIFIER.",
-          },
-        ],
-        "to": 4,
-      }
-    `);
-    expect(() => parse("label: label: HLT")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 7,
-        "params": [
-          {
-            "en": "Expected instruction after label, got LABEL.",
-          },
-        ],
-        "to": 13,
-      }
-    `);
-    expect(() => parse("label: data HLT")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 7,
-        "params": [
-          {
-            "en": "Expected instruction after label, got IDENTIFIER.",
-          },
-        ],
-        "to": 11,
-      }
-    `);
-    expect(() => parse("data label: HLT")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 0,
-        "params": [
-          {
-            "en": "Expected identifier, got IDENTIFIER.",
-          },
-        ],
-        "to": 4,
-      }
-    `);
+    expect(() => parse("data data DB 1")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected identifier, got IDENTIFIER. (0:4)"',
+    );
+    expect(() => parse("label: label: HLT")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected instruction after label, got LABEL. (7:13)"',
+    );
+    expect(() => parse("label: data HLT")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected instruction after label, got IDENTIFIER. (7:11)"',
+    );
+    expect(() => parse("data label: HLT")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected identifier, got IDENTIFIER. (0:4)"',
+    );
   });
 
   it("no colon for data directives", () => {
-    expect(() => parse("data: DB 1")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 6,
-        "params": [
-          {
-            "en": "Expected instruction after label, got DB.",
-          },
-        ],
-        "to": 8,
-      }
-    `);
+    expect(() => parse("data: DB 1")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected instruction after label, got DB. (6:8)"',
+    );
     expect(parse("data DB 1")).toMatchInlineSnapshot(`
       [
         {
@@ -327,18 +214,9 @@ describe("Labels", () => {
   });
 
   it("colon for data directives", () => {
-    expect(() => parse("label HLT")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 0,
-        "params": [
-          {
-            "en": "Expected identifier, got IDENTIFIER.",
-          },
-        ],
-        "to": 5,
-      }
-    `);
+    expect(() => parse("label HLT")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected identifier, got IDENTIFIER. (0:5)"',
+    );
     expect(parse("label: HLT")).toMatchInlineSnapshot(`
       [
         {

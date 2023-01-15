@@ -7,30 +7,9 @@ const lex = (input: string) => new Scanner(input).scanTokens();
 const parse = (input: string) => new Parser(lex(input)).parseTokens();
 
 it("no arguments", () => {
-  expect(() => parse("DB")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 2,
-      "params": [],
-      "to": 2,
-    }
-  `);
-  expect(() => parse("DW")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 2,
-      "params": [],
-      "to": 2,
-    }
-  `);
-  expect(() => parse("equ")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 3,
-      "params": [],
-      "to": 3,
-    }
-  `);
+  expect(() => parse("DB")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (2:2)"');
+  expect(() => parse("DW")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (2:2)"');
+  expect(() => parse("equ")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (3:3)"');
 });
 
 it("strings", () => {
@@ -120,30 +99,12 @@ it("strings", () => {
       },
     ]
   `);
-  expect(() => parse('DB OFFSET "str"')).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 10,
-      "params": [
-        {
-          "en": "Expected label after OFFSET.",
-        },
-      ],
-      "to": 15,
-    }
-  `);
-  expect(() => parse('DB "str" + 1')).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 9,
-      "params": [
-        {
-          "en": "Expected end of statement.",
-        },
-      ],
-      "to": 10,
-    }
-  `);
+  expect(() => parse('DB OFFSET "str"')).toThrowErrorMatchingInlineSnapshot(
+    '"Expected label after OFFSET. (10:15)"',
+  );
+  expect(() => parse('DB "str" + 1')).toThrowErrorMatchingInlineSnapshot(
+    '"Expected end of statement. (9:10)"',
+  );
 });
 
 it("unassigned", () => {
@@ -205,16 +166,7 @@ it("unassigned", () => {
       },
     ]
   `);
-  expect(() => parse("DW ??")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 4,
-      "params": [
-        {
-          "en": "Expected end of statement.",
-        },
-      ],
-      "to": 5,
-    }
-  `);
+  expect(() => parse("DW ??")).toThrowErrorMatchingInlineSnapshot(
+    '"Expected end of statement. (4:5)"',
+  );
 });

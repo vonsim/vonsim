@@ -167,30 +167,12 @@ it("registers", () => {
       },
     ]
   `);
-  expect(() => parse("POP a l")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 6,
-      "params": [
-        {
-          "en": "Expected end of statement.",
-        },
-      ],
-      "to": 7,
-    }
-  `);
-  expect(() => parse("POP BYTE PTR AX")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 13,
-      "params": [
-        {
-          "en": "Expected \\"[\\" after \\"BYTE PTR\\".",
-        },
-      ],
-      "to": 15,
-    }
-  `);
+  expect(() => parse("POP a l")).toThrowErrorMatchingInlineSnapshot(
+    '"Expected end of statement. (6:7)"',
+  );
+  expect(() => parse("POP BYTE PTR AX")).toThrowErrorMatchingInlineSnapshot(
+    '"Expected \\"[\\" after \\"BYTE PTR\\". (13:15)"',
+  );
 });
 
 describe("Direct address", () => {
@@ -230,18 +212,9 @@ describe("Direct address", () => {
   });
 
   it("byte", () => {
-    expect(() => parse("INC BYTE [10h]")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 9,
-        "params": [
-          {
-            "en": "Expected \\"PTR\\" after \\"BYTE\\".",
-          },
-        ],
-        "to": 10,
-      }
-    `);
+    expect(() => parse("INC BYTE [10h]")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected \\"PTR\\" after \\"BYTE\\". (9:10)"',
+    );
     expect(parse("INC BYTE PTR [10h]")).toMatchInlineSnapshot(`
       [
         {
@@ -277,18 +250,9 @@ describe("Direct address", () => {
   });
 
   it("word", () => {
-    expect(() => parse("INC WORD [10h]")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 9,
-        "params": [
-          {
-            "en": "Expected \\"PTR\\" after \\"WORD\\".",
-          },
-        ],
-        "to": 10,
-      }
-    `);
+    expect(() => parse("INC WORD [10h]")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected \\"PTR\\" after \\"WORD\\". (9:10)"',
+    );
     expect(parse("INC WORD PTR [10h]")).toMatchInlineSnapshot(`
       [
         {
@@ -324,18 +288,9 @@ describe("Direct address", () => {
   });
 
   it("expression", () => {
-    expect(() => parse("INC [2 * (3 + OFFSET label)")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 27,
-        "params": [
-          {
-            "en": "Expected \\"]\\" after expression.",
-          },
-        ],
-        "to": 27,
-      }
-    `);
+    expect(() => parse("INC [2 * (3 + OFFSET label)")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected \\"]\\" after expression. (27:27)"',
+    );
     expect(parse("INC [2 * (3 + OFFSET label)]")).toMatchInlineSnapshot(`
       [
         {
@@ -433,18 +388,9 @@ describe("Direct address", () => {
   });
 
   it("byte", () => {
-    expect(() => parse("INC BYTE [BX]")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 9,
-        "params": [
-          {
-            "en": "Expected \\"PTR\\" after \\"BYTE\\".",
-          },
-        ],
-        "to": 10,
-      }
-    `);
+    expect(() => parse("INC BYTE [BX]")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected \\"PTR\\" after \\"BYTE\\". (9:10)"',
+    );
     expect(parse("INC BYTE PTR [BX]")).toMatchInlineSnapshot(`
       [
         {
@@ -472,18 +418,9 @@ describe("Direct address", () => {
   });
 
   it("word", () => {
-    expect(() => parse("INC WORD [BX]")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 9,
-        "params": [
-          {
-            "en": "Expected \\"PTR\\" after \\"WORD\\".",
-          },
-        ],
-        "to": 10,
-      }
-    `);
+    expect(() => parse("INC WORD [BX]")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected \\"PTR\\" after \\"WORD\\". (9:10)"',
+    );
     expect(parse("INC WORD PTR [BX]")).toMatchInlineSnapshot(`
       [
         {
@@ -511,18 +448,9 @@ describe("Direct address", () => {
   });
 
   it("no offset", () => {
-    expect(() => parse("INC [BX + 1]")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "custom",
-        "from": 8,
-        "params": [
-          {
-            "en": "Expected \\"]\\" after \\"BX\\".",
-          },
-        ],
-        "to": 9,
-      }
-    `);
+    expect(() => parse("INC [BX + 1]")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected \\"]\\" after \\"BX\\". (8:9)"',
+    );
   });
 
   it("only BX", () => {
@@ -550,22 +478,12 @@ describe("Direct address", () => {
         },
       ]
     `);
-    expect(() => parse("INC [AX]")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "expected-argument",
-        "from": 5,
-        "params": [],
-        "to": 7,
-      }
-    `);
-    expect(() => parse("INC [IP]")).toThrowErrorMatchingInlineSnapshot(`
-      LineError {
-        "code": "expected-argument",
-        "from": 5,
-        "params": [],
-        "to": 7,
-      }
-    `);
+    expect(() => parse("INC [AX]")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected argument. (5:7)"',
+    );
+    expect(() => parse("INC [IP]")).toThrowErrorMatchingInlineSnapshot(
+      '"Expected argument. (5:7)"',
+    );
   });
 });
 
@@ -641,16 +559,7 @@ it("immediate", () => {
       },
     ]
   `);
-  expect(() => parse("ADD OFFSET label + (1, BX)")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 21,
-      "params": [
-        {
-          "en": "Unclosed parenthesis.",
-        },
-      ],
-      "to": 22,
-    }
-  `);
+  expect(() => parse("ADD OFFSET label + (1, BX)")).toThrowErrorMatchingInlineSnapshot(
+    '"Unclosed parenthesis. (21:22)"',
+  );
 });

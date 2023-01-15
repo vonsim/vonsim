@@ -109,22 +109,10 @@ it("label", () => {
       },
     ]
   `);
-  expect(() => parse("DB label:")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 3,
-      "params": [],
-      "to": 9,
-    }
-  `);
-  expect(() => parse("DB 1abel")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "invalid-decimal",
-      "from": 3,
-      "params": [],
-      "to": 7,
-    }
-  `);
+  expect(() => parse("DB label:")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (3:9)"');
+  expect(() => parse("DB 1abel")).toThrowErrorMatchingInlineSnapshot(
+    '"Invalid decimal number. It should only contain digits. (3:7)"',
+  );
 });
 
 it("labels with offset", () => {
@@ -152,42 +140,15 @@ it("labels with offset", () => {
       },
     ]
   `);
-  expect(() => parse("DB offset")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 9,
-      "params": [
-        {
-          "en": "Expected label after OFFSET.",
-        },
-      ],
-      "to": 9,
-    }
-  `);
-  expect(() => parse("DB OFFSET 1")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 10,
-      "params": [
-        {
-          "en": "Expected label after OFFSET.",
-        },
-      ],
-      "to": 11,
-    }
-  `);
-  expect(() => parse("DB OFFSET, label")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "custom",
-      "from": 9,
-      "params": [
-        {
-          "en": "Expected label after OFFSET.",
-        },
-      ],
-      "to": 10,
-    }
-  `);
+  expect(() => parse("DB offset")).toThrowErrorMatchingInlineSnapshot(
+    '"Expected label after OFFSET. (9:9)"',
+  );
+  expect(() => parse("DB OFFSET 1")).toThrowErrorMatchingInlineSnapshot(
+    '"Expected label after OFFSET. (10:11)"',
+  );
+  expect(() => parse("DB OFFSET, label")).toThrowErrorMatchingInlineSnapshot(
+    '"Expected label after OFFSET. (9:10)"',
+  );
 });
 
 it("unary", () => {
@@ -254,20 +215,9 @@ it("unary", () => {
       },
     ]
   `);
-  expect(() => parse("DB --1")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "unexpected-token",
-      "from": 4,
-      "params": [
-        {
-          "lexeme": "-",
-          "position": 4,
-          "type": "MINUS",
-        },
-      ],
-      "to": 5,
-    }
-  `);
+  expect(() => parse("DB --1")).toThrowErrorMatchingInlineSnapshot(
+    '"Unexpected token: MINUS. (4:5)"',
+  );
 });
 
 it("binary", () => {
@@ -612,14 +562,7 @@ it("binary", () => {
       },
     ]
   `);
-  expect(() => parse("DB 2 -* 1")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 6,
-      "params": [],
-      "to": 7,
-    }
-  `);
+  expect(() => parse("DB 2 -* 1")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (6:7)"');
 });
 
 it("parentheses", () => {
@@ -654,36 +597,10 @@ it("parentheses", () => {
       },
     ]
   `);
-  expect(() => parse("DB ()")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 4,
-      "params": [],
-      "to": 5,
-    }
-  `);
-  expect(() => parse("DB ())")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 4,
-      "params": [],
-      "to": 5,
-    }
-  `);
-  expect(() => parse("DB (()")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 5,
-      "params": [],
-      "to": 6,
-    }
-  `);
-  expect(() => parse("DB -(+(-()))")).toThrowErrorMatchingInlineSnapshot(`
-    LineError {
-      "code": "expected-argument",
-      "from": 9,
-      "params": [],
-      "to": 10,
-    }
-  `);
+  expect(() => parse("DB ()")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (4:5)"');
+  expect(() => parse("DB ())")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (4:5)"');
+  expect(() => parse("DB (()")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (5:6)"');
+  expect(() => parse("DB -(+(-()))")).toThrowErrorMatchingInlineSnapshot(
+    '"Expected argument. (9:10)"',
+  );
 });

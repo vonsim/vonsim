@@ -127,7 +127,7 @@ const vonsimLinter = linter(
 
       const numberOfErrors = result.codeErrors.length + result.lineErrors.length;
       return {
-        globalError: result.codeErrors.at(0)?.message("en") || null,
+        globalError: result.codeErrors.at(0)?.translate("en") || null,
         numberOfErrors,
       };
     });
@@ -140,7 +140,7 @@ const vonsimLinter = linter(
       const diagnostics: Diagnostic[] = result.lineErrors.map(error => ({
         from: error.from,
         to: error.to,
-        message: error.message("en"),
+        message: error.translate("en"),
         severity: "error",
       }));
 
