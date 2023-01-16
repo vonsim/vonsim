@@ -4,7 +4,6 @@ import { isMatching } from "ts-pattern";
 
 import { interruptPattern } from "@/compiler/common/patterns";
 import { INTERRUPT_VECTOR_ADDRESS_SIZE } from "@/config";
-import { randomByte } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 import { SimulatorError, SimulatorResult } from "@/simulator/error";
 
@@ -28,14 +27,14 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
       IMR: 0b1111_1111,
       IRR: 0b0000_0000,
       ISR: 0b0000_0000,
-      INT0: randomByte(),
-      INT1: randomByte(),
-      INT2: randomByte(),
-      INT3: randomByte(),
-      INT4: randomByte(),
-      INT5: randomByte(),
-      INT6: randomByte(),
-      INT7: randomByte(),
+      INT0: 0x10,
+      INT1: 0x11,
+      INT2: 0x12,
+      INT3: 0x13,
+      INT4: 0x14,
+      INT5: 0x15,
+      INT6: 0x16,
+      INT7: 0x17,
 
       request: (n: IntN) => {
         const mask = 1 << n;

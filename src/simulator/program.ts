@@ -130,31 +130,124 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
       new Uint8Array(memory).set([opcode, ...operands], instruction.meta.start);
     }
 
-    set({
-      memory,
-      program,
-      registers: {
-        IP: INITIAL_IP,
-        IR: 0,
-        SP: MEMORY_SIZE,
-        MAR: 0,
-        MBR: 0,
-        ...(memoryConfig === "empty"
-          ? { AX: 0, BX: 0, CX: 0, DX: 0 }
-          : memoryConfig === "random"
-          ? {
-              AX: randomWord(),
-              BX: randomWord(),
-              CX: randomWord(),
-              DX: randomWord(),
-            }
-          : {
-              AX: get().registers.AX,
-              BX: get().registers.BX,
-              CX: get().registers.CX,
-              DX: get().registers.DX,
-            }),
-      },
+    set(state => {
+      if (memoryConfig === "keep") {
+        return {
+          memory,
+          program,
+          registers: {
+            ...state.registers,
+            IP: INITIAL_IP,
+            IR: 0,
+            SP: MEMORY_SIZE,
+            MAR: 0,
+            MBR: 0,
+          },
+          devices: {
+            ...state.devices,
+            pic: {
+              ...state.devices.pic,
+              EOI: 0b0000_0000,
+              IMR: 0b1111_1111,
+              ISR: 0b0000_0000,
+              IRR: 0b0000_0000,
+            },
+          },
+        };
+      }
+
+      if (memoryConfig === "empty") {
+        return {
+          memory,
+          program,
+          registers: {
+            IP: INITIAL_IP,
+            IR: 0,
+            SP: MEMORY_SIZE,
+            MAR: 0,
+            MBR: 0,
+            AX: 0,
+            BX: 0,
+            CX: 0,
+            DX: 0,
+          },
+          devices: {
+            ...state.devices,
+            leds: {
+              ...state.devices.leds,
+              state: new Array(8).fill(false),
+            },
+            pic: {
+              ...state.devices.pic,
+              EOI: 0b0000_0000,
+              IMR: 0b1111_1111,
+              ISR: 0b0000_0000,
+              IRR: 0b0000_0000,
+              INT0: 0x10,
+              INT1: 0x11,
+              INT2: 0x12,
+              INT3: 0x13,
+              INT4: 0x14,
+              INT5: 0x15,
+              INT6: 0x16,
+              INT7: 0x17,
+            },
+            pio: { PA: 0, PB: 0, CA: 0, CB: 0 },
+            switches: {
+              ...state.devices.switches,
+              state: new Array(8).fill(false),
+            },
+          },
+        };
+      }
+
+      // memoryConfig === "random"
+
+      const portA = randomByte();
+      const portB = randomByte();
+
+      return {
+        memory,
+        program,
+        registers: {
+          IP: INITIAL_IP,
+          IR: 0,
+          SP: MEMORY_SIZE,
+          MAR: 0,
+          MBR: 0,
+          AX: randomWord(),
+          BX: randomWord(),
+          CX: randomWord(),
+          DX: randomWord(),
+        },
+        devices: {
+          ...state.devices,
+          leds: {
+            ...state.devices.leds,
+            state: Array.from({ length: 8 }, (_, i) => (portB & (0b1000_0000 >> i)) !== 0),
+          },
+          pic: {
+            ...state.devices.pic,
+            EOI: 0b0000_0000,
+            IMR: 0b1111_1111,
+            ISR: 0b0000_0000,
+            IRR: 0b0000_0000,
+            INT0: randomByte(),
+            INT1: randomByte(),
+            INT2: randomByte(),
+            INT3: randomByte(),
+            INT4: randomByte(),
+            INT5: randomByte(),
+            INT6: randomByte(),
+            INT7: randomByte(),
+          },
+          pio: { PA: portA, PB: portB, CA: randomByte(), CB: randomByte() },
+          switches: {
+            ...state.devices.switches,
+            state: Array.from({ length: 8 }, (_, i) => (portA & (0b1000_0000 >> i)) !== 0),
+          },
+        },
+      };
     });
   },
 });

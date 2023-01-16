@@ -12,7 +12,7 @@ export type LedsSlice = {
 export const createLedsSlice: DeviceSlice<LedsSlice> = (set, get) => ({
   devices: {
     leds: {
-      state: Array.from({ length: 8 }, () => Math.random() > 0.5),
+      state: new Array(8).fill(false),
       update: () => {
         const { PB, CB } = get().devices.pio;
 

@@ -13,7 +13,7 @@ export type SwitchesSlice = {
 export const createSwitchesSlice: DeviceSlice<SwitchesSlice> = (set, get) => ({
   devices: {
     switches: {
-      state: Array.from({ length: 8 }, () => Math.random() > 0.5),
+      state: new Array(8).fill(false),
       update: () => {
         let PA = get().devices.pio.PA;
         const CA = get().devices.pio.CA;

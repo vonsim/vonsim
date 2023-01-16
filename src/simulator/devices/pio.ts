@@ -1,4 +1,3 @@
-import { randomByte } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 
 export type PIOSlice = {
@@ -12,11 +11,6 @@ export type PIOSlice = {
 
 export const createPIOSlice: DeviceSlice<PIOSlice> = () => ({
   devices: {
-    pio: {
-      PA: randomByte(),
-      CA: randomByte(),
-      PB: randomByte(),
-      CB: randomByte(),
-    },
+    pio: { PA: 0, CA: 0, PB: 0, CB: 0 },
   },
 });
