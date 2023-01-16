@@ -9,6 +9,8 @@ export type MemorySlice = {
   memory: ArrayBuffer;
   getMemory: (address: number, size: Size) => SimulatorResult<number>;
   setMemory: (address: number, size: Size, value: number) => SimulatorResult<void>;
+  pushToStack: (value: number) => SimulatorResult<void>;
+  popFromStack: () => SimulatorResult<number>;
 };
 
 export const createMemorySlice: SimulatorSlice<MemorySlice> = (set, get) => ({
@@ -59,5 +61,30 @@ export const createMemorySlice: SimulatorSlice<MemorySlice> = (set, get) => ({
     get().setRegister("MBR", value);
     set({ memory });
     return Ok();
+  },
+
+  pushToStack: value => {
+    let SP = get().getRegister("SP");
+    SP -= 2;
+    if (SP < MIN_MEMORY_ADDRESS) return Err(new SimulatorError("stack-overflow"));
+    get().setRegister("SP", SP);
+
+    const saved = get().setMemory(SP, "word", value);
+    if (saved.isErr()) return Err(saved.unwrapErr());
+
+    return Ok();
+  },
+
+  popFromStack: () => {
+    let SP = get().getRegister("SP");
+
+    const value = get().getMemory(SP, "word");
+    if (value.isErr()) return Err(value.unwrapErr());
+
+    SP += 2;
+    if (SP > MAX_MEMORY_ADDRESS + 1) return Err(new SimulatorError("stack-underflow"));
+    get().setRegister("SP", SP);
+
+    return value;
   },
 });

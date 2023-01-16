@@ -4,7 +4,7 @@ import { match, P } from "ts-pattern";
 
 import { compile, ProgramInstruction } from "@/compiler";
 import type { BinaryInstructionType } from "@/compiler/common";
-import { Interrupt, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "@/config";
+import { Interrupt, Size } from "@/config";
 import { sleep } from "@/helpers";
 import type { SimulatorSlice } from "@/simulator";
 import { SimulatorError, SimulatorResult } from "@/simulator/error";
@@ -354,78 +354,46 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
           return bumpIP();
         })
         .with({ type: "PUSH" }, ({ register }) => {
-          let SP = get().getRegister("SP");
-          SP -= 2;
-          if (SP < MIN_MEMORY_ADDRESS) return Err(new SimulatorError("stack-overflow"));
-
-          get().setRegister("SP", SP);
           const value = get().getRegister(register);
 
-          const saved = get().setMemory(SP, "word", value);
+          const saved = get().pushToStack(value);
           if (saved.isErr()) return Err(saved.unwrapErr());
 
           return bumpIP();
         })
         .with({ type: "POP" }, ({ register }) => {
-          let SP = get().getRegister("SP");
-          if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new SimulatorError("stack-underflow"));
-
-          const value = get().getMemory(SP, "word");
+          const value = get().popFromStack();
           if (value.isErr()) return Err(value.unwrapErr());
 
           get().setRegister(register, value.unwrap());
-          SP += 2;
-          get().setRegister("SP", SP);
-
           return bumpIP();
         })
         .with({ type: "PUSHF" }, () => {
-          let SP = get().getRegister("SP");
-          SP -= 2;
-          if (SP < MIN_MEMORY_ADDRESS) return Err(new SimulatorError("stack-overflow"));
-
-          get().setRegister("SP", SP);
           const flags = get().encodeFlags();
 
-          const saved = get().setMemory(SP, "word", flags);
+          const saved = get().pushToStack(flags);
           if (saved.isErr()) return Err(saved.unwrapErr());
 
           return bumpIP();
         })
         .with({ type: "POPF" }, () => {
-          let SP = get().getRegister("SP");
-          if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new SimulatorError("stack-underflow"));
+          const value = get().popFromStack();
+          if (value.isErr()) return Err(value.unwrapErr());
 
-          const flags = get().getMemory(SP, "word");
-          if (flags.isErr()) return Err(flags.unwrapErr());
-
-          get().decodeFlags(flags.unwrap());
-          SP += 2;
-          get().setRegister("SP", SP);
-
+          get().decodeFlags(value.unwrap());
           return bumpIP();
         })
         .with({ type: "CALL" }, ({ jumpTo, meta }) => {
-          let SP = get().getRegister("SP");
-          SP -= 2;
-          if (SP < MIN_MEMORY_ADDRESS) return Err(new SimulatorError("stack-overflow"));
-          get().setRegister("SP", SP);
-
           const returnAddress = IP + meta.length;
-          const saved = get().setMemory(SP, "word", returnAddress);
+
+          const saved = get().pushToStack(returnAddress);
           if (saved.isErr()) return Err(saved.unwrapErr());
 
           return bumpIP(jumpTo);
         })
         .with({ type: "RET" }, () => {
-          let SP = get().getRegister("SP");
-          if (SP + 1 > MAX_MEMORY_ADDRESS) return Err(new SimulatorError("stack-underflow"));
-
-          const returnAddress = get().getMemory(SP, "word");
+          const returnAddress = get().popFromStack();
           if (returnAddress.isErr()) return Err(returnAddress.unwrapErr());
-
-          SP += 2;
-          get().setRegister("SP", SP);
 
           return bumpIP(returnAddress.unwrap());
         })
