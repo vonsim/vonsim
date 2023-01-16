@@ -1,5 +1,7 @@
 import { P } from "ts-pattern";
 
+import { INTERRUPTS } from "@/config";
+
 // #=========================================================================#
 // # Registers                                                               #
 // #=========================================================================#
@@ -123,3 +125,9 @@ export const keywordPattern = P.union(
   instructionPattern,
   dataDirectivePattern,
 );
+
+// #=========================================================================#
+// # Others                                                                  #
+// #=========================================================================#
+
+export const interruptPattern = P.union(...INTERRUPTS);

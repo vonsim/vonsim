@@ -1,4 +1,4 @@
-import { isMatching, match, P } from "ts-pattern";
+import { isMatching, match } from "ts-pattern";
 
 import {
   BinaryInstructionType,
@@ -15,6 +15,7 @@ import {
 } from "@/compiler/common";
 import {
   binaryInstructionPattern,
+  interruptPattern,
   intInstructionPattern,
   ioInstructionPattern,
   jumpInstructionPattern,
@@ -23,7 +24,7 @@ import {
   zeroaryInstructionPattern,
 } from "@/compiler/common/patterns";
 import { NumberExpression } from "@/compiler/parser/grammar";
-import { Interrupt, INTERRUPTS, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "@/config";
+import { Interrupt, MAX_MEMORY_ADDRESS, MIN_MEMORY_ADDRESS, Size } from "@/config";
 
 import type { LabelMap } from "../compact-labels";
 import type { CodeMemory } from "../compute-addresses";
@@ -145,7 +146,7 @@ export function evaluateInstruction(
     .with({ type: intInstructionPattern }, statement => {
       const int = evaluateExpression(statement.interrupt, labels);
 
-      if (!isMatching(P.union(...INTERRUPTS), int)) {
+      if (!isMatching(interruptPattern, int)) {
         throw new LineError("invalid-interrupt", int, ...statement.interrupt.position);
       }
 
