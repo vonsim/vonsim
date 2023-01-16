@@ -176,7 +176,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
           const address = get().getRegister("BX");
           get().setMemory(address, "byte", char.charCodeAt(0));
-          get().devices.writeConsole(char);
+          get().devices.console.write(char);
 
           set(state => ({
             runner: previousState,
@@ -446,7 +446,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
                 if (value.isErr()) return Err(value.unwrapErr());
                 text += String.fromCharCode(value.unwrap());
               }
-              get().devices.writeConsole(text);
+              get().devices.console.write(text);
               return bumpIP();
             })
             .exhaustive(),

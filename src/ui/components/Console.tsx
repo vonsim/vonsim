@@ -7,7 +7,7 @@ import { Card } from "./Card";
 export const CONSOLE_ID = "vonsim-console";
 
 export function Console() {
-  const contents = useSimulator(state => state.devices.console);
+  const output = useSimulator(state => state.devices.console.output);
   const watingForInput = useSimulator(state => state.runner === "waiting-for-input");
 
   return (
@@ -19,7 +19,7 @@ export function Console() {
           watingForInput && "ring",
         )}
       >
-        {contents}
+        {output}
         {watingForInput && <span className="animate-pulse text-sky-400">█</span>}
       </pre>
     </Card>
