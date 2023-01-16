@@ -3,7 +3,6 @@ import type { DeviceSlice } from "@/simulator/devices";
 
 export type PIOSlice = {
   pio: {
-    configuration: "lights-and-switches" | "printer" | "printer-with-handshake";
     PA: number;
     CA: number;
     PB: number;
@@ -14,7 +13,6 @@ export type PIOSlice = {
 export const createPIOSlice: DeviceSlice<PIOSlice> = () => ({
   devices: {
     pio: {
-      configuration: "lights-and-switches",
       PA: randomByte(),
       CA: randomByte(),
       PB: randomByte(),

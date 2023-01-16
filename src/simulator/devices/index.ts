@@ -8,12 +8,20 @@ import type { SimulatorSlice } from "@/simulator";
 import { SimulatorError, SimulatorResult } from "@/simulator/error";
 
 import { ConsoleSlice, createConsoleSlice } from "./console";
+import { createLedsSlice, LedsSlice } from "./leds";
 import { createPIOSlice, PIOSlice } from "./pio";
+import { createSwitchesSlice, SwitchesSlice } from "./switches";
 
 export type DeviceSlice<T> = SimulatorSlice<{ devices: T }>;
 
 export type DevicesSlice = {
-  devices: ConsoleSlice & PIOSlice;
+  devices: ConsoleSlice &
+    LedsSlice &
+    PIOSlice &
+    SwitchesSlice & {
+      configuration: "lights-and-switches" | "printer" | "printer-with-handshake";
+      update: () => void;
+    };
   getIOMemory: (address: number, size: Size) => SimulatorResult<number>;
   setIOMemory: (address: number, size: Size, value: number) => SimulatorResult<void>;
 };
@@ -21,7 +29,17 @@ export type DevicesSlice = {
 export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
   devices: {
     ...createConsoleSlice(...a).devices,
+    ...createLedsSlice(...a).devices,
     ...createPIOSlice(...a).devices,
+    ...createSwitchesSlice(...a).devices,
+
+    configuration: "lights-and-switches",
+    update: () => {
+      const [, get] = a;
+
+      get().devices.leds.update();
+      get().devices.switches.update();
+    },
   },
 
   getIOMemory: (address, size) => {

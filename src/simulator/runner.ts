@@ -109,7 +109,11 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         // bumped in the previous iteration and it should not be bumped until the
         // user presses a key.
 
+        // Run instruction
         get().__runnerInternal.runInstruction(timeElapsed);
+
+        // Update all devices
+        get().devices.update();
 
         // Clear action
         if (action !== null) {
