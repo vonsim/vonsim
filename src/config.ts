@@ -16,3 +16,4 @@ export const MEMORY_SIZE = 0x4000;
 export const MAX_MEMORY_ADDRESS = MEMORY_SIZE - 1;
 export const MIN_MEMORY_ADDRESS = 0;
 export const INITIAL_IP = 0x2000;
+export const INTERRUPT_VECTOR_ADDRESS_SIZE = 4; // for historical reasons, the interrupt vector address is 4 bytes

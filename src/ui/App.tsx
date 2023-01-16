@@ -3,8 +3,10 @@ import { Console } from "./components/Console";
 import { Controls } from "./components/Controls";
 import { CPU } from "./components/CPU";
 import { Editor } from "./components/editor";
+import { F10 } from "./components/F10";
 import { Leds } from "./components/Leds";
 import { Memory } from "./components/Memory";
+import { PIC } from "./components/PIC";
 import { PIO } from "./components/PIO";
 import { Switches } from "./components/Switches";
 
@@ -31,6 +33,7 @@ function App() {
 
           <div className="flex flex-wrap items-start justify-center gap-4">
             <PIO />
+            <PIC />
           </div>
 
           <hr className="my-8 border-t-4 border-dotted border-slate-500/30" />
@@ -42,6 +45,7 @@ function App() {
           <div className="flex flex-wrap items-start justify-center gap-4">
             <Switches />
             <Leds />
+            <F10 />
           </div>
         </div>
       </main>

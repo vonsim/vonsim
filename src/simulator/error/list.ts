@@ -32,6 +32,10 @@ export const ERROR_LIST = {
     en: "No program loaded. Compile before running.",
     es: "No hay ningún programa cargado. Compilá antes de ejecutar.",
   }),
+  "reserved-interrupt": (interrupt: number) => ({
+    en: `Interrupt ${interrupt} is reserved and cannot be used.`,
+    es: `La interrupción ${interrupt} está reservada y no se puede usar.`,
+  }),
   "stack-overflow": () => ({
     en: "Stack overflow",
     es: "Stack overflow",

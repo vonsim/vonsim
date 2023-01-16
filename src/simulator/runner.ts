@@ -452,7 +452,14 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
             .exhaustive(),
         )
         .with({ type: "IRET" }, () => {
-          throw new Error("Sin implementación");
+          const IP = get().popFromStack();
+          if (IP.isErr()) return Err(IP.unwrapErr());
+
+          const flags = get().popFromStack();
+          if (flags.isErr()) return Err(flags.unwrapErr());
+
+          get().decodeFlags(flags.unwrap());
+          return bumpIP(IP.unwrap());
         })
         .with({ type: "CLI" }, () => {
           get().disableInterrupts();
