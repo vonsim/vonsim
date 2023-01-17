@@ -61,13 +61,14 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       // which is lower than any clock speed the user can set. This way,
       // we can tick all the clocks (CPU, Timer, Printer, etc...) inside
       // one loop.
-      const resolution = 10;
+      const resolution = 15;
       let timeElapsed = 0;
 
       set(state => void (state.__runnerInternal.instructionsRan = 0));
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
+        const startTime = Date.now();
         const action = get().__runnerInternal.action;
         const runner = get().runner;
 
@@ -120,7 +121,11 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         }
 
         // Await next tick
-        await sleep(resolution);
+        // It turns out that each iteration can take multiple milliseconds,
+        // so we need to subtract the time that has already passed.
+
+        const timeToWait = Math.max(0, resolution - (Date.now() - startTime));
+        await sleep(timeToWait);
       }
 
       highlightLine(null);
