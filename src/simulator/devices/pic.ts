@@ -55,6 +55,8 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
           return Ok();
         }
 
+        if (!get().interruptsEnabled) return Ok();
+
         for (let i: IntN = 0; i < 8; i++) {
           const mask = 1 << i;
 
