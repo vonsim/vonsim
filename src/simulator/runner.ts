@@ -112,7 +112,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         get().__runnerInternal.runInstruction(timeElapsed);
 
         // Update all devices
-        get().devices.update();
+        get().devices.update(timeElapsed);
 
         // Clear action
         if (action !== null) {

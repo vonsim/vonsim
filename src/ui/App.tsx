@@ -9,6 +9,7 @@ import { Memory } from "./components/Memory";
 import { PIC } from "./components/PIC";
 import { PIO } from "./components/PIO";
 import { Switches } from "./components/Switches";
+import { Timer } from "./components/Timer";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <div className="flex flex-wrap items-start justify-center gap-4">
             <PIO />
             <PIC />
+            <Timer />
           </div>
 
           <hr className="my-8 border-t-4 border-dotted border-slate-500/30" />

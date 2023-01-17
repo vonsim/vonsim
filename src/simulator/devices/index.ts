@@ -12,6 +12,7 @@ import { createLedsSlice, LedsSlice } from "./leds";
 import { createPICSlice, PICSlice } from "./pic";
 import { createPIOSlice, PIOSlice } from "./pio";
 import { createSwitchesSlice, SwitchesSlice } from "./switches";
+import { createTimerSlice, TimerSlice } from "./timer";
 
 export type DeviceSlice<T> = SimulatorSlice<{ devices: T }>;
 
@@ -21,9 +22,10 @@ export type DevicesSlice = {
     LedsSlice &
     PICSlice &
     PIOSlice &
-    SwitchesSlice & {
+    SwitchesSlice &
+    TimerSlice & {
       configuration: "lights-and-switches" | "printer" | "printer-with-handshake";
-      update: () => void;
+      update: (timeElapsed: number) => void;
     };
   getIOMemory: (address: number, size: Size) => SimulatorResult<number>;
   setIOMemory: (address: number, size: Size, value: number) => SimulatorResult<void>;
@@ -37,14 +39,19 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
     ...createPICSlice(...a).devices,
     ...createPIOSlice(...a).devices,
     ...createSwitchesSlice(...a).devices,
+    ...createTimerSlice(...a).devices,
 
     configuration: "lights-and-switches",
-    update: () => {
+    update: timeElapsed => {
       const [, get] = a;
 
-      get().devices.pic.update();
       get().devices.leds.update();
       get().devices.switches.update();
+      get().devices.timer.update(timeElapsed);
+
+      // I leave the PIC update last because it may trigger an interrupt
+      // from one of the other devices.
+      get().devices.pic.update();
     },
   },
 
@@ -53,6 +60,8 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
 
     const byte = (address: number) =>
       match<number, SimulatorResult<number>>(address)
+        .with(0x10, () => Ok(get().devices.timer.CONT))
+        .with(0x11, () => Ok(get().devices.timer.COMP))
         .with(0x20, () => Ok(get().devices.pic.EOI))
         .with(0x21, () => Ok(get().devices.pic.IMR))
         .with(0x22, () => Ok(get().devices.pic.IRR))
@@ -89,6 +98,8 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
 
     const byte = (address: number, value: number) =>
       match<number, SimulatorResult<void>>(address)
+        .with(0x10, () => Ok(set(state => void (state.devices.timer.CONT = value))))
+        .with(0x11, () => Ok(set(state => void (state.devices.timer.COMP = value))))
         .with(0x20, () => Ok(set(state => void (state.devices.pic.EOI = value))))
         .with(0x21, () => Ok(set(state => void (state.devices.pic.IMR = value))))
         .with(0x22, () => Ok(set(state => void (state.devices.pic.IRR = value))))
