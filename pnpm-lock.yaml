@@ -25,6 +25,8 @@ specifiers:
   eslint-plugin-react-hooks: ^4.6.0
   eslint-plugin-regexp: ^1.12.0
   eslint-plugin-simple-import-sort: ^8.0.0
+  immer: ^9.0.18
+  just-diff: ^5.2.0
   klona: ^2.0.5
   postcss: ^8.4.21
   prettier: ^2.8.2
@@ -35,7 +37,6 @@ specifiers:
   react-use: ^17.4.0
   rust-optionals: ^3.0.0
   tailwindcss: ^3.2.4
-  tdeep: ^0.1.0
   ts-pattern: ^4.1.3
   type-fest: ^3.5.1
   typescript: ~4.9.4
@@ -54,15 +55,15 @@ dependencies:
   '@headlessui/react': 1.7.7_biqbaboplfbrettd7655fr4n2y
   '@lezer/highlight': 1.1.3
   clsx: 1.2.1
+  immer: 9.0.18
   klona: 2.0.5
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
   react-use: 17.4.0_biqbaboplfbrettd7655fr4n2y
   rust-optionals: 3.0.0
-  tdeep: 0.1.0
   ts-pattern: 4.1.3
-  zustand: 4.3.2_react@18.2.0
+  zustand: 4.3.2_immer@9.0.18+react@18.2.0
 
 devDependencies:
   '@headlessui/tailwindcss': 0.1.2_tailwindcss@3.2.4
@@ -81,6 +82,7 @@ devDependencies:
   eslint-plugin-react-hooks: 4.6.0_eslint@8.31.0
   eslint-plugin-regexp: 1.12.0_eslint@8.31.0
   eslint-plugin-simple-import-sort: 8.0.0_eslint@8.31.0
+  just-diff: 5.2.0
   postcss: 8.4.21
   prettier: 2.8.2
   prettier-plugin-tailwindcss: 0.2.1_prettier@2.8.2
@@ -2503,6 +2505,9 @@ packages:
     resolution: {integrity: sha512-5SS2lmxbhqH0u9ABEWq7WPU69a4i2pYcHeCxqaNq6Cw3mnrF0ghWNM4tEGid4dKy8XNIAUbuThuozDHHKJVh3A==}
     peerDependencies:
       csstype: ^3.0.10
+    peerDependenciesMeta:
+      csstype:
+        optional: true
     dev: false
 
   /gopd/1.0.1:
@@ -2572,6 +2577,10 @@ packages:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
     dev: true
+
+  /immer/9.0.18:
+    resolution: {integrity: sha512-eAPNpsj7Ax1q6Y/3lm2PmlwRcFzpON7HSNQ3ru5WQH1/PSpnyed/HpNOELl2CxLKoj4r+bAHgdyKqW5gc2Se1A==}
+    dev: false
 
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -2817,6 +2826,10 @@ packages:
     dependencies:
       array-includes: 3.1.6
       object.assign: 4.1.4
+    dev: true
+
+  /just-diff/5.2.0:
+    resolution: {integrity: sha512-6ufhP9SHjb7jibNFrNxyFZ6od3g+An6Ai9mhGRvcYe8UJlH0prseN64M+6ZBBUoKYHZsitDP42gAJ8+eVWr3lw==}
     dev: true
 
   /klona/2.0.5:
@@ -3729,10 +3742,6 @@ packages:
       - ts-node
     dev: true
 
-  /tdeep/0.1.0:
-    resolution: {integrity: sha512-lPfbo0CK/Qe4UcDSZqMA3bsOBmXG3wXJZlYSyejRjK1aIJOJrn6ww9FInd0q0wc0WN8qPkYI0pTYdTpixlzEAQ==}
-    dev: false
-
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
     dev: true
@@ -4173,7 +4182,7 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zustand/4.3.2_react@18.2.0:
+  /zustand/4.3.2_immer@9.0.18+react@18.2.0:
     resolution: {integrity: sha512-rd4haDmlwMTVWVqwvgy00ny8rtti/klRoZjFbL/MAcDnmD5qSw/RZc+Vddstdv90M5Lv6RPgWvm1Hivyn0QgJw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -4185,6 +4194,7 @@ packages:
       react:
         optional: true
     dependencies:
+      immer: 9.0.18
       react: 18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false

@@ -1,5 +1,3 @@
-import { tdeep } from "tdeep";
-
 import type { DeviceSlice } from "@/simulator/devices";
 
 export type LedsSlice = {
@@ -31,7 +29,7 @@ export const createLedsSlice: DeviceSlice<LedsSlice> = (set, get) => ({
           updated = true;
         }
 
-        if (updated) set(tdeep("devices.leds.state", state));
+        if (updated) set(simulator => void (simulator.devices.leds.state = state));
       },
     },
   },

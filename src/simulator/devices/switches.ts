@@ -1,5 +1,3 @@
-import { tdeep } from "tdeep";
-
 import type { DeviceSlice } from "@/simulator/devices";
 
 export type SwitchesSlice = {
@@ -33,9 +31,12 @@ export const createSwitchesSlice: DeviceSlice<SwitchesSlice> = (set, get) => ({
           updated = true;
         }
 
-        if (updated) set(tdeep("devices.pio.PA", PA));
+        if (updated) set(state => void (state.devices.pio.PA = PA));
       },
-      toggle: index => set(tdeep(`devices.switches.state.${index}`, state => !state)),
+      toggle: index =>
+        set(state => {
+          state.devices.switches.state[index] = !state.devices.switches.state[index];
+        }),
     },
   },
 });

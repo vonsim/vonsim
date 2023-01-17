@@ -1,4 +1,3 @@
-import { tdeep } from "tdeep";
 import { isMatching, match } from "ts-pattern";
 import type { Split } from "type-fest";
 
@@ -53,9 +52,13 @@ export const createRegistersSlice: SimulatorSlice<RegistersSlice> = (set, get) =
       if (byte === "L") low = value;
       else if (byte === "H") high = value;
 
-      set(tdeep(`registers.${wordRegister}`, joinLowHigh(low, high)));
+      set(state => {
+        state.registers[wordRegister] = joinLowHigh(low, high);
+      });
     } else {
-      set(tdeep(`registers.${register}`, value));
+      set(state => {
+        state.registers[register] = value;
+      });
     }
   },
 });

@@ -1,5 +1,4 @@
 import { Err, Ok } from "rust-optionals";
-import { tdeep } from "tdeep";
 import { match } from "ts-pattern";
 
 import type { Size } from "@/config";
@@ -90,22 +89,22 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
 
     const byte = (address: number, value: number) =>
       match<number, SimulatorResult<void>>(address)
-        .with(0x20, () => Ok(set(tdeep("devices.pic.EOI", value))))
-        .with(0x21, () => Ok(set(tdeep("devices.pic.IMR", value))))
-        .with(0x22, () => Ok(set(tdeep("devices.pic.IRR", value))))
-        .with(0x23, () => Ok(set(tdeep("devices.pic.ISR", value))))
-        .with(0x24, () => Ok(set(tdeep("devices.pic.INT0", value))))
-        .with(0x25, () => Ok(set(tdeep("devices.pic.INT1", value))))
-        .with(0x26, () => Ok(set(tdeep("devices.pic.INT2", value))))
-        .with(0x27, () => Ok(set(tdeep("devices.pic.INT3", value))))
-        .with(0x28, () => Ok(set(tdeep("devices.pic.INT4", value))))
-        .with(0x29, () => Ok(set(tdeep("devices.pic.INT5", value))))
-        .with(0x2a, () => Ok(set(tdeep("devices.pic.INT6", value))))
-        .with(0x2b, () => Ok(set(tdeep("devices.pic.INT7", value))))
-        .with(0x30, () => Ok(set(tdeep("devices.pio.PA", value))))
-        .with(0x31, () => Ok(set(tdeep("devices.pio.PB", value))))
-        .with(0x32, () => Ok(set(tdeep("devices.pio.CA", value))))
-        .with(0x33, () => Ok(set(tdeep("devices.pio.CB", value))))
+        .with(0x20, () => Ok(set(state => void (state.devices.pic.EOI = value))))
+        .with(0x21, () => Ok(set(state => void (state.devices.pic.IMR = value))))
+        .with(0x22, () => Ok(set(state => void (state.devices.pic.IRR = value))))
+        .with(0x23, () => Ok(set(state => void (state.devices.pic.ISR = value))))
+        .with(0x24, () => Ok(set(state => void (state.devices.pic.INT0 = value))))
+        .with(0x25, () => Ok(set(state => void (state.devices.pic.INT1 = value))))
+        .with(0x26, () => Ok(set(state => void (state.devices.pic.INT2 = value))))
+        .with(0x27, () => Ok(set(state => void (state.devices.pic.INT3 = value))))
+        .with(0x28, () => Ok(set(state => void (state.devices.pic.INT4 = value))))
+        .with(0x29, () => Ok(set(state => void (state.devices.pic.INT5 = value))))
+        .with(0x2a, () => Ok(set(state => void (state.devices.pic.INT6 = value))))
+        .with(0x2b, () => Ok(set(state => void (state.devices.pic.INT7 = value))))
+        .with(0x30, () => Ok(set(state => void (state.devices.pio.PA = value))))
+        .with(0x31, () => Ok(set(state => void (state.devices.pio.PB = value))))
+        .with(0x32, () => Ok(set(state => void (state.devices.pio.CA = value))))
+        .with(0x33, () => Ok(set(state => void (state.devices.pio.CB = value))))
         .otherwise(() => Err(new SimulatorError("io-memory-not-implemented", address)));
 
     if (size === "byte") {

@@ -9,6 +9,7 @@
 
 import { create, StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 import { ALUSlice, createALUSlice } from "./alu";
 import { createDevicesSlice, DevicesSlice } from "./devices";
@@ -28,11 +29,16 @@ export type SimulatorStore = ALUSlice &
   RunnerSlice &
   UserConfigSlice;
 
-export type SimulatorSlice<T> = StateCreator<SimulatorStore, [["zustand/persist", unknown]], [], T>;
+export type SimulatorSlice<T> = StateCreator<
+  SimulatorStore,
+  [["zustand/persist", unknown], ["zustand/immer", unknown]],
+  [],
+  T
+>;
 
 export const useSimulator = create<SimulatorStore>()(
   persist(
-    (...a) => ({
+    immer((...a) => ({
       ...createALUSlice(...a),
       ...createDevicesSlice(...a),
       ...createInterruptsSlice(...a),
@@ -41,7 +47,7 @@ export const useSimulator = create<SimulatorStore>()(
       ...createRegistersSlice(...a),
       ...createRunnerSlice(...a),
       ...createUserConfigSlice(...a),
-    }),
+    })),
     {
       name: "userconfig",
       version: 0,
@@ -54,3 +60,32 @@ export const useSimulator = create<SimulatorStore>()(
     },
   ),
 );
+
+if (import.meta.env.DEV) {
+  import("just-diff").then(({ diff: getDiff }) => {
+    useSimulator.subscribe((current, prev) => {
+      const diff = getDiff(prev, current);
+
+      if (diff.length === 0) {
+        console.debug("[simulator]", "no changes");
+        return;
+      }
+
+      console.debug(
+        diff
+          .map(({ op, path, value }) => {
+            let msg = "[simulator] " + path.join(".");
+
+            if (op === "remove") {
+              msg += " (removed)";
+            } else {
+              msg += ` = ${value}`;
+            }
+
+            return msg;
+          })
+          .join("\n"),
+      );
+    });
+  });
+}

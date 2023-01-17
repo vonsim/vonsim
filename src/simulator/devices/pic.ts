@@ -1,5 +1,4 @@
 import { Err, Ok } from "rust-optionals";
-import { tdeep } from "tdeep";
 import { isMatching } from "ts-pattern";
 
 import { interruptPattern } from "@/compiler/common/patterns";
@@ -38,7 +37,7 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
 
       request: (n: IntN) => {
         const mask = 1 << n;
-        set(tdeep("devices.pic.IRR", (IRR: number) => IRR | mask));
+        set(state => void (state.devices.pic.IRR |= mask));
       },
 
       update: (): SimulatorResult<void> => {
@@ -48,9 +47,10 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
           // There is an interrupt being executed
           if (EOI === 0x20) {
             // End of interrupt
-            set(state => ({
-              devices: { ...state.devices, pic: { ...state.devices.pic, EOI: 0, ISR: 0 } },
-            }));
+            set(state => {
+              state.devices.pic.EOI = 0b0000_0000;
+              state.devices.pic.ISR = 0b0000_0000;
+            });
           }
           return Ok();
         }
@@ -71,12 +71,11 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
             return Err(new SimulatorError("reserved-interrupt", ID));
           }
 
-          set(state => ({
-            devices: {
-              ...state.devices,
-              pic: { ...state.devices.pic, EOI: 0, IRR: IRR ^ mask, ISR: mask },
-            },
-          }));
+          set(state => {
+            state.devices.pic.EOI = 0b0000_0000;
+            state.devices.pic.IRR ^= mask;
+            state.devices.pic.ISR = mask;
+          });
 
           const address = get().getMemory(ID * INTERRUPT_VECTOR_ADDRESS_SIZE, "word");
           if (address.isErr()) return Err(address.unwrapErr());

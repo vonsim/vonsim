@@ -1,5 +1,4 @@
 import { Err, Ok } from "rust-optionals";
-import { tdeep } from "tdeep";
 import { match, P } from "ts-pattern";
 
 import { compile, ProgramInstruction } from "@/compiler";
@@ -41,14 +40,14 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
     if (runner === "stopped") {
       if (action === "stop") return; // Invalid action
-      set(tdeep("__runnerInternal.action", action));
+      set(state => void (state.__runnerInternal.action = action));
       await get().__runnerInternal.loop();
     } else {
       // If runner isn't paused and action is 'run' or 'step'
       if (runner !== "paused" && action !== "stop") {
         return; // Invalid action
       }
-      set(tdeep("__runnerInternal.action", action));
+      set(state => void (state.__runnerInternal.action = action));
     }
   },
 
@@ -65,7 +64,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       const resolution = 10;
       let timeElapsed = 0;
 
-      set(tdeep("__runnerInternal.instructionsRan", 0));
+      set(state => void (state.__runnerInternal.instructionsRan = 0));
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -117,7 +116,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
         // Clear action
         if (action !== null) {
-          set(tdeep("__runnerInternal.action", null));
+          set(state => void (state.__runnerInternal.action = null));
         }
 
         // Await next tick
@@ -131,6 +130,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       const inputListener = get().__runnerInternal.inputListener;
       if (inputListener) {
         document.removeEventListener(INPUT_LISTENER_EVENT, inputListener);
+        set(state => void (state.__runnerInternal.inputListener = null));
       }
     },
 
@@ -148,11 +148,11 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
       const result = get().__runnerInternal.step();
 
-      set(tdeep("__runnerInternal.instructionsRan", instructionsRan + 1));
+      set(state => void state.__runnerInternal.instructionsRan++);
 
       if (result.isErr()) {
         result.unwrapErr().notify();
-        set(tdeep("__runnerInternal.action", "stop"));
+        set(state => void (state.__runnerInternal.action = "stop"));
         return;
       }
 
@@ -172,23 +172,24 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
           else return;
 
           ev.preventDefault();
-          document.removeEventListener(INPUT_LISTENER_EVENT, inputListener!);
+          document.removeEventListener(INPUT_LISTENER_EVENT, inputListener);
 
           const address = get().getRegister("BX");
           get().setMemory(address, "byte", char.charCodeAt(0));
           get().devices.console.write(char);
 
-          set(state => ({
-            runner: previousState,
-            __runnerInternal: { ...state.__runnerInternal, inputListener: null },
-          }));
+          set(state => {
+            state.runner = previousState;
+            state.__runnerInternal.inputListener = null;
+          });
         };
 
         document.addEventListener(INPUT_LISTENER_EVENT, inputListener);
         document.getElementById(CONSOLE_ID)?.scrollIntoView({ behavior: "smooth" });
+        set(state => void (state.__runnerInternal.inputListener = inputListener));
       } else {
         // ret = 'halt'
-        set(tdeep("__runnerInternal.action", "stop"));
+        set(state => void (state.__runnerInternal.action = "stop"));
       }
     },
 
