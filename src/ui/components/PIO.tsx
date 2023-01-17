@@ -1,12 +1,10 @@
-import { shallow } from "zustand/shallow";
-
 import { renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
 export function PIO() {
-  const pio = useSimulator(state => state.devices.pio, shallow);
+  const pio = useSimulator(state => state.devices.pio);
 
   return (
     <Card title="PIO">

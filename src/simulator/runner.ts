@@ -125,13 +125,13 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
       highlightLine(null);
       setReadOnly(false);
-      set({ runner: "stopped" });
-
-      const inputListener = get().__runnerInternal.inputListener;
-      if (inputListener) {
-        document.removeEventListener(INPUT_LISTENER_EVENT, inputListener);
-        set(state => void (state.__runnerInternal.inputListener = null));
-      }
+      set(state => {
+        state.runner = "stopped";
+        if (state.__runnerInternal.inputListener) {
+          document.removeEventListener(INPUT_LISTENER_EVENT, state.__runnerInternal.inputListener);
+          state.__runnerInternal.inputListener = null;
+        }
+      });
     },
 
     // #=========================================================================#

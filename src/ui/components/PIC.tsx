@@ -1,12 +1,10 @@
-import { shallow } from "zustand/shallow";
-
 import { renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
 export function PIC() {
-  const pic = useSimulator(state => state.devices.pic, shallow);
+  const pic = useSimulator(state => state.devices.pic);
 
   return (
     <Card title="PIC">
