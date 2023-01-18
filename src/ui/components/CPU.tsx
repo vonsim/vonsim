@@ -1,18 +1,42 @@
+import { shallow } from "zustand/shallow";
+
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
+import { FrecuencyPicker } from "./FrecuencyPicker";
 
 const generalRegisters = ["AX", "BX", "CX", "DX"] as const;
 
-export function CPU() {
-  const memoryRepresentation = useSimulator(state => state.memoryRepresentation);
-  const registers = useSimulator(state => state.registers);
-  const alu = useSimulator(state => state.alu);
+export function CPU({ className }: { className?: string }) {
+  const { alu, cpuSpeed, memoryRepresentation, registers, setCPUSpeed } = useSimulator(
+    state => ({
+      alu: state.alu,
+      cpuSpeed: state.cpuSpeed,
+      memoryRepresentation: state.memoryRepresentation,
+      registers: state.registers,
+      setCPUSpeed: state.setCPUSpeed,
+    }),
+    shallow,
+  );
 
   return (
-    <Card title="CPU">
-      <div className="flex flex-wrap justify-center gap-4">
+    <Card title="CPU" className={className}>
+      <FrecuencyPicker
+        value={cpuSpeed}
+        onChange={setCPUSpeed}
+        options={[
+          ["1", "1 Hz"],
+          ["2", "2 Hz"],
+          ["4", "4 Hz"],
+          ["8", "8 Hz"],
+          ["16", "16 Hz"],
+          ["32", "32 Hz"],
+          ["64", "64 Hz"],
+        ]}
+      />
+
+      <div className="mt-4 flex flex-wrap justify-center gap-4">
         <Card title="Registros de propósito general">
           <table className="font-mono">
             <thead>

@@ -13,6 +13,8 @@ export const createSwitchesSlice: DeviceSlice<SwitchesSlice> = (set, get) => ({
     switches: {
       state: new Array(8).fill(false),
       update: () => {
+        if (get().devicesConfiguration !== "switches-leds") return;
+
         let PA = get().devices.pio.PA;
         const CA = get().devices.pio.CA;
 

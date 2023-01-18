@@ -12,6 +12,8 @@ export const createLedsSlice: DeviceSlice<LedsSlice> = (set, get) => ({
     leds: {
       state: new Array(8).fill(false),
       update: () => {
+        if (get().devicesConfiguration !== "switches-leds") return;
+
         const { PB, CB } = get().devices.pio;
 
         const state = [...get().devices.leds.state];

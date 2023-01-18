@@ -4,9 +4,6 @@ import { shallow } from "zustand/shallow";
 
 import { useSimulator } from "@/simulator";
 
-const speeds = new Array(7).fill(null).map((_, i) => 2 ** i); // From 1 Hz to 64 Hz
-const speedOptions = Object.fromEntries(speeds.map(speed => [speed.toString(), `${speed} Hz`]));
-
 export function ConfigSelector() {
   const config = useSimulator(
     state => ({
@@ -14,8 +11,8 @@ export function ConfigSelector() {
       setMemoryRepresentation: state.setMemoryRepresentation,
       memoryOnReset: state.memoryOnReset,
       setMemoryOnReset: state.setMemoryOnReset,
-      clockSpeed: state.clockSpeed,
-      setClockSpeed: state.setClockSpeed,
+      devicesConfiguration: state.devicesConfiguration,
+      setDevicesConfiguration: state.setDevicesConfiguration,
     }),
     shallow,
   );
@@ -49,10 +46,14 @@ export function ConfigSelector() {
       />
 
       <Radio
-        label="Frecuencia de reloj"
-        value={config.clockSpeed.toString()}
-        onChange={n => config.setClockSpeed(parseInt(n, 10))}
-        options={speedOptions}
+        label="Dispositivos"
+        value={config.devicesConfiguration}
+        onChange={config.setDevicesConfiguration}
+        options={{
+          "switches-leds": "Teclas y leds",
+          "printer-pio": "Impresora con PIO",
+          "printer-handshake": "Impresora con Handshake",
+        }}
         disabled={runner !== "stopped"}
       />
     </div>

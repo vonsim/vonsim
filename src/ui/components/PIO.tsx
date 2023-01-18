@@ -3,11 +3,11 @@ import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
-export function PIO() {
+export function PIO({ className }: { className?: string }) {
   const pio = useSimulator(state => state.devices.pio);
 
   return (
-    <Card title="PIO">
+    <Card title="PIO" className={className}>
       <table>
         <thead>
           <tr className="divide-x border-b">

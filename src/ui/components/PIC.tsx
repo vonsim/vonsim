@@ -3,11 +3,11 @@ import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
-export function PIC() {
+export function PIC({ className }: { className?: string }) {
   const pic = useSimulator(state => state.devices.pic);
 
   return (
-    <Card title="PIC">
+    <Card title="PIC" className={className}>
       <table>
         <thead>
           <tr className="divide-x border-b">

@@ -9,7 +9,7 @@ import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
-export function Memory() {
+export function Memory({ className }: { className?: string }) {
   const memoryRepresentation = useSimulator(state => state.memoryRepresentation);
 
   const startId = useId();
@@ -37,7 +37,7 @@ export function Memory() {
   );
 
   return (
-    <Card title="Memoria">
+    <Card title="Memoria" className={className}>
       <label
         htmlFor={startId}
         className="text-xs font-bold uppercase tracking-wider text-slate-700"

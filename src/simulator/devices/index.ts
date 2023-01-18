@@ -11,6 +11,7 @@ import { createF10Slice, F10Slice } from "./f10";
 import { createLedsSlice, LedsSlice } from "./leds";
 import { createPICSlice, PICSlice } from "./pic";
 import { createPIOSlice, PIOSlice } from "./pio";
+import { createPrinterSlice, PrinterSlice } from "./printer";
 import { createSwitchesSlice, SwitchesSlice } from "./switches";
 import { createTimerSlice, TimerSlice } from "./timer";
 
@@ -22,6 +23,7 @@ export type DevicesSlice = {
     LedsSlice &
     PICSlice &
     PIOSlice &
+    PrinterSlice &
     SwitchesSlice &
     TimerSlice;
 
@@ -36,6 +38,7 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
     ...createLedsSlice(...a).devices,
     ...createPICSlice(...a).devices,
     ...createPIOSlice(...a).devices,
+    ...createPrinterSlice(...a).devices,
     ...createSwitchesSlice(...a).devices,
     ...createTimerSlice(...a).devices,
   },

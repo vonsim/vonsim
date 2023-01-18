@@ -5,7 +5,7 @@ import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
-export function Timer() {
+export function Timer({ className }: { className?: string }) {
   const { CONT, COMP, memoryRepresentation } = useSimulator(
     state => ({
       CONT: state.devices.timer.CONT,
@@ -16,7 +16,7 @@ export function Timer() {
   );
 
   return (
-    <Card title="Timer">
+    <Card title="Timer" className={className}>
       <table>
         <thead>
           <tr className="divide-x border-b">

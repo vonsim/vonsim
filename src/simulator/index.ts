@@ -54,8 +54,10 @@ export const useSimulator = create<SimulatorStore>()(
       partialize: state => ({
         memoryRepresentation: state.memoryRepresentation,
         memoryOnReset: state.memoryOnReset,
-        clockSpeed: state.clockSpeed,
+        cpuSpeed: state.cpuSpeed,
+        printerSpeed: state.printerSpeed,
         language: state.language,
+        devicesConfiguration: state.devicesConfiguration,
       }),
     },
   ),

@@ -5,12 +5,12 @@ import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
-export function Switches() {
+export function Switches({ className }: { className?: string }) {
   const switches = useSimulator(state => state.devices.switches.state);
   const toggle = useSimulator(state => state.devices.switches.toggle);
 
   return (
-    <Card title="Teclas">
+    <Card title="Teclas" className={className}>
       <div className="flex gap-2">
         {switches.map((on, i) => (
           <Switch

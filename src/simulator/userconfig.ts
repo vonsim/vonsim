@@ -3,27 +3,36 @@ import type { SimulatorSlice } from "@/simulator";
 
 export type MemoryRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
 export type MemoryOnReset = "empty" | "random" | "keep";
+export type DevicesConfiguration = "switches-leds" | "printer-pio" | "printer-handshake";
 
 export type UserConfigSlice = {
   memoryRepresentation: MemoryRepresentation;
   memoryOnReset: MemoryOnReset;
-  clockSpeed: number;
+  cpuSpeed: string;
+  printerSpeed: string;
   language: Language;
+  devicesConfiguration: DevicesConfiguration;
   setMemoryRepresentation: (representation: MemoryRepresentation) => void;
   setMemoryOnReset: (mode: MemoryOnReset) => void;
-  setClockSpeed: (speed: number) => void;
+  setCPUSpeed: (speed: string) => void;
+  setPrinterSpeed: (speed: string) => void;
   setLanguage: (lang: Language) => void;
+  setDevicesConfiguration: (config: DevicesConfiguration) => void;
 };
 
 export const createUserConfigSlice: SimulatorSlice<UserConfigSlice> = set => ({
   memoryRepresentation: "hex",
   memoryOnReset: "random",
-  clockSpeed: 1,
+  cpuSpeed: "1",
+  printerSpeed: "0.125",
   language: getUserLanguage(),
+  devicesConfiguration: "switches-leds",
   setMemoryRepresentation: representation => set({ memoryRepresentation: representation }),
   setMemoryOnReset: mode => set({ memoryOnReset: mode }),
-  setClockSpeed: speed => set({ clockSpeed: speed }),
+  setCPUSpeed: speed => set({ cpuSpeed: speed }),
+  setPrinterSpeed: speed => set({ printerSpeed: speed }),
   setLanguage: lang => set({ language: lang }),
+  setDevicesConfiguration: config => set({ devicesConfiguration: config }),
 });
 
 function getUserLanguage(): Language {

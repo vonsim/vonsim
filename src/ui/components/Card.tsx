@@ -18,7 +18,7 @@ export function Card({
       </p>
       <div
         className={clsx(
-          "overflow-hidden rounded-b-lg border border-t-0 border-slate-200 bg-white",
+          "rounded-b-lg border border-t-0 border-slate-200 bg-white",
           !noPadding && "px-4 py-2",
         )}
       >

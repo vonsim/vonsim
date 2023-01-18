@@ -1,3 +1,5 @@
+import { useSimulator } from "@/simulator";
+
 import { ConfigSelector } from "./components/ConfigSelector";
 import { Console } from "./components/Console";
 import { Controls } from "./components/Controls";
@@ -8,51 +10,65 @@ import { Leds } from "./components/Leds";
 import { Memory } from "./components/Memory";
 import { PIC } from "./components/PIC";
 import { PIO } from "./components/PIO";
+import { Printer } from "./components/Printer";
 import { Switches } from "./components/Switches";
 import { Timer } from "./components/Timer";
 
-function App() {
+export default function App() {
+  const devices = useSimulator(state => state.devicesConfiguration);
+
   return (
     <div className="flex h-screen w-screen flex-col">
       <Controls />
 
       <main className="flex grow overflow-auto">
-        <Editor className="lg:min-w-[550px] lg:max-w-[550px] xl:min-w-[700px] xl:max-w-[700px]" />
+        <Editor className="shrink-0 lg:w-[500px] xl:w-[600px] 2xl:w-[700px]" />
 
-        <div className="flow flow-col w-full overflow-auto bg-gray-100 p-8">
+        <div className="flow flow-col w-full overflow-auto bg-gray-100 px-8 pt-4 pb-16">
           <ConfigSelector />
 
           <hr className="my-4 border-slate-500/30" />
 
-          <Memory />
+          <section className="flex flex-col gap-4 2xl:grid 2xl:grid-cols-2">
+            <Memory />
+            <CPU />
+          </section>
 
-          <div className="h-4" />
+          <Bigdiv>Dispositivos internos</Bigdiv>
 
-          <CPU />
-
-          <hr className="my-8 border-t-4 border-dotted border-slate-500/30" />
-
-          <div className="flex flex-wrap items-start justify-center gap-4">
+          <section className="flex flex-wrap items-start justify-center gap-4">
             <PIO />
             <PIC />
             <Timer />
-          </div>
+          </section>
 
-          <hr className="my-8 border-t-4 border-dotted border-slate-500/30" />
+          <Bigdiv>Dispositivos externos</Bigdiv>
 
-          <Console />
-
-          <div className="h-4" />
-
-          <div className="flex flex-wrap items-start justify-center gap-4">
-            <Switches />
-            <Leds />
+          <section className="flex flex-wrap items-start justify-center gap-4">
+            <Console className="w-80 grow" />
             <F10 />
-          </div>
+            {devices === "switches-leds" ? (
+              <div className="flex flex-col items-center gap-4">
+                <Switches />
+                <Leds />
+              </div>
+            ) : (
+              <Printer />
+            )}
+          </section>
         </div>
       </main>
     </div>
   );
 }
 
-export default App;
+function Bigdiv({ children }: { children?: React.ReactNode }) {
+  return (
+    <>
+      <hr className="mt-12 border-t-4 border-dotted border-slate-500/30" />
+      <h2 className="mb-4 select-none text-3xl font-black uppercase tracking-tighter text-slate-500/30">
+        {children}
+      </h2>
+    </>
+  );
+}

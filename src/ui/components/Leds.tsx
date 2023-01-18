@@ -4,11 +4,11 @@ import { useSimulator } from "@/simulator";
 
 import { Card } from "./Card";
 
-export function Leds() {
+export function Leds({ className }: { className?: string }) {
   const leds = useSimulator(state => state.devices.leds.state);
 
   return (
-    <Card title="Leds">
+    <Card title="Leds" className={className}>
       <div className="flex gap-2">
         {leds.map((on, i) => (
           <div

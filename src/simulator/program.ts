@@ -142,6 +142,7 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
       state.devices.pic.IMR = 0b1111_1111;
       state.devices.pic.ISR = 0b0000_0000;
       state.devices.pic.IRR = 0b0000_0000;
+      state.devices.printer.buffer = [];
 
       if (memoryConfig === "empty") {
         state.registers.AX = 0x0000;
@@ -161,6 +162,7 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.devices.switches.state = new Array(8).fill(false);
         state.devices.timer.CONT = 0x00;
         state.devices.timer.COMP = 0xff;
+        state.devices.printer.lastStrobe = false;
       }
 
       if (memoryConfig === "random") {
@@ -191,6 +193,7 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
           { length: 8 },
           (_, i) => (portA & (0b1000_0000 >> i)) !== 0,
         );
+        state.devices.printer.lastStrobe = (portA & 0b10) !== 0;
       }
     });
   },

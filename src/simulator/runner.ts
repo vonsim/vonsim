@@ -45,13 +45,13 @@ export type RunnerSlice = {
   runner: "running" | "paused" | "waiting-for-input" | "stopped";
   dispatchRunner: (action: RunnerAction) => Promise<void>;
   __runnerInternal: {
-    cpuSpeed: number;
     action: RunnerAction | null;
     loop: () => Promise<void>;
 
     updateDevices: (timeElapsed: number) => void;
 
     inputListener: InputListener | null;
+    instructionTime: number;
     lastCPUTick: number;
     updateCPU: (timeElapsed: number) => void;
     runInstruction: () => StepReturn;
@@ -85,11 +85,13 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         else if (action === "step") state.runner = "paused";
 
         state.__runnerInternal.action = null;
-        state.__runnerInternal.cpuSpeed = Math.round(1000 / get().clockSpeed); // in ms
+        state.__runnerInternal.instructionTime = Math.round(1000 / parseFloat(get().cpuSpeed)); // in ms
+        state.devices.printer.printerSpeed = Math.round(1000 / parseFloat(get().printerSpeed)); // in ms
 
         // reset timers
         state.__runnerInternal.lastCPUTick = 0;
         state.devices.timer.lastTick = 0;
+        state.devices.printer.lastTick = 0;
       });
       await get().__runnerInternal.loop();
     } else {
@@ -106,7 +108,6 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     // # Main loop                                                               #
     // #=========================================================================#
     action: null,
-    cpuSpeed: 0,
     loop: async () => {
       const resolution = 15;
       let timeElapsed = 0;
@@ -128,7 +129,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
           if (action === "run") set({ runner: "running" });
 
           // Add the time that one instruction would take ONLY IF an instruction gets executed
-          if (action !== null) timeElapsed += get().__runnerInternal.cpuSpeed;
+          if (action !== null) timeElapsed += get().__runnerInternal.instructionTime;
         } else if (runner === "waiting-for-input") {
           if (action !== null) throw new Error("Invalid action");
         } else {
@@ -171,6 +172,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     updateDevices: timeElapsed => {
       get().devices.leds.update();
       get().devices.switches.update();
+      get().devices.printer.update(timeElapsed);
       get().devices.timer.update(timeElapsed);
 
       // I leave the PIC update last because it may trigger an interrupt
@@ -182,9 +184,10 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     // # Instruction runner                                                      #
     // #=========================================================================#
     inputListener: null,
+    instructionTime: 0,
     lastCPUTick: 0,
     updateCPU: timeElapsed => {
-      const instructionTime = get().__runnerInternal.cpuSpeed;
+      const instructionTime = get().__runnerInternal.instructionTime;
       const timeSinceLastInstruction = timeElapsed - get().__runnerInternal.lastCPUTick;
 
       if (timeSinceLastInstruction < instructionTime) return;
