@@ -20,19 +20,14 @@ export const createTimerSlice: DeviceSlice<TimerSlice> = (set, get) => ({
         let { CONT } = get().devices.timer;
         const { COMP, lastTick } = get().devices.timer;
 
-        // It could happen that the timer needs to tick multiple times,
-        // although this is unlikely.
-        const ticks = Math.floor((timeElapsed - lastTick) / 1000);
-        if (ticks === 0) return;
+        if (timeElapsed - lastTick < 1000) return;
 
-        for (let i = 0; i < ticks; i++) {
-          CONT++;
-          if (CONT > MAX_VALUE["byte"]) CONT = 0x00;
+        CONT++;
+        if (CONT > MAX_VALUE["byte"]) CONT = 0x00;
 
-          if (CONT === COMP) {
-            // TIMER is linked to INT0
-            get().devices.pic.request(1);
-          }
+        if (CONT === COMP) {
+          // TIMER is linked to INT0
+          get().devices.pic.request(1);
         }
 
         set(state => {

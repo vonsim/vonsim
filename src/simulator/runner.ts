@@ -13,13 +13,13 @@
  * 2. Increment (if needed) the time elapsed since the program started running.
  *    This time may or may not be the same as the real time elapsed, because
  *    when the program is paused, the time elapsed is not incremented.
- * 3. Execute `devices.update(timeElapsed)`. This will update the state of all
+ * 3. Execute `updateCPU(timeElapsed)`. If enough time has elapsed since the last
+ *    instruction was executed, this will execute the next instruction.
+ * 4. Execute `updateDevices(timeElapsed)`. This will update the state of all
  *    the devices, such as the PIC, the Leds, etc. `timeElapsed` is used to inform
  *    each device how much time has elapsed since the program started running.
  *    For example, the Timer device will use this time to know when to increment
  *    its counter.
- * 4. Execute `updateCPU(timeElapsed)`. If enough time has elapsed since the last
- *    instruction was executed, this will execute the next instruction.
  * 5. Wait for the next iteration of the event loop.
  */
 
@@ -45,11 +45,14 @@ export type RunnerSlice = {
   runner: "running" | "paused" | "waiting-for-input" | "stopped";
   dispatchRunner: (action: RunnerAction) => Promise<void>;
   __runnerInternal: {
+    cpuSpeed: number;
     action: RunnerAction | null;
     loop: () => Promise<void>;
 
-    instructionsRan: number;
+    updateDevices: (timeElapsed: number) => void;
+
     inputListener: InputListener | null;
+    lastCPUTick: number;
     updateCPU: (timeElapsed: number) => void;
     runInstruction: () => StepReturn;
   };
@@ -65,7 +68,29 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
     if (runner === "stopped") {
       if (action === "stop") return; // Invalid action
-      set(state => void (state.__runnerInternal.action = action));
+
+      const code = window.codemirror!.state.doc.toString();
+      const result = compile(code);
+
+      if (!result.success) {
+        new SimulatorError("compile-error").notify();
+        return;
+      }
+
+      get().loadProgram(result);
+      setReadOnly(true);
+
+      set(state => {
+        if (action === "run") state.runner = "running";
+        else if (action === "step") state.runner = "paused";
+
+        state.__runnerInternal.action = null;
+        state.__runnerInternal.cpuSpeed = Math.round(1000 / get().clockSpeed); // in ms
+
+        // reset timers
+        state.__runnerInternal.lastCPUTick = 0;
+        state.devices.timer.lastTick = 0;
+      });
       await get().__runnerInternal.loop();
     } else {
       // If runner isn't paused and action is 'run' or 'step'
@@ -81,11 +106,10 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     // # Main loop                                                               #
     // #=========================================================================#
     action: null,
+    cpuSpeed: 0,
     loop: async () => {
       const resolution = 15;
       let timeElapsed = 0;
-
-      set(state => void (state.__runnerInternal.instructionsRan = 0));
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -104,37 +128,21 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
           if (action === "run") set({ runner: "running" });
 
           // Add the time that one instruction would take ONLY IF an instruction gets executed
-          if (action !== null) timeElapsed += 1000 / get().clockSpeed;
+          if (action !== null) timeElapsed += get().__runnerInternal.cpuSpeed;
         } else if (runner === "waiting-for-input") {
           if (action !== null) throw new Error("Invalid action");
         } else {
-          // runner === 'stop'
-          if (action === null) return;
-
-          const code = window.codemirror!.state.doc.toString();
-          const result = compile(code);
-
-          if (!result.success) {
-            new SimulatorError("compile-error").notify();
-            break;
-          }
-
-          get().loadProgram(result);
-          setReadOnly(true);
-
-          if (action === "run") set({ runner: "running" });
-          else if (action === "step") set({ runner: "paused" });
+          // runner === 'stopped'
+          break;
         }
 
         // For the 'wait-for-input' state we do nothing. The time should have been
         // bumped in the previous iteration and it should not be bumped until the
         // user presses a key.
 
-        // Update the CPU
+        // Run updates
         get().__runnerInternal.updateCPU(timeElapsed);
-
-        // Update all devices
-        get().devices.update(timeElapsed);
+        get().__runnerInternal.updateDevices(timeElapsed);
 
         // Clear action
         if (action !== null) {
@@ -160,21 +168,30 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       });
     },
 
+    updateDevices: timeElapsed => {
+      get().devices.leds.update();
+      get().devices.switches.update();
+      get().devices.timer.update(timeElapsed);
+
+      // I leave the PIC update last because it may trigger an interrupt
+      // from one of the other devices.
+      get().devices.pic.update();
+    },
+
     // #=========================================================================#
     // # Instruction runner                                                      #
     // #=========================================================================#
-    instructionsRan: 0,
     inputListener: null,
+    lastCPUTick: 0,
     updateCPU: timeElapsed => {
-      const instructionTime = 1000 / get().clockSpeed; // in milliseconds
-      const instructionsRan = get().__runnerInternal.instructionsRan;
+      const instructionTime = get().__runnerInternal.cpuSpeed;
+      const timeSinceLastInstruction = timeElapsed - get().__runnerInternal.lastCPUTick;
 
-      const timeToNextInstruction = instructionTime * instructionsRan;
-      if (timeElapsed < timeToNextInstruction) return;
+      if (timeSinceLastInstruction < instructionTime) return;
 
       const result = get().__runnerInternal.runInstruction();
 
-      set(state => void state.__runnerInternal.instructionsRan++);
+      set(state => void (state.__runnerInternal.lastCPUTick = timeElapsed));
 
       if (result.isErr()) {
         result.unwrapErr().notify();

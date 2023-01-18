@@ -23,10 +23,8 @@ export type DevicesSlice = {
     PICSlice &
     PIOSlice &
     SwitchesSlice &
-    TimerSlice & {
-      configuration: "lights-and-switches" | "printer" | "printer-with-handshake";
-      update: (timeElapsed: number) => void;
-    };
+    TimerSlice;
+
   getIOMemory: (address: number, size: Size) => SimulatorResult<number>;
   setIOMemory: (address: number, size: Size, value: number) => SimulatorResult<void>;
 };
@@ -40,19 +38,6 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
     ...createPIOSlice(...a).devices,
     ...createSwitchesSlice(...a).devices,
     ...createTimerSlice(...a).devices,
-
-    configuration: "lights-and-switches",
-    update: timeElapsed => {
-      const [, get] = a;
-
-      get().devices.leds.update();
-      get().devices.switches.update();
-      get().devices.timer.update(timeElapsed);
-
-      // I leave the PIC update last because it may trigger an interrupt
-      // from one of the other devices.
-      get().devices.pic.update();
-    },
   },
 
   getIOMemory: (address, size) => {
