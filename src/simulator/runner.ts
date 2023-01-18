@@ -175,6 +175,10 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       get().devices.printer.update(timeElapsed);
       get().devices.timer.update(timeElapsed);
 
+      // Handshake must be updated after the printer, so it can read
+      // the rising edge properly.
+      get().devices.handshake.update();
+
       // I leave the PIC update last because it may trigger an interrupt
       // from one of the other devices.
       get().devices.pic.update();

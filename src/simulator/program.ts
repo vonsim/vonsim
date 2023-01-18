@@ -143,6 +143,9 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
       state.devices.pic.ISR = 0b0000_0000;
       state.devices.pic.IRR = 0b0000_0000;
       state.devices.printer.buffer = [];
+      state.devices.handshake.data = 0x00;
+      state.devices.handshake.state = 0x00;
+      state.devices.handshake.riseStrobe = false;
 
       if (memoryConfig === "empty") {
         state.registers.AX = 0x0000;

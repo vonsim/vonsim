@@ -8,6 +8,7 @@ import { SimulatorError, SimulatorResult } from "@/simulator/error";
 
 import { ConsoleSlice, createConsoleSlice } from "./console";
 import { createF10Slice, F10Slice } from "./f10";
+import { createHandshakeSlice, HandshakeSlice } from "./handshake";
 import { createLedsSlice, LedsSlice } from "./leds";
 import { createPICSlice, PICSlice } from "./pic";
 import { createPIOSlice, PIOSlice } from "./pio";
@@ -20,6 +21,7 @@ export type DeviceSlice<T> = SimulatorSlice<{ devices: T }>;
 export type DevicesSlice = {
   devices: ConsoleSlice &
     F10Slice &
+    HandshakeSlice &
     LedsSlice &
     PICSlice &
     PIOSlice &
@@ -35,6 +37,7 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
   devices: {
     ...createConsoleSlice(...a).devices,
     ...createF10Slice(...a).devices,
+    ...createHandshakeSlice(...a).devices,
     ...createLedsSlice(...a).devices,
     ...createPICSlice(...a).devices,
     ...createPIOSlice(...a).devices,
@@ -66,6 +69,8 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
         .with(0x31, () => Ok(get().devices.pio.PB))
         .with(0x32, () => Ok(get().devices.pio.CA))
         .with(0x33, () => Ok(get().devices.pio.CB))
+        .with(0x40, () => Ok(get().devices.handshake.data))
+        .with(0x41, () => Ok(get().devices.handshake.state))
         .otherwise(() => Err(new SimulatorError("io-memory-not-implemented", address)));
 
     if (size === "byte") {
@@ -82,7 +87,7 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
   },
 
   setIOMemory: (address, size, value) => {
-    const [set] = a;
+    const [set, get] = a;
 
     const byte = (address: number, value: number) =>
       match<number, SimulatorResult<void>>(address)
@@ -104,6 +109,8 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
         .with(0x31, () => Ok(set(state => void (state.devices.pio.PB = value))))
         .with(0x32, () => Ok(set(state => void (state.devices.pio.CA = value))))
         .with(0x33, () => Ok(set(state => void (state.devices.pio.CB = value))))
+        .with(0x40, () => Ok(get().devices.handshake.setData(value)))
+        .with(0x41, () => Ok(set(state => void (state.devices.handshake.state = value))))
         .otherwise(() => Err(new SimulatorError("io-memory-not-implemented", address)));
 
     if (size === "byte") {

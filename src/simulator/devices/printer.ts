@@ -70,6 +70,46 @@ export const createPrinterSlice: DeviceSlice<PrinterSlice> = (set, get) => ({
               state.devices.printer.lastStrobe = false;
             });
           }
+        } else if (config === "printer-handshake") {
+          const { lastTick, lastStrobe, printerSpeed } = get().devices.printer;
+          const { data, state } = get().devices.handshake;
+
+          // Data: a character
+          // State: XXXX XXSB, where S is strobe, B is busy
+
+          if (timeElapsed - lastTick >= printerSpeed) {
+            set(state => {
+              state.devices.printer.lastTick = timeElapsed;
+
+              if (state.devices.printer.buffer.length === 0) return;
+              const [first, ...rest] = state.devices.printer.buffer;
+              state.devices.printer.output += first;
+              state.devices.printer.buffer = rest;
+              state.devices.handshake.state &= ~0b01;
+            });
+          }
+
+          if (get().devices.printer.buffer.length >= PRINTER_BUFFER_SIZE) return;
+
+          const strobe = (state & 0b10) === 0b10;
+          if (lastStrobe === false && strobe === true) {
+            // Strobe is rising edge
+            set(state => {
+              state.devices.printer.lastStrobe = true;
+              state.devices.printer.buffer = [
+                ...state.devices.printer.buffer,
+                String.fromCharCode(data),
+              ];
+              if (state.devices.printer.buffer.length >= PRINTER_BUFFER_SIZE) {
+                state.devices.handshake.state |= 0b01;
+              }
+            });
+          } else if (lastStrobe !== strobe) {
+            // Strobe is falling edge
+            set(state => {
+              state.devices.printer.lastStrobe = false;
+            });
+          }
         }
       },
     },

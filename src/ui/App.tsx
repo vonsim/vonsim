@@ -6,6 +6,7 @@ import { Controls } from "./components/Controls";
 import { CPU } from "./components/CPU";
 import { Editor } from "./components/editor";
 import { F10 } from "./components/F10";
+import { Handshake } from "./components/Handshake";
 import { Leds } from "./components/Leds";
 import { Memory } from "./components/Memory";
 import { PIC } from "./components/PIC";
@@ -37,7 +38,7 @@ export default function App() {
           <Bigdiv>Dispositivos internos</Bigdiv>
 
           <section className="flex flex-wrap items-start justify-center gap-4">
-            <PIO />
+            {devices === "printer-handshake" ? <Handshake /> : <PIO />}
             <PIC />
             <Timer />
           </section>
