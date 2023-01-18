@@ -1,3 +1,12 @@
+/**
+ * The compiler is responsible for taking the source code and turning it into a program.
+ *
+ * The compiler is divided into three main parts:
+ * 1. The lexer, which turns the source code into a list of tokens.
+ * 2. The parser, which turns the tokens into an list of statements.
+ * 3. The analyzer, which turns the statements into a program and catches most errors.
+ */
+
 import { analyze } from "./analyzer";
 import type { CodeMemory } from "./analyzer/compute-addresses";
 import type { ProgramConstants } from "./analyzer/evaluate/constants";

@@ -1,17 +1,17 @@
+/**
+ * The scanner is responsible for taking a string of source code and turning it
+ * into a list of tokens.
+ *
+ * It is a class because it maintains state as it scans the source code, although
+ * it could be refactored to be pure functions.
+ */
+
 import { isMatching } from "ts-pattern";
 
 import { LineError, Position } from "@/compiler/common";
 import { keywordPattern } from "@/compiler/common/patterns";
 
 import { Token, TokenType } from "./tokens";
-
-/**
- * This class is responsible for taking a string of source code and turning it
- * into a list of tokens.
- *
- * It is a class because it maintains state as it scans the source code, although
- * it could be refactored to be pure functions.
- */
 
 export class Scanner {
   private tokens: Token[] = [];

@@ -64,7 +64,7 @@ POP ; no recibe operandos
 
 ## `IN`
 
-Carga el valor del puerto _fuente_ en _dest_.
+Carga el valor del puerto _fuente_ en _dest_. Sirve para leer los registros de los [dispositivos](../dispositivos/listado) mediante la memoria E/S.
 
 ```asm
 IN dest, fuente
@@ -83,7 +83,7 @@ donde _puerto_ es una dirección entre 0 y 255 (puede ser un operando inmediato 
 
 ## `OUT`
 
-Carga en el puerte _dest_ el valor en _fuente_.
+Carga en el puerto _dest_ el valor en _fuente_. Sirve para escribir en los registros de los [dispositivos](../dispositivos/listado) mediante la memoria E/S.
 
 ```asm
 OUT dest, fuente

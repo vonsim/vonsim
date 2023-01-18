@@ -1,3 +1,28 @@
+/**
+ * This file contains the event loop of the simulator. It is responsible for
+ * running the program, stepping through it, and pausing it.
+ *
+ * Once the program is running, the event loop will be executed each X milliseconds,
+ * where X is defined as the `resolution` below. The resolution is smaller than
+ * any possible clock speed of any device, so the event loop will be executed
+ * multiple times per clock cycle.
+ *
+ * In each iteration of the event loop, the following steps are executed:
+ * 1. Check if the state of the simulator has changed. That is, if the user
+ *    clicked the "Run" button, or the "Step" button, or the "Stop" button.
+ * 2. Increment (if needed) the time elapsed since the program started running.
+ *    This time may or may not be the same as the real time elapsed, because
+ *    when the program is paused, the time elapsed is not incremented.
+ * 3. Execute `devices.update(timeElapsed)`. This will update the state of all
+ *    the devices, such as the PIC, the Leds, etc. `timeElapsed` is used to inform
+ *    each device how much time has elapsed since the program started running.
+ *    For example, the Timer device will use this time to know when to increment
+ *    its counter.
+ * 4. Execute `updateCPU(timeElapsed)`. If enough time has elapsed since the last
+ *    instruction was executed, this will execute the next instruction.
+ * 5. Wait for the next iteration of the event loop.
+ */
+
 import { Err, Ok } from "rust-optionals";
 import { match, P } from "ts-pattern";
 
@@ -25,8 +50,8 @@ export type RunnerSlice = {
 
     instructionsRan: number;
     inputListener: InputListener | null;
-    runInstruction: (timeElapsed: number) => void;
-    step: () => StepReturn;
+    updateCPU: (timeElapsed: number) => void;
+    runInstruction: () => StepReturn;
   };
 };
 
@@ -57,10 +82,6 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     // #=========================================================================#
     action: null,
     loop: async () => {
-      // This is how many milliseconds we'll tick the simulator clock,
-      // which is lower than any clock speed the user can set. This way,
-      // we can tick all the clocks (CPU, Timer, Printer, etc...) inside
-      // one loop.
       const resolution = 15;
       let timeElapsed = 0;
 
@@ -109,8 +130,8 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         // bumped in the previous iteration and it should not be bumped until the
         // user presses a key.
 
-        // Run instruction
-        get().__runnerInternal.runInstruction(timeElapsed);
+        // Update the CPU
+        get().__runnerInternal.updateCPU(timeElapsed);
 
         // Update all devices
         get().devices.update(timeElapsed);
@@ -144,14 +165,14 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     // #=========================================================================#
     instructionsRan: 0,
     inputListener: null,
-    runInstruction: timeElapsed => {
+    updateCPU: timeElapsed => {
       const instructionTime = 1000 / get().clockSpeed; // in milliseconds
       const instructionsRan = get().__runnerInternal.instructionsRan;
 
       const timeToNextInstruction = instructionTime * instructionsRan;
       if (timeElapsed < timeToNextInstruction) return;
 
-      const result = get().__runnerInternal.step();
+      const result = get().__runnerInternal.runInstruction();
 
       set(state => void state.__runnerInternal.instructionsRan++);
 
@@ -198,7 +219,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       }
     },
 
-    step() {
+    runInstruction() {
       const program = get().program;
       if (!program) return Err(new SimulatorError("no-program"));
 

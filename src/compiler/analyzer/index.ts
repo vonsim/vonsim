@@ -1,3 +1,21 @@
+/**
+ * The analyzer turns the statements into a program and catches most errors.
+ *
+ * It does the following:
+ * 1. Reads the labels and their types. This allows us to use labels that are
+ *    defined later in the program.
+ * 2. Validates the statements. This catches most errors, such as invalid
+ *    instructions, some invalid labels, and invalid operands. It doesn't
+ *    evaluate expressions yet, since we lack some information.
+ * 3. Computes the addresses of the labels. This needs to be done before
+ *    evaluating expressions, because the addresses of labels can be used in
+ *    those calculations.
+ * 4. Evaluates the constants.
+ * 5. Evaluates data directives and instructions. Finally, with all the labels
+ *    with addresses assigned and all the constants evaluated, we can evaluate
+ *    the expressions in the operands.
+ */
+
 import { klona } from "klona/json";
 
 import { CompilerError, safeMap } from "@/compiler/common";

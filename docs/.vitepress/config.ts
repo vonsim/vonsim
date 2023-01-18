@@ -51,14 +51,24 @@ export default defineConfig({
             ],
           },
           { text: "Modos de direccionamiento", link: "/como-usar/modos-de-direccionamiento" },
+          { text: "Interrupciones de software", link: "/como-usar/interrupciones-de-software" },
+          {
+            text: "Dispositivos",
+            link: "/como-usar/dispositivos/listado",
+            items: [
+              { text: "Consola", link: "/como-usar/dispositivos/consola" },
+              { text: "PIC", link: "/como-usar/dispositivos/pic" },
+              { text: "PIO", link: "/como-usar/dispositivos/pio" },
+              { text: "Tecla F10", link: "/como-usar/dispositivos/f10" },
+              { text: "Timer", link: "/como-usar/dispositivos/timer" },
+              { text: "Teclas y leds", link: "/como-usar/dispositivos/teclas-y-leds" },
+            ],
+          },
         ],
       },
       {
         text: "Especificaciones",
-        items: [
-          { text: "Codificación", link: "/especificaciones/codificacion" },
-          { text: "Consola", link: "/especificaciones/consola" },
-        ],
+        items: [{ text: "Codificación", link: "/especificaciones/codificacion" }],
       },
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/vonsim/vonsim" }],

@@ -35,8 +35,11 @@ Aquí se encuentran las instrucciones implementadas por VonSim.
   - [`JO`](./transferencia-de-control#jo)
   - [`JNO`](./transferencia-de-control#jno)
   - [`JMP`](./transferencia-de-control#jmp)
-- [Instrucciones de manejo de interrupciones](./manejo-de-interrupciones)
-  - TODO
+- Instrucciones de manejo de interrupciones
+  - [`INT`](./manejo-de-interrupciones#int)
+  - [`IRET`](./manejo-de-interrupciones#iret)
+  - [`CLI`](./manejo-de-interrupciones#cli)
+  - [`STI`](./manejo-de-interrupciones#sti)
 - Instrucciones de control
   - [`NOP`](./control#nop)
   - [`HLT`](./control#hlt)

@@ -6,6 +6,16 @@ import { useSimulator } from "@/simulator";
 
 import { ERROR_LIST, SimulatorErrorCode, SimulatorErrorParams } from "./list";
 
+/**
+ * An error that can be thrown by the simulator.
+ *
+ * The basic idea of the error system is that each error has a code and maybe some parameters.
+ * This way, the error messages can be translated to different languages.
+ *
+ * @example
+ * new SimulatorError("compile-error")
+ * new SimulatorError("address-has-instuction", label)
+ */
 export class SimulatorError<Code extends SimulatorErrorCode> extends Error {
   public readonly code: Code;
   private readonly params: SimulatorErrorParams<Code>;

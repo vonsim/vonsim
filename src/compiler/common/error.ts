@@ -3,6 +3,16 @@ import { Language } from "@/config";
 import { CompilerErrorCode, CompilerErrorParams, ERROR_LIST } from "./error-list";
 import type { Position, PositionRange } from "./index";
 
+/**
+ * An error that can be thrown by the compiler.
+ *
+ * The basic idea of the error system is that each error has a code and maybe some parameters.
+ * This way, the error messages can be translated to different languages.
+ *
+ * @example
+ * new CompilerError("double-memory-access")
+ * new CompilerError("label-not-found", label)
+ */
 export class CompilerError<Code extends CompilerErrorCode> extends Error {
   public readonly code: Code;
   private readonly params: CompilerErrorParams<Code>;
@@ -27,6 +37,14 @@ export class CompilerError<Code extends CompilerErrorCode> extends Error {
   }
 }
 
+/**
+ * A CompilerError that has a position range.
+ *
+ * @see {@link CompilerError}
+ * @example
+ * new LineError("empty-program", 0, 0)
+ * new LineError("label-not-found", label, 12, 18)
+ */
 export class LineError<Code extends CompilerErrorCode> extends CompilerError<Code> {
   public readonly from: Position;
   public readonly to: Position;

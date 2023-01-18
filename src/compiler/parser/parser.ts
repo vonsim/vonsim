@@ -1,24 +1,3 @@
-import { klona } from "klona/json";
-import { isMatching } from "ts-pattern";
-import type { Merge } from "type-fest";
-
-import {
-  CompilerErrorMessages,
-  LineError,
-  Position,
-  PositionRange,
-  RegisterType,
-} from "@/compiler/common";
-import {
-  dataDirectivePattern,
-  instructionPattern,
-  registerPattern,
-} from "@/compiler/common/patterns";
-import type { Token, TokenType } from "@/compiler/lexer/tokens";
-import { Size } from "@/config";
-
-import type { DataDirectiveValue, NumberExpression, Operand, Statement } from "./grammar";
-
 /**
  * The parser is responsible for taking a list of tokens and turning it into a
  * list of statements.
@@ -45,6 +24,28 @@ import type { DataDirectiveValue, NumberExpression, Operand, Statement } from ".
  * For example, it will throw an error if it encounters a token that it doesn't
  * expect. More extensive validation is done by the semantic analyzer.
  */
+
+import { klona } from "klona/json";
+import { isMatching } from "ts-pattern";
+import type { Merge } from "type-fest";
+
+import {
+  CompilerErrorMessages,
+  LineError,
+  Position,
+  PositionRange,
+  RegisterType,
+} from "@/compiler/common";
+import {
+  dataDirectivePattern,
+  instructionPattern,
+  registerPattern,
+} from "@/compiler/common/patterns";
+import type { Token, TokenType } from "@/compiler/lexer/tokens";
+import { Size } from "@/config";
+
+import type { DataDirectiveValue, NumberExpression, Operand, Statement } from "./grammar";
+
 export class Parser {
   private tokens: Token[];
 
