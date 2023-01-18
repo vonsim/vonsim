@@ -157,8 +157,10 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.devices.pic.INT5 = 0x15;
         state.devices.pic.INT6 = 0x16;
         state.devices.pic.INT7 = 0x17;
-        (state.devices.pio = { PA: 0x00, PB: 0x00, CA: 0x00, CB: 0x00 }),
-          (state.devices.switches.state = new Array(8).fill(false));
+        state.devices.pio = { PA: 0x00, PB: 0x00, CA: 0x00, CB: 0x00 };
+        state.devices.switches.state = new Array(8).fill(false);
+        state.devices.timer.CONT = 0x00;
+        state.devices.timer.COMP = 0xff;
       }
 
       if (memoryConfig === "random") {
@@ -174,6 +176,8 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.devices.pic.INT5 = randomByte();
         state.devices.pic.INT6 = randomByte();
         state.devices.pic.INT7 = randomByte();
+        state.devices.timer.CONT = randomByte();
+        state.devices.timer.COMP = randomByte();
 
         const portA = randomByte();
         const portB = randomByte();
