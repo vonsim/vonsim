@@ -29,8 +29,7 @@ export type Program = {
 export type CompileResultSuccess = { success: true } & Program;
 export type CompileResultError = {
   success: false;
-  lineErrors: LineError<any>[];
-  codeErrors: CompilerError<any>[];
+  errors: CompilerError<any>[];
 };
 export type CompileResult = CompileResultSuccess | CompileResultError;
 
@@ -45,25 +44,22 @@ export function compile(source: string): CompileResult {
     const analysis = analyze(parsed);
 
     if (analysis.success) return analysis;
-    else return groupErrors(analysis);
+    else return err(analysis.errors);
   } catch (error) {
-    return groupErrors({ success: false, errors: [error] });
+    return err([error]);
   }
 }
 
-function groupErrors({ errors }: { success: false; errors: unknown[] }): CompileResultError {
-  const lineErrors: LineError<any>[] = [];
-  const codeErrors: CompilerError<any>[] = [];
+function err(errors: unknown[]): CompileResultError {
+  const compilerErrors: CompilerError<any>[] = [];
 
   for (const error of errors) {
-    if (error instanceof LineError) {
-      lineErrors.push(error);
-    } else if (error instanceof CompilerError) {
-      codeErrors.push(error);
+    if (error instanceof CompilerError) {
+      compilerErrors.push(error);
     } else {
-      codeErrors.push(new CompilerError("unexpected-error", error));
+      compilerErrors.push(new CompilerError("unexpected-error", error));
     }
   }
 
-  return { success: false, lineErrors, codeErrors };
+  return { success: false, errors: compilerErrors };
 }

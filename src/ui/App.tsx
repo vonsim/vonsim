@@ -51,7 +51,6 @@ function App() {
           </div>
         </div>
       </main>
-      <footer className="h-1 w-screen bg-sky-400" />
     </div>
   );
 }

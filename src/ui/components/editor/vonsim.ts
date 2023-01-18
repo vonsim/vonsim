@@ -8,15 +8,13 @@ import { Diagnostic, linter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { isMatching } from "ts-pattern";
 
-import { compile } from "@/compiler";
+import { compile, LineError } from "@/compiler";
 import {
   dataDirectivePattern,
   instructionPattern,
   registerPattern,
 } from "@/compiler/common/patterns";
 import { useSimulator } from "@/simulator";
-
-import { PROGRAM_BACKUP_KEY, useErrors } from "./store";
 
 /**
  * This is the VonSim language definition.
@@ -46,10 +44,9 @@ const vonsimLanguage = StreamLanguage.define({
   token: (stream): keyof typeof vonsimTags | null => {
     if (stream.eatSpace()) return null;
 
-    if (stream.eat(/\d/)) {
-      stream.eatWhile(/[a-h\d]/i);
-      return "number";
-    }
+    if (stream.match(/[01]+b\b/i)) return "number";
+    if (stream.match(/\d[a-f\d]*h\b/i)) return "number";
+    if (stream.match(/\d+\b/)) return "number";
 
     if (stream.eat('"')) {
       stream.eatWhile(/[^"\n]/);
@@ -121,33 +118,27 @@ const vonsimLinter = linter(
   view => {
     const source = view.state.doc.toString();
     const result = compile(source);
+
+    if (result.success) return [];
+
     const lang = useSimulator.getState().language;
-    useErrors.setState(() => {
-      if (result.success) {
-        return { globalError: null, numberOfErrors: 0 };
+    return result.errors.map<Diagnostic>(error => {
+      if (error instanceof LineError) {
+        return {
+          from: error.from,
+          to: error.to,
+          message: error.translate(lang),
+          severity: "error",
+        };
+      } else {
+        return {
+          from: 0,
+          to: source.length,
+          message: error.translate(lang),
+          severity: "error",
+        };
       }
-
-      const numberOfErrors = result.codeErrors.length + result.lineErrors.length;
-      return {
-        globalError: result.codeErrors.at(0)?.translate(lang) || null,
-        numberOfErrors,
-      };
     });
-
-    localStorage.setItem(PROGRAM_BACKUP_KEY, source);
-
-    if (result.success) {
-      return [];
-    } else {
-      const diagnostics: Diagnostic[] = result.lineErrors.map(error => ({
-        from: error.from,
-        to: error.to,
-        message: error.translate(lang),
-        severity: "error",
-      }));
-
-      return diagnostics;
-    }
   },
   {
     delay: 200, // gotta go fast
