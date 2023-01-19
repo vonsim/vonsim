@@ -1,6 +1,8 @@
 import { Listbox } from "@headlessui/react";
 import { useMemo } from "react";
 
+import { useSimulator } from "@/simulator";
+
 export function FrecuencyPicker({
   value,
   onChange,
@@ -10,13 +12,15 @@ export function FrecuencyPicker({
   onChange: (value: string) => void;
   options: [value: string, label: string][];
 }) {
+  const runner = useSimulator(state => state.runner);
+
   const current = useMemo(
     () => options.find(([v]) => v === value)?.[1] ?? "Ninguna",
     [value, options],
   );
 
   return (
-    <Listbox value={value} onChange={onChange}>
+    <Listbox value={value} onChange={onChange} disabled={runner !== "stopped"}>
       <Listbox.Label className="text-xs font-bold uppercase tracking-wider text-slate-700">
         Frecuencia
       </Listbox.Label>
@@ -24,8 +28,8 @@ export function FrecuencyPicker({
         <Listbox.Button
           className="
             rounded-lg border border-sky-400 px-2 py-1 text-sm transition
-            hover:bg-sky-400 hover:text-white
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 
+            active:hover:bg-sky-400 active:hover:text-white
           "
         >
           {current}
