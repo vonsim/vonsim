@@ -1,7 +1,6 @@
 import { match } from "ts-pattern";
 
 import { MAX_SIGNED_VALUE, MAX_VALUE, Size } from "@/config";
-import type { MemoryRepresentation } from "@/simulator/userconfig";
 
 // #=========================================================================#
 // # Byte/Word                                                               #
@@ -40,6 +39,8 @@ export const randomWord = () => Math.floor(Math.random() * MAX_VALUE.word);
 // #=========================================================================#
 // # Render                                                                  #
 // #=========================================================================#
+
+export type MemoryRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
 
 export function renderMemoryCell(n: number, representation: MemoryRepresentation): string {
   // n is a number between 0 and 255

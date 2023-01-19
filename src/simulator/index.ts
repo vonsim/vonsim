@@ -8,7 +8,6 @@
  */
 
 import { create, StateCreator } from "zustand";
-import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { ALUSlice, createALUSlice } from "./alu";
@@ -18,7 +17,6 @@ import { createMemorySlice, MemorySlice } from "./memory";
 import { createProgramSlice, ProgramSlice } from "./program";
 import { createRegistersSlice, RegistersSlice } from "./registers";
 import { createRunnerSlice, RunnerSlice } from "./runner";
-import { createUserConfigSlice, UserConfigSlice } from "./userconfig";
 
 export type SimulatorStore = ALUSlice &
   DevicesSlice &
@@ -26,41 +24,20 @@ export type SimulatorStore = ALUSlice &
   MemorySlice &
   ProgramSlice &
   RegistersSlice &
-  RunnerSlice &
-  UserConfigSlice;
+  RunnerSlice;
 
-export type SimulatorSlice<T> = StateCreator<
-  SimulatorStore,
-  [["zustand/persist", unknown], ["zustand/immer", unknown]],
-  [],
-  T
->;
+export type SimulatorSlice<T> = StateCreator<SimulatorStore, [["zustand/immer", unknown]], [], T>;
 
 export const useSimulator = create<SimulatorStore>()(
-  persist(
-    immer((...a) => ({
-      ...createALUSlice(...a),
-      ...createDevicesSlice(...a),
-      ...createInterruptsSlice(...a),
-      ...createMemorySlice(...a),
-      ...createProgramSlice(...a),
-      ...createRegistersSlice(...a),
-      ...createRunnerSlice(...a),
-      ...createUserConfigSlice(...a),
-    })),
-    {
-      name: "userconfig",
-      version: 0,
-      partialize: state => ({
-        memoryRepresentation: state.memoryRepresentation,
-        memoryOnReset: state.memoryOnReset,
-        cpuSpeed: state.cpuSpeed,
-        printerSpeed: state.printerSpeed,
-        language: state.language,
-        devicesConfiguration: state.devicesConfiguration,
-      }),
-    },
-  ),
+  immer((...a) => ({
+    ...createALUSlice(...a),
+    ...createDevicesSlice(...a),
+    ...createInterruptsSlice(...a),
+    ...createMemorySlice(...a),
+    ...createProgramSlice(...a),
+    ...createRegistersSlice(...a),
+    ...createRunnerSlice(...a),
+  })),
 );
 
 if (import.meta.env.DEV) {

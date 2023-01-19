@@ -4,16 +4,23 @@ import { shallow } from "zustand/shallow";
 import { PRINTER_BUFFER_SIZE } from "@/config";
 import { useSimulator } from "@/simulator";
 
+import { useSettings } from "../settings";
 import { Card } from "./Card";
 import { FrecuencyPicker } from "./FrecuencyPicker";
 
 export function Printer({ className }: { className?: string }) {
-  const { buffer, output, printerSpeed, setPrinterSpeed } = useSimulator(
+  const settings = useSettings(
+    state => ({
+      printerSpeed: state.printerSpeed,
+      setPrinterSpeed: state.setPrinterSpeed,
+    }),
+    shallow,
+  );
+
+  const { buffer, output } = useSimulator(
     state => ({
       buffer: state.devices.printer.buffer,
       output: state.devices.printer.output,
-      printerSpeed: state.printerSpeed,
-      setPrinterSpeed: state.setPrinterSpeed,
     }),
     shallow,
   );
@@ -23,8 +30,8 @@ export function Printer({ className }: { className?: string }) {
       <div className="grid grid-cols-2">
         <div className="px-4 py-1">
           <FrecuencyPicker
-            value={printerSpeed}
-            onChange={setPrinterSpeed}
+            value={settings.printerSpeed}
+            onChange={settings.setPrinterSpeed}
             options={[
               ["0.125", "0,125 Hz"],
               ["0.25", "0,25 Hz"],

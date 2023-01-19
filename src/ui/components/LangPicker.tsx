@@ -1,15 +1,16 @@
 import { Listbox } from "@headlessui/react";
+import { shallow } from "zustand/shallow";
 
 import { Language, LANGUAGES } from "@/config";
-import { useSimulator } from "@/simulator";
 import LangIcon from "~icons/carbon/translate";
 
+import { useSettings } from "../settings";
+
 export function LangPicker() {
-  const language = useSimulator(state => state.language);
-  const setLanguage = useSimulator(state => state.setLanguage);
+  const [lang, setLang] = useSettings(state => [state.language, state.setLanguage], shallow);
 
   return (
-    <Listbox value={language} onChange={setLanguage}>
+    <Listbox value={lang} onChange={setLang}>
       <div className="relative h-full">
         <Listbox.Button
           className="flex h-full items-center p-2 transition hover:bg-slate-500/30"

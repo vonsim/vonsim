@@ -7,10 +7,11 @@ import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
 import { renderAddress, renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
+import { useSettings } from "../settings";
 import { Card } from "./Card";
 
 export function Memory({ className }: { className?: string }) {
-  const memoryRepresentation = useSimulator(state => state.memoryRepresentation);
+  const memoryRepresentation = useSettings(state => state.memoryRepresentation);
 
   const startId = useId();
   const [start, setStart] = useState(0x1000);

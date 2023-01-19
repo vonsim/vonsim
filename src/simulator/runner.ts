@@ -34,12 +34,15 @@ import type { SimulatorSlice } from "@/simulator";
 import { SimulatorError, SimulatorResult } from "@/simulator/error";
 import { CONSOLE_ID } from "@/ui/components/Console";
 import { highlightLine, setReadOnly } from "@/ui/components/editor/methods";
+import { useSettings } from "@/ui/settings";
 
 type StepReturn = SimulatorResult<"continue" | "halt" | "start-debugger" | "wait-for-input">;
 
 type InputListener = (ev: KeyboardEvent) => void;
 
 export type RunnerAction = "run" | "step" | "stop";
+
+export type RunnerDevices = "switches-leds" | "printer-pio" | "printer-handshake";
 
 export type RunnerSlice = {
   runner: "running" | "paused" | "waiting-for-input" | "stopped";
@@ -48,6 +51,7 @@ export type RunnerSlice = {
     action: RunnerAction | null;
     loop: () => Promise<void>;
 
+    devices: RunnerDevices;
     updateDevices: (timeElapsed: number) => void;
 
     inputListener: InputListener | null;
@@ -77,7 +81,11 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         return;
       }
 
-      get().loadProgram(result);
+      // Get user settings
+      const { memoryOnReset, devicesConfiguration, cpuSpeed, printerSpeed } =
+        useSettings.getState();
+
+      get().loadProgram(result, memoryOnReset);
       setReadOnly(true);
 
       set(state => {
@@ -85,8 +93,9 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         else if (action === "step") state.runner = "paused";
 
         state.__runnerInternal.action = null;
-        state.__runnerInternal.instructionTime = Math.round(1000 / parseFloat(get().cpuSpeed)); // in ms
-        state.devices.printer.printerSpeed = Math.round(1000 / parseFloat(get().printerSpeed)); // in ms
+        state.__runnerInternal.devices = devicesConfiguration;
+        state.__runnerInternal.instructionTime = Math.round(1000 / parseFloat(cpuSpeed)); // in ms
+        state.devices.printer.printerSpeed = Math.round(1000 / parseFloat(printerSpeed)); // in ms
 
         // reset timers
         state.__runnerInternal.lastCPUTick = 0;
@@ -169,6 +178,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       });
     },
 
+    devices: "switches-leds",
     updateDevices: timeElapsed => {
       get().devices.leds.update();
       get().devices.switches.update();

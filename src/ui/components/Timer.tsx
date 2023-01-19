@@ -3,14 +3,15 @@ import { shallow } from "zustand/shallow";
 import { renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
+import { useSettings } from "../settings";
 import { Card } from "./Card";
 
 export function Timer({ className }: { className?: string }) {
-  const { CONT, COMP, memoryRepresentation } = useSimulator(
+  const memoryRepresentation = useSettings(state => state.memoryRepresentation);
+  const { CONT, COMP } = useSimulator(
     state => ({
       CONT: state.devices.timer.CONT,
       COMP: state.devices.timer.COMP,
-      memoryRepresentation: state.memoryRepresentation,
     }),
     shallow,
   );

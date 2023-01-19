@@ -14,7 +14,8 @@ import {
   instructionPattern,
   registerPattern,
 } from "@/compiler/common/patterns";
-import { useSimulator } from "@/simulator";
+
+import { useSettings } from "../../settings";
 
 /**
  * This is the VonSim language definition.
@@ -121,7 +122,7 @@ const vonsimLinter = linter(
 
     if (result.success) return [];
 
-    const lang = useSimulator.getState().language;
+    const lang = useSettings.getState().language;
     return result.errors.map<Diagnostic>(error => {
       if (error instanceof LineError) {
         return {

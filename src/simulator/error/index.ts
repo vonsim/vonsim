@@ -2,7 +2,7 @@ import { toast } from "react-hot-toast";
 import { Result } from "rust-optionals";
 
 import { Language } from "@/config";
-import { useSimulator } from "@/simulator";
+import { useSettings } from "@/ui/settings";
 
 import { ERROR_LIST, SimulatorErrorCode, SimulatorErrorParams } from "./list";
 
@@ -40,7 +40,7 @@ export class SimulatorError<Code extends SimulatorErrorCode> extends Error {
   }
 
   notify() {
-    const message = this.translate(useSimulator.getState().language);
+    const message = this.translate(useSettings.getState().language);
     toast.error(message);
   }
 }

@@ -1,5 +1,3 @@
-import { useSimulator } from "@/simulator";
-
 import { ConfigSelector } from "./components/ConfigSelector";
 import { Console } from "./components/Console";
 import { Controls } from "./components/Controls";
@@ -14,9 +12,10 @@ import { PIO } from "./components/PIO";
 import { Printer } from "./components/Printer";
 import { Switches } from "./components/Switches";
 import { Timer } from "./components/Timer";
+import { useSettings } from "./settings";
 
 export default function App() {
-  const devices = useSimulator(state => state.devicesConfiguration);
+  const devices = useSettings(state => state.devicesConfiguration);
 
   return (
     <div className="flex h-screen w-screen flex-col">

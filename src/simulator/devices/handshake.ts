@@ -25,7 +25,7 @@ export const createHandshakeSlice: DeviceSlice<HandshakeSlice> = (set, get) => (
         }),
 
       update: () => {
-        if (get().devicesConfiguration !== "printer-handshake") return;
+        if (get().__runnerInternal.devices !== "printer-handshake") return;
 
         if (get().devices.handshake.riseStrobe) {
           set(state => {

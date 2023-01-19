@@ -16,9 +16,11 @@ import { INITIAL_IP, MEMORY_SIZE } from "@/config";
 import { randomByte, randomWord, splitLowHigh } from "@/helpers";
 import type { SimulatorSlice } from "@/simulator";
 
+export type MemoryConfig = "empty" | "random" | "keep";
+
 export type ProgramSlice = {
   program: Program | null;
-  loadProgram: (program: Program) => void;
+  loadProgram: (program: Program, memoryConfig: MemoryConfig) => void;
 };
 
 const writeByte = (memory: ArrayBuffer, address: number, value: number): void => {
@@ -31,9 +33,7 @@ const writeWord = (memory: ArrayBuffer, address: number, value: number): void =>
 
 export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
   program: null,
-  loadProgram: program => {
-    const memoryConfig = get().memoryOnReset;
-
+  loadProgram: (program, memoryConfig) => {
     const memory: ArrayBuffer =
       memoryConfig === "empty"
         ? new ArrayBuffer(MEMORY_SIZE)

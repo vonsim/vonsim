@@ -1,30 +1,20 @@
 import { RadioGroup } from "@headlessui/react";
 import { useMemo } from "react";
-import { shallow } from "zustand/shallow";
 
 import { useSimulator } from "@/simulator";
 
-export function ConfigSelector() {
-  const config = useSimulator(
-    state => ({
-      memoryRepresentation: state.memoryRepresentation,
-      setMemoryRepresentation: state.setMemoryRepresentation,
-      memoryOnReset: state.memoryOnReset,
-      setMemoryOnReset: state.setMemoryOnReset,
-      devicesConfiguration: state.devicesConfiguration,
-      setDevicesConfiguration: state.setDevicesConfiguration,
-    }),
-    shallow,
-  );
+import { useSettings } from "../settings";
 
+export function ConfigSelector() {
+  const settings = useSettings();
   const runner = useSimulator(state => state.runner);
 
   return (
     <div className="flex flex-wrap gap-y-2 gap-x-4">
       <Radio
         label="Modo de representación"
-        value={config.memoryRepresentation}
-        onChange={config.setMemoryRepresentation}
+        value={settings.memoryRepresentation}
+        onChange={settings.setMemoryRepresentation}
         options={{
           hex: "Hex",
           bin: "Bin",
@@ -36,8 +26,8 @@ export function ConfigSelector() {
 
       <Radio
         label="Memoria al compilar"
-        value={config.memoryOnReset}
-        onChange={config.setMemoryOnReset}
+        value={settings.memoryOnReset}
+        onChange={settings.setMemoryOnReset}
         options={{
           random: "Aleatoria",
           empty: "Vaciar",
@@ -47,8 +37,8 @@ export function ConfigSelector() {
 
       <Radio
         label="Dispositivos"
-        value={config.devicesConfiguration}
-        onChange={config.setDevicesConfiguration}
+        value={settings.devicesConfiguration}
+        onChange={settings.setDevicesConfiguration}
         options={{
           "switches-leds": "Teclas y leds",
           "printer-pio": "Impresora con PIO",

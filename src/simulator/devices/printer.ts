@@ -23,7 +23,7 @@ export const createPrinterSlice: DeviceSlice<PrinterSlice> = (set, get) => ({
       lastTick: 0,
 
       update: timeElapsed => {
-        const config = get().devicesConfiguration;
+        const config = get().__runnerInternal.devices;
 
         if (config === "printer-pio") {
           const { lastTick, lastStrobe, printerSpeed } = get().devices.printer;

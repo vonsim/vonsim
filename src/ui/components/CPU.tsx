@@ -3,19 +3,23 @@ import { shallow } from "zustand/shallow";
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
+import { useSettings } from "../settings";
 import { Card } from "./Card";
 import { FrecuencyPicker } from "./FrecuencyPicker";
 
 const generalRegisters = ["AX", "BX", "CX", "DX"] as const;
 
 export function CPU({ className }: { className?: string }) {
-  const { alu, cpuSpeed, memoryRepresentation, registers, setCPUSpeed } = useSimulator(
+  const { alu, registers } = useSimulator(
+    state => ({ alu: state.alu, registers: state.registers }),
+    shallow,
+  );
+
+  const settings = useSettings(
     state => ({
-      alu: state.alu,
       cpuSpeed: state.cpuSpeed,
-      memoryRepresentation: state.memoryRepresentation,
-      registers: state.registers,
       setCPUSpeed: state.setCPUSpeed,
+      memoryRepresentation: state.memoryRepresentation,
     }),
     shallow,
   );
@@ -23,8 +27,8 @@ export function CPU({ className }: { className?: string }) {
   return (
     <Card title="CPU" className={className}>
       <FrecuencyPicker
-        value={cpuSpeed}
-        onChange={setCPUSpeed}
+        value={settings.cpuSpeed}
+        onChange={settings.setCPUSpeed}
         options={[
           ["1", "1 Hz"],
           ["2", "2 Hz"],
@@ -54,7 +58,10 @@ export function CPU({ className }: { className?: string }) {
                 <td className="w-[3ch] text-center font-bold text-slate-800">L</td>
                 {generalRegisters.map(reg => (
                   <td key={reg} className="w-[10ch] text-center text-slate-600">
-                    {renderMemoryCell(splitLowHigh(registers[reg])[0], memoryRepresentation)}
+                    {renderMemoryCell(
+                      splitLowHigh(registers[reg])[0],
+                      settings.memoryRepresentation,
+                    )}
                   </td>
                 ))}
               </tr>
@@ -63,7 +70,10 @@ export function CPU({ className }: { className?: string }) {
                 <td className="w-[3ch] text-center font-bold text-slate-800">H</td>
                 {generalRegisters.map(reg => (
                   <td key={reg} className="w-[10ch] text-center text-slate-600">
-                    {renderMemoryCell(splitLowHigh(registers[reg])[1], memoryRepresentation)}
+                    {renderMemoryCell(
+                      splitLowHigh(registers[reg])[1],
+                      settings.memoryRepresentation,
+                    )}
                   </td>
                 ))}
               </tr>
