@@ -13,7 +13,7 @@ import {
   zeroaryInstructionPattern,
 } from "@/compiler/common/patterns";
 import { INITIAL_IP, MEMORY_SIZE } from "@/config";
-import { randomByte, randomWord, splitLowHigh } from "@/helpers";
+import { bit, randomByte, randomWord, splitLowHigh } from "@/helpers";
 import type { SimulatorSlice } from "@/simulator";
 
 export type MemoryConfig = "empty" | "random" | "keep";
@@ -145,7 +145,6 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
       state.devices.printer.buffer = [];
       state.devices.handshake.data = 0x00;
       state.devices.handshake.state = 0x00;
-      state.devices.handshake.riseStrobe = false;
 
       if (memoryConfig === "empty") {
         state.registers.AX = 0x0000;
@@ -161,11 +160,13 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.devices.pic.INT5 = 0x15;
         state.devices.pic.INT6 = 0x16;
         state.devices.pic.INT7 = 0x17;
-        state.devices.pio = { PA: 0x00, PB: 0x00, CA: 0x00, CB: 0x00 };
+        state.devices.pio.PA = 0x00;
+        state.devices.pio.PB = 0x00;
+        state.devices.pio.CA = 0x00;
+        state.devices.pio.CB = 0x00;
         state.devices.switches.state = new Array(8).fill(false);
         state.devices.timer.CONT = 0x00;
         state.devices.timer.COMP = 0xff;
-        state.devices.printer.lastStrobe = false;
       }
 
       if (memoryConfig === "random") {
@@ -186,17 +187,13 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
 
         const portA = randomByte();
         const portB = randomByte();
-        state.devices.pio = { PA: portA, PB: portB, CA: randomByte(), CB: randomByte() };
+        state.devices.pio.PA = portA;
+        state.devices.pio.PB = portB;
+        state.devices.pio.CA = randomByte();
+        state.devices.pio.CB = randomByte();
 
-        state.devices.leds.state = Array.from(
-          { length: 8 },
-          (_, i) => (portB & (0b1000_0000 >> i)) !== 0,
-        );
-        state.devices.switches.state = Array.from(
-          { length: 8 },
-          (_, i) => (portA & (0b1000_0000 >> i)) !== 0,
-        );
-        state.devices.printer.lastStrobe = (portA & 0b10) !== 0;
+        state.devices.leds.state = Array.from({ length: 8 }, (_, i) => bit(portB, i));
+        state.devices.switches.state = Array.from({ length: 8 }, (_, i) => bit(portA, i));
       }
     });
   },

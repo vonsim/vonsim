@@ -7,9 +7,20 @@ import { Card } from "./Card";
 export function Leds({ className }: { className?: string }) {
   const leds = useSimulator(state => state.devices.leds.state);
 
+  /**
+   * We do row-reverse to show this order:
+   * 7 6 5 4 3 2 1 0
+   *
+   * But the array is:
+   * 0 1 2 3 4 5 6 7
+   *
+   * This way, we can use the index as the LED number
+   * and the user will the LEDs as shown in the PIO.
+   */
+
   return (
     <Card title="Leds" className={className}>
-      <div className="flex gap-2">
+      <div className="flex flex-row-reverse gap-2">
         {leds.map((on, i) => (
           <div
             key={i}

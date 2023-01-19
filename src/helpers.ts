@@ -21,6 +21,24 @@ export function splitLowHigh(value: number): Word {
   return [value & 0xff, (value >> 8) & 0xff];
 }
 
+/**
+ * Returns the i-th bit as a boolean
+ * @param c Control register (byte)
+ * @param i Index (0 is the least significant bit and 7 is the most significant bit)
+ */
+export const bit = (byte: number, i: number): boolean => {
+  const mask = 1 << i;
+  return Boolean(byte & mask);
+};
+
+/**
+ * Returns the mode of the i-th bit of the control register
+ * @param c Control register (byte)
+ * @param i Index (0 is the least significant bit and 7 is the most significant bit)
+ */
+export const pioMode = (c: number, i: number): "input" | "output" =>
+  bit(c, i) ? "input" : "output";
+
 // #=========================================================================#
 // # Numbers                                                                 #
 // #=========================================================================#

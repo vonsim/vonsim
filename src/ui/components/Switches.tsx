@@ -9,9 +9,20 @@ export function Switches({ className }: { className?: string }) {
   const switches = useSimulator(state => state.devices.switches.state);
   const toggle = useSimulator(state => state.devices.switches.toggle);
 
+  /**
+   * We do row-reverse to show this order:
+   * 7 6 5 4 3 2 1 0
+   *
+   * But the array is:
+   * 0 1 2 3 4 5 6 7
+   *
+   * This way, we can use the index as the switch number
+   * and the user will the switches as shown in the PIO.
+   */
+
   return (
     <Card title="Teclas" className={className}>
-      <div className="flex gap-2">
+      <div className="flex flex-row-reverse gap-2">
         {switches.map((on, i) => (
           <Switch
             key={i}

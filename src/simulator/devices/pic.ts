@@ -3,20 +3,23 @@ import { isMatching } from "ts-pattern";
 
 import { interruptPattern } from "@/compiler/common/patterns";
 import { INTERRUPT_VECTOR_ADDRESS_SIZE } from "@/config";
+import { bit } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 import { SimulatorError, SimulatorResult } from "@/simulator/error";
 
 type IntN = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export type PICSlice = {
-  pic: {
+  pic: Record<`INT${IntN}`, number> & {
     EOI: number;
     IMR: number;
     IRR: number;
     ISR: number;
+
     request: (n: IntN) => void;
+    cancel: (n: IntN) => void;
     update: () => void;
-  } & { [key in `INT${IntN}`]: number };
+  };
 };
 
 export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
@@ -40,6 +43,11 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
         set(state => void (state.devices.pic.IRR |= mask));
       },
 
+      cancel: (n: IntN) => {
+        const mask = 1 << n;
+        set(state => void (state.devices.pic.IRR &= ~mask));
+      },
+
       update: (): SimulatorResult<void> => {
         const { EOI, IMR, IRR, ISR } = get().devices.pic;
 
@@ -58,12 +66,10 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
         if (!get().interruptsEnabled) return Ok();
 
         for (let i: IntN = 0; i < 8; i++) {
-          const mask = 1 << i;
+          const isMasked = bit(IMR, i);
+          if (isMasked) continue;
 
-          const isEnabled = (IMR & mask) === 0;
-          if (!isEnabled) continue;
-
-          const isRequested = (IRR & mask) !== 0;
+          const isRequested = bit(IRR, i);
           if (!isRequested) continue;
 
           // Run interrupt
@@ -75,8 +81,8 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
 
           set(state => {
             state.devices.pic.EOI = 0b0000_0000;
-            state.devices.pic.IRR ^= mask;
-            state.devices.pic.ISR = mask;
+            state.devices.pic.IRR ^= 1 << i;
+            state.devices.pic.ISR = 1 << i;
           });
 
           const address = get().getMemory(ID * INTERRUPT_VECTOR_ADDRESS_SIZE, "word");
