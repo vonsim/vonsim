@@ -3,10 +3,12 @@ import { shallow } from "zustand/shallow";
 import { renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
+import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 import { Card } from "./Card";
 
 export function Timer({ className }: { className?: string }) {
+  const translate = useTranslate();
   const memoryRepresentation = useSettings(state => state.memoryRepresentation);
   const { CONT, COMP } = useSimulator(
     state => ({
@@ -17,24 +19,26 @@ export function Timer({ className }: { className?: string }) {
   );
 
   return (
-    <Card title="Timer" className={className}>
+    <Card title={translate("devices.internal.timer")} className={className}>
       <table>
         <thead>
           <tr className="divide-x border-b">
-            <th className="px-2 text-center font-bold text-slate-800" title="Registo CONT (10h)">
-              CONT
-            </th>
-            <th className="px-2 text-center font-bold text-slate-800" title="Registo COMP (11h)">
-              COMP
-            </th>
+            <th className="px-2 text-center font-bold text-slate-800">CONT</th>
+            <th className="px-2 text-center font-bold text-slate-800">COMP</th>
           </tr>
         </thead>
         <tbody>
           <tr className="divide-x">
-            <td className="px-2 text-center font-mono text-slate-600" title="Registo CONT (10h)">
+            <td
+              className="px-2 text-center font-mono text-slate-600"
+              title={translate("devices.ioRegister", "CONT", 0x10)}
+            >
               {renderMemoryCell(CONT, memoryRepresentation)}
             </td>
-            <td className="px-2 text-center font-mono text-slate-600" title="Registo COMP (11h)">
+            <td
+              className="px-2 text-center font-mono text-slate-600"
+              title={translate("devices.ioRegister", "COMP", 0x11)}
+            >
               {renderMemoryCell(COMP, memoryRepresentation)}
             </td>
           </tr>

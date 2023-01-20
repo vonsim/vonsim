@@ -2,9 +2,11 @@ import clsx from "clsx";
 
 import { useSimulator } from "@/simulator";
 
+import { useTranslate } from "../hooks/useTranslate";
 import { Card } from "./Card";
 
 export function Leds({ className }: { className?: string }) {
+  const translate = useTranslate();
   const leds = useSimulator(state => state.devices.leds.state);
 
   /**
@@ -19,7 +21,7 @@ export function Leds({ className }: { className?: string }) {
    */
 
   return (
-    <Card title="Leds" className={className}>
+    <Card title={translate("devices.external.leds")} className={className}>
       <div className="flex flex-row-reverse gap-2">
         {leds.map((on, i) => (
           <div

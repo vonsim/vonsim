@@ -72,8 +72,18 @@ export function renderMemoryCell(n: number, representation: MemoryRepresentation
     .exhaustive();
 }
 
-export function renderAddress(address: number, withH = true): string {
-  return address.toString(16).padStart(4, "0").toUpperCase() + (withH ? "h" : "");
+export function renderAddress(
+  address: number,
+  options: { trailingH?: boolean; size?: Size } = {},
+): string {
+  const { trailingH = true, size = "word" } = options;
+
+  return (
+    address
+      .toString(16)
+      .padStart(size === "word" ? 4 : 2, "0")
+      .toUpperCase() + (trailingH ? "h" : "")
+  );
 }
 
 export function renderWord(n: number): string {
@@ -92,10 +102,22 @@ type PathImpl<K extends string | number, V> = V extends Primitive | Function
   ? `${K}`
   : `${K}.${Path<V>}`;
 
+/**
+ * Get all the paths of an object in dot notation
+ * @example
+ * Path<{ a: { b: { c: number } } }> = "a" | "a.b" | "a.b.c"
+ */
 export type Path<T> = {
   [K in keyof T]: PathImpl<K & string, T[K]>;
 }[keyof T];
 
+/**
+ * Given an object and a path, get the type of the value at that path
+ * @see {@link Path}
+ * @example
+ * PathValue<{ a: { b: { c: number } } }, 'a.b.c'> = number
+ * PathValue<{ a: { b: { c: number } } }, 'a.b'> = { c: number }
+ */
 export type PathValue<T, P extends Path<T>> = T extends any
   ? P extends `${infer K}.${infer R}`
     ? K extends keyof T

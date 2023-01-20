@@ -1,28 +1,25 @@
 import { Listbox } from "@headlessui/react";
-import { useMemo } from "react";
 
 import { useSimulator } from "@/simulator";
+
+import { useTranslate } from "../hooks/useTranslate";
 
 export function FrecuencyPicker({
   value,
   onChange,
   options,
 }: {
-  value: string;
-  onChange: (value: string) => void;
-  options: [value: string, label: string][];
+  value: number;
+  onChange: (value: number) => void;
+  options: number[];
 }) {
+  const translate = useTranslate();
   const runner = useSimulator(state => state.runner);
-
-  const current = useMemo(
-    () => options.find(([v]) => v === value)?.[1] ?? "Ninguna",
-    [value, options],
-  );
 
   return (
     <Listbox value={value} onChange={onChange} disabled={runner !== "stopped"}>
       <Listbox.Label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-        Frecuencia
+        {translate("frecuency")}
       </Listbox.Label>
       <div className="relative">
         <Listbox.Button
@@ -32,7 +29,7 @@ export function FrecuencyPicker({
             active:hover:bg-sky-400 active:hover:text-white
           "
         >
-          {current}
+          {translate("hertz", value)}
         </Listbox.Button>
         <Listbox.Options
           className="
@@ -40,7 +37,7 @@ export function FrecuencyPicker({
             focus:outline-none focus-visible:ring-1 focus-visible:ring-sky-400/25
           "
         >
-          {options.map(([value, label], i) => (
+          {options.map((value, i) => (
             <Listbox.Option
               key={i}
               className="
@@ -49,7 +46,7 @@ export function FrecuencyPicker({
               "
               value={value}
             >
-              {label}
+              {translate("hertz", value)}
             </Listbox.Option>
           ))}
         </Listbox.Options>

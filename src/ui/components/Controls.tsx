@@ -17,10 +17,12 @@ import RunningIcon from "~icons/carbon/settings";
 import FinishIcon from "~icons/carbon/skip-forward";
 import AbortIcon from "~icons/carbon/stop-sign";
 
+import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 import { LangPicker } from "./LangPicker";
 
 export function Controls() {
+  const translate = useTranslate();
   const { state, dispatchRunner } = useSimulator(
     state => ({
       state: state.runner,
@@ -81,25 +83,25 @@ export function Controls() {
         {state === "stopped" ? (
           <>
             <Button onClick={() => dispatch("run")} title="F5">
-              <RunIcon /> Ejecutar
+              <RunIcon /> {translate("runner.action.start")}
             </Button>
 
             <Button onClick={() => dispatch("step")} title="F11">
-              <DebugIcon /> Depurar
+              <DebugIcon /> {translate("runner.action.debug")}
             </Button>
           </>
         ) : (
           <>
             <Button onClick={() => dispatch("run")} title="F5" disabled={state !== "paused"}>
-              <FinishIcon /> Finalizar
+              <FinishIcon /> {translate("runner.action.run-until-halt")}
             </Button>
 
             <Button onClick={() => dispatch("step")} title="F11" disabled={state !== "paused"}>
-              <RunIcon /> Siguiente
+              <RunIcon /> {translate("runner.action.step")}
             </Button>
 
             <Button onClick={() => dispatch("stop")} title="Shift+F5">
-              <AbortIcon /> Abortar
+              <AbortIcon /> {translate("runner.action.stop")}
             </Button>
           </>
         )}
@@ -112,7 +114,7 @@ export function Controls() {
         className="flex h-full items-center p-2 transition hover:bg-slate-500/30"
         href="/docs"
         target="_blank"
-        title="Documentación"
+        title={translate("documentation")}
       >
         <DocumentationIcon className="h-5 w-5" />
       </a>
@@ -146,6 +148,7 @@ function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HT
 }
 
 function State() {
+  const translate = useTranslate();
   const state = useSimulator(state => state.runner);
 
   return (
@@ -160,26 +163,15 @@ function State() {
       )}
     >
       {state === "running" ? (
-        <>
-          <RunningIcon className="h-4 w-4 animate-spin" />
-          <span>Ejecutando</span>
-        </>
+        <RunningIcon className="h-4 w-4 animate-spin" />
       ) : state === "paused" ? (
-        <>
-          <PausedIcon className="h-4 w-4 animate-pulse" />
-          <span>Pausado</span>
-        </>
+        <PausedIcon className="h-4 w-4 animate-pulse" />
       ) : state === "waiting-for-input" ? (
-        <>
-          <KeyboardIcon className="h-4 w-4 animate-bounce" />
-          <span>Esperando tecla</span>
-        </>
+        <KeyboardIcon className="h-4 w-4 animate-bounce" />
       ) : (
-        <>
-          <AbortIcon className="h-4 w-4" />
-          <span>Detenido</span>
-        </>
+        <AbortIcon className="h-4 w-4" />
       )}
+      <span>{translate(`runner.state.${state}`)}</span>
     </div>
   );
 }

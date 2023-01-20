@@ -3,6 +3,9 @@ import { EditorState } from "@codemirror/state";
 import { EditorView, Panel } from "@codemirror/view";
 import clsx from "clsx";
 
+import { translate } from "@/i18n";
+import { useSettings } from "@/ui/settings";
+
 export function lintSummaryPanel(view: EditorView): Panel {
   const dom = document.createElement("div");
   updatePanel(view.state, dom);
@@ -18,7 +21,8 @@ export function lintSummaryPanel(view: EditorView): Panel {
 function updatePanel(state: EditorState, panel: HTMLDivElement) {
   const errors = diagnosticCount(state);
 
-  panel.textContent = `Errores: ${errors}`;
+  const lang = useSettings.getState().language;
+  panel.textContent = translate(lang, "ui.editor.lintSummary", errors);
   panel.className = clsx(
     "pl-12 text-xs font-medium tracking-wider text-white border-none font-sans",
     errors === 0 ? "bg-sky-400" : "bg-red-500",

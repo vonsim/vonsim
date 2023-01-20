@@ -93,8 +93,8 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
         state.__runnerInternal.action = null;
         state.__runnerInternal.devices = devicesConfiguration;
-        state.__runnerInternal.instructionTime = Math.round(1000 / parseFloat(cpuSpeed)); // in ms
-        state.devices.printer.printerSpeed = Math.round(1000 / parseFloat(printerSpeed)); // in ms
+        state.__runnerInternal.instructionTime = Math.round(1000 / cpuSpeed); // in ms
+        state.devices.printer.printerSpeed = Math.round(1000 / printerSpeed); // in ms
 
         // reset timers
         state.__runnerInternal.lastCPUTick = 0;

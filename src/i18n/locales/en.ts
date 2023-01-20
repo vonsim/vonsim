@@ -1,8 +1,9 @@
 import type { Token, TokenType } from "@/compiler/lexer/tokens";
-import { MAX_MEMORY_ADDRESS, Size } from "@/config";
+import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, Size } from "@/config";
 import { renderAddress } from "@/helpers";
 
 const bits = (size: Size) => (size === "word" ? "16 bits" : "8 bits");
+const numberFormat = new Intl.NumberFormat("en", { style: "decimal" }).format;
 
 export const en = {
   compilerErrors: {
@@ -98,6 +99,98 @@ export const en = {
     "reserved-interrupt": (interrupt: number) => `Interrupt ${interrupt} is reserved and cannot be used.`,
     "stack-overflow": "Stack overflow",
     "stack-underflow": "Stack underflow",
+  },
+
+  ui: {
+    documentation: "Documentation",
+    frecuency: "Frecuency",
+    hertz: (hz: number) => `${numberFormat(hz)} Hz`,
+    language: "Language",
+
+    cpu: {
+      name: "CPU",
+      "general-registers": "General-purpose registers",
+      "special-registers": "Special registers",
+      alu: "ALU",
+      memory: {
+        name: "Memory",
+        "start-address": "Start address",
+        "start-address-must-be-integer": "Start address must be an integer.",
+        "start-address-too-big": `Start address must be less or equal to ${renderAddress(
+          MEMORY_SIZE,
+        )}.`,
+      },
+    },
+
+    devices: {
+      internal: {
+        label: "External devices",
+        handshake: { name: "Handshake", data: "Data", state: "State" },
+        pic: { name: "PIC", state: "State", connections: "Connections" },
+        pio: {
+          name: "PIO",
+          data: "Datos",
+          config: "Configuración",
+          port: (port: string) => `Port ${port}`,
+        },
+        timer: "Timer",
+      },
+      external: {
+        label: "Internal devices",
+        console: "Console",
+        f10: { name: "F10", interrupt: "Interrupt" },
+        leds: "LEDs",
+        printer: { name: "Printer", buffer: "Buffer" },
+        switches: "Switches",
+      },
+
+      ioRegister: (name: string, address: number) =>
+        `${name} register (${renderAddress(address, { size: "byte" })})`,
+    },
+
+    editor: {
+      lintSummary: (n: number) =>
+        n === 0 ? "Listo para compilar" : n === 1 ? "Hay un error" : `Hay ${n} errores`,
+    },
+
+    runner: {
+      action: {
+        start: "Start",
+        debug: "Debug",
+        "run-until-halt": "Finish",
+        step: "Next",
+        stop: "Abort",
+      },
+      state: {
+        running: "Running",
+        paused: "Paused",
+        "waiting-for-input": "Wating for key",
+        stopped: "Stopped",
+      },
+    },
+
+    settings: {
+      memoryRepresentation: {
+        label: "Representation mode",
+        hex: "Hex",
+        bin: "Bin",
+        uint: "Unsigned",
+        int: "2's complement",
+        ascii: "Ascii",
+      },
+      memoryOnReset: {
+        label: "Memoria on load",
+        random: "Random",
+        empty: "Empty",
+        keep: "Keep",
+      },
+      devicesConfiguration: {
+        label: "Devices",
+        "switches-leds": "Switches and LEDs",
+        "printer-pio": "Printer w/PIO",
+        "printer-handshake": "Printer w/Handshake",
+      },
+    },
   },
 } satisfies BaseLocale;
 

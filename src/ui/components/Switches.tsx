@@ -3,9 +3,11 @@ import clsx from "clsx";
 
 import { useSimulator } from "@/simulator";
 
+import { useTranslate } from "../hooks/useTranslate";
 import { Card } from "./Card";
 
 export function Switches({ className }: { className?: string }) {
+  const translate = useTranslate();
   const switches = useSimulator(state => state.devices.switches.state);
   const toggle = useSimulator(state => state.devices.switches.toggle);
 
@@ -21,7 +23,7 @@ export function Switches({ className }: { className?: string }) {
    */
 
   return (
-    <Card title="Teclas" className={className}>
+    <Card title={translate("devices.external.switches")} className={className}>
       <div className="flex flex-row-reverse gap-2">
         {switches.map((on, i) => (
           <Switch

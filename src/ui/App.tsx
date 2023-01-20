@@ -12,10 +12,12 @@ import { PIO } from "./components/PIO";
 import { Printer } from "./components/Printer";
 import { Switches } from "./components/Switches";
 import { Timer } from "./components/Timer";
+import { useTranslate } from "./hooks/useTranslate";
 import { useSettings } from "./settings";
 
 export default function App() {
   const devices = useSettings(state => state.devicesConfiguration);
+  const translate = useTranslate();
 
   return (
     <div className="flex h-screen w-screen flex-col">
@@ -34,7 +36,7 @@ export default function App() {
             <CPU />
           </section>
 
-          <Bigdiv>Dispositivos internos</Bigdiv>
+          <Bigdiv>{translate("devices.internal.label")}</Bigdiv>
 
           <section className="flex flex-wrap items-start justify-center gap-4">
             {devices === "printer-handshake" ? <Handshake /> : <PIO />}
@@ -42,7 +44,7 @@ export default function App() {
             <Timer />
           </section>
 
-          <Bigdiv>Dispositivos externos</Bigdiv>
+          <Bigdiv>{translate("devices.external.label")}</Bigdiv>
 
           <section className="flex flex-wrap items-start justify-center gap-4">
             <Console className="w-80 grow" />

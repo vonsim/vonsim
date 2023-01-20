@@ -3,6 +3,7 @@ import { shallow } from "zustand/shallow";
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
+import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 import { Card } from "./Card";
 import { FrecuencyPicker } from "./FrecuencyPicker";
@@ -10,6 +11,7 @@ import { FrecuencyPicker } from "./FrecuencyPicker";
 const generalRegisters = ["AX", "BX", "CX", "DX"] as const;
 
 export function CPU({ className }: { className?: string }) {
+  const translate = useTranslate();
   const { alu, registers } = useSimulator(
     state => ({ alu: state.alu, registers: state.registers }),
     shallow,
@@ -25,23 +27,15 @@ export function CPU({ className }: { className?: string }) {
   );
 
   return (
-    <Card title="CPU" className={className}>
+    <Card title={translate("cpu.name")} className={className}>
       <FrecuencyPicker
         value={settings.cpuSpeed}
         onChange={settings.setCPUSpeed}
-        options={[
-          ["1", "1 Hz"],
-          ["2", "2 Hz"],
-          ["4", "4 Hz"],
-          ["8", "8 Hz"],
-          ["16", "16 Hz"],
-          ["32", "32 Hz"],
-          ["64", "64 Hz"],
-        ]}
+        options={[1, 2, 4, 8, 16, 32, 64]}
       />
 
       <div className="mt-4 flex flex-wrap justify-center gap-4">
-        <Card title="Registros de propósito general">
+        <Card title={translate("cpu.general-registers")}>
           <table className="font-mono">
             <thead>
               <tr className="divide-x border-b">
@@ -81,7 +75,7 @@ export function CPU({ className }: { className?: string }) {
           </table>
         </Card>
 
-        <Card title="Registros especiales">
+        <Card title={translate("cpu.special-registers")}>
           <table className="font-mono">
             <thead>
               <tr className="divide-x border-b">
@@ -114,7 +108,7 @@ export function CPU({ className }: { className?: string }) {
           </table>
         </Card>
 
-        <Card title="ALU">
+        <Card title={translate("cpu.alu")}>
           <div className="flex items-center justify-between gap-4">
             <div className="grid w-min grid-cols-[auto_17ch] gap-x-3 text-right font-mono">
               <div className="row-span-2 self-end font-bold text-slate-800">{alu.operation}</div>

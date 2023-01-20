@@ -1,9 +1,10 @@
-import { MAX_MEMORY_ADDRESS, Size } from "@/config";
+import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, Size } from "@/config";
 import { renderAddress } from "@/helpers";
 
 import type { Locale } from "..";
 
 const bits = (size: Size) => (size === "word" ? "16 bits" : "8 bits");
+const numberFormat = new Intl.NumberFormat("es", { style: "decimal" }).format;
 
 export const es: Locale = {
   compilerErrors: {
@@ -99,5 +100,97 @@ export const es: Locale = {
     "reserved-interrupt": interrupt => `La interrupción ${interrupt} está reservada y no se puede usar.`,
     "stack-overflow": "Stack overflow",
     "stack-underflow": "Stack underflow",
+  },
+
+  ui: {
+    documentation: "Documentación",
+    frecuency: "Frecuencia",
+    hertz: (hz: number) => `${numberFormat(hz)} Hz`,
+    language: "Idioma",
+
+    cpu: {
+      name: "CPU",
+      "general-registers": "Registros de propósito general",
+      "special-registers": "Registros especiales",
+      alu: "ALU",
+      memory: {
+        name: "Memoria",
+        "start-address": "Dirección de inicio",
+        "start-address-must-be-integer": "El valor de inicio debe ser un número entero.",
+        "start-address-too-big": `El valor de inicio debe ser menor o igual a ${renderAddress(
+          MEMORY_SIZE,
+        )}.`,
+      },
+    },
+
+    devices: {
+      internal: {
+        label: "Dispositivos externos",
+        handshake: { name: "Handshake", data: "Dato", state: "Estado" },
+        pic: { name: "PIC", state: "Estado", connections: "Conexiones" },
+        pio: {
+          name: "PIO",
+          data: "Data",
+          config: "Configuration",
+          port: (port: string) => `Puerto ${port}`,
+        },
+        timer: "Timer",
+      },
+      external: {
+        label: "Dispositivos internos",
+        console: "Consola",
+        f10: { name: "F10", interrupt: "Interrumpir" },
+        leds: "Leds",
+        printer: { name: "Impresora", buffer: "Buffer" },
+        switches: "Teclas",
+      },
+
+      ioRegister: (name: string, address: number) =>
+        `Registro ${name} (${renderAddress(address, { size: "byte" })})`,
+    },
+
+    editor: {
+      lintSummary: n =>
+        n === 0 ? "Listo para compilar" : n === 1 ? "Hay un error" : `Hay ${n} errores`,
+    },
+
+    runner: {
+      action: {
+        start: "Ejecutar",
+        debug: "Depurar",
+        "run-until-halt": "Finalizar",
+        step: "Siguiente",
+        stop: "Abortar",
+      },
+      state: {
+        running: "Ejecutando",
+        paused: "Pausado",
+        "waiting-for-input": "Esperando tecla",
+        stopped: "Detenido",
+      },
+    },
+
+    settings: {
+      memoryRepresentation: {
+        label: "Modo de representación",
+        hex: "Hex",
+        bin: "Bin",
+        uint: "BSS",
+        int: "Ca2",
+        ascii: "Ascii",
+      },
+      memoryOnReset: {
+        label: "Memoria al cargar",
+        random: "Aleatoria",
+        empty: "Vaciar",
+        keep: "Mantener",
+      },
+      devicesConfiguration: {
+        label: "Dispositivos",
+        "switches-leds": "Teclas y leds",
+        "printer-pio": "Impresora con PIO",
+        "printer-handshake": "Impresora con Handshake",
+      },
+    },
   },
 };

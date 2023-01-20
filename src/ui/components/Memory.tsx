@@ -7,10 +7,12 @@ import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
 import { renderAddress, renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
+import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 import { Card } from "./Card";
 
 export function Memory({ className }: { className?: string }) {
+  const translate = useTranslate();
   const memoryRepresentation = useSettings(state => state.memoryRepresentation);
 
   const startId = useId();
@@ -38,17 +40,17 @@ export function Memory({ className }: { className?: string }) {
   );
 
   return (
-    <Card title="Memoria" className={className}>
+    <Card title={translate("cpu.memory.name")} className={className}>
       <label
         htmlFor={startId}
         className="text-xs font-bold uppercase tracking-wider text-slate-700"
       >
-        Dirección de inicio
+        {translate("cpu.memory.start-address")}
       </label>
       <div className="relative w-20 font-mono">
         <input
           id={startId}
-          placeholder={renderAddress(start, false)}
+          placeholder={renderAddress(start, { trailingH: false })}
           className="w-full border-b border-sky-400 pl-2 pr-5 text-right outline-sky-400"
           maxLength={4}
           value={startInput}
@@ -58,13 +60,11 @@ export function Memory({ className }: { className?: string }) {
             if (e.key === "Enter") {
               const address = parseInt(startInput, 16);
               if (!Number.isInteger(address) || address < MIN_MEMORY_ADDRESS) {
-                toast.error("El valor de inicio debe ser un número entero");
+                toast.error(translate("cpu.memory.start-address-must-be-integer"));
                 return;
               }
               if (address > MEMORY_SIZE) {
-                toast.error(
-                  `El valor de inicio debe ser menor o igual a ${renderAddress(MEMORY_SIZE)}`,
-                );
+                toast.error(translate("cpu.memory.start-address-too-big"));
                 return;
               }
               setStart(address);

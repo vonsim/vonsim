@@ -4,11 +4,13 @@ import { shallow } from "zustand/shallow";
 import { PRINTER_BUFFER_SIZE } from "@/config";
 import { useSimulator } from "@/simulator";
 
+import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 import { Card } from "./Card";
 import { FrecuencyPicker } from "./FrecuencyPicker";
 
 export function Printer({ className }: { className?: string }) {
+  const translate = useTranslate();
   const settings = useSettings(
     state => ({
       printerSpeed: state.printerSpeed,
@@ -26,23 +28,18 @@ export function Printer({ className }: { className?: string }) {
   );
 
   return (
-    <Card title="Impresora" className={className} noPadding>
+    <Card title={translate("devices.external.printer.name")} className={className} noPadding>
       <div className="grid grid-cols-2">
         <div className="px-4 py-1">
           <FrecuencyPicker
             value={settings.printerSpeed}
             onChange={settings.setPrinterSpeed}
-            options={[
-              ["0.125", "0,125 Hz"],
-              ["0.25", "0,25 Hz"],
-              ["0.5", "0,50 Hz"],
-              ["1", "1 Hz"],
-              ["4", "4 Hz"],
-              ["16", "16 Hz"],
-            ]}
+            options={[0.125, 0.25, 0.5, 1, 4, 16]}
           />
 
-          <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-700">Buffer</p>
+          <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-700">
+            {translate("devices.external.printer.buffer")}
+          </p>
           <div className="flex font-mono">
             {Array.from({ length: PRINTER_BUFFER_SIZE }).map((_, i) => {
               const isEmpty = buffer.at(i) === undefined;
