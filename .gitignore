@@ -25,3 +25,4 @@ docs/.vitepress/*
 *.njsproj
 *.sln
 *.sw?
+.vercel

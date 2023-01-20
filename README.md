@@ -1,15 +1,15 @@
 # VonSim — A 8088-like Assembly Simulator
 
-TODO
+[**Try it now**](https://vonsim.vercel.app)
 
 ## To-do list
 
 - [x] Finish basic implementation
-- [ ] Devices
-  - [ ] Hardware interrupts
+- [x] Devices
+  - [x] Hardware interrupts
   - [x] Lights and Switches
-  - [ ] Printer
-  - [ ] Printer w/Handshake
+  - [x] Printer
+  - [x] Printer w/Handshake
 - [ ] Support indirect access with offset
 - [ ] Add custom VonSim syntax to docs
 - [ ] Add mobile support
