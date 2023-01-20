@@ -1,4 +1,4 @@
-import { pioMode } from "@/helpers";
+import { byteArray, pioMode } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 
 export type SwitchesSlice = {
@@ -11,7 +11,7 @@ export type SwitchesSlice = {
 export const createSwitchesSlice: DeviceSlice<SwitchesSlice> = set => ({
   devices: {
     switches: {
-      state: new Array(8).fill(false),
+      state: byteArray(() => false),
       toggle: index =>
         set(simulator => {
           const state = !simulator.devices.switches.state[index];

@@ -1,3 +1,4 @@
+import { byteArray } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 
 export type LedsSlice = {
@@ -8,8 +9,6 @@ export type LedsSlice = {
 
 export const createLedsSlice: DeviceSlice<LedsSlice> = () => ({
   devices: {
-    leds: {
-      state: new Array(8).fill(false),
-    },
+    leds: { state: byteArray(() => false) },
   },
 });

@@ -3,21 +3,19 @@ import { isMatching } from "ts-pattern";
 
 import { interruptPattern } from "@/compiler/common/patterns";
 import { INTERRUPT_VECTOR_ADDRESS_SIZE } from "@/config";
-import { bit } from "@/helpers";
+import { bit, ByteRange } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 import { SimulatorError, SimulatorResult } from "@/simulator/error";
 
-type IntN = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
 export type PICSlice = {
-  pic: Record<`INT${IntN}`, number> & {
+  pic: Record<`INT${ByteRange}`, number> & {
     EOI: number;
     IMR: number;
     IRR: number;
     ISR: number;
 
-    request: (n: IntN) => void;
-    cancel: (n: IntN) => void;
+    request: (n: ByteRange) => void;
+    cancel: (n: ByteRange) => void;
     update: () => void;
   };
 };
@@ -38,12 +36,12 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
       INT6: 0x16,
       INT7: 0x17,
 
-      request: (n: IntN) => {
+      request: n => {
         const mask = 1 << n;
         set(state => void (state.devices.pic.IRR |= mask));
       },
 
-      cancel: (n: IntN) => {
+      cancel: n => {
         const mask = 1 << n;
         set(state => void (state.devices.pic.IRR &= ~mask));
       },
@@ -65,7 +63,7 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
 
         if (!get().interruptsEnabled) return Ok();
 
-        for (let i: IntN = 0; i < 8; i++) {
+        for (let i: ByteRange = 0; i < 8; i++) {
           const isMasked = bit(IMR, i);
           if (isMasked) continue;
 

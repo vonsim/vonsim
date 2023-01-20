@@ -13,7 +13,7 @@ import {
   zeroaryInstructionPattern,
 } from "@/compiler/common/patterns";
 import { INITIAL_IP, MEMORY_SIZE } from "@/config";
-import { bit, randomByte, randomWord, splitLowHigh } from "@/helpers";
+import { bit, byteArray, randomByte, randomWord, splitLowHigh } from "@/helpers";
 import type { SimulatorSlice } from "@/simulator";
 
 export type MemoryConfig = "empty" | "random" | "keep";
@@ -151,7 +151,7 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.registers.BX = 0x0000;
         state.registers.CX = 0x0000;
         state.registers.DX = 0x0000;
-        state.devices.leds.state = new Array(8).fill(false);
+        state.devices.leds.state = byteArray(() => false);
         state.devices.pic.INT0 = 0x10;
         state.devices.pic.INT1 = 0x11;
         state.devices.pic.INT2 = 0x12;
@@ -164,7 +164,7 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.devices.pio.PB = 0x00;
         state.devices.pio.CA = 0x00;
         state.devices.pio.CB = 0x00;
-        state.devices.switches.state = new Array(8).fill(false);
+        state.devices.switches.state = byteArray(() => false);
         state.devices.timer.CONT = 0x00;
         state.devices.timer.COMP = 0xff;
       }
@@ -192,8 +192,8 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.devices.pio.CA = randomByte();
         state.devices.pio.CB = randomByte();
 
-        state.devices.leds.state = Array.from({ length: 8 }, (_, i) => bit(portB, i));
-        state.devices.switches.state = Array.from({ length: 8 }, (_, i) => bit(portA, i));
+        state.devices.leds.state = byteArray(i => bit(portB, i));
+        state.devices.switches.state = byteArray(i => bit(portA, i));
       }
     });
   },
