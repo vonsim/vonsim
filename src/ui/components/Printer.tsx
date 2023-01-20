@@ -28,9 +28,9 @@ export function Printer({ className }: { className?: string }) {
   );
 
   return (
-    <Card title={translate("devices.external.printer.name")} className={className} noPadding>
-      <div className="grid grid-cols-2">
-        <div className="px-4 py-1">
+    <Card title={translate("devices.external.printer.name")} className={className}>
+      <div className="flex flex-col sm:flex-row">
+        <div className="h-36 w-32 px-4 py-1">
           <FrecuencyPicker
             value={settings.printerSpeed}
             onChange={settings.setPrinterSpeed}
@@ -59,7 +59,7 @@ export function Printer({ className }: { className?: string }) {
           </div>
         </div>
 
-        <pre className="h-36 w-[14ch] overflow-y-auto whitespace-pre-wrap break-all rounded-br-lg bg-gray-200 p-1 font-mono">
+        <pre className="h-36 w-[25ch] overflow-y-auto whitespace-pre-wrap break-all rounded-b-lg bg-gray-200 p-1 font-mono sm:rounded-bl-none">
           {output}
         </pre>
       </div>

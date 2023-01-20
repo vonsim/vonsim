@@ -77,5 +77,5 @@ export function Editor({ className }: { className?: string }) {
     return () => window.codemirror?.destroy();
   }, [element]);
 
-  return <div ref={ref} className={clsx("flex h-full overflow-auto font-mono", className)} />;
+  return <div ref={ref} className={clsx("h-full overflow-auto font-mono", className)} />;
 }

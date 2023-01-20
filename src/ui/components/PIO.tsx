@@ -3,6 +3,7 @@ import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
 import { Card } from "./Card";
+import { Table } from "./Table";
 
 export function PIO({ className }: { className?: string }) {
   const translate = useTranslate();
@@ -11,55 +12,38 @@ export function PIO({ className }: { className?: string }) {
 
   return (
     <Card title={translate("devices.internal.pio.name")} className={className}>
-      <table>
-        <thead>
-          <tr className="divide-x border-b">
-            <th></th>
-            <th className="px-2 text-center font-bold text-slate-800">
-              {translate("devices.internal.pio.data")}
-            </th>
-            <th className="px-2 text-center font-bold text-slate-800">
-              {translate("devices.internal.pio.config")}
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y">
-          <tr className="divide-x">
-            <td className="px-2 text-center font-bold text-slate-800">
-              {translate("devices.internal.pio.port", "A")}
-            </td>
-            <td
-              className="px-2 text-center font-mono text-slate-600"
-              title={translate("devices.ioRegister", "PA", 0x30)}
-            >
-              {renderMemoryCell(pio.PA, "bin")}
-            </td>
-            <td
-              className="px-2 text-center font-mono text-slate-600"
-              title={translate("devices.ioRegister", "CA", 0x32)}
-            >
-              {renderMemoryCell(pio.CA, "bin")}
-            </td>
-          </tr>
-          <tr className="divide-x">
-            <td className="px-2 text-center font-bold text-slate-800">
-              {translate("devices.internal.pio.port", "B")}
-            </td>
-            <td
-              className="px-2 text-center font-mono text-slate-600"
-              title={translate("devices.ioRegister", "PB", 0x31)}
-            >
-              {renderMemoryCell(pio.PB, "bin")}
-            </td>
-            <td
-              className="px-2 text-center font-mono text-slate-600"
-              title={translate("devices.ioRegister", "CB", 0x33)}
-            >
-              {renderMemoryCell(pio.CB, "bin")}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <Table
+        labelsSans
+        columns={[translate("devices.internal.pio.data"), translate("devices.internal.pio.config")]}
+        rows={[
+          {
+            label: translate("devices.internal.pio.port", "A"),
+            cells: [
+              {
+                content: renderMemoryCell(pio.PA, "bin"),
+                title: translate("devices.ioRegister", "PA", 0x30),
+              },
+              {
+                content: renderMemoryCell(pio.CA, "bin"),
+                title: translate("devices.ioRegister", "CA", 0x32),
+              },
+            ],
+          },
+          {
+            label: translate("devices.internal.pio.port", "B"),
+            cells: [
+              {
+                content: renderMemoryCell(pio.PB, "bin"),
+                title: translate("devices.ioRegister", "PB", 0x31),
+              },
+              {
+                content: renderMemoryCell(pio.CB, "bin"),
+                title: translate("devices.ioRegister", "CB", 0x33),
+              },
+            ],
+          },
+        ]}
+      />
     </Card>
   );
 }

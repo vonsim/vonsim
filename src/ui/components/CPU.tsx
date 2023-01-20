@@ -7,8 +7,9 @@ import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 import { Card } from "./Card";
 import { FrecuencyPicker } from "./FrecuencyPicker";
+import { Table } from "./Table";
 
-const generalRegisters = ["AX", "BX", "CX", "DX"] as const;
+const REGISTERS = ["AX", "BX", "CX", "DX"] as const;
 
 export function CPU({ className }: { className?: string }) {
   const translate = useTranslate();
@@ -29,115 +30,67 @@ export function CPU({ className }: { className?: string }) {
   return (
     <Card title={translate("cpu.name")} className={className}>
       <FrecuencyPicker
+        className="py-2 px-4"
         value={settings.cpuSpeed}
         onChange={settings.setCPUSpeed}
         options={[1, 2, 4, 8, 16, 32, 64]}
       />
 
-      <div className="mt-4 flex flex-wrap justify-center gap-4">
-        <Card title={translate("cpu.general-registers")}>
-          <table className="font-mono">
-            <thead>
-              <tr className="divide-x border-b">
-                <th></th>
-                {generalRegisters.map(reg => (
-                  <th key={reg} className="text-center font-bold text-slate-800">
-                    {reg}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              <tr className="divide-x">
-                <td className="w-[3ch] text-center font-bold text-slate-800">L</td>
-                {generalRegisters.map(reg => (
-                  <td key={reg} className="w-[10ch] text-center text-slate-600">
-                    {renderMemoryCell(
-                      splitLowHigh(registers[reg])[0],
-                      settings.memoryRepresentation,
-                    )}
-                  </td>
-                ))}
-              </tr>
+      <hr />
 
-              <tr className="divide-x">
-                <td className="w-[3ch] text-center font-bold text-slate-800">H</td>
-                {generalRegisters.map(reg => (
-                  <td key={reg} className="w-[10ch] text-center text-slate-600">
-                    {renderMemoryCell(
-                      splitLowHigh(registers[reg])[1],
-                      settings.memoryRepresentation,
-                    )}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+      <div className="flex flex-wrap justify-center gap-4 p-4">
+        <Card title={translate("cpu.general-registers")}>
+          <Table
+            className="w-full"
+            columns={["L", "H"]}
+            rows={REGISTERS.map(reg => ({
+              label: reg,
+              cells: splitLowHigh(registers[reg]).map(cell => ({
+                content: cell,
+                renderMemory: true,
+              })),
+            }))}
+          />
         </Card>
 
         <Card title={translate("cpu.special-registers")}>
-          <table className="font-mono">
-            <thead>
-              <tr className="divide-x border-b">
-                <th className="text-center font-bold text-slate-800">IP</th>
-                <th className="text-center font-bold text-slate-800">SP</th>
-                <th className="text-center font-bold text-slate-800">IR</th>
-                <th className="text-center font-bold text-slate-800">MAR</th>
-                <th className="text-center font-bold text-slate-800">MBR</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="divide-x">
-                <td className="w-[7ch] text-center text-slate-600">
-                  {renderAddress(registers.IP)}
-                </td>
-                <td className="w-[7ch] text-center text-slate-600">
-                  {renderAddress(registers.SP)}
-                </td>
-                <td className="w-[11ch] text-center text-slate-600">
-                  {renderMemoryCell(registers.IR, "bin")}b
-                </td>
-                <td className="w-[7ch] text-center text-slate-600">
-                  {renderAddress(registers.MAR)}
-                </td>
-                <td className="w-[7ch] text-center text-slate-600">
-                  {renderAddress(registers.MBR)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <Table
+            className="w-full"
+            rows={[
+              { label: "IP", cells: [{ content: renderAddress(registers.IP) }] },
+              { label: "SP", cells: [{ content: renderAddress(registers.SP) }] },
+              { label: "IR", cells: [{ content: renderMemoryCell(registers.IR, "bin") + "b" }] },
+              { label: "MAR", cells: [{ content: renderAddress(registers.MAR) }] },
+              { label: "MBR", cells: [{ content: renderAddress(registers.MBR) }] },
+            ]}
+          />
         </Card>
 
         <Card title={translate("cpu.alu")}>
-          <div className="flex items-center justify-between gap-4">
-            <div className="grid w-min grid-cols-[auto_17ch] gap-x-3 text-right font-mono">
-              <div className="row-span-2 self-end font-bold text-slate-800">{alu.operation}</div>
-              <div className="text-slate-600">{renderWord(alu.left)}</div>
-              <div className="text-slate-600">{renderWord(alu.right)}</div>
-              <div className="col-span-2 border-t" />
-              <div className="col-span-2 text-slate-600">{renderWord(alu.result)}</div>
+          <div className="grid w-min grid-cols-[4ch_18ch] gap-x-2 pt-1 font-mono">
+            <div className="row-span-2 self-end text-right font-bold text-slate-800">
+              {alu.operation}
             </div>
-
-            <table className="font-mono">
-              <thead>
-                <tr className="divide-x border-b">
-                  <th className="text-center font-bold text-slate-800">C</th>
-                  <th className="text-center font-bold text-slate-800">O</th>
-                  <th className="text-center font-bold text-slate-800">S</th>
-                  <th className="text-center font-bold text-slate-800">Z</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="divide-x">
-                  <td className="w-[3ch] text-center text-slate-600">{Number(alu.flags.carry)}</td>
-                  <td className="w-[3ch] text-center text-slate-600">
-                    {Number(alu.flags.overflow)}
-                  </td>
-                  <td className="w-[3ch] text-center text-slate-600">{Number(alu.flags.sign)}</td>
-                  <td className="w-[3ch] text-center text-slate-600">{Number(alu.flags.zero)}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="text-left text-slate-600">{renderWord(alu.left)}</div>
+            <div className="text-left text-slate-600">{renderWord(alu.right)}</div>
+            <div className="col-span-2 border-t" />
+            <span />
+            <div className="text-left text-slate-600">{renderWord(alu.result)}</div>
+            <hr className="col-span-2" />
+            <Table
+              className="col-span-2 w-full"
+              columns={["C", "O", "S", "Z"]}
+              rows={[
+                {
+                  cells: [
+                    { content: alu.flags.carry ? "1" : "0" },
+                    { content: alu.flags.overflow ? "1" : "0" },
+                    { content: alu.flags.sign ? "1" : "0" },
+                    { content: alu.flags.zero ? "1" : "0" },
+                  ],
+                },
+              ]}
+            />
           </div>
         </Card>
       </div>

@@ -103,6 +103,7 @@ export const es: Locale = {
   },
 
   ui: {
+    computer: "Computadora",
     documentation: "Documentación",
     frecuency: "Frecuencia",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
@@ -130,8 +131,8 @@ export const es: Locale = {
         pic: { name: "PIC", state: "Estado", connections: "Conexiones" },
         pio: {
           name: "PIO",
-          data: "Data",
-          config: "Configuration",
+          data: "Datos",
+          config: "Configuración",
           port: (port: string) => `Puerto ${port}`,
         },
         timer: "Timer",

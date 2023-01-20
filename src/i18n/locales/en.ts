@@ -102,6 +102,7 @@ export const en = {
   },
 
   ui: {
+    computer: "Computer",
     documentation: "Documentation",
     frecuency: "Frecuency",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
@@ -129,8 +130,8 @@ export const en = {
         pic: { name: "PIC", state: "State", connections: "Connections" },
         pio: {
           name: "PIO",
-          data: "Datos",
-          config: "Configuración",
+          data: "Data",
+          config: "Configuration",
           port: (port: string) => `Port ${port}`,
         },
         timer: "Timer",

@@ -12,7 +12,7 @@
   - [x] Printer w/Handshake
 - [ ] Support indirect access with offset
 - [ ] Add custom VonSim syntax to docs
-- [ ] Add mobile support
+- [x] Add mobile support
 - [ ] Add advanced filesave support
 - [ ] Add ✨ animations ✨
 - [ ] Perf measurements

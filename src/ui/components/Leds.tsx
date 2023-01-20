@@ -23,7 +23,7 @@ export function Leds({ className }: { className?: string }) {
 
   return (
     <Card title={translate("devices.external.leds")} className={className}>
-      <div className="flex flex-row-reverse gap-2">
+      <div className="flex flex-row-reverse gap-2 p-2">
         {state.map((on, i) => (
           <div
             key={i}

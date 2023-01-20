@@ -1,8 +1,12 @@
-import { ByteRange, renderMemoryCell } from "@/helpers";
+import { byteArray, renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
 import { Card } from "./Card";
+import { Table } from "./Table";
+
+const STATE = ["EOI", "IMR", "IRR", "ISR"] as const;
+const CONNECTIONS = byteArray(i => `INT${i}` as const);
 
 export function PIC({ className }: { className?: string }) {
   const translate = useTranslate();
@@ -11,70 +15,34 @@ export function PIC({ className }: { className?: string }) {
 
   return (
     <Card title={translate("devices.internal.pic.name")} className={className}>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap justify-center gap-4 p-4">
         <Card title={translate("devices.internal.pic.state")}>
-          <table>
-            <tbody className="divide-y">
-              <tr className="divide-x">
-                <td className="px-2 text-center font-bold text-slate-800">EOI</td>
-                <td
-                  className="px-2 text-center font-mono text-slate-600"
-                  title={translate("devices.ioRegister", "EOI", 0x20)}
-                >
-                  {renderMemoryCell(pic.EOI, "bin")}
-                </td>
-              </tr>
-              <tr className="divide-x">
-                <td className="px-2 text-center font-bold text-slate-800">IMR</td>
-                <td
-                  className="px-2 text-center font-mono text-slate-600"
-                  title={translate("devices.ioRegister", "IMR", 0x21)}
-                >
-                  {renderMemoryCell(pic.IMR, "bin")}
-                </td>
-              </tr>
-              <tr className="divide-x">
-                <td className="px-2 text-center font-bold text-slate-800">IRR</td>
-                <td
-                  className="px-2 text-center font-mono text-slate-600"
-                  title={translate("devices.ioRegister", "IRR", 0x22)}
-                >
-                  {renderMemoryCell(pic.IRR, "bin")}
-                </td>
-              </tr>
-              <tr className="divide-x">
-                <td className="px-2 text-center font-bold text-slate-800">ISR</td>
-                <td
-                  className="px-2 text-center font-mono text-slate-600"
-                  title={translate("devices.ioRegister", "ISR", 0x23)}
-                >
-                  {renderMemoryCell(pic.ISR, "bin")}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <Table
+            rows={STATE.map((reg, i) => ({
+              label: reg,
+              cells: [
+                {
+                  content: renderMemoryCell(pic[reg], "bin"),
+                  title: translate("devices.ioRegister", reg, 0x20 + i),
+                },
+              ],
+            }))}
+          />
         </Card>
 
         <Card title={translate("devices.internal.pic.connections")}>
-          <table>
-            <tbody className="divide-y">
-              {Array.from({ length: 8 }).map((_, i) => {
-                const int = `INT${i as ByteRange}` as const;
-
-                return (
-                  <tr className="divide-x" key={i}>
-                    <td className="px-2 text-center font-bold text-slate-800">{int}</td>
-                    <td
-                      className="px-2 text-center font-mono text-slate-600"
-                      title={translate("devices.ioRegister", int, 0x24 + i)}
-                    >
-                      {renderMemoryCell(pic[int], "uint")}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <Table
+            className="w-full"
+            rows={CONNECTIONS.map((reg, i) => ({
+              label: reg,
+              cells: [
+                {
+                  content: renderMemoryCell(pic[reg], "uint"),
+                  title: translate("devices.ioRegister", reg, 0x24 + i),
+                },
+              ],
+            }))}
+          />
         </Card>
       </div>
     </Card>

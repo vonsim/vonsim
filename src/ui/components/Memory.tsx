@@ -4,22 +4,21 @@ import { useMeasure } from "react-use";
 import { shallow } from "zustand/shallow";
 
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
-import { renderAddress, renderMemoryCell } from "@/helpers";
+import { renderAddress } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
-import { useSettings } from "../settings";
 import { Card } from "./Card";
+import { Table } from "./Table";
 
 export function Memory({ className }: { className?: string }) {
   const translate = useTranslate();
-  const memoryRepresentation = useSettings(state => state.memoryRepresentation);
 
   const startId = useId();
   const [start, setStart] = useState(0x1000);
   const [startInput, setStartInput] = useState("");
 
-  const [ref, { width }] = useMeasure<HTMLTableElement>();
+  const [ref, { width }] = useMeasure<HTMLHRElement>();
 
   // Calculate the grid size based on the width of the card
   const { cols, rows, cells, offset } = useMemo(() => {
@@ -41,67 +40,57 @@ export function Memory({ className }: { className?: string }) {
 
   return (
     <Card title={translate("cpu.memory.name")} className={className}>
-      <label
-        htmlFor={startId}
-        className="text-xs font-bold uppercase tracking-wider text-slate-700"
-      >
-        {translate("cpu.memory.start-address")}
-      </label>
-      <div className="relative w-20 font-mono">
-        <input
-          id={startId}
-          placeholder={renderAddress(start, { trailingH: false })}
-          className="w-full border-b border-sky-400 pl-2 pr-5 text-right outline-sky-400"
-          maxLength={4}
-          value={startInput}
-          onChange={e => setStartInput(e.currentTarget.value)}
-          onBlur={() => setStartInput("")}
-          onKeyDown={e => {
-            if (e.key === "Enter") {
-              const address = parseInt(startInput, 16);
-              if (!Number.isInteger(address) || address < MIN_MEMORY_ADDRESS) {
-                toast.error(translate("cpu.memory.start-address-must-be-integer"));
-                return;
+      <div className="px-4 py-2">
+        <label
+          htmlFor={startId}
+          className="text-xs font-bold uppercase tracking-wider text-slate-700"
+        >
+          {translate("cpu.memory.start-address")}
+        </label>
+        <div className="relative w-20 font-mono">
+          <input
+            id={startId}
+            placeholder={renderAddress(start, { trailingH: false })}
+            className="w-full border-b border-sky-400 pl-2 pr-5 text-right outline-sky-400"
+            maxLength={4}
+            value={startInput}
+            onChange={e => setStartInput(e.currentTarget.value)}
+            onBlur={() => setStartInput("")}
+            onKeyDown={e => {
+              if (e.key === "Enter") {
+                const address = parseInt(startInput, 16);
+                if (!Number.isInteger(address) || address < MIN_MEMORY_ADDRESS) {
+                  toast.error(translate("cpu.memory.start-address-must-be-integer"));
+                  return;
+                }
+                if (address > MEMORY_SIZE) {
+                  toast.error(translate("cpu.memory.start-address-too-big"));
+                  return;
+                }
+                setStart(address);
               }
-              if (address > MEMORY_SIZE) {
-                toast.error(translate("cpu.memory.start-address-too-big"));
-                return;
-              }
-              setStart(address);
-            }
-          }}
-        />
-        <div className="pointer-events-none absolute right-2 top-0 bottom-0">
-          <span>h</span>
+            }}
+          />
+          <div className="pointer-events-none absolute right-2 top-0 bottom-0">
+            <span>h</span>
+          </div>
         </div>
       </div>
 
-      <table className="mt-4 w-full font-mono" ref={ref}>
-        <thead>
-          <tr className="divide-x border-b">
-            {Array.from({ length: cols }).map((_, i) => (
-              <th key={i} className="text-center font-bold text-slate-800">
-                {renderAddress(offset + i * rows)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: rows }).map((_, i) => (
-            <tr key={i} className="divide-x">
-              {Array.from({ length: cols }).map((_, j) => (
-                <td
-                  key={j}
-                  title={renderAddress(offset + i + j * rows)}
-                  className="w-[7ch] text-center text-slate-600"
-                >
-                  {renderMemoryCell(memory[i + j * rows], memoryRepresentation)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <hr ref={ref} />
+
+      <Table
+        className="w-full"
+        columns={Array.from({ length: cols }).map((_, i) => renderAddress(offset + i * rows))}
+        rows={Array.from({ length: rows }).map((_, i) => ({
+          cells: Array.from({ length: cols }).map((_, j) => ({
+            content: memory[i + j * rows],
+            renderMemory: true,
+            title: renderAddress(offset + i + j * rows),
+          })),
+        }))}
+        divideRows={false}
+      />
     </Card>
   );
 }

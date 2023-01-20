@@ -20,7 +20,7 @@ export function Console({ className }: { className?: string }) {
   );
 
   return (
-    <Card title={translate("devices.external.console")} noPadding className={className}>
+    <Card title={translate("devices.external.console")} className={className}>
       <pre
         id={CONSOLE_ID}
         className={clsx(

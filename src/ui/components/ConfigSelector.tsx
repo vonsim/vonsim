@@ -1,4 +1,5 @@
 import { RadioGroup } from "@headlessui/react";
+import clsx from "clsx";
 import { useMemo } from "react";
 
 import { useSimulator } from "@/simulator";
@@ -13,7 +14,20 @@ export function ConfigSelector() {
   const runner = useSimulator(state => state.runner);
 
   return (
-    <div className="flex flex-wrap gap-y-2 gap-x-4">
+    <div className="flex w-min flex-col flex-wrap gap-y-2 gap-x-4 sm:max-h-32">
+      <Radio
+        label={tranlate("settings.devicesConfiguration.label")}
+        value={settings.devicesConfiguration}
+        onChange={settings.setDevicesConfiguration}
+        options={{
+          "switches-leds": tranlate("settings.devicesConfiguration.switches-leds"),
+          "printer-pio": tranlate("settings.devicesConfiguration.printer-pio"),
+          "printer-handshake": tranlate("settings.devicesConfiguration.printer-handshake"),
+        }}
+        disabled={runner !== "stopped"}
+        flow="column"
+      />
+
       <Radio
         label={tranlate("settings.memoryRepresentation.label")}
         value={settings.memoryRepresentation}
@@ -37,18 +51,6 @@ export function ConfigSelector() {
           keep: tranlate("settings.memoryOnReset.keep"),
         }}
       />
-
-      <Radio
-        label={tranlate("settings.devicesConfiguration.label")}
-        value={settings.devicesConfiguration}
-        onChange={settings.setDevicesConfiguration}
-        options={{
-          "switches-leds": tranlate("settings.devicesConfiguration.switches-leds"),
-          "printer-pio": tranlate("settings.devicesConfiguration.printer-pio"),
-          "printer-handshake": tranlate("settings.devicesConfiguration.printer-handshake"),
-        }}
-        disabled={runner !== "stopped"}
-      />
     </div>
   );
 }
@@ -59,12 +61,14 @@ function Radio<T extends string>({
   onChange,
   options,
   disabled = false,
+  flow = "row",
 }: {
   label: string;
   value: T;
   onChange: (value: T) => void;
   options: { [key in T]: string };
   disabled?: boolean;
+  flow?: "row" | "column";
 }) {
   const entries = useMemo(() => Object.entries(options) as [T, string][], [options]);
 
@@ -73,7 +77,12 @@ function Radio<T extends string>({
       <RadioGroup.Label className="text-xs font-bold uppercase tracking-wider text-slate-700">
         {label}
       </RadioGroup.Label>
-      <div className="flex divide-x overflow-hidden rounded-md bg-white text-sm font-medium tracking-wide">
+      <div
+        className={clsx(
+          "flex overflow-hidden rounded-md bg-white text-sm font-medium tracking-wide",
+          flow === "row" ? "flex-row divide-x" : "flex-col divide-y",
+        )}
+      >
         {entries.map(([value, label], i) => (
           <RadioGroup.Option
             key={i}

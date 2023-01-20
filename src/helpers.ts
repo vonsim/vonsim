@@ -56,7 +56,7 @@ export const randomByte = () => Math.floor(Math.random() * MAX_VALUE.byte);
 export const randomWord = () => Math.floor(Math.random() * MAX_VALUE.word);
 
 export type ByteRange = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export const byteArray = (map: (i: ByteRange) => boolean) =>
+export const byteArray = <T>(map: (i: ByteRange) => T): T[] =>
   Array.from({ length: 8 }, (_, i) => map(i as ByteRange));
 
 // #=========================================================================#
