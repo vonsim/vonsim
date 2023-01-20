@@ -7,7 +7,8 @@ import { Card } from "./Card";
 
 export function Leds({ className }: { className?: string }) {
   const translate = useTranslate();
-  const leds = useSimulator(state => state.devices.leds.state);
+
+  const state = useSimulator(state => state.devices.leds.state);
 
   /**
    * We do row-reverse to show this order:
@@ -23,7 +24,7 @@ export function Leds({ className }: { className?: string }) {
   return (
     <Card title={translate("devices.external.leds")} className={className}>
       <div className="flex flex-row-reverse gap-2">
-        {leds.map((on, i) => (
+        {state.map((on, i) => (
           <div
             key={i}
             className={clsx(

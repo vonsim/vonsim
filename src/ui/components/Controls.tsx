@@ -23,6 +23,7 @@ import { LangPicker } from "./LangPicker";
 
 export function Controls() {
   const translate = useTranslate();
+
   const { state, dispatchRunner } = useSimulator(
     state => ({
       state: state.runner,
@@ -149,6 +150,7 @@ function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HT
 
 function State() {
   const translate = useTranslate();
+
   const state = useSimulator(state => state.runner);
 
   return (

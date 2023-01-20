@@ -8,8 +8,9 @@ import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 
 export function LangPicker() {
-  const [lang, setLang] = useSettings(state => [state.language, state.setLanguage], shallow);
   const translate = useTranslate();
+
+  const [lang, setLang] = useSettings(state => [state.language, state.setLanguage], shallow);
 
   return (
     <Listbox value={lang} onChange={setLang}>

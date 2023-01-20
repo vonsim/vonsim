@@ -14,6 +14,7 @@ export function FrecuencyPicker({
   options: number[];
 }) {
   const translate = useTranslate();
+
   const runner = useSimulator(state => state.runner);
 
   return (

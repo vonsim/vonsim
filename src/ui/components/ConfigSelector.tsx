@@ -7,9 +7,10 @@ import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
 
 export function ConfigSelector() {
-  const settings = useSettings();
-  const runner = useSimulator(state => state.runner);
   const tranlate = useTranslate();
+  const settings = useSettings();
+
+  const runner = useSimulator(state => state.runner);
 
   return (
     <div className="flex flex-wrap gap-y-2 gap-x-4">

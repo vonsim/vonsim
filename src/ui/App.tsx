@@ -16,8 +16,8 @@ import { useTranslate } from "./hooks/useTranslate";
 import { useSettings } from "./settings";
 
 export default function App() {
-  const devices = useSettings(state => state.devicesConfiguration);
   const translate = useTranslate();
+  const devices = useSettings(state => state.devicesConfiguration);
 
   return (
     <div className="flex h-screen w-screen flex-col">

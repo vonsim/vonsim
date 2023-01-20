@@ -8,8 +8,8 @@ import { Card } from "./Card";
 
 export function Switches({ className }: { className?: string }) {
   const translate = useTranslate();
-  const switches = useSimulator(state => state.devices.switches.state);
-  const toggle = useSimulator(state => state.devices.switches.toggle);
+
+  const { state, toggle } = useSimulator(state => state.devices.switches);
 
   /**
    * We do row-reverse to show this order:
@@ -25,7 +25,7 @@ export function Switches({ className }: { className?: string }) {
   return (
     <Card title={translate("devices.external.switches")} className={className}>
       <div className="flex flex-row-reverse gap-2">
-        {switches.map((on, i) => (
+        {state.map((on, i) => (
           <Switch
             key={i}
             checked={on}

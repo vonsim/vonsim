@@ -10,6 +10,7 @@ import { Card } from "./Card";
 export function Timer({ className }: { className?: string }) {
   const translate = useTranslate();
   const memoryRepresentation = useSettings(state => state.memoryRepresentation);
+
   const { CONT, COMP } = useSimulator(
     state => ({
       CONT: state.devices.timer.CONT,

@@ -6,6 +6,7 @@ import { Card } from "./Card";
 
 export function PIC({ className }: { className?: string }) {
   const translate = useTranslate();
+
   const pic = useSimulator(state => state.devices.pic);
 
   return (

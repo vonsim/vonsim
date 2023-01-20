@@ -7,6 +7,7 @@ import { Card } from "./Card";
 
 export function F10({ className }: { className?: string }) {
   const translate = useTranslate();
+
   const press = useSimulator(state => state.devices.f10.press);
 
   useKey("F10", ev => {

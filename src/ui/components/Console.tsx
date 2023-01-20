@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { shallow } from "zustand/shallow";
 
 import { useSimulator } from "@/simulator";
 
@@ -9,8 +10,14 @@ export const CONSOLE_ID = "vonsim-console";
 
 export function Console({ className }: { className?: string }) {
   const translate = useTranslate();
-  const output = useSimulator(state => state.devices.console.output);
-  const watingForInput = useSimulator(state => state.runner === "waiting-for-input");
+
+  const { output, watingForInput } = useSimulator(
+    state => ({
+      output: state.devices.console.output,
+      watingForInput: state.runner === "waiting-for-input",
+    }),
+    shallow,
+  );
 
   return (
     <Card title={translate("devices.external.console")} noPadding className={className}>

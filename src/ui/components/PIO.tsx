@@ -6,6 +6,7 @@ import { Card } from "./Card";
 
 export function PIO({ className }: { className?: string }) {
   const translate = useTranslate();
+
   const pio = useSimulator(state => state.devices.pio);
 
   return (

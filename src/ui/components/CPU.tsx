@@ -12,17 +12,17 @@ const generalRegisters = ["AX", "BX", "CX", "DX"] as const;
 
 export function CPU({ className }: { className?: string }) {
   const translate = useTranslate();
-  const { alu, registers } = useSimulator(
-    state => ({ alu: state.alu, registers: state.registers }),
-    shallow,
-  );
-
   const settings = useSettings(
     state => ({
       cpuSpeed: state.cpuSpeed,
       setCPUSpeed: state.setCPUSpeed,
       memoryRepresentation: state.memoryRepresentation,
     }),
+    shallow,
+  );
+
+  const { alu, registers } = useSimulator(
+    state => ({ alu: state.alu, registers: state.registers }),
     shallow,
   );
 

@@ -6,6 +6,7 @@ import { Card } from "./Card";
 
 export function Handshake({ className }: { className?: string }) {
   const translate = useTranslate();
+
   const handshake = useSimulator(state => state.devices.handshake);
 
   return (
