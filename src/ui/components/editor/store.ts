@@ -4,14 +4,14 @@ const STORE_KEY = "vonsim-program";
 
 export const storePlugin = ViewPlugin.fromClass(
   class {
-    timeout: number | null = null;
+    timeout: ReturnType<typeof setTimeout> | null = null;
 
     constructor(readonly view: EditorView) {}
 
     update(update: ViewUpdate) {
       if (update.docChanged) {
         if (this.timeout) clearTimeout(this.timeout);
-        this.timeout = window.setTimeout(() => {
+        this.timeout = setTimeout(() => {
           const source = this.view.state.doc.toString();
           localStorage.setItem(STORE_KEY, source);
           this.timeout = null;
