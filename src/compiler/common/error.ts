@@ -1,7 +1,16 @@
-import { Language } from "@/config";
+import type { Language } from "@/config";
+import type { Path, PathValue } from "@/helpers";
+import { Locale, translate } from "@/i18n";
 
-import { CompilerErrorCode, CompilerErrorParams, ERROR_LIST } from "./error-list";
-import type { Position, PositionRange } from "./index";
+import type { PositionRange } from "./index";
+
+type CompilerErrorCode = Path<Locale["compilerErrors"]>;
+type CompilerErrorContext<Code extends CompilerErrorCode> = PathValue<
+  Locale["compilerErrors"],
+  Code
+> extends (...context: infer A) => string
+  ? A
+  : [];
 
 /**
  * An error that can be thrown by the compiler.
@@ -15,17 +24,32 @@ import type { Position, PositionRange } from "./index";
  */
 export class CompilerError<Code extends CompilerErrorCode> extends Error {
   public readonly code: Code;
-  private readonly params: CompilerErrorParams<Code>;
+  private readonly context: CompilerErrorContext<Code>;
+  public position: PositionRange | null;
 
-  constructor(code: Code, ...params: CompilerErrorParams<Code>) {
+  constructor(code: Code, ...context: CompilerErrorContext<Code>) {
     super();
     this.code = code;
-    this.params = params;
+    this.context = context;
+    this.position = null;
+  }
+
+  /**
+   * Add a position to the error.
+   * @param position A position or something that has a position.
+   * @returns
+   */
+  at(
+    position: PositionRange | { position: PositionRange } | { meta: { position: PositionRange } },
+  ) {
+    if (Array.isArray(position)) this.position = position;
+    else if ("position" in position) this.position = position.position;
+    else if ("meta" in position) this.position = position.meta.position;
+    return this;
   }
 
   translate(lang: Language) {
-    // @ts-expect-error - TypeScript doesn't like '...this.params', for some reason.
-    return ERROR_LIST[this.code](...this.params)[lang];
+    return translate(lang, `compilerErrors.${this.code}`, ...this.context);
   }
 
   get message() {
@@ -33,36 +57,10 @@ export class CompilerError<Code extends CompilerErrorCode> extends Error {
   }
 
   toString() {
-    return this.message;
-  }
-}
-
-/**
- * A CompilerError that has a position range.
- *
- * @see {@link CompilerError}
- * @example
- * new LineError("empty-program", 0, 0)
- * new LineError("label-not-found", label, 12, 18)
- */
-export class LineError<Code extends CompilerErrorCode> extends CompilerError<Code> {
-  public readonly from: Position;
-  public readonly to: Position;
-
-  constructor(
-    code: Code,
-    // This wierd syntax is for the labels declared in both tuples to be maintained.
-    // This accepts the params of the code first and then the position range.
-    ...args: [...params: CompilerErrorParams<Code>, ...position: PositionRange]
-  ) {
-    const params = args.slice(0, -2) as CompilerErrorParams<Code>;
-    const [from, to] = args.slice(-2) as PositionRange;
-    super(code, ...params);
-    this.from = from;
-    this.to = to;
-  }
-
-  get message() {
-    return `${super.message} (${this.from}:${this.to})`;
+    let message = this.message;
+    if (this.position) {
+      message += ` (${this.position[0]}:${this.position[1]})`;
+    }
+    return message;
   }
 }

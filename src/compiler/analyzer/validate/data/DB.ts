@@ -1,6 +1,6 @@
 import type { Merge } from "type-fest";
 
-import { LineError, PositionRange } from "@/compiler/common";
+import { CompilerError, PositionRange } from "@/compiler/common";
 import type { DataDirectiveStatement, NumberExpression } from "@/compiler/parser/grammar";
 
 import type { ValidatedMeta } from "../types";
@@ -33,7 +33,7 @@ export function validateDB(db: Merge<DataDirectiveStatement, { directive: "DB" }
   }
 
   if (initialValues.length === 0) {
-    throw new LineError("must-have-one-or-more-values", "DB", ...db.position);
+    throw new CompilerError("must-have-one-or-more-values", "DB").at(db);
   }
 
   return {

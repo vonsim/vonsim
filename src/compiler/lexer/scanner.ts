@@ -8,7 +8,7 @@
 
 import { isMatching } from "ts-pattern";
 
-import { LineError, Position } from "@/compiler/common";
+import { CompilerError, Position } from "@/compiler/common";
 import { keywordPattern } from "@/compiler/common/patterns";
 
 import { Token, TokenType } from "./tokens";
@@ -62,10 +62,13 @@ export class Scanner {
         case '"':
           while (this.peek() !== '"') {
             if (this.isAtEnd() || this.peek() === "\n") {
-              throw new LineError("unterminated-string", this.start, this.current);
+              throw new CompilerError("lexer.unterminated-string").at([this.start, this.current]);
             }
             if (this.peek().charCodeAt(0) > 255) {
-              throw new LineError("only-ascii", this.current, (this.current + 1) as Position);
+              throw new CompilerError("lexer.only-ascii").at([
+                this.current,
+                (this.current + 1) as Position,
+              ]);
             }
             this.advance();
           }
@@ -110,12 +113,12 @@ export class Scanner {
           if (text.at(-1) === "b" || text.at(-1) === "B") {
             // Should be a binary number.
             if (!/^[01]+b$/i.test(text)) {
-              throw new LineError("invalid-binary", this.start, this.current);
+              throw new CompilerError("lexer.invalid-binary").at([this.start, this.current]);
             }
           } else {
             // Should be a decimal number.
             if (!/^\d+$/.test(text)) {
-              throw new LineError("invalid-decimal", this.start, this.current);
+              throw new CompilerError("lexer.invalid-decimal").at([this.start, this.current]);
             }
           }
         }
@@ -144,7 +147,7 @@ export class Scanner {
         continue;
       }
 
-      throw new LineError("unexpected-character", c, this.start, this.current);
+      throw new CompilerError("lexer.unexpected-character", c).at([this.start, this.current]);
     }
 
     this.start = this.current;

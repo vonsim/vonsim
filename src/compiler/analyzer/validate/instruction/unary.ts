@@ -1,7 +1,7 @@
 import { isMatching, match } from "ts-pattern";
 import type { Merge } from "type-fest";
 
-import { LineError, RegisterType, UnaryInstructionType } from "@/compiler/common";
+import { CompilerError, RegisterType, UnaryInstructionType } from "@/compiler/common";
 import { wordRegisterPattern } from "@/compiler/common/patterns";
 import {
   InstructionStatement,
@@ -53,7 +53,7 @@ export function validateUnaryInstruction(
   labels: LabelTypes,
 ): ValidatedUnaryInstruction {
   if (instruction.operands.length !== 1) {
-    throw new LineError("expects-one-operand", ...instruction.position);
+    throw new CompilerError("expects-one-operand").at(instruction);
   }
 
   return match<Operand, ValidatedUnaryInstruction>(instruction.operands[0])
@@ -71,7 +71,7 @@ export function validateUnaryInstruction(
     })
     .with({ type: "address", mode: "direct" }, out => {
       if (out.size === "auto") {
-        throw new LineError("unknown-size", ...out.position);
+        throw new CompilerError("unknown-size").at(out);
       }
 
       return {
@@ -83,7 +83,7 @@ export function validateUnaryInstruction(
     })
     .with({ type: "address", mode: "indirect" }, out => {
       if (out.size === "auto") {
-        throw new LineError("unknown-size", ...out.position);
+        throw new CompilerError("unknown-size").at(out);
       }
 
       return {
@@ -95,17 +95,17 @@ export function validateUnaryInstruction(
     })
     .with(numberExpressionPattern, out => {
       if (out.type !== "label" || out.offset) {
-        throw new LineError("destination-cannot-be-immediate", ...out.position);
+        throw new CompilerError("destination-cannot-be-immediate").at(out);
       }
 
       const outType = labels.get(out.value);
       if (!outType) {
-        throw new LineError("label-not-found", out.value, ...out.position);
+        throw new CompilerError("label-not-found", out.value).at(out);
       }
 
       const outSize = outType === "DB" ? "byte" : outType === "DW" ? "word" : false;
       if (!outSize) {
-        throw new LineError("label-should-be-writable", out.value, ...out.position);
+        throw new CompilerError("label-should-be-writable", out.value).at(out);
       }
 
       return {

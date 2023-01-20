@@ -46,10 +46,10 @@ export type RunnerDevices = "switches-leds" | "printer-pio" | "printer-handshake
 
 export type RunnerSlice = {
   runner: "running" | "paused" | "waiting-for-input" | "stopped";
-  dispatchRunner: (action: RunnerAction) => Promise<void>;
+  dispatchRunner: (action: RunnerAction) => Promise<SimulatorResult<void>>;
   __runnerInternal: {
     action: RunnerAction | null;
-    loop: () => Promise<void>;
+    loop: () => Promise<SimulatorResult<void>>;
 
     devices: RunnerDevices;
     updateDevices: (timeElapsed: number) => void;
@@ -57,7 +57,7 @@ export type RunnerSlice = {
     inputListener: InputListener | null;
     instructionTime: number;
     lastCPUTick: number;
-    updateCPU: (timeElapsed: number) => void;
+    updateCPU: (timeElapsed: number) => SimulatorResult<void>;
     runInstruction: () => StepReturn;
   };
 };
@@ -71,14 +71,13 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     const runner = get().runner;
 
     if (runner === "stopped") {
-      if (action === "stop") return; // Invalid action
+      if (action === "stop") return Ok(); // Invalid action
 
       const code = window.codemirror!.state.doc.toString();
       const result = compile(code);
 
       if (!result.success) {
-        new SimulatorError("compile-error").notify();
-        return;
+        return Err(new SimulatorError("compile-error"));
       }
 
       // Get user settings
@@ -102,14 +101,16 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         state.devices.timer.lastTick = 0;
         state.devices.printer.lastTick = 0;
       });
-      await get().__runnerInternal.loop();
-    } else {
-      // If runner isn't paused and action is 'run' or 'step'
-      if (runner !== "paused" && action !== "stop") {
-        return; // Invalid action
-      }
+      return get().__runnerInternal.loop();
+    } else if (runner === "paused" || action === "stop") {
       set(state => void (state.__runnerInternal.action = action));
+    } else {
+      // runner === 'running' || runner === 'waiting-for-input'
+      // action === 'run' || action === 'step'
+      // ==> Invalid action
     }
+
+    return Ok();
   },
 
   __runnerInternal: {
@@ -120,6 +121,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
     loop: async () => {
       const resolution = 15;
       let timeElapsed = 0;
+      let result: SimulatorResult<void> = Ok();
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -151,7 +153,12 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         // user presses a key.
 
         // Run updates
-        get().__runnerInternal.updateCPU(timeElapsed);
+        const cpuResult = get().__runnerInternal.updateCPU(timeElapsed);
+        if (cpuResult.isErr()) {
+          result = cpuResult;
+          break;
+        }
+
         get().__runnerInternal.updateDevices(timeElapsed);
 
         // Clear action
@@ -176,6 +183,7 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
           state.__runnerInternal.inputListener = null;
         }
       });
+      return result;
     },
 
     devices: "switches-leds",
@@ -202,16 +210,14 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
       const instructionTime = get().__runnerInternal.instructionTime;
       const timeSinceLastInstruction = timeElapsed - get().__runnerInternal.lastCPUTick;
 
-      if (timeSinceLastInstruction < instructionTime) return;
+      if (timeSinceLastInstruction < instructionTime) return Ok();
 
       const result = get().__runnerInternal.runInstruction();
 
       set(state => void (state.__runnerInternal.lastCPUTick = timeElapsed));
 
       if (result.isErr()) {
-        result.unwrapErr().notify();
-        set(state => void (state.__runnerInternal.action = "stop"));
-        return;
+        return Err(result.unwrapErr());
       }
 
       const ret = result.unwrap();
@@ -249,6 +255,8 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
         // ret = 'halt'
         set(state => void (state.__runnerInternal.action = "stop"));
       }
+
+      return Ok();
     },
 
     runInstruction() {

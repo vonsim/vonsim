@@ -1,7 +1,7 @@
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
 
-import { LineError, StackInstructionType, WordRegisterType } from "@/compiler/common";
+import { CompilerError, StackInstructionType, WordRegisterType } from "@/compiler/common";
 import { wordRegisterPattern } from "@/compiler/common/patterns";
 import type { InstructionStatement } from "@/compiler/parser/grammar";
 
@@ -17,12 +17,12 @@ export function validateStackInstruction(
   instruction: Merge<InstructionStatement, { instruction: StackInstructionType }>,
 ): ValidatedStackInstruction {
   if (instruction.operands.length !== 1) {
-    throw new LineError("expects-one-operand", ...instruction.position);
+    throw new CompilerError("expects-one-operand").at(instruction);
   }
 
   const operand = instruction.operands[0];
   if (operand.type !== "register" || !isMatching(wordRegisterPattern, operand.value)) {
-    throw new LineError("expects-word-register", ...operand.position);
+    throw new CompilerError("expects-word-register").at(operand);
   }
 
   return {

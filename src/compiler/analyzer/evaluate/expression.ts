@@ -1,6 +1,6 @@
 import { match } from "ts-pattern";
 
-import { LineError } from "@/compiler/common";
+import { CompilerError } from "@/compiler/common";
 import type { NumberExpression } from "@/compiler/parser/grammar";
 import { MAX_VALUE, MIN_SIGNED_VALUE, Size } from "@/config";
 
@@ -9,7 +9,7 @@ import type { LabelMap } from "../compact-labels";
 export function evaluateImmediate(expr: NumberExpression, size: Size, labels: LabelMap) {
   const computed = evaluateExpression(expr, labels);
   if (computed < MIN_SIGNED_VALUE[size] || computed > MAX_VALUE[size]) {
-    throw new LineError("value-out-of-range", computed, size, ...expr.position);
+    throw new CompilerError("value-out-of-range", computed, size).at(expr);
   }
 
   if (computed < 0) {
@@ -22,20 +22,20 @@ export function evaluateImmediate(expr: NumberExpression, size: Size, labels: La
 export function evaluateExpression(expr: NumberExpression, labels: LabelMap): number {
   return match(expr)
     .with({ type: "number-literal" }, n => n.value)
-    .with({ type: "label" }, l => {
-      const label = labels.get(l.value);
-      if (!label) throw new LineError("label-not-found", l.value, ...l.position);
+    .with({ type: "label" }, label => {
+      const meta = labels.get(label.value);
+      if (!meta) throw new CompilerError("label-not-found", label.value).at(label);
 
-      if (l.offset) {
-        if (label.type !== "DB" && label.type !== "DW") {
-          throw new LineError("offset-only-with-data-directive", ...l.position);
+      if (label.offset) {
+        if (meta.type !== "DB" && meta.type !== "DW") {
+          throw new CompilerError("offset-only-with-data-directive").at(label);
         }
-        return label.address;
+        return meta.address;
       } else {
-        if (label.type === "constant") return label.value;
-        else if (label.type === "instruction") return label.address;
+        if (meta.type === "constant") return meta.value;
+        else if (meta.type === "instruction") return meta.address;
 
-        throw new LineError("label-should-be-a-number", l.value, ...l.position);
+        throw new CompilerError("label-should-be-a-number", label.value).at(label);
       }
     })
     .with({ type: "unary-operation" }, op =>

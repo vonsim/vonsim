@@ -1,4 +1,5 @@
 import { match } from "ts-pattern";
+import type { Primitive } from "type-fest";
 
 import { MAX_SIGNED_VALUE, MAX_VALUE, Size } from "@/config";
 
@@ -81,6 +82,31 @@ export function renderWord(n: number): string {
     .map(n => n.toString(2).padStart(8, "0"))
     .join(" ");
 }
+
+// #=========================================================================#
+// # Types                                                                   #
+// #=========================================================================#
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+type PathImpl<K extends string | number, V> = V extends Primitive | Function
+  ? `${K}`
+  : `${K}.${Path<V>}`;
+
+export type Path<T> = {
+  [K in keyof T]: PathImpl<K & string, T[K]>;
+}[keyof T];
+
+export type PathValue<T, P extends Path<T>> = T extends any
+  ? P extends `${infer K}.${infer R}`
+    ? K extends keyof T
+      ? R extends Path<T[K]>
+        ? PathValue<T[K], R>
+        : never
+      : never
+    : P extends keyof T
+    ? T[P]
+    : never
+  : never;
 
 // #=========================================================================#
 // # Others                                                                  #

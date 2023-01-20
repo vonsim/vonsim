@@ -1,6 +1,6 @@
 import type { Merge } from "type-fest";
 
-import { LineError } from "@/compiler/common";
+import { CompilerError } from "@/compiler/common";
 import type { DataDirectiveStatement, NumberExpression } from "@/compiler/parser/grammar";
 
 import type { ValidatedMeta } from "../types";
@@ -16,7 +16,7 @@ export function validateDW(dw: Merge<DataDirectiveStatement, { directive: "DW" }
 
   for (const value of dw.values) {
     if (value.type === "string") {
-      throw new LineError("cannot-accept-strings", "DW", ...value.position);
+      throw new CompilerError("cannot-accept-strings", "DW").at(value);
     } else if (value.type === "unassigned") {
       initialValues.push(null);
     } else {
@@ -25,7 +25,7 @@ export function validateDW(dw: Merge<DataDirectiveStatement, { directive: "DW" }
   }
 
   if (initialValues.length === 0) {
-    throw new LineError("must-have-one-or-more-values", "DW", ...dw.position);
+    throw new CompilerError("must-have-one-or-more-values", "DW").at(dw);
   }
 
   return {

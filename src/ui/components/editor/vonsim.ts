@@ -8,7 +8,7 @@ import { Diagnostic, linter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { isMatching } from "ts-pattern";
 
-import { compile, LineError } from "@/compiler";
+import { compile } from "@/compiler";
 import {
   dataDirectivePattern,
   instructionPattern,
@@ -124,21 +124,9 @@ const vonsimLinter = linter(
 
     const lang = useSettings.getState().language;
     return result.errors.map<Diagnostic>(error => {
-      if (error instanceof LineError) {
-        return {
-          from: error.from,
-          to: error.to,
-          message: error.translate(lang),
-          severity: "error",
-        };
-      } else {
-        return {
-          from: 0,
-          to: source.length,
-          message: error.translate(lang),
-          severity: "error",
-        };
-      }
+      const from = error.position?.[0] ?? 0;
+      const to = error.position?.[1] ?? source.length;
+      return { message: error.translate(lang), severity: "error", from, to };
     });
   },
   {

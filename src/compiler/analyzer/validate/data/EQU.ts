@@ -1,6 +1,6 @@
 import type { Merge } from "type-fest";
 
-import { LineError, PositionRange } from "@/compiler/common";
+import { CompilerError, PositionRange } from "@/compiler/common";
 import type { DataDirectiveStatement, NumberExpression } from "@/compiler/parser/grammar";
 
 export type ValidatedEQU = {
@@ -13,16 +13,16 @@ export function validateEQU(
   equ: Merge<DataDirectiveStatement, { directive: "EQU" }>,
 ): ValidatedEQU {
   if (equ.values.length !== 1) {
-    throw new LineError("must-have-one-value", "EQU", ...equ.position);
+    throw new CompilerError("must-have-one-value", "EQU").at(equ);
   }
   if (equ.values[0].type === "string") {
-    throw new LineError("cannot-accept-strings", "EQU", ...equ.values[0].position);
+    throw new CompilerError("cannot-accept-strings", "EQU").at(equ.values[0]);
   }
   if (equ.values[0].type === "unassigned") {
-    throw new LineError("cannot-be-unassinged", "EQU", ...equ.values[0].position);
+    throw new CompilerError("cannot-be-unassinged", "EQU").at(equ.values[0]);
   }
   if (!equ.label) {
-    throw new LineError("must-have-a-label", "EQU", ...equ.position);
+    throw new CompilerError("must-have-a-label", "EQU").at(equ);
   }
 
   return {

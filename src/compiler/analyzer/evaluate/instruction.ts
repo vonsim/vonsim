@@ -2,10 +2,10 @@ import { isMatching, match } from "ts-pattern";
 
 import {
   BinaryInstructionType,
+  CompilerError,
   IntInstructionType,
   IOInstructionType,
   JumpInstructionType,
-  LineError,
   PositionRange,
   RegisterType,
   StackInstructionType,
@@ -118,14 +118,10 @@ export function evaluateInstruction(
     .with({ type: jumpInstructionPattern }, statement => {
       const label = labels.get(statement.jumpTo);
       if (!label) {
-        throw new LineError("label-not-found", statement.jumpTo, ...statement.meta.position);
+        throw new CompilerError("label-not-found", statement.jumpTo).at(statement);
       }
       if (label.type !== "instruction") {
-        throw new LineError(
-          "label-should-be-an-instruction",
-          statement.jumpTo,
-          ...statement.meta.position,
-        );
+        throw new CompilerError("label-should-be-an-instruction", statement.jumpTo).at(statement);
       }
 
       return {
@@ -147,7 +143,7 @@ export function evaluateInstruction(
       const int = evaluateExpression(statement.interrupt, labels);
 
       if (!isMatching(interruptPattern, int)) {
-        throw new LineError("invalid-interrupt", int, ...statement.interrupt.position);
+        throw new CompilerError("invalid-interrupt", int).at(statement.interrupt);
       }
 
       return {
@@ -174,10 +170,10 @@ function evaluateAddress(
 ): number {
   const computed = evaluateExpression(address, labels);
   if (computed < MIN_MEMORY_ADDRESS || computed > MAX_MEMORY_ADDRESS) {
-    throw new LineError("address-out-of-range", computed, ...address.position);
+    throw new CompilerError("address-out-of-range", computed).at(address);
   }
   if (codeMemory.has(computed)) {
-    throw new LineError("address-has-code", computed, ...address.position);
+    throw new CompilerError("address-has-code", computed).at(address);
   }
   return computed;
 }

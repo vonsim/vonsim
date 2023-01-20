@@ -1,9 +1,11 @@
 import clsx from "clsx";
 import { useCallback } from "react";
+import { toast } from "react-hot-toast";
 import { useEvent, useLongPress, useToggle } from "react-use";
 import { shallow } from "zustand/shallow";
 
 import { useSimulator } from "@/simulator";
+import type { RunnerAction } from "@/simulator/runner";
 import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
 import KeyboardIcon from "~icons/carbon/keyboard";
@@ -15,15 +17,28 @@ import RunningIcon from "~icons/carbon/settings";
 import FinishIcon from "~icons/carbon/skip-forward";
 import AbortIcon from "~icons/carbon/stop-sign";
 
+import { useSettings } from "../settings";
 import { LangPicker } from "./LangPicker";
 
 export function Controls() {
-  const { state, dispatch } = useSimulator(
+  const { state, dispatchRunner } = useSimulator(
     state => ({
       state: state.runner,
-      dispatch: state.dispatchRunner,
+      dispatchRunner: state.dispatchRunner,
     }),
     shallow,
+  );
+
+  const dispatch = useCallback(
+    (action: RunnerAction) =>
+      dispatchRunner(action).then(result => {
+        if (result.isErr()) {
+          const error = result.unwrapErr();
+          const lang = useSettings.getState().language;
+          toast.error(error.translate(lang));
+        }
+      }),
+    [dispatchRunner],
   );
 
   const onKeyDown = useCallback(

@@ -44,7 +44,7 @@ export const createMemorySlice: SimulatorSlice<MemorySlice> = (set, get) => ({
         return Err(new SimulatorError("address-out-of-range", address));
       }
       if (program && program.codeMemory.has(address)) {
-        return Err(new SimulatorError("address-has-instuction", address));
+        return Err(new SimulatorError("address-has-instruction", address));
       }
       new DataView(memory).setUint8(address, value);
     } else {
@@ -52,7 +52,7 @@ export const createMemorySlice: SimulatorSlice<MemorySlice> = (set, get) => ({
         return Err(new SimulatorError("address-out-of-range", address));
       }
       if (program && (program.codeMemory.has(address) || program.codeMemory.has(address + 1))) {
-        return Err(new SimulatorError("address-has-instuction", address));
+        return Err(new SimulatorError("address-has-instruction", address));
       }
       new DataView(memory).setUint16(address, value, true);
     }

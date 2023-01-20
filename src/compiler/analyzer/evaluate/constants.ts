@@ -1,6 +1,6 @@
 import { match } from "ts-pattern";
 
-import { LineError } from "@/compiler/common";
+import { CompilerError } from "@/compiler/common";
 import type { NumberExpression } from "@/compiler/parser/grammar";
 
 import type { LabelAddresses } from "../compute-addresses";
@@ -28,31 +28,31 @@ export function evaluateConstants(
   function evaluateConstant(expr: NumberExpression): number {
     return match(expr)
       .with({ type: "number-literal" }, n => n.value)
-      .with({ type: "label" }, l => {
-        const label = labels.get(l.value);
+      .with({ type: "label" }, label => {
+        const meta = labels.get(label.value);
 
-        if (l.offset) {
-          if (!label) throw new LineError("label-not-found", l.value, ...l.position);
-          if (label.type !== "DB" && label.type !== "DW") {
-            throw new LineError("offset-only-with-data-directive", ...l.position);
+        if (label.offset) {
+          if (!meta) throw new CompilerError("label-not-found", label.value).at(label);
+          if (meta.type !== "DB" && meta.type !== "DW") {
+            throw new CompilerError("offset-only-with-data-directive").at(label);
           }
-          return label.address;
-        } else if (label) {
-          if (label.type === "instruction") return label.address;
-          else throw new LineError("label-should-be-a-number", l.value, ...l.position);
+          return meta.address;
+        } else if (meta) {
+          if (meta.type === "instruction") return meta.address;
+          else throw new CompilerError("label-should-be-a-number", label.value).at(label);
         } else {
-          const c = processed.get(l.value);
-          if (!c) throw new LineError("equ-not-found", l.value, ...l.position);
+          const constant = processed.get(label.value);
+          if (!constant) throw new CompilerError("equ-not-found", label.value).at(label);
 
-          if (c.status === "processed") return c.value;
-          if (c.status === "not-processed") {
-            processed.set(l.value, { status: "processing", value: c.value, meta: c.meta });
-            const value = evaluateConstant(c.value);
-            processed.set(l.value, { status: "processed", value, meta: c.meta });
+          if (constant.status === "processed") return constant.value;
+          if (constant.status === "not-processed") {
+            processed.set(label.value, { ...constant, status: "processing" });
+            const value = evaluateConstant(constant.value);
+            processed.set(label.value, { status: "processed", value, meta: constant.meta });
             return value;
           }
 
-          throw new LineError("circular-reference", ...l.position);
+          throw new CompilerError("circular-reference").at(label);
         }
       })
       .with({ type: "unary-operation" }, op =>
@@ -76,7 +76,7 @@ export function evaluateConstants(
     const constant = processed.get(label)!;
     if (constant.status === "processed") continue;
     if (constant.status === "processing") {
-      throw new LineError("circular-reference", ...constant.meta.position);
+      throw new CompilerError("circular-reference").at(constant);
     }
 
     processed.set(label, { status: "processing", value: constant.value, meta: constant.meta });

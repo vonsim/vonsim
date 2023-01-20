@@ -1,10 +1,16 @@
-import { toast } from "react-hot-toast";
-import { Result } from "rust-optionals";
+import type { Result } from "rust-optionals";
 
-import { Language } from "@/config";
-import { useSettings } from "@/ui/settings";
+import type { Language } from "@/config";
+import type { Path, PathValue } from "@/helpers";
+import { Locale, translate } from "@/i18n";
 
-import { ERROR_LIST, SimulatorErrorCode, SimulatorErrorParams } from "./list";
+type SimulatorErrorCode = Path<Locale["simulatorErrors"]>;
+type SimulatorErrorContext<Code extends SimulatorErrorCode> = PathValue<
+  Locale["simulatorErrors"],
+  Code
+> extends (...context: infer A) => string
+  ? A
+  : [];
 
 /**
  * An error that can be thrown by the simulator.
@@ -18,17 +24,16 @@ import { ERROR_LIST, SimulatorErrorCode, SimulatorErrorParams } from "./list";
  */
 export class SimulatorError<Code extends SimulatorErrorCode> extends Error {
   public readonly code: Code;
-  private readonly params: SimulatorErrorParams<Code>;
+  private readonly context: SimulatorErrorContext<Code>;
 
-  constructor(code: Code, ...params: SimulatorErrorParams<Code>) {
+  constructor(code: Code, ...context: SimulatorErrorContext<Code>) {
     super();
     this.code = code;
-    this.params = params;
+    this.context = context;
   }
 
   translate(lang: Language) {
-    // @ts-expect-error - TypeScript doesn't like '...this.params', for some reason.
-    return ERROR_LIST[this.code](...this.params)[lang];
+    return translate(lang, `simulatorErrors.${this.code}`, ...this.context);
   }
 
   get message() {
@@ -37,11 +42,6 @@ export class SimulatorError<Code extends SimulatorErrorCode> extends Error {
 
   toString() {
     return this.message;
-  }
-
-  notify() {
-    const message = this.translate(useSettings.getState().language);
-    toast.error(message);
   }
 }
 

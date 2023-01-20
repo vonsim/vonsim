@@ -29,13 +29,7 @@ import { klona } from "klona/json";
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
 
-import {
-  CompilerErrorMessages,
-  LineError,
-  Position,
-  PositionRange,
-  RegisterType,
-} from "@/compiler/common";
+import { CompilerError, Position, PositionRange, RegisterType } from "@/compiler/common";
 import {
   dataDirectivePattern,
   instructionPattern,
@@ -79,9 +73,8 @@ export class Parser {
         while (!this.isAtEnd()) {
           if (this.match("EOL")) continue;
 
-          throw new LineError(
-            "end-must-be-the-last-statement",
-            ...this.calculatePositionRange(token),
+          throw new CompilerError("parser.end-must-be-the-last-statement").at(
+            this.calculatePositionRange(token),
           );
         }
 
@@ -91,10 +84,10 @@ export class Parser {
       // Then, parse ORG changes
       if (this.match("ORG")) {
         const token = this.previous();
-        const addressToken = this.consume("NUMBER", {
-          en: "Expected address after ORG.",
-          es: "Se esperaba una dirección después de ORG.",
-        });
+        const addressToken = this.consume(
+          "NUMBER",
+          new CompilerError("parser.expected-address-after-org"),
+        );
         const address = this.parseNumber(addressToken);
 
         this.addStatement({
@@ -154,13 +147,8 @@ export class Parser {
         continue;
       }
 
-      throw new LineError(
-        "custom",
-        {
-          en: `Expected instruction, got ${token.type}.`,
-          es: `Se esperaba una instrucción, se obtuvo ${token.type}.`,
-        },
-        ...this.calculatePositionRange(token),
+      throw new CompilerError("parser.expected-instruction", token).at(
+        this.calculatePositionRange(token),
       );
     }
 
@@ -206,14 +194,11 @@ export class Parser {
 
   private consume<T extends TokenType>(
     type: T,
-    messages?: CompilerErrorMessages,
+    error?: CompilerError<any>,
   ): Merge<Token, { type: T }> {
     if (!this.check(type)) {
-      messages ||= {
-        en: `Expected ${type}, got ${this.peek().type}.`,
-        es: `Se esperaba ${type}, se obtuvo ${this.peek().type}.`,
-      };
-      throw new LineError("custom", messages, ...this.calculatePositionRange(this.peek()));
+      error ||= new CompilerError("parser.expected-type", type, this.peek().type);
+      throw error.at(this.calculatePositionRange(this.peek()));
     }
     return this.advance() as any;
   }
@@ -222,11 +207,7 @@ export class Parser {
     if (this.isAtEnd()) return;
     if (this.check("EOL")) return this.advance();
 
-    throw new LineError(
-      "custom",
-      { en: "Expected end of statement.", es: "Se esperaba que la instrucción termine." },
-      ...this.calculatePositionRange(this.peek()),
-    );
+    throw new CompilerError("parser.expected-eos").at(this.calculatePositionRange(this.peek()));
   }
 
   private isAtEnd() {
@@ -275,13 +256,8 @@ export class Parser {
       labelToken = this.previous();
 
       if (!isMatching(dataDirectivePattern, this.peek().type)) {
-        throw new LineError(
-          "custom",
-          {
-            en: `Expected identifier, got ${labelToken.type}.`,
-            es: `Se esperaba un identificador, se obtuvo ${labelToken.type}.`,
-          },
-          ...this.calculatePositionRange(labelToken),
+        throw new CompilerError("parser.expected-identifier", labelToken).at(
+          this.calculatePositionRange(labelToken),
         );
       }
     } else if (this.match("LABEL")) {
@@ -293,13 +269,8 @@ export class Parser {
 
       const next = this.peek();
       if (!isMatching(instructionPattern, next.type)) {
-        throw new LineError(
-          "custom",
-          {
-            en: `Expected instruction after label, got ${next.type}.`,
-            es: `Se esperaba una instrucción después de la etiqueta, se obtuvo ${next.type}.`,
-          },
-          ...this.calculatePositionRange(next),
+        throw new CompilerError("parser.expected-instruction-after-label", next).at(
+          this.calculatePositionRange(next),
         );
       }
     }
@@ -311,7 +282,9 @@ export class Parser {
 
     const duplicatedLabel = this.statements.find(s => "label" in s && s.label === label);
     if (duplicatedLabel) {
-      throw new LineError("duplicated-label", "label", ...this.calculatePositionRange(labelToken));
+      throw new CompilerError("parser.duplicated-label", label).at(
+        this.calculatePositionRange(labelToken),
+      );
     }
 
     return label;
@@ -359,21 +332,26 @@ export class Parser {
         size = "auto";
       } else {
         size = start.type === "BYTE" ? "byte" : "word";
-        this.consume("PTR", {
-          en: `Expected "PTR" after "${size.toUpperCase()}".`,
-          es: `Se esperaba "PTR" después de "${size.toUpperCase()}".`,
-        });
-        this.consume("LEFT_BRACKET", {
-          en: `Expected "[" after "${size.toUpperCase()} PTR".`,
-          es: `Se esperaba "[" después de "${size.toUpperCase()} PTR".`,
-        });
+
+        this.consume(
+          "PTR",
+          new CompilerError("parser.expected-literal-after-literal", "PTR", size.toUpperCase()),
+        );
+        this.consume(
+          "LEFT_BRACKET",
+          new CompilerError(
+            "parser.expected-literal-after-literal",
+            "[",
+            `${size.toUpperCase()} PTR`,
+          ),
+        );
       }
 
       if (this.match("BX")) {
-        const rbracket = this.consume("RIGHT_BRACKET", {
-          en: 'Expected "]" after "BX".',
-          es: 'Se esperaba "]" después de "BX".',
-        });
+        const rbracket = this.consume(
+          "RIGHT_BRACKET",
+          new CompilerError("parser.expected-literal-after-literal", "]", "BX"),
+        );
         return {
           type: "address",
           size,
@@ -382,10 +360,11 @@ export class Parser {
         };
       } else {
         const calc = this.numberExpression();
-        const rbracket = this.consume("RIGHT_BRACKET", {
-          en: 'Expected "]" after expression.',
-          es: 'Se esperaba "]" después de la expresión.',
-        });
+
+        const rbracket = this.consume(
+          "RIGHT_BRACKET",
+          new CompilerError("parser.expected-literal-after-expression", "]"),
+        );
         return {
           type: "address",
           size,
@@ -416,10 +395,11 @@ export class Parser {
 
     if (this.match("OFFSET")) {
       const offsetToken = this.previous();
-      const identifierToken = this.consume("IDENTIFIER", {
-        en: "Expected label after OFFSET.",
-        es: "Se esperaba una etiqueta después de OFFSET.",
-      });
+
+      const identifierToken = this.consume(
+        "IDENTIFIER",
+        new CompilerError("parser.expected-label-after-offset"),
+      );
       return {
         type: "label",
         value: identifierToken.lexeme.toUpperCase(),
@@ -441,17 +421,15 @@ export class Parser {
     if (this.match("LEFT_PAREN")) {
       const lparen = this.previous();
       const expression = this.numberExpression();
-      const rparen = this.consume("RIGHT_PAREN", {
-        en: "Unclosed parenthesis.",
-        es: "Paréntesis sin cerrar.",
-      });
+
+      const rparen = this.consume("RIGHT_PAREN", new CompilerError("parser.unclosed-parenthesis"));
       return {
         ...expression,
         position: this.calculatePositionRange(lparen, rparen),
       };
     }
 
-    throw new LineError("expected-argument", ...this.calculatePositionRange(this.peek()));
+    throw new CompilerError("parser.expected-operand").at(this.calculatePositionRange(this.peek()));
   }
 
   private unaryNE(): NumberExpression {
@@ -460,10 +438,8 @@ export class Parser {
 
       // Prevent ambiguous cases like `(--1)` or `(+-1)`
       if (this.check("PLUS", "MINUS")) {
-        throw new LineError(
-          "unexpected-token",
-          this.peek(),
-          ...this.calculatePositionRange(this.peek()),
+        throw new CompilerError("parser.ambiguous-unary").at(
+          this.calculatePositionRange(this.peek()),
         );
       }
 

@@ -12,11 +12,11 @@ import type { CodeMemory } from "./analyzer/compute-addresses";
 import type { ProgramConstants } from "./analyzer/evaluate/constants";
 import type { ProgramData } from "./analyzer/evaluate/data";
 import type { ProgramInstruction } from "./analyzer/evaluate/instruction";
-import { CompilerError, LineError } from "./common";
+import { CompilerError } from "./common";
 import { Scanner } from "./lexer/scanner";
 import { Parser } from "./parser/parser";
 
-export { CompilerError, LineError };
+export { CompilerError };
 export type { ProgramConstants, ProgramData, ProgramInstruction };
 
 export type Program = {

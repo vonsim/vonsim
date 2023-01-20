@@ -1,7 +1,7 @@
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
 
-import { IntInstructionType, LineError } from "@/compiler/common";
+import { CompilerError, IntInstructionType } from "@/compiler/common";
 import {
   InstructionStatement,
   NumberExpression,
@@ -20,13 +20,13 @@ export function validateIntInstruction(
   instruction: Merge<InstructionStatement, { instruction: IntInstructionType }>,
 ): ValidatedIntInstruction {
   if (instruction.operands.length !== 1) {
-    throw new LineError("expects-one-operand", ...instruction.position);
+    throw new CompilerError("expects-one-operand").at(instruction);
   }
 
   const operand = instruction.operands[0];
 
   if (!isMatching(numberExpressionPattern, operand)) {
-    throw new LineError("expects-immediate", ...operand.position);
+    throw new CompilerError("expects-immediate").at(operand);
   }
 
   return {
