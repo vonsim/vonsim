@@ -5,7 +5,7 @@ type PIORegister = "PA" | "PB" | "CA" | "CB";
 
 export type PIOSlice = {
   pio: Record<PIORegister, number> & {
-    set: (reg: PIORegister, value: number) => void;
+    setRegister: (reg: PIORegister, value: number) => void;
   };
 };
 
@@ -29,7 +29,18 @@ export const createPIOSlice: DeviceSlice<PIOSlice> = (set, get) => ({
       CA: 0,
       CB: 0,
 
-      set: (reg, value) => {
+      /**
+       * Set a PIO register
+       *
+       * This function is called by the CPU when it executes an OUT instruction,
+       * and must not be called by other parts of the simulator (e.g. the switches
+       * must update the PA register by mutating the state directly).
+       *
+       * The reasoning is that the PIO needs to know when the CPU writes to its
+       * registers, so it can update the state of the external devices. Whereas
+       * modifications made by external devices never affect the CPU directly.
+       */
+      setRegister: (reg, value) => {
         const config = get().__runnerInternal.devices;
 
         if (config === "switches-leds") {

@@ -7,16 +7,13 @@ import { bit, ByteRange } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 import { SimulatorError, SimulatorResult } from "@/simulator/error";
 
-export type PICSlice = {
-  pic: Record<`INT${ByteRange}`, number> & {
-    EOI: number;
-    IMR: number;
-    IRR: number;
-    ISR: number;
+type PICRegister = "EOI" | "IMR" | "IRR" | "ISR" | `INT${ByteRange}`;
 
+export type PICSlice = {
+  pic: Record<PICRegister, number> & {
     request: (n: ByteRange) => void;
     cancel: (n: ByteRange) => void;
-    update: () => void;
+    update: () => SimulatorResult<void>;
   };
 };
 
@@ -46,7 +43,7 @@ export const createPICSlice: DeviceSlice<PICSlice> = (set, get) => ({
         set(state => void (state.devices.pic.IRR &= ~mask));
       },
 
-      update: (): SimulatorResult<void> => {
+      update: () => {
         const { EOI, IMR, IRR, ISR } = get().devices.pic;
 
         if (ISR !== 0) {

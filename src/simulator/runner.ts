@@ -52,7 +52,7 @@ export type RunnerSlice = {
     loop: () => Promise<SimulatorResult<void>>;
 
     devices: RunnerDevices;
-    updateDevices: (timeElapsed: number) => void;
+    updateDevices: (timeElapsed: number) => SimulatorResult<void>;
 
     inputListener: InputListener | null;
     instructionTime: number;
@@ -159,7 +159,11 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
           break;
         }
 
-        get().__runnerInternal.updateDevices(timeElapsed);
+        const devicesResult = get().__runnerInternal.updateDevices(timeElapsed);
+        if (devicesResult.isErr()) {
+          result = devicesResult;
+          break;
+        }
 
         // Clear action
         if (action !== null) {
@@ -197,7 +201,8 @@ export const createRunnerSlice: SimulatorSlice<RunnerSlice> = (set, get) => ({
 
       // I leave the PIC update last because it may trigger
       // an interrupt from one of the other devices.
-      get().devices.pic.update();
+      const picResult = get().devices.pic.update();
+      return picResult;
     },
 
     // #=========================================================================#
