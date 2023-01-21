@@ -52,15 +52,17 @@ export class CompilerError<Code extends CompilerErrorCode> extends Error {
     return translate(lang, `compilerErrors.${this.code}`, ...this.context);
   }
 
+  // Just for internal use, should never be shown to the user.
   get message() {
-    return this.translate("en");
-  }
-
-  toString() {
-    let message = this.message;
+    let message = this.translate("en");
     if (this.position) {
       message += ` (${this.position[0]}:${this.position[1]})`;
     }
+
     return message;
+  }
+
+  toString() {
+    return this.message;
   }
 }

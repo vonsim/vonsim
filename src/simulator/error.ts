@@ -36,6 +36,7 @@ export class SimulatorError<Code extends SimulatorErrorCode> extends Error {
     return translate(lang, `simulatorErrors.${this.code}`, ...this.context);
   }
 
+  // Just for internal use, should never be shown to the user.
   get message() {
     return this.translate("en");
   }
