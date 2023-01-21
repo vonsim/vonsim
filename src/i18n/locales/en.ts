@@ -67,6 +67,7 @@ export const en = {
       "duplicated-label": (label: string) => `Duplicated label "${label}".`,
       "end-must-be-the-last-statement": "END must be the last statement.",
       "expected-address-after-org": "Expected address after ORG.",
+      "expected-argument": "Expected argument.",
       "expected-eos": "Expected end of statement.",
       "expected-identifier": (got: Token) => `Expected identifier, got ${got.type}.`,
       "expected-instruction": (got: Token) => `Expected instruction, got ${got.type}.`,
@@ -77,7 +78,6 @@ export const en = {
       "expected-literal-after-expression": (expected: string) => `Expected "${expected}" after expression.`,
       // prettier-ignore
       "expected-literal-after-literal": (expected: string, after: string) => `Expected "${expected}" after "${after}".`,
-      "expected-operand": "Expected operand.",
       // prettier-ignore
       "expected-type": (expected: TokenType, got: TokenType) => `Expected ${expected}, got ${got}.`,
       "unclosed-parenthesis": "Unclosed parenthesis.",

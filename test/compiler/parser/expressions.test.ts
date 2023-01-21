@@ -216,7 +216,7 @@ it("unary", () => {
     ]
   `);
   expect(() => parse("DB --1")).toThrowErrorMatchingInlineSnapshot(
-    '"Unexpected token: MINUS. (4:5)"',
+    '"Ambiguous unary expression detected. Use parentheses to disambiguate. (4:5)"',
   );
 });
 

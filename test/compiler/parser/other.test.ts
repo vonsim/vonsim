@@ -117,13 +117,13 @@ describe("END", () => {
 describe("Labels", () => {
   it("no duplicates", () => {
     expect(() => parse("data DB 1 \n data DW 1")).toThrowErrorMatchingInlineSnapshot(
-      '"Duplicated label \\"label\\". (12:16)"',
+      '"Duplicated label \\"DATA\\". (12:16)"',
     );
     expect(() => parse("DATA DB 1 \n data DW 1")).toThrowErrorMatchingInlineSnapshot(
-      '"Duplicated label \\"label\\". (12:16)"',
+      '"Duplicated label \\"DATA\\". (12:16)"',
     );
     expect(() => parse("label DB 1 \n label: HLT")).toThrowErrorMatchingInlineSnapshot(
-      '"Duplicated label \\"label\\". (13:19)"',
+      '"Duplicated label \\"LABEL\\". (13:19)"',
     );
     expect(parse("DATA DB 1\ndata2 DW 1")).toMatchInlineSnapshot(`
       [

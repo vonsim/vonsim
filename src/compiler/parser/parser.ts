@@ -429,7 +429,9 @@ export class Parser {
       };
     }
 
-    throw new CompilerError("parser.expected-operand").at(this.calculatePositionRange(this.peek()));
+    throw new CompilerError("parser.expected-argument").at(
+      this.calculatePositionRange(this.peek()),
+    );
   }
 
   private unaryNE(): NumberExpression {

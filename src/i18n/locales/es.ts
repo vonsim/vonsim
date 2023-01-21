@@ -69,6 +69,7 @@ export const es: Locale = {
       "duplicated-label": label => `Etiqueta duplicada "${label}".`,
       "end-must-be-the-last-statement": "END debe ser la última instrucción.",
       "expected-address-after-org": "Se esperaba una dirección después de ORG.",
+      "expected-argument": "Se esperaba un argumento.",
       "expected-eos": "Se esperaba que la instrucción termine.",
       "expected-identifier": got => `Se esperaba un identificador, se obtuvo ${got.type}.`,
       "expected-instruction": got => `Se esperaba una instrucción, se obtuvo ${got.type}.`,
@@ -79,7 +80,6 @@ export const es: Locale = {
       "expected-literal-after-expression": expected => `Se esperaba "${expected}" después de la expresión.`,
       // prettier-ignore
       "expected-literal-after-literal": (expected, after) => `Se esperaba "${expected}" después de "${after}".`,
-      "expected-operand": "Se esperaba un operando.",
       "expected-type": (expected, got) => `Se esperaba ${expected}, se obtuvo ${got}.`,
       "unclosed-parenthesis": "Paréntesis sin cerrar.",
     },
