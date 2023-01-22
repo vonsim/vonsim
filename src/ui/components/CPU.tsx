@@ -67,31 +67,32 @@ export function CPU({ className }: { className?: string }) {
         </Card>
 
         <Card title={translate("cpu.alu")}>
-          <div className="grid w-min grid-cols-[4ch_18ch] gap-x-2 pt-1 font-mono">
+          <div className="grid w-min grid-cols-[3ch_17ch] gap-x-2 p-2 font-mono">
             <div className="row-span-2 self-end text-right font-bold text-slate-800">
               {alu.operation}
             </div>
             <div className="text-left text-slate-600">{renderWord(alu.left)}</div>
             <div className="text-left text-slate-600">{renderWord(alu.right)}</div>
-            <div className="col-span-2 border-t" />
+            <span />
+            <div className="border-t" />
             <span />
             <div className="text-left text-slate-600">{renderWord(alu.result)}</div>
-            <hr className="col-span-2" />
-            <Table
-              className="col-span-2 w-full"
-              columns={["C", "O", "S", "Z"]}
-              rows={[
-                {
-                  cells: [
-                    { content: alu.flags.carry ? "1" : "0" },
-                    { content: alu.flags.overflow ? "1" : "0" },
-                    { content: alu.flags.sign ? "1" : "0" },
-                    { content: alu.flags.zero ? "1" : "0" },
-                  ],
-                },
-              ]}
-            />
           </div>
+          <hr />
+          <Table
+            className="w-full"
+            columns={["C", "O", "S", "Z"]}
+            rows={[
+              {
+                cells: [
+                  { content: alu.flags.carry ? "1" : "0" },
+                  { content: alu.flags.overflow ? "1" : "0" },
+                  { content: alu.flags.sign ? "1" : "0" },
+                  { content: alu.flags.zero ? "1" : "0" },
+                ],
+              },
+            ]}
+          />
         </Card>
       </div>
     </Card>
