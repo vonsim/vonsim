@@ -4,7 +4,6 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 import { compile } from "@/compiler";
-import { sleep } from "@/helpers";
 import { useSimulator } from "@/simulator";
 import { SimulatorError } from "@/simulator/error";
 
@@ -52,7 +51,7 @@ export const useRunner = create<RunnerStore>()(
       match([state, action] as const)
         .with(
           [{ type: P.union("paused", "stopped") }, P.union("run", "step")],
-          async ([state, action]) => {
+          ([state, action]) => {
             if (state.type === "stopped") {
               if (!window.codemirror) return;
 
@@ -104,18 +103,18 @@ export const useRunner = create<RunnerStore>()(
             // action === "run"
             // Start the continuous loop
 
-            const resolution = 15; // ms
-            while (get().state.type === "running") {
-              const start = performance.now();
+            const resolution = 8; // ms
+            const interval = setInterval(() => {
+              if (get().state.type !== "running") {
+                clearInterval(interval);
+                return;
+              }
 
               get().updateSimulator();
 
               // Increment the current time by the event loop resolution
               set(runner => ({ currentTime: runner.currentTime + resolution }));
-
-              const end = performance.now();
-              await sleep(resolution - (end - start));
-            }
+            }, resolution);
           },
         )
         .with([{ type: P.not("stopped") }, "stop"], () => get().finish())

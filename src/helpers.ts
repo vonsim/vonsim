@@ -155,9 +155,3 @@ export type PathValue<T, P extends Path<T>> = T extends any
     ? T[P]
     : never
   : never;
-
-// #=========================================================================#
-// # Others                                                                  #
-// #=========================================================================#
-
-export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
