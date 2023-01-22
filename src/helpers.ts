@@ -44,12 +44,34 @@ export const pioMode = (c: number, i: number): "input" | "output" =>
 // # Numbers                                                                 #
 // #=========================================================================#
 
-export function unsignedToSigned(n: number, size: Size): number {
-  return n > MAX_VALUE[size] ? MAX_VALUE[size] - n : n;
+/**
+ * @param n The byte/word (positive integer)
+ * @param size Word or Byte
+ * @returns The number as a signed integer.
+ *
+ * @example
+ * binaryToSignedInt(0, "byte") // 0
+ * binaryToSignedInt(127, "byte") // 127
+ * binaryToSignedInt(128, "byte") // -128
+ * binaryToSignedInt(255, "byte") // -1
+ */
+export function binaryToSignedInt(n: number, size: Size): number {
+  return n > MAX_SIGNED_VALUE[size] ? n - MAX_VALUE[size] - 1 : n;
 }
 
-export function signedToUnsigned(n: number, size: Size): number {
-  return n < 0 ? MAX_SIGNED_VALUE[size] - n : n;
+/**
+ * @param n The number (positive or negative integer)
+ * @param size Word or Byte
+ * @returns The number as a byte/word.
+ *
+ * @example
+ * signedIntToBinary(0, "byte") // 0
+ * signedIntToBinary(127, "byte") // 127
+ * signedIntToBinary(-128, "byte") // 128
+ * signedIntToBinary(-1, "byte") // 255
+ */
+export function signedIntToBinary(n: number, size: Size): number {
+  return n < 0 ? MAX_VALUE[size] + n + 1 : n;
 }
 
 export const randomByte = () => Math.floor(Math.random() * MAX_VALUE.byte);
@@ -70,7 +92,7 @@ export function renderMemoryCell(n: number, representation: MemoryRepresentation
   return match(representation)
     .with("hex", () => n.toString(16).padStart(2, "0").toUpperCase())
     .with("bin", () => n.toString(2).padStart(8, "0"))
-    .with("int", () => unsignedToSigned(n, "byte").toString(10)) // Ca2 or 2's complement
+    .with("int", () => binaryToSignedInt(n, "byte").toString(10)) // Ca2 or 2's complement
     .with("uint", () => n.toString(10)) // BSS or unsinged int
     .with("ascii", () => String.fromCharCode(n))
     .exhaustive();

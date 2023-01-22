@@ -1,12 +1,14 @@
 import { match } from "ts-pattern";
 
-import { MAX_SIGNED_VALUE, MAX_VALUE, MIN_SIGNED_VALUE, Size } from "@/config";
-import { unsignedToSigned } from "@/helpers";
+import { MAX_VALUE, Size } from "@/config";
+import { bit } from "@/helpers";
 import type { SimulatorSlice } from "@/simulator";
 
 export type ArithmeticOperation = "ADD" | "ADC" | "SUB" | "SBB";
 export type LogicalOperation = "AND" | "OR" | "XOR" | "NOT";
 export type ALUOperation = ArithmeticOperation | LogicalOperation;
+
+type Flags = { carry: boolean; overflow: boolean; sign: boolean; zero: boolean };
 
 export type ALUSlice = {
   alu: {
@@ -14,7 +16,7 @@ export type ALUSlice = {
     right: number;
     result: number;
     operation: ALUOperation;
-    flags: { carry: boolean; overflow: boolean; sign: boolean; zero: boolean };
+    flags: Flags;
   };
 
   executeArithmetic: (
@@ -38,47 +40,51 @@ export const createALUSlice: SimulatorSlice<ALUSlice> = (set, get) => ({
     flags: { carry: false, overflow: false, sign: false, zero: true },
   },
 
-  executeArithmetic: (operation, uleft, uright, size) => {
-    const left = unsignedToSigned(uleft, size);
-    const right = unsignedToSigned(uright, size);
-
-    // Unsigned result
-    let uresult: number = match(operation)
-      .with("ADD", () => uleft + uright)
-      .with("ADC", () => uleft + uright + Number(get().alu.flags.carry))
-      .with("SUB", () => uleft - uright)
-      .with("SBB", () => uleft - uright - Number(get().alu.flags.carry))
-      .exhaustive();
-
-    // Signed result
-    const result: number = match(operation)
+  executeArithmetic: (operation, left, right, size) => {
+    let result: number = match(operation)
       .with("ADD", () => left + right)
       .with("ADC", () => left + right + Number(get().alu.flags.carry))
       .with("SUB", () => left - right)
       .with("SBB", () => left - right - Number(get().alu.flags.carry))
       .exhaustive();
 
-    const flags = {
-      carry: uresult < 0 || uresult > MAX_VALUE[size],
-      overflow: result < MIN_SIGNED_VALUE[size] || result > MAX_SIGNED_VALUE[size],
-      sign: result < 0,
-      zero: result === 0,
-    };
+    const flags: Flags = { carry: false, overflow: false, sign: false, zero: false };
 
-    if (uresult > MAX_VALUE[size]) uresult = uresult - MAX_VALUE[size] - 1; // overflow
-    else if (uresult < 0) uresult = uresult + MAX_VALUE[size] + 1; // underflow
+    if (result > MAX_VALUE[size]) {
+      // overflow
+      flags.carry = true;
+      result -= MAX_VALUE[size] + 1;
+    } else if (result < 0) {
+      // underflow
+      flags.carry = true;
+      result += MAX_VALUE[size] + 1;
+    }
+
+    const signBit = size === "byte" ? 7 : 15;
+    const leftSign = bit(left, signBit);
+    const rightSign = bit(right, signBit);
+    const resultSign = bit(result, signBit);
+
+    if (operation === "ADD" || operation === "ADC") {
+      // When adding, the overflow flag is set if
+      // - the sum of two positive numbers is negative, or
+      // - the sum of two negative numbers is positive.
+      flags.overflow = leftSign === rightSign && leftSign !== resultSign;
+    } else {
+      // When subtracting, the overflow flag is set if
+      // - a positive number minus a negative number is negative, or
+      // - a negative number minus a positive number is positive.
+      flags.overflow = leftSign !== rightSign && rightSign === resultSign;
+    }
+
+    flags.sign = resultSign;
+    flags.zero = result === 0;
 
     set({
-      alu: {
-        left,
-        right,
-        result: uresult,
-        operation,
-        flags,
-      },
+      alu: { left, right, result, operation, flags },
     });
 
-    return uresult;
+    return result;
   },
 
   executeLogical: (operation, left, right, size) => {
@@ -89,21 +95,15 @@ export const createALUSlice: SimulatorSlice<ALUSlice> = (set, get) => ({
       .with("NOT", () => ~right)
       .exhaustive();
 
-    const flags = {
+    const flags: Flags = {
       carry: false,
       overflow: false,
-      sign: result >> (size === "byte" ? 7 : 15) === 1,
+      sign: bit(result, size === "byte" ? 7 : 15),
       zero: result === 0,
     };
 
     set({
-      alu: {
-        left,
-        right,
-        result,
-        operation,
-        flags,
-      },
+      alu: { left, right, result, operation, flags },
     });
 
     return result;
@@ -121,10 +121,10 @@ export const createALUSlice: SimulatorSlice<ALUSlice> = (set, get) => ({
 
   decodeFlags: bits => {
     const flags = {
-      carry: (bits & 0b0001) !== 0,
-      overflow: (bits & 0b0010) !== 0,
-      sign: (bits & 0b0100) !== 0,
-      zero: (bits & 0b1000) !== 0,
+      carry: bit(bits, 0),
+      overflow: bit(bits, 1),
+      sign: bit(bits, 2),
+      zero: bit(bits, 3),
     };
     set(state => {
       state.alu.flags = flags;
