@@ -41,7 +41,7 @@ export const createPIOSlice: DeviceSlice<PIOSlice> = (set, get) => ({
        * modifications made by external devices never affect the CPU directly.
        */
       setRegister: (reg, value) => {
-        const config = get().__runnerInternal.devices;
+        const config = get().devices.configuration;
 
         if (config === "switches-leds") {
           // PA: Switches

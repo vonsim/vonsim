@@ -90,6 +90,7 @@ export const en = {
     // prettier-ignore
     "address-out-of-range": (address: number) =>`Memory address ${renderAddress(address)} is out of range (max memory address: ${renderAddress(MAX_MEMORY_ADDRESS)}).`,
     "compile-error": "Compile error. Fix the errors and try again.",
+    "invalid-action": "Invalid action.",
     // prettier-ignore
     "io-memory-not-implemented": (address: number) => `I/O memory address ${renderAddress(address)} has no implementation.`,
     // prettier-ignore

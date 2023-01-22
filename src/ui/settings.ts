@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 
 import { Language, LANGUAGES } from "@/config";
 import type { MemoryRepresentation } from "@/helpers";
+import type { DevicesConfiguration } from "@/simulator/devices";
 import type { MemoryConfig } from "@/simulator/program";
-import type { RunnerDevices } from "@/simulator/runner";
 
 export type SettingsStore = {
   language: Language;
@@ -16,8 +16,8 @@ export type SettingsStore = {
   memoryOnReset: MemoryConfig;
   setMemoryOnReset: (mode: MemoryConfig) => void;
 
-  devicesConfiguration: RunnerDevices;
-  setDevicesConfiguration: (config: RunnerDevices) => void;
+  devicesConfiguration: DevicesConfiguration;
+  setDevicesConfiguration: (config: DevicesConfiguration) => void;
 
   cpuSpeed: number;
   setCPUSpeed: (speed: number) => void;

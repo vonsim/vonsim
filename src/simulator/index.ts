@@ -12,19 +12,19 @@ import { immer } from "zustand/middleware/immer";
 
 import { ALUSlice, createALUSlice } from "./alu";
 import { createDevicesSlice, DevicesSlice } from "./devices";
+import { createExecuteSlice, ExecuteSlice } from "./execute";
 import { createInterruptsSlice, InterruptsSlice } from "./interrupts";
 import { createMemorySlice, MemorySlice } from "./memory";
 import { createProgramSlice, ProgramSlice } from "./program";
 import { createRegistersSlice, RegistersSlice } from "./registers";
-import { createRunnerSlice, RunnerSlice } from "./runner";
 
 export type SimulatorStore = ALUSlice &
   DevicesSlice &
+  ExecuteSlice &
   InterruptsSlice &
   MemorySlice &
   ProgramSlice &
-  RegistersSlice &
-  RunnerSlice;
+  RegistersSlice;
 
 export type SimulatorSlice<T> = StateCreator<SimulatorStore, [["zustand/immer", unknown]], [], T>;
 
@@ -32,11 +32,11 @@ export const useSimulator = create<SimulatorStore>()(
   immer((...a) => ({
     ...createALUSlice(...a),
     ...createDevicesSlice(...a),
+    ...createExecuteSlice(...a),
     ...createInterruptsSlice(...a),
     ...createMemorySlice(...a),
     ...createProgramSlice(...a),
     ...createRegistersSlice(...a),
-    ...createRunnerSlice(...a),
   })),
 );
 

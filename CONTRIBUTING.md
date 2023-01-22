@@ -30,16 +30,17 @@ Once the code has been compiled, it need to be executed. Under `src/simulator` t
 Interesting bits of the simulator:
 
 - `program.ts` has `loadProgram`, which load the program return by the compiler into the simulator;
-- `runner.ts` has the event loop which executes each instruction;
+- `execute.ts` has the logic behind each instruction;
 - `devices/*` has each one of the devices.
-
-There is more info about the how each instruction is executed inside `runner.ts`.
 
 ### The UI
 
 Given the abstractions made before, this is the "dumb" part of the app. Here you'll find, mostly, [**React**](https://reactjs.org/) components. If you want to make any change that involves anything visual, you should know the basics of React, hooks and JSX.
 
-These components can listen to changes in the simulator state by calling `useSimulator`.
+Here, the connection to the simulator is made via two ways.
+
+- One is the `useSimulator` hook: components can use it to listen to changes of state (e.g. register values, LEDs on/off).
+- The other is `src/ui/runner.ts`, which makes the simulator _alive_ — it has control over the clocks an execution cycles. It's here and not inside `simulator` because it mostly handles interactions with the user.
 
 Furthermore, for the styles we use [**Tailwind CSS**](https://tailwindcss.com/), a utility-first CSS framework. It's similar to doing inline CSS, but not quite. [Here is a good reading](https://tailwindcss.com/docs/utility-first) in case you've never used Tailwind.
 

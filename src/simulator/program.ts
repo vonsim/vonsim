@@ -15,12 +15,19 @@ import {
 import { INITIAL_IP, MEMORY_SIZE } from "@/config";
 import { bit, byteArray, randomByte, randomWord, splitLowHigh } from "@/helpers";
 import type { SimulatorSlice } from "@/simulator";
+import type { DevicesConfiguration } from "@/simulator/devices";
 
 export type MemoryConfig = "empty" | "random" | "keep";
 
 export type ProgramSlice = {
   program: Program | null;
-  loadProgram: (program: Program, memoryConfig: MemoryConfig) => void;
+  loadProgram: (
+    program: Program,
+    options: {
+      memoryConfig: MemoryConfig;
+      devicesConfiguration: DevicesConfiguration;
+    },
+  ) => void;
 };
 
 const writeByte = (memory: ArrayBuffer, address: number, value: number): void => {
@@ -33,7 +40,7 @@ const writeWord = (memory: ArrayBuffer, address: number, value: number): void =>
 
 export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
   program: null,
-  loadProgram: (program, memoryConfig) => {
+  loadProgram: (program, { memoryConfig, devicesConfiguration }) => {
     const memory: ArrayBuffer =
       memoryConfig === "empty"
         ? new ArrayBuffer(MEMORY_SIZE)
@@ -138,6 +145,7 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
       state.registers.SP = MEMORY_SIZE;
       state.registers.MAR = 0x0000;
       state.registers.MBR = 0x0000;
+      state.devices.configuration = devicesConfiguration;
       state.devices.pic.EOI = 0b0000_0000;
       state.devices.pic.IMR = 0b1111_1111;
       state.devices.pic.ISR = 0b0000_0000;

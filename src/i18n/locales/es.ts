@@ -91,6 +91,7 @@ export const es: Locale = {
     // prettier-ignore
     "address-out-of-range": address => `La dirección de memoria ${renderAddress(address)} está fuera de rango (dirección máxima de memoria: ${renderAddress(MAX_MEMORY_ADDRESS)}).`,
     "compile-error": "Error de compilación. Solucione los errores y vuelva a intentar.",
+    "invalid-action": "Acción inválida.",
     // prettier-ignore
     "io-memory-not-implemented": address => `La dirección de memoria E/S ${renderAddress(address)} no está implementada.`,
     // prettier-ignore

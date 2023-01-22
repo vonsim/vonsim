@@ -5,8 +5,7 @@ export type TimerSlice = {
   timer: {
     CONT: number;
     COMP: number;
-    lastTick: number;
-    update: (timeElapsed: number) => void;
+    tick: () => void;
   };
 };
 
@@ -15,12 +14,9 @@ export const createTimerSlice: DeviceSlice<TimerSlice> = (set, get) => ({
     timer: {
       CONT: 0x00,
       COMP: 0x00,
-      lastTick: 0,
-      update: timeElapsed => {
+      tick: () => {
         let { CONT } = get().devices.timer;
-        const { COMP, lastTick } = get().devices.timer;
-
-        if (timeElapsed - lastTick < 1000) return;
+        const { COMP } = get().devices.timer;
 
         CONT++;
         if (CONT > MAX_VALUE["byte"]) CONT = 0x00;
@@ -30,10 +26,7 @@ export const createTimerSlice: DeviceSlice<TimerSlice> = (set, get) => ({
           get().devices.pic.request(1);
         }
 
-        set(state => {
-          state.devices.timer.CONT = CONT;
-          state.devices.timer.lastTick = timeElapsed;
-        });
+        set(state => void (state.devices.timer.CONT = CONT));
       },
     },
   },

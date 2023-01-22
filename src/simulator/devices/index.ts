@@ -18,6 +18,8 @@ import { createTimerSlice, TimerSlice } from "./timer";
 
 export type DeviceSlice<T> = SimulatorSlice<{ devices: T }>;
 
+export type DevicesConfiguration = "switches-leds" | "printer-pio" | "printer-handshake";
+
 export type DevicesSlice = {
   devices: ConsoleSlice &
     F10Slice &
@@ -27,7 +29,9 @@ export type DevicesSlice = {
     PIOSlice &
     PrinterSlice &
     SwitchesSlice &
-    TimerSlice;
+    TimerSlice & {
+      configuration: DevicesConfiguration;
+    };
 
   getIOMemory: (address: number, size: Size) => SimulatorResult<number>;
   setIOMemory: (address: number, size: Size, value: number) => SimulatorResult<void>;
@@ -44,6 +48,8 @@ export const createDevicesSlice: SimulatorSlice<DevicesSlice> = (...a) => ({
     ...createPrinterSlice(...a).devices,
     ...createSwitchesSlice(...a).devices,
     ...createTimerSlice(...a).devices,
+
+    configuration: "switches-leds",
   },
 
   getIOMemory: (address, size) => {

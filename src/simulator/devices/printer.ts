@@ -1,16 +1,14 @@
 import { PRINTER_BUFFER_SIZE } from "@/config";
-import { pioMode } from "@/helpers";
+import { bit, pioMode } from "@/helpers";
 import type { DeviceSlice } from "@/simulator/devices";
 
 export type PrinterSlice = {
   printer: {
     output: string;
     buffer: string[];
-    printerSpeed: number;
-    lastTick: number;
 
     addToBuffer: (char: number) => void;
-    update: (timeElapsed: number) => void;
+    consumeBuffer: () => void;
   };
 };
 
@@ -19,8 +17,6 @@ export const createPrinterSlice: DeviceSlice<PrinterSlice> = (set, get) => ({
     printer: {
       output: "",
       buffer: [],
-      printerSpeed: 0,
-      lastTick: 0,
 
       addToBuffer: char => {
         const buffer = get().devices.printer.buffer;
@@ -29,37 +25,42 @@ export const createPrinterSlice: DeviceSlice<PrinterSlice> = (set, get) => ({
         set(state => void (state.devices.printer.buffer = [...buffer, String.fromCharCode(char)]));
       },
 
-      update: timeElapsed => {
-        set(state => {
-          const { lastTick, printerSpeed } = state.devices.printer;
+      consumeBuffer: () => {
+        let buffer = get().devices.printer.buffer.length;
 
-          if (timeElapsed - lastTick >= printerSpeed) {
-            state.devices.printer.lastTick = timeElapsed;
+        if (buffer > 0) {
+          set(state => {
+            const [first, ...rest] = state.devices.printer.buffer;
+            state.devices.printer.buffer = rest;
 
-            // If buffer, print first character
-            if (state.devices.printer.buffer.length > 0) {
-              const [first, ...rest] = state.devices.printer.buffer;
-              state.devices.printer.buffer = rest;
+            if (first === "\f") state.devices.printer.output = "";
+            else state.devices.printer.output += first;
+          });
+          buffer--;
+        }
 
-              if (first === "\f") state.devices.printer.output = "";
-              else state.devices.printer.output += first;
-            }
-          }
+        const config = get().devices.configuration;
+        const busy = buffer >= PRINTER_BUFFER_SIZE;
 
-          // Set busy bit
-          const busy = state.devices.printer.buffer.length >= PRINTER_BUFFER_SIZE;
+        if (config === "printer-pio") {
+          if (pioMode(get().devices.pio.CA, 0) !== "input") return;
 
-          const config = state.__runnerInternal.devices;
-          if (config === "printer-pio") {
-            if (pioMode(state.devices.pio.CA, 0) !== "input") return;
+          const busyBit = bit(get().devices.pio.PA, 0);
+          if (busyBit === busy) return;
 
+          set(state => {
             if (busy) state.devices.pio.PA |= 1;
             else state.devices.pio.PA &= ~1;
-          } else if (config === "printer-handshake") {
+          });
+        } else if (config === "printer-handshake") {
+          const busyBit = bit(get().devices.handshake.state, 0);
+          if (busyBit === busy) return;
+
+          set(state => {
             if (busy) state.devices.handshake.state |= 1;
             else state.devices.handshake.state &= ~1;
-          }
-        });
+          });
+        }
       },
     },
   },

@@ -1,8 +1,7 @@
 import { Listbox } from "@headlessui/react";
 
-import { useSimulator } from "@/simulator";
-
 import { useTranslate } from "../hooks/useTranslate";
+import { useRunner } from "../runner";
 
 export function FrecuencyPicker({
   value,
@@ -17,10 +16,10 @@ export function FrecuencyPicker({
 }) {
   const translate = useTranslate();
 
-  const runner = useSimulator(state => state.runner);
+  const stopped = useRunner(runner => runner.state.type === "stopped");
 
   return (
-    <Listbox value={value} onChange={onChange} disabled={runner !== "stopped"}>
+    <Listbox value={value} onChange={onChange} disabled={!stopped}>
       <div className={className}>
         <Listbox.Label className="text-xs font-bold uppercase tracking-wider text-slate-700">
           {translate("frecuency")}

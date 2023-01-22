@@ -17,7 +17,7 @@ export const createHandshakeSlice: DeviceSlice<HandshakeSlice> = (set, get) => (
       state: 0, // IXXX XXSB, where I is interrupt, S is strobe, B is busy
 
       setData: data => {
-        if (get().__runnerInternal.devices !== "printer-handshake") return;
+        if (get().devices.configuration !== "printer-handshake") return;
         set(state => {
           state.devices.handshake.data = data;
           state.devices.handshake.state |= 0b10; // set strobe to 1
@@ -25,7 +25,7 @@ export const createHandshakeSlice: DeviceSlice<HandshakeSlice> = (set, get) => (
       },
 
       update: () => {
-        if (get().__runnerInternal.devices !== "printer-handshake") return;
+        if (get().devices.configuration !== "printer-handshake") return;
 
         const { data, state } = get().devices.handshake;
 

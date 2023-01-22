@@ -1,13 +1,11 @@
 import clsx from "clsx";
 import { useCallback } from "react";
-import { toast } from "react-hot-toast";
 import { useEvent, useLongPress, useToggle } from "react-use";
 import { shallow } from "zustand/shallow";
 
-import { useSimulator } from "@/simulator";
-import type { RunnerAction } from "@/simulator/runner";
 import DebugIcon from "~icons/carbon/debug";
 import DocumentationIcon from "~icons/carbon/document";
+import ErrorIcon from "~icons/carbon/error";
 import KeyboardIcon from "~icons/carbon/keyboard";
 import GitHubIcon from "~icons/carbon/logo-github";
 import Logo from "~icons/carbon/machine-learning";
@@ -19,7 +17,7 @@ import AbortIcon from "~icons/carbon/stop-sign";
 
 import { useMobile } from "../hooks/useMobile";
 import { useTranslate } from "../hooks/useTranslate";
-import { useSettings } from "../settings";
+import { useRunner } from "../runner";
 import { LangPicker } from "./LangPicker";
 
 /**
@@ -98,29 +96,32 @@ export function Header() {
 function State() {
   const translate = useTranslate();
 
-  const state = useSimulator(state => state.runner);
+  const state = useRunner(runner => runner.state);
 
   return (
     <div
       className={clsx(
         "mx-auto flex h-6 w-40 select-none items-center justify-center gap-1 rounded-full lg:mx-8",
         "text-center text-sm font-semibold",
-        state === "running" && "bg-emerald-200 text-emerald-700",
-        state === "paused" && "bg-amber-200 text-amber-700",
-        state === "waiting-for-input" && "bg-amber-200 text-amber-700",
-        state === "stopped" && "bg-sky-200 text-sky-700",
+        state.type === "running" && "bg-emerald-200 text-emerald-700",
+        state.type === "paused" && "bg-amber-200 text-amber-700",
+        state.type === "waiting-for-input" && "bg-amber-200 text-amber-700",
+        state.type === "stopped" &&
+          (state.reason === "halt" ? "bg-sky-200 text-sky-700" : "bg-red-200 text-red-700"),
       )}
     >
-      {state === "running" ? (
+      {state.type === "running" ? (
         <RunningIcon className="h-4 w-4 animate-spin" />
-      ) : state === "paused" ? (
+      ) : state.type === "paused" ? (
         <PausedIcon className="h-4 w-4 animate-pulse" />
-      ) : state === "waiting-for-input" ? (
+      ) : state.type === "waiting-for-input" ? (
         <KeyboardIcon className="h-4 w-4 animate-bounce" />
-      ) : (
+      ) : state.reason === "halt" ? (
         <AbortIcon className="h-4 w-4" />
+      ) : (
+        <ErrorIcon className="h-4 w-4" />
       )}
-      <span>{translate(`runner.state.${state}`)}</span>
+      <span>{translate(`runner.state.${state.type}`)}</span>
     </div>
   );
 }
@@ -128,24 +129,9 @@ function State() {
 function Controls() {
   const translate = useTranslate();
 
-  const { state, dispatchRunner } = useSimulator(
-    state => ({
-      state: state.runner,
-      dispatchRunner: state.dispatchRunner,
-    }),
+  const { state, dispatch } = useRunner(
+    runner => ({ state: runner.state, dispatch: runner.dispatch }),
     shallow,
-  );
-
-  const dispatch = useCallback(
-    (action: RunnerAction) =>
-      dispatchRunner(action).then(result => {
-        if (result.isErr()) {
-          const error = result.unwrapErr();
-          const lang = useSettings.getState().language;
-          toast.error(error.translate(lang));
-        }
-      }),
-    [dispatchRunner],
   );
 
   const onKeyDown = useCallback(
@@ -166,7 +152,7 @@ function Controls() {
 
   return (
     <div className="flex h-12 items-center justify-center gap-4 lg:h-full lg:justify-start">
-      {state === "stopped" ? (
+      {state.type === "stopped" ? (
         <>
           <Button onClick={() => dispatch("run")} title="F5">
             <RunIcon /> {translate("runner.action.start")}
@@ -178,11 +164,11 @@ function Controls() {
         </>
       ) : (
         <>
-          <Button onClick={() => dispatch("run")} title="F5" disabled={state !== "paused"}>
+          <Button onClick={() => dispatch("run")} title="F5" disabled={state.type !== "paused"}>
             <FinishIcon /> {translate("runner.action.run-until-halt")}
           </Button>
 
-          <Button onClick={() => dispatch("step")} title="F11" disabled={state !== "paused"}>
+          <Button onClick={() => dispatch("step")} title="F11" disabled={state.type !== "paused"}>
             <RunIcon /> {translate("runner.action.step")}
           </Button>
 

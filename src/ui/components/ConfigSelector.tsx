@@ -2,16 +2,15 @@ import { RadioGroup } from "@headlessui/react";
 import clsx from "clsx";
 import { useMemo } from "react";
 
-import { useSimulator } from "@/simulator";
-
 import { useTranslate } from "../hooks/useTranslate";
+import { useRunner } from "../runner";
 import { useSettings } from "../settings";
 
 export function ConfigSelector() {
   const tranlate = useTranslate();
   const settings = useSettings();
 
-  const runner = useSimulator(state => state.runner);
+  const stopped = useRunner(runner => runner.state.type === "stopped");
 
   return (
     <div className="flex w-min flex-col flex-wrap gap-y-2 gap-x-4 sm:max-h-32">
@@ -24,7 +23,7 @@ export function ConfigSelector() {
           "printer-pio": tranlate("settings.devicesConfiguration.printer-pio"),
           "printer-handshake": tranlate("settings.devicesConfiguration.printer-handshake"),
         }}
-        disabled={runner !== "stopped"}
+        disabled={!stopped}
         flow="column"
       />
 
