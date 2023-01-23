@@ -13,23 +13,22 @@ import { useSettings } from "./settings";
 
 type Ticker = "cpu" | "printer" | "timer";
 type Timer = { lastTick: number; interval: number };
-type InputListener = (ev: KeyboardEvent) => void;
 
 type RunnerStore = {
   state:
     | { type: "running" }
     | { type: "paused" }
-    | { type: "waiting-for-input"; inputListener: InputListener }
+    | { type: "waiting-for-input"; previousState: "running" | "paused" }
     | { type: "stopped"; reason: "halt" | "error" };
   dispatch: (action: "run" | "step" | "stop") => void;
   currentTime: number;
   clocks: Record<Ticker, Timer>;
   updateSimulator: () => void;
+  handleKeyInput: (ev: InputEvent) => void;
   finish: (err?: SimulatorError<any>) => void;
 };
 
 const simulator = () => useSimulator.getState();
-const INPUT_LISTENER_EVENT = "keydown" as const;
 
 export const useRunner = create<RunnerStore>()(
   immer((set, get) => ({
@@ -76,7 +75,6 @@ export const useRunner = create<RunnerStore>()(
               });
 
               set({
-                state: { type: action === "run" ? "running" : "paused" },
                 currentTime: 0,
                 clocks: {
                   cpu: initTimer(Math.round(1000 / cpuSpeed)),
@@ -102,6 +100,7 @@ export const useRunner = create<RunnerStore>()(
 
             // action === "run"
             // Start the continuous loop
+            set({ state: { type: "running" } });
 
             const resolution = 8; // ms
             const interval = setInterval(() => {
@@ -164,30 +163,13 @@ export const useRunner = create<RunnerStore>()(
           set({ state: { type: "paused" } });
           break;
         } else if (ret === "wait-for-input") {
-          const previousState = get().state;
+          set(runner => ({
+            state: { type: "waiting-for-input", previousState: runner.state.type },
+          }));
 
-          const inputListener: InputListener = ev => {
-            let char: string;
-            if (/^[\x20-\xFF]$/.test(ev.key)) char = ev.key;
-            else if (ev.key === "Enter") char = "\n";
-            else return;
-
-            ev.preventDefault();
-            document.removeEventListener(INPUT_LISTENER_EVENT, inputListener);
-
-            const address = simulator().getRegister("BX");
-
-            const saved = simulator().setMemory(address, "byte", char.charCodeAt(0));
-            if (saved.isErr()) return get().finish(saved.unwrapErr());
-
-            simulator().devices.console.write(char);
-
-            set({ state: previousState });
-          };
-
-          document.addEventListener(INPUT_LISTENER_EVENT, inputListener);
-          document.getElementById(CONSOLE_ID)?.scrollIntoView({ behavior: "smooth" });
-          set({ state: { type: "waiting-for-input", inputListener } });
+          const console = document.getElementById(CONSOLE_ID)!;
+          console.scrollIntoView({ behavior: "smooth" });
+          console.focus({ preventScroll: true });
           break;
         }
         // ret = 'continue'
@@ -224,6 +206,37 @@ export const useRunner = create<RunnerStore>()(
     },
 
     /**
+     * Handle a key input from the user. Will be emited by the Console.
+     *
+     * It's a InputEvent and not a KeyboardEvent because the latter
+     * works awfully on mobile devices.
+     * https://clark.engineering/input-on-android-229-unidentified-1d92105b9a04
+     */
+    handleKeyInput: ev => {
+      ev.preventDefault();
+
+      const state = get().state;
+      if (state.type !== "waiting-for-input") return;
+
+      let char: string;
+
+      if (ev.inputType === "insertLineBreak") {
+        char = "\n";
+      } else if (ev.inputType === "insertText" || ev.inputType === "insertCompositionText") {
+        if (!ev.data) return;
+        char = ev.data;
+      } else {
+        return;
+      }
+
+      const result = simulator().handleInt6(char);
+      if (result.isErr()) return get().finish(result.unwrapErr());
+
+      set({ state: { type: "paused" } });
+      get().dispatch(state.previousState === "running" ? "run" : "step");
+    },
+
+    /**
      * Exit the program and notify the user if an error occurred.
      */
     finish: err => {
@@ -232,9 +245,6 @@ export const useRunner = create<RunnerStore>()(
       highlightLine(null);
       setReadOnly(false);
       set(runner => {
-        if (runner.state.type === "waiting-for-input") {
-          document.removeEventListener(INPUT_LISTENER_EVENT, runner.state.inputListener);
-        }
         runner.state = { type: "stopped", reason: err ? "error" : "halt" };
       });
     },

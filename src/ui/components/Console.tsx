@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { shallow } from "zustand/shallow";
 
 import { useSimulator } from "@/simulator";
 
@@ -12,20 +13,30 @@ export function Console({ className }: { className?: string }) {
   const translate = useTranslate();
 
   const output = useSimulator(state => state.devices.console.output);
-  const watingForInput = useRunner(runner => runner.state.type === "waiting-for-input");
+  const { watingForInput, handleKeyInput } = useRunner(
+    runner => ({
+      watingForInput: runner.state.type === "waiting-for-input",
+      handleKeyInput: runner.handleKeyInput,
+    }),
+    shallow,
+  );
 
   return (
     <Card title={translate("devices.external.console")} className={className}>
-      <pre
+      <textarea
         id={CONSOLE_ID}
+        autoComplete="off"
         className={clsx(
-          "h-36 overflow-y-auto whitespace-pre-wrap break-all rounded-b-lg bg-gray-200 p-1 font-mono ring-inset ring-sky-400",
-          watingForInput && "ring",
+          "h-36 w-full rounded-b-lg bg-gray-200 p-1 ring-inset ring-sky-400 focus:outline-none",
+          "resize-none overflow-y-auto whitespace-pre-wrap break-all align-bottom font-mono caret-transparent",
+          watingForInput && "focus:ring",
         )}
-      >
-        {output}
-        {watingForInput && <span className="animate-pulse text-sky-400">█</span>}
-      </pre>
+        value={output}
+        onInput={ev => {
+          ev.preventDefault();
+          handleKeyInput(ev.nativeEvent as InputEvent);
+        }}
+      />
     </Card>
   );
 }
