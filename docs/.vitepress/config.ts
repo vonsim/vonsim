@@ -9,15 +9,12 @@ export default defineConfig({
   cleanUrls: "with-subfolders",
   themeConfig: {
     logo: "/logo.svg",
+    siteTitle: "Documentación",
+    nav: [{ text: "Volver a VonSim", link: "pathname:///" }],
     docFooter: { prev: "Anterior", next: "Siguiente" },
     editLink: {
       pattern: "https://github.com/vonsim/vonsim/edit/main/docs/:path",
       text: "Editar esta página en GitHub",
-    },
-    footer: {
-      message: "Publicado bajo la licencia MIT.",
-      copyright:
-        "Copyright &copy; 2017-presente Facultad de Informática, Universidad Nacional de La Plata.",
     },
     lastUpdatedText: "Última actualización",
     sidebar: [
@@ -52,17 +49,22 @@ export default defineConfig({
               { text: "de control", link: "/como-usar/instrucciones/control" },
             ],
           },
+          { text: "Pila", link: "/como-usar/pila" },
+          { text: "Subrutinas", link: "/como-usar/subrutinas" },
           { text: "Modos de direccionamiento", link: "/como-usar/modos-de-direccionamiento" },
-          { text: "Interrupciones de software", link: "/como-usar/interrupciones-de-software" },
+          { text: "Interrupciones por software", link: "/como-usar/interrupciones-por-software" },
+          { text: "Interrupciones por hardware", link: "/como-usar/interrupciones-por-hardware" },
           {
             text: "Dispositivos",
             link: "/como-usar/dispositivos/listado",
             items: [
-              { text: "Consola", link: "/como-usar/dispositivos/consola" },
+              { text: "Handshake", link: "/como-usar/dispositivos/handshake" },
               { text: "PIC", link: "/como-usar/dispositivos/pic" },
               { text: "PIO", link: "/como-usar/dispositivos/pio" },
-              { text: "Tecla F10", link: "/como-usar/dispositivos/f10" },
               { text: "Timer", link: "/como-usar/dispositivos/timer" },
+              { text: "Consola", link: "/como-usar/dispositivos/consola" },
+              { text: "Impresora", link: "/como-usar/dispositivos/impresora" },
+              { text: "Tecla F10", link: "/como-usar/dispositivos/f10" },
               { text: "Teclas y leds", link: "/como-usar/dispositivos/teclas-y-leds" },
             ],
           },
@@ -75,15 +77,5 @@ export default defineConfig({
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/vonsim/vonsim" }],
     outlineTitle: "Contenidos",
-  },
-  transformHtml: (code, id) => {
-    if (id.endsWith("404.html")) {
-      code = code.replace(
-        '<a class="link" href="/docs/" aria-label="go to home"',
-        '<a class="link" href="/" aria-label="go to home"',
-      );
-    }
-
-    return code.replace('<a class="title" href="/docs/"', '<a class="title" href="/"');
   },
 });

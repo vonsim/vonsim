@@ -10,11 +10,11 @@ Interrumpe al sistema operativo.
 INT n
 ```
 
-_n_ debe ser una de las [posibles interrupciones de software](../interrupciones-de-software.md).
+_n_ debe ser una de las [posibles interrupciones por software](../interrupciones-por-software.md).
 
 ## `IRET`
 
-Retorna de una interrupción.
+Retorna de una [interrupción por hardware](../interrupciones-por-hardware.md).
 
 ```asm
 IRET

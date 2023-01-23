@@ -6,8 +6,17 @@ La arquitectura de VonSim es una [simplificación](/diferencias-con-la-realidad)
 
 El emulador cuenta con
 
-- canales de 16 bits y memoria de tipo byte (8 bits) y word (16 bits);
-- una memoria que va desde `0000h` hasta `3FFFh`;
-- cuatro registros multipropósito de 16 bits: `AX`, `BX`, `CX` y `DX`, y cada uno está divido en su parte low (`AL`) y high (`AH`) de 8 bits cada una;
-- una ALU de 16 bits con las flas C (carry), O (overflow), S (sign) y Z (zero);
-- representación automática de números negativos como complemento a 2 (Ca2).
+- canales de 16 bits;
+- una memoria de 16 kB;
+- cuatro registros multipropósito;
+- interrupciones por software (como lectura y escritura a la consola);
+- interrupciones por hardware con un PIC;
+- múltiples dispositivos: timer, teclas, leds y una impresora centronics.
+
+Este simulador fue diseñado para su uso en las siguientes asignaturas de la Universidad Nacional de La Plata:
+
+- [Organización de computadoras](http://weblidi.info.unlp.edu.ar/catedras/organiza/)
+- [Arquitectura de computadoras](http://weblidi.info.unlp.edu.ar/catedras/arquitecturaP2003/)
+- [Conceptos de arquitectura de computadoras](http://weblidi.info.unlp.edu.ar/catedras/ConArqCom/)
+
+Hecho por [Facundo Quiroga](http://facundoq.github.io/), [Manuel Bustos Berrondo](https://github.com/manuelbb) y [Juan Martín Seery](https://juanm04.com), con ayuda de [Andoni Zubimendi](https://github.com/AndoniZubimendi) y [César Estrebou](https://github.com/cesarares).

@@ -1,6 +1,6 @@
 # Consola
 
-El simulador cuenta con una consola para escribir y leer caracteres. Esta es un dispositivo externo y el CPU puede comunicarse con esta mediante interrupciones de software.
+El simulador cuenta con una consola para escribir y leer caracteres. Esta es un dispositivo externo y el CPU puede comunicarse con esta mediante interrupciones por software.
 
 Con la interrupción 6 (`INT 6`) se detiene la ejecución del código hasta que se escriba un carácter en la consola. El carácter que se escriba será guardado en la dirección de memoria almacenada en `BX` según su representación en ASCII.
 

@@ -14,36 +14,18 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 ## `PUSH`
 
-Apila _fuente_. _fuente_ solo puede ser un registro de 16 bits.
+Apila _fuente_ en la [pila](../pila). _fuente_ solo puede ser un registro de 16 bits.
 
 ```asm
 PUSH fuente
 ```
 
-Internamente, `PUSH` es equivalente a hacer
-
-```asm
-; Este código es didáctico, no corre en VonSim
-
-SUB SP, 2         ; Disminuye el Stack Pointer en 2
-MOV [SP], fuente  ; Copia los contenidos de fuente a donde apunte el SP
-```
-
 ## `POP`
 
-Desapila el tope de la pila y lo carga en _dest_. _dest_ solo puede ser un registro de 16 bits.
+Desapila el tope de la [pila](../pila) y lo carga en _dest_. _dest_ solo puede ser un registro de 16 bits.
 
 ```asm
 POP dest
-```
-
-Internamente, `POP` es equivalente a hacer
-
-```asm
-; Este código es didáctico, no corre en VonSim
-
-MOV dest, [SP]    ; Copia los contenidos de la celda a la que apunta SP en dest
-ADD SP, 2         ; Incrementa el Stack Pointer en 2
 ```
 
 ## `PUSHF`

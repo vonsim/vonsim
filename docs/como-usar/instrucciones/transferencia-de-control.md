@@ -4,39 +4,18 @@
 
 ## `CALL`
 
-Llama a subrutina cuyo inicio es _etiqueta_.
+Llama a [subrutina](../subrutinas) cuyo inicio es _etiqueta_.
 
 ```asm
 CALL etiqueta
 ```
 
-Internamente, `CALL` es equivalente a hacer
-
-```asm
-; Este código es didáctico, no corre en VonSim
-
-PUSH OFFSET sig   ; Apila la instrucción siguiente al CALL
-MOV IP, etiqueta  ; Asigna la dirección de la subrutina al Instruction Pointer
-sig: ...          ; instrucción siguiente al CALL
-```
-
 ## `RET`
 
-Retorna de la subrutina
+Retorna de la [subrutina](../subrutinas).
 
 ```asm
 RET
-```
-
-Internamente, `RET` es equivalente a hacer
-
-```asm
-; Este código es didáctico, no corre en VonSim
-
-; Desapila la instrucción apilada por CALL en el
-; Instruction Pointer, es decir, el IP ahora apunta
-; a la instrucción siguiente al CALL
-POP IP
 ```
 
 ## `JZ`
