@@ -14,6 +14,7 @@ dist-ssr
 
 docs/.vitepress/*
 !docs/.vitepress/config.*
+!docs/.vitepress/theme/
 
 # Editor directories and files
 .vscode/*

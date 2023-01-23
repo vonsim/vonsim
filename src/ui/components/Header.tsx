@@ -67,7 +67,6 @@ export function Header() {
         <a
           className="flex h-full items-center p-2 transition hover:bg-slate-500/30"
           href="/docs"
-          target="_blank"
           title={translate("documentation")}
         >
           <DocumentationIcon className="h-5 w-5" />

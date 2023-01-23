@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  appType: "mpa",
   plugins: [react(), Icons({ compiler: "jsx", jsx: "react" })],
   resolve: {
     alias: { "@/": "/src/" },

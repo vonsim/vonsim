@@ -27,3 +27,5 @@ You'll need [Node.js v18](https://nodejs.org/) and [pnpm v7](https://pnpm.io). O
 $ pnpm install # only the first time, install the dependencies
 $ pnpm dev     # starts the development server
 ```
+
+More info about this project in [CONTRIBUTING.md](CONTRIBUTING.md)

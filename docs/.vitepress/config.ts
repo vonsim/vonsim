@@ -6,7 +6,9 @@ export default defineConfig({
   lang: "es",
   base: "/docs/",
   lastUpdated: true,
+  cleanUrls: "with-subfolders",
   themeConfig: {
+    logo: "/logo.svg",
     docFooter: { prev: "Anterior", next: "Siguiente" },
     editLink: {
       pattern: "https://github.com/vonsim/vonsim/edit/main/docs/:path",
@@ -73,5 +75,15 @@ export default defineConfig({
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/vonsim/vonsim" }],
     outlineTitle: "Contenidos",
+  },
+  transformHtml: (code, id) => {
+    if (id.endsWith("404.html")) {
+      code = code.replace(
+        '<a class="link" href="/docs/" aria-label="go to home"',
+        '<a class="link" href="/" aria-label="go to home"',
+      );
+    }
+
+    return code.replace('<a class="title" href="/docs/"', '<a class="title" href="/"');
   },
 });

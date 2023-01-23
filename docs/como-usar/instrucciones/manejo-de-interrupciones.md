@@ -10,7 +10,7 @@ Interrumpe al sistema operativo.
 INT n
 ```
 
-_n_ debe ser una de las [posibles interrupciones de software](../dispositivos/interrupciones-de-software.md).
+_n_ debe ser una de las [posibles interrupciones de software](../interrupciones-de-software.md).
 
 ## `IRET`
 

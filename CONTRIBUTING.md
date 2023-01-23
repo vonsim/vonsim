@@ -6,6 +6,7 @@
     - [The simulator](#the-simulator)
     - [The UI](#the-ui)
   - [Setup the development environment](#setup-the-development-environment)
+  - [Deployment](#deployment)
 
 ## About this project
 
@@ -54,3 +55,13 @@ You'll need [Node.js v18](https://nodejs.org/) and [pnpm v7](https://pnpm.io). O
 $ pnpm install # only the first time, install the dependencies
 $ pnpm dev     # starts the development server
 ```
+
+The documentation is under `docs/`, and you can start the development documentation server by running
+
+```bash
+$ pnpm docs:dev
+```
+
+## Deployment
+
+Right now, we are depolying to Vercel. We have a custom build script to merge the app and the documentation under the same domain. Because of that, when setting up the Vercel project, make sure to set its preset to **Other** ([learn how to change it](https://vercel.com/docs/concepts/deployments/configure-a-build#build-&-development-settings)).
