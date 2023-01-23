@@ -1,4 +1,5 @@
-import { readdir, readFile } from "fs/promises";
+import { readdir, readFile } from "node:fs/promises";
+
 import { bench, describe } from "vitest";
 
 import { compile } from "@/compiler";
