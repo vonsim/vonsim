@@ -5,10 +5,6 @@ import { shallow } from "zustand/shallow";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useRunner } from "@/ui/lib/runner";
 import { cn } from "@/ui/lib/utils";
-import DebugIcon from "~icons/carbon/debug";
-import RunIcon from "~icons/carbon/play";
-import FinishIcon from "~icons/carbon/skip-forward";
-import AbortIcon from "~icons/carbon/stop-sign";
 
 export function Controls() {
   const translate = useTranslate();
@@ -38,26 +34,36 @@ export function Controls() {
     <div className="flex h-12 items-center justify-center gap-4 lg:h-full lg:justify-start">
       {state.type === "stopped" ? (
         <>
-          <Button onClick={() => dispatch("run")} title="F5">
-            <RunIcon /> {translate("runner.action.start")}
+          <Button onClick={() => dispatch("run")} title="F5" icon="icon-[carbon--play]">
+            {translate("runner.action.start")}
           </Button>
 
-          <Button onClick={() => dispatch("step")} title="F11">
-            <DebugIcon /> {translate("runner.action.debug")}
+          <Button onClick={() => dispatch("step")} title="F11" icon="icon-[carbon--debug]">
+            {translate("runner.action.debug")}
           </Button>
         </>
       ) : (
         <>
-          <Button onClick={() => dispatch("run")} title="F5" disabled={state.type !== "paused"}>
-            <FinishIcon /> {translate("runner.action.run-until-halt")}
+          <Button
+            onClick={() => dispatch("run")}
+            title="F5"
+            icon="icon-[carbon--skip-forward]"
+            disabled={state.type !== "paused"}
+          >
+            {translate("runner.action.run-until-halt")}
           </Button>
 
-          <Button onClick={() => dispatch("step")} title="F11" disabled={state.type !== "paused"}>
-            <RunIcon /> {translate("runner.action.step")}
+          <Button
+            onClick={() => dispatch("step")}
+            title="F11"
+            icon="icon-[carbon--play]"
+            disabled={state.type !== "paused"}
+          >
+            {translate("runner.action.step")}
           </Button>
 
-          <Button onClick={() => dispatch("stop")} title="Shift+F5">
-            <AbortIcon /> {translate("runner.action.stop")}
+          <Button onClick={() => dispatch("stop")} title="Shift+F5" icon="icon-[carbon--stop-sign]">
+            {translate("runner.action.stop")}
           </Button>
         </>
       )}
@@ -65,18 +71,20 @@ export function Controls() {
   );
 }
 
-function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function Button({
+  icon,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { icon: string }) {
   return (
     <button
       {...props}
-      className={cn(
-        "flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30",
-        "disabled:border-slate-500 disabled:text-slate-500 disabled:hover:bg-transparent",
-        "[&>svg]:mr-1 [&>svg]:h-5 [&>svg]:w-5",
-        className,
-      )}
+      className="
+        flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30
+        disabled:border-slate-500 disabled:text-slate-500 disabled:hover:bg-transparent
+      "
     >
-      {children}
+      <span className={cn("mr-1 block h-5 w-5", icon)} /> {children}
     </button>
   );
 }

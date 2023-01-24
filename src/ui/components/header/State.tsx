@@ -1,11 +1,6 @@
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useRunner } from "@/ui/lib/runner";
 import { cn } from "@/ui/lib/utils";
-import ErrorIcon from "~icons/carbon/error";
-import KeyboardIcon from "~icons/carbon/keyboard";
-import PausedIcon from "~icons/carbon/pause";
-import RunningIcon from "~icons/carbon/settings";
-import AbortIcon from "~icons/carbon/stop-sign";
 
 export function State() {
   const translate = useTranslate();
@@ -24,17 +19,18 @@ export function State() {
           (state.reason === "halt" ? "bg-sky-200 text-sky-700" : "bg-red-200 text-red-700"),
       )}
     >
-      {state.type === "running" ? (
-        <RunningIcon className="h-4 w-4 animate-spin" />
-      ) : state.type === "paused" ? (
-        <PausedIcon className="h-4 w-4 animate-pulse" />
-      ) : state.type === "waiting-for-input" ? (
-        <KeyboardIcon className="h-4 w-4 animate-bounce" />
-      ) : state.reason === "halt" ? (
-        <AbortIcon className="h-4 w-4" />
-      ) : (
-        <ErrorIcon className="h-4 w-4" />
-      )}
+      <span
+        className={cn(
+          "h-4 w-4",
+          state.type === "running" && "icon-[carbon--settings] animate-spin",
+          state.type === "paused" && "icon-[carbon--pause] animate-pulse",
+          state.type === "waiting-for-input" && "icon-[carbon--keyboard] animate-bounce",
+          state.type === "stopped" && [
+            state.reason === "halt" && "icon-[carbon--stop-sign]",
+            state.reason === "error" && "icon-[carbon--error]",
+          ],
+        )}
+      />
       <span>{translate(`runner.state.${state.type}`)}</span>
     </div>
   );

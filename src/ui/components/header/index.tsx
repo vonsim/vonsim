@@ -3,9 +3,6 @@ import { useLongPress, useToggle } from "react-use";
 import { useMobile } from "@/ui/hooks/useMobile";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { cn } from "@/ui/lib/utils";
-import DocumentationIcon from "~icons/carbon/document";
-import GitHubIcon from "~icons/carbon/logo-github";
-import Logo from "~icons/carbon/machine-learning";
 
 import { Controls } from "./Controls";
 import { LangPicker } from "./LangPicker";
@@ -36,7 +33,13 @@ export function Header() {
     <header className="border-b border-slate-500/30 bg-slate-800 text-sm text-white">
       <div className="flex items-center lg:h-full">
         <div className="flex select-none items-center justify-center py-2 px-4">
-          <Logo className={cn("mr-2 h-8 w-8", easterEgg && "animate-spin")} {...easterEggEvents} />
+          <span
+            className={cn(
+              "icon-[carbon--machine-learning] mr-2 block h-8 w-8",
+              easterEgg && "animate-spin",
+            )}
+            {...easterEggEvents}
+          />
           <h1 className="text-xl font-bold">
             Von<span className="text-sky-400">Sim</span>
           </h1>
@@ -57,7 +60,7 @@ export function Header() {
           href="/docs"
           title={translate("documentation")}
         >
-          <DocumentationIcon className="h-5 w-5" />
+          <span className="icon-[carbon--document] h-5 w-5" />
         </a>
         <a
           className="mr-4 flex h-full items-center p-3 transition hover:bg-slate-500/30"
@@ -66,7 +69,7 @@ export function Header() {
           title="GitHub"
           rel="noreferrer"
         >
-          <GitHubIcon className="h-5 w-5" />
+          <span className="icon-[carbon--logo-github] h-5 w-5" />
         </a>
       </div>
 

@@ -6,7 +6,6 @@ import { shallow } from "zustand/shallow";
 import { Language, LANGUAGES } from "@/config";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useSettings } from "@/ui/lib/settings";
-import LangIcon from "~icons/carbon/translate";
 
 export function LangPicker() {
   const translate = useTranslate();
@@ -19,7 +18,7 @@ export function LangPicker() {
           className="flex h-full items-center p-3 transition hover:bg-slate-500/30"
           title={translate("language")}
         >
-          <LangIcon className="h-5 w-5" />
+          <span className="icon-[carbon--translate] h-5 w-5" />
         </Listbox.Button>
         <Listbox.Options
           className="

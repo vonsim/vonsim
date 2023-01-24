@@ -1,8 +1,5 @@
 import { useToggle } from "react-use";
 
-import CodeIcon from "~icons/carbon/code";
-import SimIcon from "~icons/carbon/screen";
-
 import { ConfigSelector } from "./components/ConfigSelector";
 import { Console } from "./components/Console";
 import { CPU } from "./components/CPU";
@@ -85,7 +82,12 @@ export default function App() {
         className="fixed bottom-6 right-6 rounded-full bg-sky-400 p-2 text-white shadow-lg lg:hidden"
         onClick={toggleEditor}
       >
-        {isEditorOpen ? <SimIcon className="h-8 w-8" /> : <CodeIcon className="h-8 w-8" />}
+        <span
+          className={cn(
+            "block h-8 w-8",
+            isEditorOpen ? "icon-[carbon--code]" : "icon-[carbon--screen]",
+          )}
+        />
       </button>
     </div>
   );
