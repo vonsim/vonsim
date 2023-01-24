@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { useMemo } from "react";
 
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/runner";
-import { useSettings } from "@/ui/settings";
+import { useRunner } from "@/ui/lib/runner";
+import { useSettings } from "@/ui/lib/settings";
 
 export function ConfigSelector() {
   const tranlate = useTranslate();

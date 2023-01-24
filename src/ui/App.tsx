@@ -20,7 +20,7 @@ import { Timer } from "./components/Timer";
 import { Editor } from "./editor";
 import { useMobile } from "./hooks/useMobile";
 import { useTranslate } from "./hooks/useTranslate";
-import { useSettings } from "./settings";
+import { useSettings } from "./lib/settings";
 
 export default function App() {
   const translate = useTranslate();

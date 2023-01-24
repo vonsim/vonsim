@@ -3,7 +3,7 @@ import { shallow } from "zustand/shallow";
 
 import { Language, LANGUAGES } from "@/config";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useSettings } from "@/ui/settings";
+import { useSettings } from "@/ui/lib/settings";
 import LangIcon from "~icons/carbon/translate";
 
 export function LangPicker() {

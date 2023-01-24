@@ -4,7 +4,7 @@ import { shallow } from "zustand/shallow";
 import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/runner";
+import { useRunner } from "@/ui/lib/runner";
 
 export const CONSOLE_ID = "vonsim-console";
 

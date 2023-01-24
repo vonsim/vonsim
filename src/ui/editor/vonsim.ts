@@ -14,7 +14,7 @@ import {
   instructionPattern,
   registerPattern,
 } from "@/compiler/common/patterns";
-import { useSettings } from "@/ui/settings";
+import { useSettings } from "@/ui/lib/settings";
 
 /**
  * This is the VonSim language definition.

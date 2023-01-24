@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useMemo } from "react";
 
 import { renderMemoryCell } from "@/helpers";
-import { useSettings } from "@/ui/settings";
+import { useSettings } from "@/ui/lib/settings";
 
 export function Table({
   columns,

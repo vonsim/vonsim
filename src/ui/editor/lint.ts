@@ -4,7 +4,7 @@ import { EditorView, Panel } from "@codemirror/view";
 import clsx from "clsx";
 
 import { translate } from "@/i18n";
-import { useSettings } from "@/ui/settings";
+import { useSettings } from "@/ui/lib/settings";
 
 export function lintSummaryPanel(view: EditorView): Panel {
   const dom = document.createElement("div");

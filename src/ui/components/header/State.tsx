@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/runner";
+import { useRunner } from "@/ui/lib/runner";
 import ErrorIcon from "~icons/carbon/error";
 import KeyboardIcon from "~icons/carbon/keyboard";
 import PausedIcon from "~icons/carbon/pause";

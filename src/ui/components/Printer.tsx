@@ -6,7 +6,7 @@ import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useSettings } from "@/ui/settings";
+import { useSettings } from "@/ui/lib/settings";
 
 export function Printer({ className }: { className?: string }) {
   const translate = useTranslate();

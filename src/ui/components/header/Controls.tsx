@@ -4,7 +4,7 @@ import { useEvent } from "react-use";
 import { shallow } from "zustand/shallow";
 
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/runner";
+import { useRunner } from "@/ui/lib/runner";
 import DebugIcon from "~icons/carbon/debug";
 import RunIcon from "~icons/carbon/play";
 import FinishIcon from "~icons/carbon/skip-forward";

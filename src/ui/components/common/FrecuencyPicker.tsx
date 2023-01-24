@@ -1,7 +1,7 @@
 import { Listbox } from "@headlessui/react";
 
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/runner";
+import { useRunner } from "@/ui/lib/runner";
 
 export function FrecuencyPicker({
   value,

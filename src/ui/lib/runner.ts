@@ -8,7 +8,7 @@ import { useSimulator } from "@/simulator";
 import { SimulatorError } from "@/simulator/error";
 import { CONSOLE_ID } from "@/ui/components/Console";
 import { highlightLine, setReadOnly } from "@/ui/editor/methods";
-import { useSettings } from "@/ui/settings";
+import { useSettings } from "@/ui/lib/settings";
 
 type Ticker = "cpu" | "printer" | "timer";
 type Timer = { lastTick: number; interval: number };
