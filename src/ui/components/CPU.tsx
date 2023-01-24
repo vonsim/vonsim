@@ -2,12 +2,11 @@ import { shallow } from "zustand/shallow";
 
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
 import { useSimulator } from "@/simulator";
-
-import { useTranslate } from "../hooks/useTranslate";
-import { useSettings } from "../settings";
-import { Card } from "./common/Card";
-import { FrecuencyPicker } from "./common/FrecuencyPicker";
-import { Table } from "./common/Table";
+import { Card } from "@/ui/components/common/Card";
+import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
+import { Table } from "@/ui/components/common/Table";
+import { useTranslate } from "@/ui/hooks/useTranslate";
+import { useSettings } from "@/ui/settings";
 
 const REGISTERS = ["AX", "BX", "CX", "DX"] as const;
 

@@ -1,10 +1,9 @@
 import { shallow } from "zustand/shallow";
 
 import { useSimulator } from "@/simulator";
-
-import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./common/Card";
-import { Table } from "./common/Table";
+import { Card } from "@/ui/components/common/Card";
+import { Table } from "@/ui/components/common/Table";
+import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function Timer({ className }: { className?: string }) {
   const translate = useTranslate();

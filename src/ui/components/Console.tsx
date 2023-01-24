@@ -2,10 +2,9 @@ import clsx from "clsx";
 import { shallow } from "zustand/shallow";
 
 import { useSimulator } from "@/simulator";
-
-import { useTranslate } from "../hooks/useTranslate";
-import { useRunner } from "../runner";
-import { Card } from "./common/Card";
+import { Card } from "@/ui/components/common/Card";
+import { useTranslate } from "@/ui/hooks/useTranslate";
+import { useRunner } from "@/ui/runner";
 
 export const CONSOLE_ID = "vonsim-console";
 

@@ -2,10 +2,9 @@ import { Listbox } from "@headlessui/react";
 import { shallow } from "zustand/shallow";
 
 import { Language, LANGUAGES } from "@/config";
+import { useTranslate } from "@/ui/hooks/useTranslate";
+import { useSettings } from "@/ui/settings";
 import LangIcon from "~icons/carbon/translate";
-
-import { useTranslate } from "../../hooks/useTranslate";
-import { useSettings } from "../../settings";
 
 export function LangPicker() {
   const translate = useTranslate();

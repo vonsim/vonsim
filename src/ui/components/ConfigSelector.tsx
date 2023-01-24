@@ -2,9 +2,9 @@ import { RadioGroup } from "@headlessui/react";
 import clsx from "clsx";
 import { useMemo } from "react";
 
-import { useTranslate } from "../hooks/useTranslate";
-import { useRunner } from "../runner";
-import { useSettings } from "../settings";
+import { useTranslate } from "@/ui/hooks/useTranslate";
+import { useRunner } from "@/ui/runner";
+import { useSettings } from "@/ui/settings";
 
 export function ConfigSelector() {
   const tranlate = useTranslate();

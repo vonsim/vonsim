@@ -1,9 +1,8 @@
 import { useKey } from "react-use";
 
 import { useSimulator } from "@/simulator";
-
-import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./common/Card";
+import { Card } from "@/ui/components/common/Card";
+import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function F10({ className }: { className?: string }) {
   const translate = useTranslate();

@@ -1,7 +1,6 @@
 import type { Path, PathValue } from "@/helpers";
 import { Locale, translate } from "@/i18n";
-
-import { useSettings } from "../settings";
+import { useSettings } from "@/ui/settings";
 
 type UICode = Path<Locale["ui"]>;
 type UIContext<Code extends UICode> = PathValue<Locale["ui"], Code> extends (

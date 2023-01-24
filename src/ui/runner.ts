@@ -6,10 +6,9 @@ import { immer } from "zustand/middleware/immer";
 import { compile } from "@/compiler";
 import { useSimulator } from "@/simulator";
 import { SimulatorError } from "@/simulator/error";
-
-import { CONSOLE_ID } from "./components/Console";
-import { highlightLine, setReadOnly } from "./editor/methods";
-import { useSettings } from "./settings";
+import { CONSOLE_ID } from "@/ui/components/Console";
+import { highlightLine, setReadOnly } from "@/ui/editor/methods";
+import { useSettings } from "@/ui/settings";
 
 type Ticker = "cpu" | "printer" | "timer";
 type Timer = { lastTick: number; interval: number };

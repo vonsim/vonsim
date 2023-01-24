@@ -6,10 +6,9 @@ import { shallow } from "zustand/shallow";
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
 import { renderAddress } from "@/helpers";
 import { useSimulator } from "@/simulator";
-
-import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./common/Card";
-import { Table } from "./common/Table";
+import { Card } from "@/ui/components/common/Card";
+import { Table } from "@/ui/components/common/Table";
+import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function Memory({ className }: { className?: string }) {
   const translate = useTranslate();

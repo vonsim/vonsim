@@ -3,11 +3,10 @@ import { shallow } from "zustand/shallow";
 
 import { PRINTER_BUFFER_SIZE } from "@/config";
 import { useSimulator } from "@/simulator";
-
-import { useTranslate } from "../hooks/useTranslate";
-import { useSettings } from "../settings";
-import { Card } from "./common/Card";
-import { FrecuencyPicker } from "./common/FrecuencyPicker";
+import { Card } from "@/ui/components/common/Card";
+import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
+import { useTranslate } from "@/ui/hooks/useTranslate";
+import { useSettings } from "@/ui/settings";
 
 export function Printer({ className }: { className?: string }) {
   const translate = useTranslate();

@@ -1,9 +1,8 @@
 import clsx from "clsx";
 
 import { useSimulator } from "@/simulator";
-
-import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./common/Card";
+import { Card } from "@/ui/components/common/Card";
+import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function Leds({ className }: { className?: string }) {
   const translate = useTranslate();

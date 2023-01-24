@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import { useLongPress, useToggle } from "react-use";
 
+import { useMobile } from "@/ui/hooks/useMobile";
+import { useTranslate } from "@/ui/hooks/useTranslate";
 import DocumentationIcon from "~icons/carbon/document";
 import GitHubIcon from "~icons/carbon/logo-github";
 import Logo from "~icons/carbon/machine-learning";
 
-import { useMobile } from "../../hooks/useMobile";
-import { useTranslate } from "../../hooks/useTranslate";
 import { Controls } from "./Controls";
 import { LangPicker } from "./LangPicker";
 import { State } from "./State";
