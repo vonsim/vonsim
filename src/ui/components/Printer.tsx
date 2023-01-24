@@ -6,8 +6,8 @@ import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
-import { Card } from "./Card";
-import { FrecuencyPicker } from "./FrecuencyPicker";
+import { Card } from "./common/Card";
+import { FrecuencyPicker } from "./common/FrecuencyPicker";
 
 export function Printer({ className }: { className?: string }) {
   const translate = useTranslate();

@@ -8,8 +8,8 @@ import { renderAddress } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./Card";
-import { Table } from "./Table";
+import { Card } from "./common/Card";
+import { Table } from "./common/Table";
 
 export function Memory({ className }: { className?: string }) {
   const translate = useTranslate();

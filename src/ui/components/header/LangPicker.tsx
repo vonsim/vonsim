@@ -4,8 +4,8 @@ import { shallow } from "zustand/shallow";
 import { Language, LANGUAGES } from "@/config";
 import LangIcon from "~icons/carbon/translate";
 
-import { useTranslate } from "../hooks/useTranslate";
-import { useSettings } from "../settings";
+import { useTranslate } from "../../hooks/useTranslate";
+import { useSettings } from "../../settings";
 
 export function LangPicker() {
   const translate = useTranslate();

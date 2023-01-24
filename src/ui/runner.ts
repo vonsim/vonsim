@@ -8,7 +8,7 @@ import { useSimulator } from "@/simulator";
 import { SimulatorError } from "@/simulator/error";
 
 import { CONSOLE_ID } from "./components/Console";
-import { highlightLine, setReadOnly } from "./components/editor/methods";
+import { highlightLine, setReadOnly } from "./editor/methods";
 import { useSettings } from "./settings";
 
 type Ticker = "cpu" | "printer" | "timer";

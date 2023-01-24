@@ -3,8 +3,8 @@ import { shallow } from "zustand/shallow";
 import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./Card";
-import { Table } from "./Table";
+import { Card } from "./common/Card";
+import { Table } from "./common/Table";
 
 export function Timer({ className }: { className?: string }) {
   const translate = useTranslate();

@@ -5,7 +5,7 @@ import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
 import { useRunner } from "../runner";
-import { Card } from "./Card";
+import { Card } from "./common/Card";
 
 export const CONSOLE_ID = "vonsim-console";
 

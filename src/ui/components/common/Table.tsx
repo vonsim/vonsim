@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { renderMemoryCell } from "@/helpers";
 
-import { useSettings } from "../settings";
+import { useSettings } from "../../settings";
 
 export function Table({
   columns,

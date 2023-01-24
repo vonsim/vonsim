@@ -2,8 +2,8 @@ import { byteArray, renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./Card";
-import { Table } from "./Table";
+import { Card } from "./common/Card";
+import { Table } from "./common/Table";
 
 const STATE = ["EOI", "IMR", "IRR", "ISR"] as const;
 const CONNECTIONS = byteArray(i => `INT${i}` as const);

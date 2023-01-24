@@ -5,9 +5,9 @@ import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
 import { useSettings } from "../settings";
-import { Card } from "./Card";
-import { FrecuencyPicker } from "./FrecuencyPicker";
-import { Table } from "./Table";
+import { Card } from "./common/Card";
+import { FrecuencyPicker } from "./common/FrecuencyPicker";
+import { Table } from "./common/Table";
 
 const REGISTERS = ["AX", "BX", "CX", "DX"] as const;
 

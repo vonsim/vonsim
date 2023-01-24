@@ -3,7 +3,7 @@ import { useKey } from "react-use";
 import { useSimulator } from "@/simulator";
 
 import { useTranslate } from "../hooks/useTranslate";
-import { Card } from "./Card";
+import { Card } from "./common/Card";
 
 export function F10({ className }: { className?: string }) {
   const translate = useTranslate();
