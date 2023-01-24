@@ -122,6 +122,11 @@ export const en = {
           MEMORY_SIZE,
         )}.`,
       },
+      interrups: {
+        label: "Interrupts",
+        enabled: "Enabled",
+        disabled: "Disabled",
+      },
     },
 
     devices: {

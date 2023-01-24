@@ -123,6 +123,11 @@ export const es: Locale = {
           MEMORY_SIZE,
         )}.`,
       },
+      interrups: {
+        label: "Interrupciones",
+        enabled: "Habilitadas",
+        disabled: "Inhabilitadas",
+      },
     },
 
     devices: {

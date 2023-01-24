@@ -22,19 +22,32 @@ export function CPU({ className }: { className?: string }) {
     shallow,
   );
 
-  const { alu, registers } = useSimulator(
-    state => ({ alu: state.alu, registers: state.registers }),
+  const { alu, registers, interruptsEnabled } = useSimulator(
+    state => ({
+      alu: state.alu,
+      registers: state.registers,
+      interruptsEnabled: state.interruptsEnabled,
+    }),
     shallow,
   );
 
   return (
     <Card title={translate("cpu.name")} className={className}>
-      <FrecuencyPicker
-        className="py-2 px-4"
-        value={settings.cpuSpeed}
-        onChange={settings.setCPUSpeed}
-        options={[1, 2, 4, 8, 16, 32, 64]}
-      />
+      <div className="flex">
+        <FrecuencyPicker
+          className="py-2 px-4"
+          value={settings.cpuSpeed}
+          onChange={settings.setCPUSpeed}
+          options={[1, 2, 4, 8, 16, 32, 64]}
+        />
+
+        <div className="px-4 py-2">
+          <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+            {translate("cpu.interrups.label")}
+          </label>
+          <p>{translate(`cpu.interrups.${interruptsEnabled ? "enabled" : "disabled"}`)}</p>
+        </div>
+      </div>
 
       <hr />
 
