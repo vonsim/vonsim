@@ -16,6 +16,7 @@ import {
 import { vscodeKeymap } from "@replit/codemirror-vscode-keymap";
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
+import { useKey } from "react-use";
 
 import { lintSummaryPanel } from "./lint";
 import { lineHighlightField, readOnly } from "./methods";
@@ -76,6 +77,27 @@ export function Editor({ className }: { className?: string }) {
 
     return () => window.codemirror?.destroy();
   }, [element]);
+
+  useKey(
+    e => e.ctrlKey && e.key === "s",
+    ev => {
+      ev.preventDefault();
+      if (!window.codemirror) return;
+
+      const blob = new Blob([window.codemirror.state.doc.toString()], { type: "text/plain" });
+      const href = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = href;
+      a.download = `vonsim-${new Date().toISOString().slice(0, 16)}.txt`;
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(href);
+    },
+  );
 
   return <div ref={ref} className={clsx("h-full overflow-auto font-mono", className)} />;
 }
