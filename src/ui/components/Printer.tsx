@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { shallow } from "zustand/shallow";
 
 import { PRINTER_BUFFER_SIZE } from "@/config";
@@ -7,6 +6,7 @@ import { Card } from "@/ui/components/common/Card";
 import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useSettings } from "@/ui/lib/settings";
+import { cn } from "@/ui/lib/utils";
 
 export function Printer({ className }: { className?: string }) {
   const translate = useTranslate();
@@ -46,7 +46,7 @@ export function Printer({ className }: { className?: string }) {
               return (
                 <span
                   key={i}
-                  className={clsx(
+                  className={cn(
                     "flex h-[2ch] w-[2ch] items-center justify-center border",
                     isEmpty ? "border-gray-200 bg-gray-50" : "border-sky-400 bg-sky-50",
                   )}
@@ -58,7 +58,7 @@ export function Printer({ className }: { className?: string }) {
           </div>
         </div>
 
-        <pre className="h-36 w-[25ch] overflow-y-auto whitespace-pre-wrap break-all rounded-b-lg bg-gray-200 p-1 font-mono sm:rounded-bl-none">
+        <pre className="h-36 w-[25ch] overflow-y-auto whitespace-pre-wrap break-all bg-gray-200 p-1 font-mono">
           {output}
         </pre>
       </div>

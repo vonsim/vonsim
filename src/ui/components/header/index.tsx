@@ -1,8 +1,8 @@
-import clsx from "clsx";
 import { useLongPress, useToggle } from "react-use";
 
 import { useMobile } from "@/ui/hooks/useMobile";
 import { useTranslate } from "@/ui/hooks/useTranslate";
+import { cn } from "@/ui/lib/utils";
 import DocumentationIcon from "~icons/carbon/document";
 import GitHubIcon from "~icons/carbon/logo-github";
 import Logo from "~icons/carbon/machine-learning";
@@ -36,10 +36,7 @@ export function Header() {
     <header className="border-b border-slate-500/30 bg-slate-800 text-sm text-white">
       <div className="flex items-center lg:h-full">
         <div className="flex select-none items-center justify-center py-2 px-4">
-          <Logo
-            className={clsx("mr-2 h-8 w-8", easterEgg && "animate-spin")}
-            {...easterEggEvents}
-          />
+          <Logo className={cn("mr-2 h-8 w-8", easterEgg && "animate-spin")} {...easterEggEvents} />
           <h1 className="text-xl font-bold">
             Von<span className="text-sky-400">Sim</span>
           </h1>
@@ -56,14 +53,14 @@ export function Header() {
 
         <LangPicker />
         <a
-          className="flex h-full items-center p-2 transition hover:bg-slate-500/30"
+          className="flex h-full items-center p-3 transition hover:bg-slate-500/30"
           href="/docs"
           title={translate("documentation")}
         >
           <DocumentationIcon className="h-5 w-5" />
         </a>
         <a
-          className="mr-4 flex h-full items-center p-2 transition hover:bg-slate-500/30"
+          className="mr-4 flex h-full items-center p-3 transition hover:bg-slate-500/30"
           href="https://github.com/vonsim/vonsim"
           target="_blank"
           title="GitHub"

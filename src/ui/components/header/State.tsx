@@ -1,7 +1,6 @@
-import clsx from "clsx";
-
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useRunner } from "@/ui/lib/runner";
+import { cn } from "@/ui/lib/utils";
 import ErrorIcon from "~icons/carbon/error";
 import KeyboardIcon from "~icons/carbon/keyboard";
 import PausedIcon from "~icons/carbon/pause";
@@ -15,7 +14,7 @@ export function State() {
 
   return (
     <div
-      className={clsx(
+      className={cn(
         "mx-auto flex h-6 w-40 select-none items-center justify-center gap-1 rounded-full lg:mx-8",
         "text-center text-sm font-semibold",
         state.type === "running" && "bg-emerald-200 text-emerald-700",

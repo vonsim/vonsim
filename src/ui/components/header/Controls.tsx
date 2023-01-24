@@ -1,10 +1,10 @@
-import clsx from "clsx";
 import { useCallback } from "react";
 import { useEvent } from "react-use";
 import { shallow } from "zustand/shallow";
 
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useRunner } from "@/ui/lib/runner";
+import { cn } from "@/ui/lib/utils";
 import DebugIcon from "~icons/carbon/debug";
 import RunIcon from "~icons/carbon/play";
 import FinishIcon from "~icons/carbon/skip-forward";
@@ -69,7 +69,7 @@ function Button({ className, children, ...props }: React.ButtonHTMLAttributes<HT
   return (
     <button
       {...props}
-      className={clsx(
+      className={cn(
         "flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30",
         "disabled:border-slate-500 disabled:text-slate-500 disabled:hover:bg-transparent",
         "[&>svg]:mr-1 [&>svg]:h-5 [&>svg]:w-5",

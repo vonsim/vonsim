@@ -1,10 +1,10 @@
 import { RadioGroup } from "@headlessui/react";
-import clsx from "clsx";
 import { useMemo } from "react";
 
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useRunner } from "@/ui/lib/runner";
 import { useSettings } from "@/ui/lib/settings";
+import { cn } from "@/ui/lib/utils";
 
 export function ConfigSelector() {
   const tranlate = useTranslate();
@@ -77,7 +77,7 @@ function Radio<T extends string>({
         {label}
       </RadioGroup.Label>
       <div
-        className={clsx(
+        className={cn(
           "flex overflow-hidden rounded-md bg-white text-sm font-medium tracking-wide",
           flow === "row" ? "flex-row divide-x" : "flex-col divide-y",
         )}

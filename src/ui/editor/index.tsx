@@ -14,9 +14,10 @@ import {
   showPanel,
 } from "@codemirror/view";
 import { vscodeKeymap } from "@replit/codemirror-vscode-keymap";
-import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
+
+import { cn } from "@/ui/lib/utils";
 
 import { lintSummaryPanel } from "./lint";
 import { lineHighlightField, readOnly } from "./methods";
@@ -99,5 +100,5 @@ export function Editor({ className }: { className?: string }) {
     },
   );
 
-  return <div ref={ref} className={clsx("h-full overflow-auto font-mono", className)} />;
+  return <div ref={ref} className={cn("h-full overflow-auto font-mono", className)} />;
 }

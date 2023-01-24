@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { useToggle } from "react-use";
 
 import CodeIcon from "~icons/carbon/code";
@@ -21,6 +20,7 @@ import { Editor } from "./editor";
 import { useMobile } from "./hooks/useMobile";
 import { useTranslate } from "./hooks/useTranslate";
 import { useSettings } from "./lib/settings";
+import { cn } from "./lib/utils";
 
 export default function App() {
   const translate = useTranslate();
@@ -35,14 +35,14 @@ export default function App() {
 
       <main className="flex grow overflow-auto">
         <Editor
-          className={clsx(
+          className={cn(
             "w-full shrink-0 lg:w-[500px] xl:w-[600px] 2xl:w-[700px]",
             isMobile && !isEditorOpen ? "hidden" : "flex",
           )}
         />
 
         <div
-          className={clsx(
+          className={cn(
             "pretty-scrollbar w-full flex-col overflow-auto bg-gray-100 px-8 pt-4 pb-16",
             isMobile && isEditorOpen ? "hidden" : "flex",
           )}

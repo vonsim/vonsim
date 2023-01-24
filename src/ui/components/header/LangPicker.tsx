@@ -1,4 +1,6 @@
 import { Listbox } from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
+import { Fragment } from "react";
 import { shallow } from "zustand/shallow";
 
 import { Language, LANGUAGES } from "@/config";
@@ -8,29 +10,28 @@ import LangIcon from "~icons/carbon/translate";
 
 export function LangPicker() {
   const translate = useTranslate();
-
   const [lang, setLang] = useSettings(state => [state.language, state.setLanguage], shallow);
 
   return (
     <Listbox value={lang} onChange={setLang}>
-      <div className="relative h-full">
+      <Float as={Fragment} placement="bottom" offset={4}>
         <Listbox.Button
-          className="flex h-full items-center p-2 transition hover:bg-slate-500/30"
+          className="flex h-full items-center p-3 transition hover:bg-slate-500/30"
           title={translate("language")}
         >
           <LangIcon className="h-5 w-5" />
         </Listbox.Button>
         <Listbox.Options
           className="
-            absolute right-0 max-h-60 w-min overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5
-            focus:outline-none sm:text-sm
+            w-min rounded-md border border-slate-200 bg-white text-sm shadow-lg ring-1 ring-black ring-opacity-5
+            focus:outline-none
           "
         >
           {LANGUAGES.map((lang, i) => (
             <Listbox.Option
               key={i}
               className="
-                cursor-pointer select-none whitespace-nowrap py-1 px-2 text-left text-gray-900
+                cursor-pointer select-none whitespace-nowrap py-2 px-4 text-left text-gray-900
                 ui-selected:font-semibold ui-active:bg-sky-100 ui-active:text-sky-900
               "
               value={lang}
@@ -39,7 +40,7 @@ export function LangPicker() {
             </Listbox.Option>
           ))}
         </Listbox.Options>
-      </div>
+      </Float>
     </Listbox>
   );
 }

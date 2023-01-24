@@ -1,8 +1,7 @@
-import clsx from "clsx";
-
 import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { useTranslate } from "@/ui/hooks/useTranslate";
+import { cn } from "@/ui/lib/utils";
 
 export function Leds({ className }: { className?: string }) {
   const translate = useTranslate();
@@ -26,13 +25,13 @@ export function Leds({ className }: { className?: string }) {
         {state.map((on, i) => (
           <div
             key={i}
-            className={clsx(
+            className={cn(
               "relative h-8 w-8 rounded-full transition",
               on ? "bg-sky-400" : "bg-sky-900",
             )}
           >
             <div
-              className={clsx(
+              className={cn(
                 "absolute inset-0 rounded-full bg-sky-400 blur-sm transition",
                 on ? "opacity-100" : "opacity-0",
               )}

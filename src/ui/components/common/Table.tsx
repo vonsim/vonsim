@@ -1,8 +1,8 @@
-import clsx from "clsx";
 import { useMemo } from "react";
 
 import { renderMemoryCell } from "@/helpers";
 import { useSettings } from "@/ui/lib/settings";
+import { cn } from "@/ui/lib/utils";
 
 export function Table({
   columns,
@@ -31,7 +31,7 @@ export function Table({
   );
 
   return (
-    <table className={clsx("font-mono", className)}>
+    <table className={cn("font-mono", className)}>
       <thead>
         {columns && (
           <tr className="divide-x border-b">
@@ -39,7 +39,7 @@ export function Table({
             {columns.map((col, i) => (
               <th
                 key={i}
-                className={clsx(
+                className={cn(
                   "px-2 pb-0.5 pt-1 text-center font-bold text-slate-800",
                   labelsSans && "font-sans",
                 )}
@@ -55,7 +55,7 @@ export function Table({
           <tr key={i} className="divide-x">
             {thereAreRowLabels && (
               <td
-                className={clsx(
+                className={cn(
                   "px-2 pb-0.5 text-center font-bold text-slate-800",
                   !columns && i === 0 ? "pt-1" : "pt-0.5",
                   labelsSans && "font-sans",
@@ -72,7 +72,7 @@ export function Table({
               return (
                 <td
                   key={j}
-                  className={clsx(
+                  className={cn(
                     "box-content px-2 pb-0.5 text-center text-slate-600",
                     !columns && i === 0 ? "pt-1" : "pt-0.5",
                     cell.renderMemory && "w-[8ch]",
