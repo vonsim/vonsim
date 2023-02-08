@@ -203,6 +203,11 @@ export const createProgramSlice: SimulatorSlice<ProgramSlice> = (set, get) => ({
         state.devices.leds.state = byteArray(i => bit(portB, i));
         state.devices.switches.state = byteArray(i => bit(portA, i));
       }
+
+      if (devicesConfiguration === "printer-pio") {
+        // Set busy port to 0 always, since the buffer is empty
+        state.devices.pio.PA &= ~1;
+      }
     });
   },
 });
