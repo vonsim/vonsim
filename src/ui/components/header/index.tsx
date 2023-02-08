@@ -57,7 +57,7 @@ export function Header() {
         <LangPicker />
         <a
           className="flex h-full items-center p-3 transition hover:bg-slate-500/30"
-          href="/docs"
+          href="./docs"
           title={translate("documentation")}
         >
           <span className="icon-[carbon--document] h-5 w-5" />

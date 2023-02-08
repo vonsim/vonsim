@@ -6,7 +6,7 @@ export default defineConfig({
   lang: "es",
   base: "/docs/",
   lastUpdated: true,
-  cleanUrls: "with-subfolders",
+  cleanUrls: true,
   themeConfig: {
     logo: "/logo.svg",
     siteTitle: "Documentación",

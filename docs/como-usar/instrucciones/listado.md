@@ -16,4 +16,4 @@ Aquí se encuentran las instrucciones implementadas por VonSim.
 - Instrucciones de control  
   [`NOP`](./control#nop) [`HLT`](./control#hlt)
 
-[Descargar set de instrucciones](/docs/set-instr-MSX88.PDF) (26 kB)
+[Descargar set de instrucciones](/set-instr-MSX88.PDF) (26 kB)
