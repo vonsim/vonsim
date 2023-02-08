@@ -132,7 +132,7 @@ export const es: Locale = {
 
     devices: {
       internal: {
-        label: "Dispositivos externos",
+        label: "Dispositivos internos",
         handshake: { name: "Handshake", data: "Dato", state: "Estado" },
         pic: { name: "PIC", state: "Estado", connections: "Conexiones" },
         pio: {
@@ -144,7 +144,7 @@ export const es: Locale = {
         timer: "Timer",
       },
       external: {
-        label: "Dispositivos internos",
+        label: "Dispositivos externos",
         console: "Consola",
         f10: { name: "F10", interrupt: "Interrumpir" },
         leds: "Leds",

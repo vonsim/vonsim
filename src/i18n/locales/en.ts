@@ -131,7 +131,7 @@ export const en = {
 
     devices: {
       internal: {
-        label: "External devices",
+        label: "Internal devices",
         handshake: { name: "Handshake", data: "Data", state: "State" },
         pic: { name: "PIC", state: "State", connections: "Connections" },
         pio: {
@@ -143,7 +143,7 @@ export const en = {
         timer: "Timer",
       },
       external: {
-        label: "Internal devices",
+        label: "External devices",
         console: "Console",
         f10: { name: "F10", interrupt: "Interrupt" },
         leds: "LEDs",
