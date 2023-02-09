@@ -85,7 +85,7 @@ export default function App() {
         <span
           className={cn(
             "block h-8 w-8",
-            isEditorOpen ? "icon-[carbon--code]" : "icon-[carbon--screen]",
+            isEditorOpen ? "icon-[carbon--screen]" : "icon-[carbon--code]",
           )}
         />
       </button>
