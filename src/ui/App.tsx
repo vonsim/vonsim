@@ -49,8 +49,8 @@ export default function App() {
           <Bigdiv>{translate("computer")}</Bigdiv>
 
           <section className="flex flex-col gap-4 2xl:grid 2xl:grid-cols-2">
-            <Memory />
             <CPU />
+            <Memory />
           </section>
 
           <Bigdiv>{translate("devices.internal.label")}</Bigdiv>
