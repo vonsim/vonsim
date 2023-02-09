@@ -64,4 +64,10 @@ $ pnpm docs:dev
 
 ## Deployment
 
-Right now, we are depolying to Vercel. We have a custom build script to merge the app and the documentation under the same domain. Because of that, when setting up the Vercel project, make sure to set its preset to **Other** ([learn how to change it](https://vercel.com/docs/concepts/deployments/configure-a-build#build-&-development-settings)).
+Right now, we are depolying to GitHub Pages ([repo](https://github.com/vonsim/vonsim.github.io)) as a preview. The app is meant to be built like this:
+
+```bash
+$ pnpm build # build the app
+$ pnpm docs:build # build the docs
+$ mv docs/.vitepress/dist dist/docs # merge app and docs
+```

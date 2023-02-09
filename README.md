@@ -1,10 +1,10 @@
-<a href="https://vonsim.vercel.app" target="_blank" rel="noopener">
+<a href="https://vonsim.github.io/preview" target="_blank" rel="noopener">
   <img src="./public/github_banner.png" alt="VonSim - A 8088-like Assembly Simulator" />
 </a>
 
 <div align="center">
   <br/>
-  <h3><a href="https://vonsim.vercel.app" target="_blank" rel="noopener"><strong>Try it now</strong></a></h3>
+  <h3><a href="https://vonsim.github.io/preview" target="_blank" rel="noopener"><strong>Try it now</strong></a></h3>
   <br/>
   <img src="./public/demo.gif" alt="Demo" />
   <br/>

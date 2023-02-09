@@ -13,8 +13,7 @@
     "test": "vitest --run --reporter verbose",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "vercel-build": "tsx scripts/build-vercel.ts"
+    "docs:preview": "vitepress preview docs"
   },
   "pnpm": {
     "peerDependencyRules": {
@@ -73,7 +72,6 @@
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.2",
     "tailwindcss": "^3.2.6",
-    "tsx": "^3.12.3",
     "type-fest": "^3.5.6",
     "typescript": "~4.9.5",
     "vite": "^4.1.1",
