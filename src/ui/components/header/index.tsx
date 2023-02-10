@@ -43,24 +43,19 @@ export function Header() {
           </h1>
         </div>
 
+        <State />
+
         {!isMobile && (
           <>
-            <State />
             <Controls />
+            <div className="grow" />
           </>
         )}
-
-        <div className="grow" />
 
         <MainMenu />
       </div>
 
-      {isMobile && (
-        <div className="">
-          <State />
-          <Controls />
-        </div>
-      )}
+      {isMobile && <Controls />}
     </header>
   );
 }
