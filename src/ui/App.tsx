@@ -39,28 +39,34 @@ export default function App() {
 
         <div
           className={cn(
-            "pretty-scrollbar w-full flex-col overflow-auto bg-gray-100 px-8 pb-16",
+            "pretty-scrollbar w-full flex-col gap-16 overflow-auto bg-gray-100 p-8",
             isMobile && isEditorOpen ? "hidden" : "flex",
           )}
         >
-          <Bigdiv>{translate("computer")}</Bigdiv>
-
-          <section className="flex flex-col gap-4 2xl:grid 2xl:grid-cols-2">
+          <Section
+            title={translate("computer")}
+            accent="[--color-accent:theme(colors.red.600)]"
+            className="flex flex-col gap-4 2xl:grid 2xl:grid-cols-2"
+          >
             <CPU />
             <Memory />
-          </section>
+          </Section>
 
-          <Bigdiv>{translate("devices.internal.label")}</Bigdiv>
-
-          <section className="flex flex-wrap items-start justify-center gap-4">
+          <Section
+            title={translate("devices.internal.label")}
+            accent="[--color-accent:theme(colors.blue.800)]"
+            className="flex flex-wrap items-start justify-center gap-4"
+          >
             {devices === "printer-handshake" ? <Handshake /> : <PIO />}
             <PIC />
             <Timer />
-          </section>
+          </Section>
 
-          <Bigdiv>{translate("devices.external.label")}</Bigdiv>
-
-          <section className="flex flex-wrap items-start justify-center gap-4">
+          <Section
+            title={translate("devices.external.label")}
+            accent="[--color-accent:theme(colors.green.800)]"
+            className="flex flex-wrap items-start justify-center gap-4"
+          >
             <Console className="w-80 grow" />
             <F10 />
             {devices === "switches-leds" ? (
@@ -71,7 +77,7 @@ export default function App() {
             ) : (
               <Printer />
             )}
-          </section>
+          </Section>
         </div>
       </main>
 
@@ -90,13 +96,25 @@ export default function App() {
   );
 }
 
-function Bigdiv({ children }: { children?: React.ReactNode }) {
+function Section({
+  title,
+  accent,
+  className,
+  children,
+}: {
+  title: string;
+  accent: string;
+  className?: string;
+  children?: React.ReactNode;
+}) {
   return (
-    <>
-      <hr className="mt-12 border-t-4 border-dotted border-slate-500/30" />
-      <h2 className="mb-6 select-none text-3xl font-black uppercase leading-none tracking-tighter text-slate-500/30">
-        {children}
+    <section className={accent}>
+      <hr className="border-t-4 border-dotted border-accent opacity-50" />
+      <h2 className="mb-6 select-none text-3xl font-black uppercase leading-none tracking-tighter text-accent opacity-50">
+        {title}
       </h2>
-    </>
+
+      <div className={className}>{children}</div>
+    </section>
   );
 }

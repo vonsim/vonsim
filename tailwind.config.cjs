@@ -10,6 +10,10 @@ module.exports = {
         sans: ['"Inter var"', ...defaultTheme.fontFamily.sans],
         mono: ['"FiraCode VF"', ...defaultTheme.fontFamily.mono],
       },
+
+      colors: {
+        accent: "var(--color-accent)",
+      },
     },
   },
   plugins: [require("@headlessui/tailwindcss"), addDynamicIconSelectors()],
