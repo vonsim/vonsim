@@ -104,10 +104,8 @@ export const en = {
 
   ui: {
     computer: "Computer",
-    documentation: "Documentation",
     frecuency: "Frecuency",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
-    language: "Language",
 
     cpu: {
       name: "CPU",
@@ -176,27 +174,31 @@ export const en = {
       },
     },
 
-    settings: {
-      memoryRepresentation: {
-        label: "Representation mode",
-        hex: "Hex",
-        bin: "Bin",
-        uint: "Unsigned",
-        int: "2's complement",
-        ascii: "Ascii",
-      },
-      memoryOnReset: {
-        label: "Memoria on load",
-        random: "Random",
-        empty: "Empty",
-        keep: "Keep",
-      },
+    menu: {
+      label: "Menu",
       devicesConfiguration: {
         label: "Devices",
         "switches-leds": "Switches and LEDs",
         "printer-pio": "Printer w/PIO",
         "printer-handshake": "Printer w/Handshake",
       },
+      memoryRepresentation: {
+        label: "Representation mode",
+        hex: "Hexadecimal",
+        bin: "Binary",
+        uint: "Unsigned integer",
+        int: "2's complement",
+        ascii: "ASCII",
+      },
+      memoryOnReset: {
+        label: "Memory on load",
+        random: "Random",
+        empty: "Empty",
+        keep: "Keep",
+      },
+      language: "Language",
+      documentation: "Documentation",
+      "report-issue": "Report an issue",
     },
   },
 } satisfies BaseLocale;

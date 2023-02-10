@@ -1,6 +1,5 @@
 import { useToggle } from "react-use";
 
-import { ConfigSelector } from "./components/ConfigSelector";
 import { Console } from "./components/Console";
 import { CPU } from "./components/CPU";
 import { F10 } from "./components/F10";
@@ -40,12 +39,10 @@ export default function App() {
 
         <div
           className={cn(
-            "pretty-scrollbar w-full flex-col overflow-auto bg-gray-100 px-8 pt-4 pb-16",
+            "pretty-scrollbar w-full flex-col overflow-auto bg-gray-100 px-8 pb-16",
             isMobile && isEditorOpen ? "hidden" : "flex",
           )}
         >
-          <ConfigSelector />
-
           <Bigdiv>{translate("computer")}</Bigdiv>
 
           <section className="flex flex-col gap-4 2xl:grid 2xl:grid-cols-2">

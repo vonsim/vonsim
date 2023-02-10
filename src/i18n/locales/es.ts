@@ -105,10 +105,8 @@ export const es: Locale = {
 
   ui: {
     computer: "Computadora",
-    documentation: "Documentación",
     frecuency: "Frecuencia",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
-    language: "Idioma",
 
     cpu: {
       name: "CPU",
@@ -177,14 +175,21 @@ export const es: Locale = {
       },
     },
 
-    settings: {
+    menu: {
+      label: "Menú",
+      devicesConfiguration: {
+        label: "Dispositivos",
+        "switches-leds": "Teclas y leds",
+        "printer-pio": "Impresora con PIO",
+        "printer-handshake": "Impresora con Handshake",
+      },
       memoryRepresentation: {
         label: "Modo de representación",
-        hex: "Hex",
-        bin: "Bin",
-        uint: "BSS",
-        int: "Ca2",
-        ascii: "Ascii",
+        hex: "Hexadecimal",
+        bin: "Binario",
+        uint: "Binario sin signo (BSS)",
+        int: "Complemento a 2 (Ca2)",
+        ascii: "ASCII",
       },
       memoryOnReset: {
         label: "Memoria al cargar",
@@ -192,12 +197,9 @@ export const es: Locale = {
         empty: "Vaciar",
         keep: "Mantener",
       },
-      devicesConfiguration: {
-        label: "Dispositivos",
-        "switches-leds": "Teclas y leds",
-        "printer-pio": "Impresora con PIO",
-        "printer-handshake": "Impresora con Handshake",
-      },
+      language: "Idioma",
+      documentation: "Documentación",
+      "report-issue": "Reportar un error",
     },
   },
 };

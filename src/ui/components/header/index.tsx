@@ -1,11 +1,10 @@
 import { useLongPress, useToggle } from "react-use";
 
 import { useMobile } from "@/ui/hooks/useMobile";
-import { useTranslate } from "@/ui/hooks/useTranslate";
 import { cn } from "@/ui/lib/utils";
 
 import { Controls } from "./Controls";
-import { LangPicker } from "./LangPicker";
+import { MainMenu } from "./MainMenu";
 import { State } from "./State";
 
 /**
@@ -17,7 +16,6 @@ import { State } from "./State";
  */
 
 export function Header() {
-  const translate = useTranslate();
   const isMobile = useMobile();
 
   const [easterEgg, toggleEasterEgg] = useToggle(false);
@@ -54,23 +52,7 @@ export function Header() {
 
         <div className="grow" />
 
-        <LangPicker />
-        <a
-          className="flex h-full items-center p-3 transition hover:bg-slate-500/30"
-          href="./docs"
-          title={translate("documentation")}
-        >
-          <span className="icon-[carbon--document] h-5 w-5" />
-        </a>
-        <a
-          className="mr-4 flex h-full items-center p-3 transition hover:bg-slate-500/30"
-          href="https://github.com/vonsim/vonsim"
-          target="_blank"
-          title="GitHub"
-          rel="noreferrer"
-        >
-          <span className="icon-[carbon--logo-github] h-5 w-5" />
-        </a>
+        <MainMenu />
       </div>
 
       {isMobile && (
