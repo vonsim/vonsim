@@ -24,7 +24,7 @@ function updatePanel(state: EditorState, panel: HTMLDivElement) {
   const lang = useSettings.getState().language;
   panel.textContent = translate(lang, "ui.editor.lintSummary", errors);
   panel.className = cn(
-    "pl-12 text-xs font-medium tracking-wider text-white border-none font-sans",
+    "pr-6 text-right text-xs font-medium tracking-wider text-white border-none font-sans",
     errors === 0 ? "bg-sky-400" : "bg-red-500",
   );
 }
