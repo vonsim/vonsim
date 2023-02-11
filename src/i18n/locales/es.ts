@@ -115,6 +115,7 @@ export const es: Locale = {
       alu: "ALU",
       memory: {
         name: "Memoria",
+        cell: "Celda",
         "start-address": "Dirección de inicio",
         "start-address-must-be-integer": "El valor de inicio debe ser un número entero.",
         "start-address-too-big": `El valor de inicio debe ser menor o igual a ${renderAddress(
