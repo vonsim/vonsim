@@ -22,6 +22,9 @@ export default defineConfig({
           { src: "icon-512.png", type: "image/png", sizes: "512x512" },
         ],
       },
+      workbox: {
+        navigateFallback: null,
+      },
     }),
   ],
   resolve: {
