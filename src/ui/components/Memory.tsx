@@ -9,8 +9,8 @@ import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { Table } from "@/ui/components/common/Table";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-
-import { useSettings } from "../lib/settings";
+import { useSettings } from "@/ui/lib/settings";
+import { cn } from "@/ui/lib/utils";
 
 export function Memory({ className }: { className?: string }) {
   const translate = useTranslate();
@@ -84,14 +84,20 @@ export function Memory({ className }: { className?: string }) {
       <Table className="w-full">
         <Table.Head>
           {Array.from({ length: cols }).map((_, i) => (
-            <Table.ColLabel key={i}>{renderAddress(offset + i * rows)}</Table.ColLabel>
+            <Table.ColLabel key={i} className={cn(i % 2 === 0 ? "bg-white" : "bg-slate-50")}>
+              {renderAddress(offset + i * rows)}
+            </Table.ColLabel>
           ))}
         </Table.Head>
         <Table.Body divide={false}>
           {Array.from({ length: rows }).map((_, i) => (
             <Table.Row key={i}>
               {Array.from({ length: cols }).map((_, j) => (
-                <Table.Cell key={j} className="w-byte" title={renderAddress(offset + i + j * rows)}>
+                <Table.Cell
+                  key={j}
+                  className={cn("w-byte", j % 2 === 0 ? "bg-white" : "bg-slate-50")}
+                  title={renderAddress(offset + i + j * rows)}
+                >
                   {renderMemoryCell(memory[i + j * rows], memoryRepresentation)}
                 </Table.Cell>
               ))}
