@@ -32,7 +32,7 @@ export const useSettings = create<SettingsStore>()(
       language: getDefaultLanguage(),
       setLanguage: lang => set({ language: lang }),
 
-      memoryRepresentation: "hex",
+      memoryRepresentation: "bin",
       setMemoryRepresentation: representation => set({ memoryRepresentation: representation }),
 
       memoryOnReset: "random",
