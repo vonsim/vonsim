@@ -112,10 +112,11 @@ export const es: Locale = {
       name: "CPU",
       "general-registers": "Registros de propósito general",
       "special-registers": "Registros especiales",
+      register: register => `Registro ${register}`,
       alu: "ALU",
       memory: {
         name: "Memoria",
-        cell: "Celda",
+        cell: address => `Celda ${renderAddress(address)}`,
         "start-address": "Dirección de inicio",
         "start-address-must-be-integer": "El valor de inicio debe ser un número entero.",
         "start-address-too-big": `El valor de inicio debe ser menor o igual a ${renderAddress(

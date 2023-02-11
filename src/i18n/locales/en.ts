@@ -111,10 +111,11 @@ export const en = {
       name: "CPU",
       "general-registers": "General-purpose registers",
       "special-registers": "Special registers",
+      register: (register: string) => `${register} register`,
       alu: "ALU",
       memory: {
         name: "Memory",
-        cell: "Cell",
+        cell: (address: number) => `Cell ${renderAddress(address)}`,
         "start-address": "Start address",
         "start-address-must-be-integer": "Start address must be an integer.",
         "start-address-too-big": `Start address must be less or equal to ${renderAddress(

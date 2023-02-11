@@ -3,6 +3,7 @@ import { shallow } from "zustand/shallow";
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
 import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
+import { CellView } from "@/ui/components/common/CellView";
 import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
 import { Table } from "@/ui/components/common/Table";
 import { useTranslate } from "@/ui/hooks/useTranslate";
@@ -64,11 +65,11 @@ export function CPU({ className }: { className?: string }) {
                 return (
                   <Table.Row key={reg}>
                     <Table.RowLabel>{reg}</Table.RowLabel>
-                    <Table.Cell className="w-byte">
-                      {renderMemoryCell(low, settings.memoryRepresentation)}
+                    <Table.Cell className="w-byte p-0">
+                      <CellView name={translate("cpu.register", `${reg[0]}L`)} value={low} />
                     </Table.Cell>
-                    <Table.Cell className="w-byte">
-                      {renderMemoryCell(high, settings.memoryRepresentation)}
+                    <Table.Cell className="w-byte p-0">
+                      <CellView name={translate("cpu.register", `${reg[0]}H`)} value={high} />
                     </Table.Cell>
                   </Table.Row>
                 );

@@ -1,17 +1,15 @@
-import { Popover } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
-import { Fragment, useId, useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useMeasure } from "react-use";
 import { shallow } from "zustand/shallow";
 
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
-import { renderAddress, renderMemoryCell } from "@/helpers";
+import { renderAddress } from "@/helpers";
 import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
+import { CellView } from "@/ui/components/common/CellView";
 import { Table } from "@/ui/components/common/Table";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useSettings } from "@/ui/lib/settings";
 import { cn } from "@/ui/lib/utils";
 
 export function Memory({ className }: { className?: string }) {
@@ -82,71 +80,32 @@ export function Memory({ className }: { className?: string }) {
 
       <hr ref={ref} />
 
-      <Popover.Group as={Fragment}>
-        <Table className="w-full">
-          <Table.Head>
-            {Array.from({ length: cols }).map((_, i) => (
-              <Table.ColLabel key={i} className={cn(i % 2 === 0 ? "bg-white" : "bg-slate-50")}>
-                {renderAddress(offset + i * rows)}
-              </Table.ColLabel>
-            ))}
-          </Table.Head>
-          <Table.Body divide={false}>
-            {Array.from({ length: rows }).map((_, i) => (
-              <Table.Row key={i}>
-                {Array.from({ length: cols }).map((_, j) => (
-                  <MemoryCell
-                    key={j}
-                    className={j % 2 === 0 ? "bg-white" : "bg-slate-50"}
-                    address={offset + i + j * rows}
+      <Table className="w-full">
+        <Table.Head>
+          {Array.from({ length: cols }).map((_, i) => (
+            <Table.ColLabel key={i} className={cn(i % 2 === 0 ? "bg-white" : "bg-slate-50")}>
+              {renderAddress(offset + i * rows)}
+            </Table.ColLabel>
+          ))}
+        </Table.Head>
+        <Table.Body divide={false}>
+          {Array.from({ length: rows }).map((_, i) => (
+            <Table.Row key={i}>
+              {Array.from({ length: cols }).map((_, j) => (
+                <Table.Cell
+                  key={j}
+                  className={cn("w-byte p-0", j % 2 === 0 ? "bg-white" : "bg-slate-50")}
+                >
+                  <CellView
+                    name={translate("cpu.memory.cell", offset + i + j * rows)}
                     value={memory[i + j * rows]}
                   />
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      </Popover.Group>
-    </Card>
-  );
-}
-
-function MemoryCell({
-  address,
-  value,
-  className,
-}: {
-  address: number;
-  value: number;
-  className?: string;
-}) {
-  const translate = useTranslate();
-  const memoryRepresentation = useSettings(state => state.memoryRepresentation);
-
-  return (
-    <Table.Cell className={cn("w-byte p-0", className)}>
-      <Popover as={Fragment}>
-        <Float placement="bottom">
-          <Popover.Button className="w-full px-2 py-0.5 outline-none transition-colors hover:bg-accent/30 focus:bg-accent/75 focus:text-white">
-            {renderMemoryCell(value, memoryRepresentation)}
-          </Popover.Button>
-
-          <Popover.Panel className="z-50 w-60 rounded-md border border-slate-300 bg-white text-left font-sans shadow-md outline-none">
-            <p className="px-4 py-2 font-medium text-slate-800">
-              {translate("cpu.memory.cell")} {renderAddress(address)}
-            </p>
-            <hr />
-            <ul className="px-4 py-2 text-sm">
-              {(["hex", "bin", "uint", "int", "ascii"] as const).map(rep => (
-                <li key={rep}>
-                  <b className="font-semibold">{translate(`menu.memoryRepresentation.${rep}`)}</b>:{" "}
-                  <span className="font-mono">{renderMemoryCell(value, rep)}</span>
-                </li>
+                </Table.Cell>
               ))}
-            </ul>
-          </Popover.Panel>
-        </Float>
-      </Popover>
-    </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </Card>
   );
 }
