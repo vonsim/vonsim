@@ -1,7 +1,7 @@
 import { match } from "ts-pattern";
 import type { Primitive } from "type-fest";
 
-import { MAX_SIGNED_VALUE, MAX_VALUE, Size } from "@/config";
+import { ASCII_TABLE, MAX_SIGNED_VALUE, MAX_VALUE, Size } from "@/config";
 
 // #=========================================================================#
 // # Byte/Word                                                               #
@@ -94,7 +94,7 @@ export function renderMemoryCell(n: number, representation: MemoryRepresentation
     .with("bin", () => n.toString(2).padStart(8, "0"))
     .with("int", () => binaryToSignedInt(n, "byte").toString(10)) // Ca2 or 2's complement
     .with("uint", () => n.toString(10)) // BSS or unsinged int
-    .with("ascii", () => String.fromCharCode(n))
+    .with("ascii", () => ASCII_TABLE[n] ?? "---")
     .exhaustive();
 }
 
