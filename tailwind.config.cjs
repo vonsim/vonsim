@@ -12,7 +12,7 @@ module.exports = {
       },
 
       colors: {
-        accent: "var(--color-accent)",
+        accent: "rgb(var(--color-accent) / <alpha-value>)",
       },
 
       width: {

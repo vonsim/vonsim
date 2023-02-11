@@ -45,7 +45,7 @@ export default function App() {
         >
           <Section
             title={translate("computer")}
-            accent="[--color-accent:theme(colors.red.600)]"
+            accent="[--color-accent:220_38_38]" // theme(colors.red.600)
             className="flex flex-col gap-4 2xl:grid 2xl:grid-cols-2"
           >
             <CPU />
@@ -54,7 +54,7 @@ export default function App() {
 
           <Section
             title={translate("devices.internal.label")}
-            accent="[--color-accent:theme(colors.blue.800)]"
+            accent="[--color-accent:30_64_175]" // theme(colors.blue.800)
             className="flex flex-wrap items-start justify-center gap-4"
           >
             {devices === "printer-handshake" ? <Handshake /> : <PIO />}
@@ -64,7 +64,7 @@ export default function App() {
 
           <Section
             title={translate("devices.external.label")}
-            accent="[--color-accent:theme(colors.green.800)]"
+            accent="[--color-accent:22_101_52]" // theme(colors.green.800)
             className="flex flex-wrap items-start justify-center gap-4"
           >
             <Console className="w-80 grow" />
@@ -109,8 +109,8 @@ function Section({
 }) {
   return (
     <section className={accent}>
-      <hr className="border-t-4 border-dotted border-accent opacity-50" />
-      <h2 className="mb-6 select-none text-3xl font-black uppercase leading-none tracking-tighter text-accent opacity-50">
+      <hr className="border-t-4 border-dotted border-accent/50" />
+      <h2 className="mb-6 select-none text-3xl font-black uppercase leading-none tracking-tighter text-accent/50">
         {title}
       </h2>
 
