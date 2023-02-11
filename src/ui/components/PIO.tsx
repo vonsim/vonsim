@@ -11,38 +11,41 @@ export function PIO({ className }: { className?: string }) {
 
   return (
     <Card title={translate("devices.internal.pio.name")} className={className}>
-      <Table
-        labelsSans
-        columns={[translate("devices.internal.pio.data"), translate("devices.internal.pio.config")]}
-        rows={[
-          {
-            label: translate("devices.internal.pio.port", "A"),
-            cells: [
-              {
-                content: renderMemoryCell(pio.PA, "bin"),
-                title: translate("devices.ioRegister", "PA", 0x30),
-              },
-              {
-                content: renderMemoryCell(pio.CA, "bin"),
-                title: translate("devices.ioRegister", "CA", 0x32),
-              },
-            ],
-          },
-          {
-            label: translate("devices.internal.pio.port", "B"),
-            cells: [
-              {
-                content: renderMemoryCell(pio.PB, "bin"),
-                title: translate("devices.ioRegister", "PB", 0x31),
-              },
-              {
-                content: renderMemoryCell(pio.CB, "bin"),
-                title: translate("devices.ioRegister", "CB", 0x33),
-              },
-            ],
-          },
-        ]}
-      />
+      <Table className="w-full">
+        <Table.Head>
+          <Table.ColLabel />
+          <Table.ColLabel className="font-sans">
+            {translate("devices.internal.pio.data")}
+          </Table.ColLabel>
+          <Table.ColLabel className="font-sans">
+            {translate("devices.internal.pio.config")}
+          </Table.ColLabel>
+        </Table.Head>
+        <Table.Body>
+          <Table.Row>
+            <Table.RowLabel className="font-sans">
+              {translate("devices.internal.pio.port", "A")}
+            </Table.RowLabel>
+            <Table.Cell title={translate("devices.ioRegister", "PA", 0x30)}>
+              {renderMemoryCell(pio.PA, "bin")}
+            </Table.Cell>
+            <Table.Cell title={translate("devices.ioRegister", "CA", 0x32)}>
+              {renderMemoryCell(pio.CA, "bin")}
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.RowLabel className="font-sans">
+              {translate("devices.internal.pio.port", "B")}
+            </Table.RowLabel>
+            <Table.Cell title={translate("devices.ioRegister", "PB", 0x31)}>
+              {renderMemoryCell(pio.PB, "bin")}
+            </Table.Cell>
+            <Table.Cell title={translate("devices.ioRegister", "CB", 0x33)}>
+              {renderMemoryCell(pio.CB, "bin")}
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
     </Card>
   );
 }

@@ -4,14 +4,17 @@ import { useMeasure } from "react-use";
 import { shallow } from "zustand/shallow";
 
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
-import { renderAddress } from "@/helpers";
+import { renderAddress, renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { Table } from "@/ui/components/common/Table";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
+import { useSettings } from "../lib/settings";
+
 export function Memory({ className }: { className?: string }) {
   const translate = useTranslate();
+  const memoryRepresentation = useSettings(state => state.memoryRepresentation);
 
   const startId = useId();
   const [start, setStart] = useState(0x1000);
@@ -78,18 +81,24 @@ export function Memory({ className }: { className?: string }) {
 
       <hr ref={ref} />
 
-      <Table
-        className="w-full"
-        columns={Array.from({ length: cols }).map((_, i) => renderAddress(offset + i * rows))}
-        rows={Array.from({ length: rows }).map((_, i) => ({
-          cells: Array.from({ length: cols }).map((_, j) => ({
-            content: memory[i + j * rows],
-            renderMemory: true,
-            title: renderAddress(offset + i + j * rows),
-          })),
-        }))}
-        divideRows={false}
-      />
+      <Table className="w-full">
+        <Table.Head>
+          {Array.from({ length: cols }).map((_, i) => (
+            <Table.ColLabel key={i}>{renderAddress(offset + i * rows)}</Table.ColLabel>
+          ))}
+        </Table.Head>
+        <Table.Body divide={false}>
+          {Array.from({ length: rows }).map((_, i) => (
+            <Table.Row key={i}>
+              {Array.from({ length: cols }).map((_, j) => (
+                <Table.Cell key={j} className="w-byte" title={renderAddress(offset + i + j * rows)}>
+                  {renderMemoryCell(memory[i + j * rows], memoryRepresentation)}
+                </Table.Cell>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
     </Card>
   );
 }

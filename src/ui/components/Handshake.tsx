@@ -11,26 +11,26 @@ export function Handshake({ className }: { className?: string }) {
 
   return (
     <Card title={translate("devices.internal.handshake.name")} className={className}>
-      <Table
-        columns={[
-          translate("devices.internal.handshake.data"),
-          translate("devices.internal.handshake.state"),
-        ]}
-        rows={[
-          {
-            cells: [
-              {
-                content: renderMemoryCell(handshake.data, "ascii"),
-                title: translate("devices.ioRegister", "DATA", 0x40),
-              },
-              {
-                content: renderMemoryCell(handshake.state, "bin"),
-                title: translate("devices.ioRegister", "STATE", 0x41),
-              },
-            ],
-          },
-        ]}
-      />
+      <Table className="w-full">
+        <Table.Head>
+          <Table.ColLabel className="font-sans">
+            {translate("devices.internal.handshake.data")}
+          </Table.ColLabel>
+          <Table.ColLabel className="font-sans">
+            {translate("devices.internal.handshake.state")}
+          </Table.ColLabel>
+        </Table.Head>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell title={translate("devices.ioRegister", "DATA", 0x40)}>
+              {renderMemoryCell(handshake.data, "ascii")}
+            </Table.Cell>
+            <Table.Cell title={translate("devices.ioRegister", "STATE", 0x41)}>
+              {renderMemoryCell(handshake.state, "bin")}
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
     </Card>
   );
 }

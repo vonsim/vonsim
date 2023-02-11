@@ -16,32 +16,33 @@ export function PIC({ className }: { className?: string }) {
     <Card title={translate("devices.internal.pic.name")} className={className}>
       <div className="flex flex-wrap justify-center gap-4 p-4">
         <Card title={translate("devices.internal.pic.state")}>
-          <Table
-            rows={STATE.map((reg, i) => ({
-              label: reg,
-              cells: [
-                {
-                  content: renderMemoryCell(pic[reg], "bin"),
-                  title: translate("devices.ioRegister", reg, 0x20 + i),
-                },
-              ],
-            }))}
-          />
+          <Table className="w-full">
+            <Table.Body>
+              {STATE.map((reg, i) => (
+                <Table.Row key={i}>
+                  <Table.RowLabel>{reg}</Table.RowLabel>
+                  <Table.Cell title={translate("devices.ioRegister", reg, 0x20 + i)}>
+                    {renderMemoryCell(pic[reg], "bin")}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
         </Card>
 
         <Card title={translate("devices.internal.pic.connections")}>
-          <Table
-            className="w-full"
-            rows={CONNECTIONS.map((reg, i) => ({
-              label: reg,
-              cells: [
-                {
-                  content: renderMemoryCell(pic[reg], "uint"),
-                  title: translate("devices.ioRegister", reg, 0x24 + i),
-                },
-              ],
-            }))}
-          />
+          <Table className="w-full">
+            <Table.Body>
+              {CONNECTIONS.map((reg, i) => (
+                <Table.Row key={i}>
+                  <Table.RowLabel>{reg}</Table.RowLabel>
+                  <Table.Cell title={translate("devices.ioRegister", reg, 0x24 + i)}>
+                    {renderMemoryCell(pic[reg], "uint")}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
         </Card>
       </div>
     </Card>

@@ -52,30 +52,56 @@ export function CPU({ className }: { className?: string }) {
 
       <div className="flex flex-wrap justify-center gap-4 p-4">
         <Card title={translate("cpu.general-registers")}>
-          <Table
-            className="w-full"
-            columns={["L", "H"]}
-            rows={REGISTERS.map(reg => ({
-              label: reg,
-              cells: splitLowHigh(registers[reg]).map(cell => ({
-                content: cell,
-                renderMemory: true,
-              })),
-            }))}
-          />
+          <Table className="w-full">
+            <Table.Head>
+              <Table.ColLabel />
+              <Table.ColLabel>L</Table.ColLabel>
+              <Table.ColLabel>H</Table.ColLabel>
+            </Table.Head>
+            <Table.Body>
+              {REGISTERS.map(reg => {
+                const [low, high] = splitLowHigh(registers[reg]);
+                return (
+                  <Table.Row key={reg}>
+                    <Table.RowLabel>{reg}</Table.RowLabel>
+                    <Table.Cell className="w-byte">
+                      {renderMemoryCell(low, settings.memoryRepresentation)}
+                    </Table.Cell>
+                    <Table.Cell className="w-byte">
+                      {renderMemoryCell(high, settings.memoryRepresentation)}
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
+            </Table.Body>
+          </Table>
         </Card>
 
         <Card title={translate("cpu.special-registers")}>
-          <Table
-            className="w-full"
-            rows={[
-              { label: "IP", cells: [{ content: renderAddress(registers.IP) }] },
-              { label: "SP", cells: [{ content: renderAddress(registers.SP) }] },
-              { label: "IR", cells: [{ content: renderMemoryCell(registers.IR, "bin") + "b" }] },
-              { label: "MAR", cells: [{ content: renderAddress(registers.MAR) }] },
-              { label: "MBR", cells: [{ content: renderAddress(registers.MBR) }] },
-            ]}
-          />
+          <Table className="w-full">
+            <Table.Body>
+              <Table.Row>
+                <Table.RowLabel>IP</Table.RowLabel>
+                <Table.Cell>{renderAddress(registers.IP)}</Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.RowLabel>SP</Table.RowLabel>
+                <Table.Cell>{renderAddress(registers.SP)}</Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.RowLabel>IR</Table.RowLabel>
+                <Table.Cell>{renderMemoryCell(registers.IR, "bin")}b</Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.RowLabel>MAR</Table.RowLabel>
+                <Table.Cell>{renderAddress(registers.MAR)}</Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.RowLabel>MBR</Table.RowLabel>
+                <Table.Cell>{renderAddress(registers.MBR)}</Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
         </Card>
 
         <Card title={translate("cpu.alu")}>
@@ -91,20 +117,22 @@ export function CPU({ className }: { className?: string }) {
             <div className="text-left text-slate-600">{renderWord(alu.result)}</div>
           </div>
           <hr />
-          <Table
-            className="w-full"
-            columns={["C", "O", "S", "Z"]}
-            rows={[
-              {
-                cells: [
-                  { content: alu.flags.carry ? "1" : "0" },
-                  { content: alu.flags.overflow ? "1" : "0" },
-                  { content: alu.flags.sign ? "1" : "0" },
-                  { content: alu.flags.zero ? "1" : "0" },
-                ],
-              },
-            ]}
-          />
+          <Table className="w-full">
+            <Table.Head>
+              <Table.ColLabel>C</Table.ColLabel>
+              <Table.ColLabel>O</Table.ColLabel>
+              <Table.ColLabel>S</Table.ColLabel>
+              <Table.ColLabel>Z</Table.ColLabel>
+            </Table.Head>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell>{alu.flags.carry ? "1" : "0"}</Table.Cell>
+                <Table.Cell>{alu.flags.overflow ? "1" : "0"}</Table.Cell>
+                <Table.Cell>{alu.flags.sign ? "1" : "0"}</Table.Cell>
+                <Table.Cell>{alu.flags.zero ? "1" : "0"}</Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
         </Card>
       </div>
     </Card>

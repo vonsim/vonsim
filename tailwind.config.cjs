@@ -14,6 +14,10 @@ module.exports = {
       colors: {
         accent: "var(--color-accent)",
       },
+
+      width: {
+        byte: "8ch",
+      },
     },
   },
   plugins: [require("@headlessui/tailwindcss"), addDynamicIconSelectors()],

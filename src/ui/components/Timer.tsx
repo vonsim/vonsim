@@ -1,5 +1,6 @@
 import { shallow } from "zustand/shallow";
 
+import { renderMemoryCell } from "@/helpers";
 import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { Table } from "@/ui/components/common/Table";
@@ -18,25 +19,22 @@ export function Timer({ className }: { className?: string }) {
 
   return (
     <Card title={translate("devices.internal.timer")} className={className}>
-      <Table
-        columns={["CONT", "COMP"]}
-        rows={[
-          {
-            cells: [
-              {
-                content: CONT,
-                renderMemory: true,
-                title: translate("devices.ioRegister", "CONT", 0x10),
-              },
-              {
-                content: COMP,
-                renderMemory: true,
-                title: translate("devices.ioRegister", "COMP", 0x11),
-              },
-            ],
-          },
-        ]}
-      />
+      <Table className="w-full">
+        <Table.Head>
+          <Table.ColLabel>CONT</Table.ColLabel>
+          <Table.ColLabel>COMP</Table.ColLabel>
+        </Table.Head>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell title={translate("devices.ioRegister", "CONT", 0x10)}>
+              {renderMemoryCell(CONT, "uint")}
+            </Table.Cell>
+            <Table.Cell title={translate("devices.ioRegister", "COMP", 0x11)}>
+              {renderMemoryCell(COMP, "uint")}
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
     </Card>
   );
 }
