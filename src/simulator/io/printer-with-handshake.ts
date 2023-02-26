@@ -69,6 +69,10 @@ export class PrinterWithHandshake extends BaseDevices {
     super.tick(currentTime);
     this.#printer.tick(currentTime);
 
+    // it's generally safe to update the busy bit here,
+    // since this function will always be called between CPU ticks
+    this.#handshake.updateBusy();
+
     // Check for interrupts
     if (!this.#handshake.interrupts) return;
 

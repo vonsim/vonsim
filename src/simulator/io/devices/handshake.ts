@@ -61,6 +61,11 @@ export class Handshake implements IORegisters {
     return bit(this.#state, 7);
   }
 
+  updateBusy() {
+    if (this.#printer.busy) this.#state |= 1;
+    else this.#state &= ~1;
+  }
+
   toJSON() {
     return { data: this.#data, state: this.#state };
   }

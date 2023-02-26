@@ -76,19 +76,13 @@ export class PrinterWithPIO extends BaseDevices {
 
   setRegister(address: number, value: number): SimulatorResult<void> {
     if (address === PIO.PA) {
-      const PA = this.#pio.getRegister(PIO.PA).unwrap();
-
-      // Don't overwrite the busy bit
-      if (this.#pio.bitMode("A", 0) === "output") {
-        value &= ~1;
-        if (this.#printer.busy) value |= 1;
-      }
+      const oldValue = this.#pio.getRegister(PIO.PA).unwrap();
 
       // Update register
       this.#pio.setRegister(address, value);
 
       // Check if the strobe bit changed
-      const prev = bit(PA, 1);
+      const prev = bit(oldValue, 1);
       const next = bit(value, 1);
       if (prev === false && next === true) {
         // Strobe is rising edge
@@ -101,16 +95,6 @@ export class PrinterWithPIO extends BaseDevices {
         }
 
         this.#printer.addToBuffer(char);
-      }
-    } else if (address === PIO.CA) {
-      this.#pio.setRegister(address, value);
-
-      // Update the busy bit
-      if (this.#pio.bitMode("A", 0) === "output") {
-        let PA = this.#pio.getRegister(PIO.PA).unwrap();
-        PA &= ~1;
-        if (this.#printer.busy) PA |= 1;
-        this.#pio.setRegister(PIO.PA, PA);
       }
     } else {
       const pio = this.#pio.setRegister(address, value);
@@ -127,6 +111,18 @@ export class PrinterWithPIO extends BaseDevices {
   tick(currentTime: number) {
     super.tick(currentTime);
     this.#printer.tick(currentTime);
+    // it's generally safe to update the busy bit here,
+    // since this function will always be called between CPU ticks
+    this.#updateBusy();
+  }
+
+  #updateBusy() {
+    // Don't update the busy bit if it's an output
+    if (this.#pio.bitMode("A", 0) !== "input") return;
+
+    const PA = this.#pio.getRegister(PIO.PA).unwrap();
+    if (this.#printer.busy) this.#pio.setRegister(PIO.PA, PA | 1);
+    else this.#pio.setRegister(PIO.PA, PA & ~1);
   }
 
   toJSON() {
