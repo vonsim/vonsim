@@ -1,31 +1,31 @@
 import { Ok } from "rust-optionals";
 import { describe, expect, it } from "vitest";
 
-import { initProgram, simulator } from "./_simulator";
+import { initProgram } from "./_simulator";
 
 it("INT 0", () => {
-  initProgram(`
+  const simulator = initProgram(`
     ORG 2000h
     INT 0
     END
   `);
 
-  expect(simulator().executeInstruction()).toStrictEqual(Ok("halt"));
+  expect(simulator.run(1)).toStrictEqual(Ok("halt"));
 });
 
 it("INT 3", () => {
-  initProgram(`
+  const simulator = initProgram(`
     ORG 2000h
     INT 3
     END
   `);
 
-  expect(simulator().executeInstruction()).toStrictEqual(Ok("start-debugger"));
+  expect(simulator.run(1)).toStrictEqual(Ok("start-debugger"));
 });
 
 describe("INT 6", () => {
   it("should write to memory and console", () => {
-    initProgram(`
+    const simulator = initProgram(`
       ORG 1000h
       num DB ?
   
@@ -36,16 +36,15 @@ describe("INT 6", () => {
       END
     `);
 
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("wait-for-input"));
-    expect(simulator().handleInt6("A")).toStrictEqual(Ok());
+    expect(simulator.run(2)).toStrictEqual(Ok("wait-for-input"));
+    expect(simulator.cpu.handleInt6("A")).toStrictEqual(Ok());
 
-    expect(simulator().getMemory(0x1000, "byte")).toStrictEqual(Ok(65));
-    expect(simulator().devices.console.output).toBe("A");
+    expect(simulator.memory.get(0x1000, "byte")).toStrictEqual(Ok(65));
+    expect(simulator.devices.console.toJSON()).toBe("A");
   });
 
   it("should throw on invalid memory address", () => {
-    initProgram(`
+    const simulator = initProgram(`
       ORG 1000h
       num DB ?
   
@@ -56,21 +55,20 @@ describe("INT 6", () => {
       END
     `);
 
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("wait-for-input"));
-    expect(simulator().handleInt6("A")).toMatchInlineSnapshot(`
+    expect(simulator.run(2)).toStrictEqual(Ok("wait-for-input"));
+    expect(simulator.cpu.handleInt6("A")).toMatchInlineSnapshot(`
       Result {
         "val": [Error: Memory address 8000h is out of range (max memory address: 3FFFh).],
       }
     `);
 
-    expect(simulator().devices.console.output).toBe("");
+    expect(simulator.devices.console.toJSON()).toBe("");
   });
 });
 
 describe("INT 7", () => {
   it("should write to console", () => {
-    initProgram(`
+    const simulator = initProgram(`
       ORG 1000H
       MSJ DB "ARQUITECTURA DE COMPUTADORAS-"
   	  DB "FACULTAD DE INFORMATICA-"
@@ -88,16 +86,14 @@ describe("INT 7", () => {
       END
     `);
 
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-    expect(simulator().devices.console.output).toBe(
+    expect(simulator.run(3)).toStrictEqual(Ok("continue"));
+    expect(simulator.devices.console.toJSON()).toBe(
       "ARQUITECTURA DE COMPUTADORAS-FACULTAD DE INFORMATICA-UNLP",
     );
   });
 
   it("should throw on invalid memory address", () => {
-    initProgram(`
+    const simulator = initProgram(`
       ORG 3FF9H
       MSJ DB "ABCDEF"
   
@@ -109,13 +105,11 @@ describe("INT 7", () => {
       END
     `);
 
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-    expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-    expect(simulator().executeInstruction()).toMatchInlineSnapshot(`
+    expect(simulator.run(3)).toMatchInlineSnapshot(`
       Result {
         "val": [Error: Memory address 4000h is out of range (max memory address: 3FFFh).],
       }
     `);
-    expect(simulator().devices.console.output).toBe("");
+    expect(simulator.devices.console.toJSON()).toBe("");
   });
 });

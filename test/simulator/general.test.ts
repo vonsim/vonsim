@@ -1,10 +1,10 @@
 import { Ok } from "rust-optionals";
 import { expect, it } from "vitest";
 
-import { initProgram, simulator } from "./_simulator";
+import { initProgram } from "./_simulator";
 
 it("Data directives", () => {
-  initProgram(`
+  const simulator = initProgram(`
     ORG 1000h
     vardb DB 1
 
@@ -18,15 +18,15 @@ it("Data directives", () => {
     END
   `);
 
-  expect(simulator().getMemory(0x1000, "byte")).toStrictEqual(Ok(1));
-  expect(simulator().getMemory(0x1500, "byte")).toStrictEqual(Ok(2));
-  expect(simulator().getMemory(0x1501, "word")).toStrictEqual(Ok(20));
-  expect(simulator().getMemory(0x1503, "word")).toStrictEqual(Ok(24));
-  expect(simulator().executeInstruction()).toStrictEqual(Ok("halt"));
+  expect(simulator.memory.get(0x1000, "byte")).toStrictEqual(Ok(1));
+  expect(simulator.memory.get(0x1500, "byte")).toStrictEqual(Ok(2));
+  expect(simulator.memory.get(0x1501, "word")).toStrictEqual(Ok(20));
+  expect(simulator.memory.get(0x1503, "word")).toStrictEqual(Ok(24));
+  expect(simulator.run(1)).toStrictEqual(Ok("halt"));
 });
 
 it("Stack", () => {
-  initProgram(`
+  const simulator = initProgram(`
     ORG 2000h
     MOV AX, 3
     PUSH AX
@@ -36,16 +36,16 @@ it("Stack", () => {
   `);
 
   // MOV AX, 3
-  expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-  expect(simulator().getRegister("AX")).toStrictEqual(3);
+  expect(simulator.run(1)).toStrictEqual(Ok("continue"));
+  expect(simulator.cpu.getRegister("AX")).toStrictEqual(3);
   // PUSH AX
-  expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-  expect(simulator().getRegister("SP")).toStrictEqual(0x3ffe);
-  expect(simulator().getMemory(0x3ffe, "word")).toStrictEqual(Ok(3));
+  expect(simulator.run(1)).toStrictEqual(Ok("continue"));
+  expect(simulator.cpu.getRegister("SP")).toStrictEqual(0x3ffe);
+  expect(simulator.memory.get(0x3ffe, "word")).toStrictEqual(Ok(3));
   // POP BX
-  expect(simulator().executeInstruction()).toStrictEqual(Ok("continue"));
-  expect(simulator().getRegister("SP")).toStrictEqual(0x4000);
-  expect(simulator().getRegister("BX")).toStrictEqual(3);
+  expect(simulator.run(1)).toStrictEqual(Ok("continue"));
+  expect(simulator.cpu.getRegister("SP")).toStrictEqual(0x4000);
+  expect(simulator.cpu.getRegister("BX")).toStrictEqual(3);
   // HLT
-  expect(simulator().executeInstruction()).toStrictEqual(Ok("halt"));
+  expect(simulator.run(1)).toStrictEqual(Ok("halt"));
 });

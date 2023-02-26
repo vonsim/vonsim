@@ -15,7 +15,7 @@ import { Err, Ok } from "rust-optionals";
 import { match, P } from "ts-pattern";
 
 import type { Program, ProgramInstruction } from "@/compiler";
-import type { BinaryInstructionType } from "@/compiler/common";
+import type { BinaryInstructionType, RegisterType } from "@/compiler/common";
 import type { Interrupt, Size } from "@/config";
 import { joinLowHigh, splitLowHigh } from "@/helpers";
 import { Clock, Jsonable, MemoryMode, SimulatorError, SimulatorResult } from "@/simulator/common";
@@ -74,6 +74,10 @@ export class CPU implements Jsonable {
 
   handleInt6(char: string) {
     return this.#interrupts.handleInt6(char);
+  }
+
+  getRegister(register: RegisterType) {
+    return this.#registers.get(register);
   }
 
   get nextTick() {
