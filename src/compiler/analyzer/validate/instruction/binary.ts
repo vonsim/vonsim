@@ -60,7 +60,7 @@ export function validateBinaryInstruction(
   return match<[Operand, Operand], ValidatedBinaryInstruction>(
     instruction.operands as [Operand, Operand],
   )
-    .with([{ type: "register" }, { type: "register" }], ([out, src]) => {
+    .with([{ type: "register" }, { type: "register" }] as const, ([out, src]) => {
       const outReg = typeGuardRegister(out);
       const srcReg = typeGuardRegister(src);
 
@@ -76,7 +76,7 @@ export function validateBinaryInstruction(
         src: { type: "register", register: srcReg.value },
       };
     })
-    .with([{ type: "register" }, { type: "address", mode: "direct" }], ([out, src]) => {
+    .with([{ type: "register" }, { type: "address", mode: "direct" }] as const, ([out, src]) => {
       const outReg = typeGuardRegister(out);
       if (src.size !== "auto" && outReg.size !== src.size) {
         throw new CompilerError("size-mismatch", src.size, outReg.size).at(instruction);
@@ -90,7 +90,7 @@ export function validateBinaryInstruction(
         src: { type: "memory", mode: "direct", address: src.value },
       };
     })
-    .with([{ type: "register" }, { type: "address", mode: "indirect" }], ([out, src]) => {
+    .with([{ type: "register" }, { type: "address", mode: "indirect" }] as const, ([out, src]) => {
       const outReg = typeGuardRegister(out);
       if (src.size !== "auto" && outReg.size !== src.size) {
         throw new CompilerError("size-mismatch", src.size, outReg.size).at(instruction);
@@ -104,7 +104,7 @@ export function validateBinaryInstruction(
         src: { type: "memory", mode: "indirect" },
       };
     })
-    .with([{ type: "register" }, numberExpressionPattern], ([out, src]) => {
+    .with([{ type: "register" }, numberExpressionPattern] as const, ([out, src]) => {
       const outReg = typeGuardRegister(out);
 
       // Can be a label pointing to a DB or DW
@@ -138,7 +138,7 @@ export function validateBinaryInstruction(
         src: { type: "immediate", value: src },
       };
     })
-    .with([{ type: "address", mode: "direct" }, { type: "register" }], ([out, src]) => {
+    .with([{ type: "address", mode: "direct" }, { type: "register" }] as const, ([out, src]) => {
       const srcReg = typeGuardRegister(src);
       return {
         type: instruction.instruction,
@@ -148,7 +148,7 @@ export function validateBinaryInstruction(
         src: { type: "register", register: srcReg.value },
       };
     })
-    .with([{ type: "address", mode: "indirect" }, { type: "register" }], ([, src]) => {
+    .with([{ type: "address", mode: "indirect" }, { type: "register" }] as const, ([, src]) => {
       const srcReg = typeGuardRegister(src);
       return {
         type: instruction.instruction,
@@ -158,7 +158,7 @@ export function validateBinaryInstruction(
         src: { type: "register", register: srcReg.value },
       };
     })
-    .with([{ type: "address", mode: "direct" }, numberExpressionPattern], ([out, src]) => {
+    .with([{ type: "address", mode: "direct" }, numberExpressionPattern] as const, ([out, src]) => {
       // Can be a label pointing to a DB or DW
       if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
         throw new CompilerError("double-memory-access").at(instruction);
@@ -181,30 +181,33 @@ export function validateBinaryInstruction(
         src: { type: "immediate", value: src },
       };
     })
-    .with([{ type: "address", mode: "indirect" }, numberExpressionPattern], ([out, src]) => {
-      // Can be a label pointing to a DB or DW
-      if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
-        throw new CompilerError("double-memory-access").at(instruction);
-      }
+    .with(
+      [{ type: "address", mode: "indirect" }, numberExpressionPattern] as const,
+      ([out, src]) => {
+        // Can be a label pointing to a DB or DW
+        if (src.type === "label" && !src.offset && getLabelSize(src, labels)) {
+          throw new CompilerError("double-memory-access").at(instruction);
+        }
 
-      if (out.size === "auto") {
-        throw new CompilerError("unknown-size").at(out);
-      }
+        if (out.size === "auto") {
+          throw new CompilerError("unknown-size").at(out);
+        }
 
-      return {
-        type: instruction.instruction,
-        meta: {
-          label: instruction.label,
-          start: 0,
-          length: 1 + (out.size === "word" ? 2 : 1),
-          position: instruction.position,
-        },
-        opSize: out.size,
-        out: { type: "memory", mode: "indirect" },
-        src: { type: "immediate", value: src },
-      };
-    })
-    .with([{ type: "address" }, { type: "address" }], () => {
+        return {
+          type: instruction.instruction,
+          meta: {
+            label: instruction.label,
+            start: 0,
+            length: 1 + (out.size === "word" ? 2 : 1),
+            position: instruction.position,
+          },
+          opSize: out.size,
+          out: { type: "memory", mode: "indirect" },
+          src: { type: "immediate", value: src },
+        };
+      },
+    )
+    .with([{ type: "address" }, { type: "address" }] as const, () => {
       throw new CompilerError("double-memory-access").at(instruction);
     })
     .with([numberExpressionPattern, { type: "register" }], ([out, src]) => {
@@ -231,14 +234,14 @@ export function validateBinaryInstruction(
         src: { type: "register", register: srcReg.value },
       };
     })
-    .with([numberExpressionPattern, { type: "address" }], ([out]) => {
+    .with([numberExpressionPattern, { type: "address" }] as const, ([out]) => {
       if (out.type !== "label" || out.offset || !getLabelSize(out, labels)) {
         throw new CompilerError("destination-cannot-be-immediate").at(out);
       } else {
         throw new CompilerError("double-memory-access").at(instruction);
       }
     })
-    .with([numberExpressionPattern, numberExpressionPattern], ([out, src]) => {
+    .with([numberExpressionPattern, numberExpressionPattern] as const, ([out, src]) => {
       // Could be an immediate value
       if (out.type !== "label" || out.offset) {
         throw new CompilerError("destination-cannot-be-immediate").at(out);
