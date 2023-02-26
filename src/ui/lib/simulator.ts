@@ -34,7 +34,7 @@ import { toast } from "react-hot-toast";
 import { createStore } from "zustand/vanilla";
 
 import { compile } from "@/compiler";
-import { Simulator } from "@/simulator";
+import { Simulator, SimulatorState } from "@/simulator";
 import { SimulatorError } from "@/simulator/common/error";
 import { CONSOLE_ID } from "@/ui/components/Console";
 import { highlightLine, setReadOnly } from "@/ui/editor/methods";
@@ -51,7 +51,7 @@ type Action =
   | [action: "console.handleKey", event: InputEvent];
 
 export type SimulatorStore = {
-  simulator: ReturnType<Simulator["toJSON"]>;
+  simulator: SimulatorState;
   state:
     | { type: "running" }
     | { type: "paused" }
@@ -190,13 +190,7 @@ export const simulatorStore = createStore<SimulatorStore>((set, get) => {
               devices: { printerSpeed: speeds.printer },
             });
 
-            if (action === "step") {
-              set({ state: { type: "paused" } });
-              // We'll run the first instruction immediately and
-              // then wait for the user to press "step" again
-              runSimulator(0);
-              return;
-            }
+            if (action === "step") set({ state: { type: "paused" } });
           }
 
           // By this point, the program is already loaded and
@@ -211,12 +205,14 @@ export const simulatorStore = createStore<SimulatorStore>((set, get) => {
             const cpuCycleTime = Math.round(1000 / useSettings.getState().speeds.cpu);
             runSimulator(cpuCycleTime);
           } else {
-            // Run the first instruction immediately
             set({ state: { type: "running" } });
-            runSimulator(0);
+
+            const resolution = 8; // ms
+
+            // Run the first instruction immediately (better UX)
+            runSimulator(resolution);
 
             // Start the continuous loop
-            const resolution = 8; // ms
             const interval = setInterval(() => {
               if (get().state.type !== "running") {
                 clearInterval(interval);

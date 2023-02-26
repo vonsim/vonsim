@@ -7,10 +7,7 @@ export class Clock {
    */
   constructor(speed: number) {
     this.#interval = Math.round(1000 / speed);
-
-    // Timer starts at -interval so that the first tick happens immediately
-    // after the timer is started.
-    this.#lastTick = -this.#interval;
+    this.#lastTick = 0;
   }
 
   get nextTick() {

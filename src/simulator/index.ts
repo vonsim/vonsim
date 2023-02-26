@@ -68,6 +68,8 @@ export interface SimulatorOptions {
   devices: Except<DevicesOptions, "mode">;
 }
 
+export type SimulatorState = ReturnType<Simulator["toJSON"]>;
+
 export class Simulator implements Jsonable {
   #currentTime = 0;
 
