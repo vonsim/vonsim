@@ -26,6 +26,8 @@ export class Timer implements IORegisters {
   }
 
   reset({ mode }: TimerOptions) {
+    this.#clock = new Clock(1);
+
     if (mode === "empty") {
       this.#CONT = 0x00;
       this.#COMP = 0xff;
