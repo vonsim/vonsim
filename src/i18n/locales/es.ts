@@ -81,6 +81,8 @@ export const es: Locale = {
       // prettier-ignore
       "expected-literal-after-literal": (expected, after) => `Se esperaba "${expected}" después de "${after}".`,
       "expected-type": (expected, got) => `Se esperaba ${expected}, se obtuvo ${got}.`,
+      // prettier-ignore
+      "indirect-addressing-must-be-bx": "El único registro válido para el direccionamiento indirecto es BX.",
       "unclosed-parenthesis": "Paréntesis sin cerrar.",
     },
   },

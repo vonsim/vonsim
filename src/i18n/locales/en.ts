@@ -80,6 +80,8 @@ export const en = {
       "expected-literal-after-literal": (expected: string, after: string) => `Expected "${expected}" after "${after}".`,
       // prettier-ignore
       "expected-type": (expected: TokenType, got: TokenType) => `Expected ${expected}, got ${got}.`,
+      // prettier-ignore
+      "indirect-addressing-must-be-bx": "The only register supported for indirect addressing is BX.",
       "unclosed-parenthesis": "Unclosed parenthesis.",
     },
   },

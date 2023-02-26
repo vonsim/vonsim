@@ -347,7 +347,8 @@ export class Parser {
         );
       }
 
-      if (this.match("BX")) {
+      if (isMatching(registerPattern, this.peek().type)) {
+        this.consume("BX", new CompilerError("parser.indirect-addressing-must-be-bx"));
         const rbracket = this.consume(
           "RIGHT_BRACKET",
           new CompilerError("parser.expected-literal-after-literal", "]", "BX"),
