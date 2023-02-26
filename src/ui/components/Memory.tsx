@@ -1,14 +1,13 @@
 import { useId, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useMeasure } from "react-use";
-import { shallow } from "zustand/shallow";
 
 import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
 import { renderAddress } from "@/helpers";
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { CellView } from "@/ui/components/common/CellView";
 import { Table } from "@/ui/components/common/Table";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { cn } from "@/ui/lib/utils";
 
@@ -34,10 +33,7 @@ export function Memory({ className }: { className?: string }) {
     return { cols, cells, rows, offset };
   }, [start, width]);
 
-  const memory = useSimulator(
-    state => [...new Uint8Array(state.memory).slice(offset, offset + cells)],
-    shallow,
-  );
+  const memory = useSimulator(s => s.simulator.memory.slice(offset, offset + cells));
 
   return (
     <Card title={translate("cpu.memory.name")} className={className}>

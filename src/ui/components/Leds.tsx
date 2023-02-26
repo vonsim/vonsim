@@ -1,12 +1,18 @@
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { cn } from "@/ui/lib/utils";
 
 export function Leds({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const state = useSimulator(state => state.devices.leds.state);
+  const state = useSimulator(s => {
+    if ("leds" in s.simulator.devices) return s.simulator.devices.leds;
+    else return null;
+  });
+
+  // Leds are not connected
+  if (!state) return null;
 
   /**
    * We do row-reverse to show this order:

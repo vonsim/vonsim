@@ -179,11 +179,11 @@ export const es: Locale = {
 
     menu: {
       label: "Menú",
-      devicesConfiguration: {
+      devices: {
         label: "Dispositivos",
-        "switches-leds": "Teclas y leds",
-        "printer-pio": "Impresora con PIO",
-        "printer-handshake": "Impresora con Handshake",
+        "switches-and-leds": "Teclas y leds",
+        "printer-with-pio": "Impresora con PIO",
+        "printer-with-handshake": "Impresora con Handshake",
       },
       memoryRepresentation: {
         label: "Modo de representación",
@@ -193,11 +193,11 @@ export const es: Locale = {
         int: "Complemento a 2 (Ca2)",
         ascii: "ASCII",
       },
-      memoryOnReset: {
+      memoryMode: {
         label: "Memoria al cargar",
-        random: "Aleatoria",
+        randomize: "Aleatoria",
         empty: "Vaciar",
-        keep: "Mantener",
+        reuse: "Reusar",
       },
       language: "Idioma",
       documentation: "Documentación",

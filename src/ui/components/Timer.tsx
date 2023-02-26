@@ -1,21 +1,13 @@
-import { shallow } from "zustand/shallow";
-
 import { renderMemoryCell } from "@/helpers";
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { Table } from "@/ui/components/common/Table";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function Timer({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const { CONT, COMP } = useSimulator(
-    state => ({
-      CONT: state.devices.timer.CONT,
-      COMP: state.devices.timer.COMP,
-    }),
-    shallow,
-  );
+  const { CONT, COMP } = useSimulator(s => s.simulator.devices.timer);
 
   return (
     <Card title={translate("devices.internal.timer")} className={className}>

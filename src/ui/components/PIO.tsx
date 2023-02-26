@@ -1,13 +1,19 @@
 import { renderMemoryCell } from "@/helpers";
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { Table } from "@/ui/components/common/Table";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function PIO({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const pio = useSimulator(state => state.devices.pio);
+  const pio = useSimulator(s => {
+    if ("pio" in s.simulator.devices) return s.simulator.devices.pio;
+    else return null;
+  });
+
+  // PIO is not connected
+  if (!pio) return null;
 
   return (
     <Card title={translate("devices.internal.pio.name")} className={className}>

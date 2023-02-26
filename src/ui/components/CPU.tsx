@@ -1,11 +1,11 @@
 import { shallow } from "zustand/shallow";
 
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { CellView } from "@/ui/components/common/CellView";
 import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
 import { Table } from "@/ui/components/common/Table";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useSettings } from "@/ui/lib/settings";
 
@@ -15,21 +15,14 @@ export function CPU({ className }: { className?: string }) {
   const translate = useTranslate();
   const settings = useSettings(
     state => ({
-      cpuSpeed: state.cpuSpeed,
-      setCPUSpeed: state.setCPUSpeed,
+      cpuSpeed: state.speeds.cpu,
+      setCPUSpeed: (speed: number) => state.setSpeed("cpu", speed),
       memoryRepresentation: state.memoryRepresentation,
     }),
     shallow,
   );
 
-  const { alu, registers, interruptsEnabled } = useSimulator(
-    state => ({
-      alu: state.alu,
-      registers: state.registers,
-      interruptsEnabled: state.interruptsEnabled,
-    }),
-    shallow,
-  );
+  const { alu, registers, interrupts } = useSimulator(s => s.simulator.cpu);
 
   return (
     <Card title={translate("cpu.name")} className={className}>
@@ -45,7 +38,7 @@ export function CPU({ className }: { className?: string }) {
           <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
             {translate("cpu.interrups.label")}
           </label>
-          <p>{translate(`cpu.interrups.${interruptsEnabled ? "enabled" : "disabled"}`)}</p>
+          <p>{translate(`cpu.interrups.${interrupts ? "enabled" : "disabled"}`)}</p>
         </div>
       </div>
 

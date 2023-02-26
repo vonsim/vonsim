@@ -1,18 +1,14 @@
 import { useCallback } from "react";
 import { useEvent } from "react-use";
-import { shallow } from "zustand/shallow";
 
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/lib/runner";
 import { cn } from "@/ui/lib/utils";
 
 export function Controls() {
   const translate = useTranslate();
 
-  const { state, dispatch } = useRunner(
-    runner => ({ state: runner.state, dispatch: runner.dispatch }),
-    shallow,
-  );
+  const { state, dispatch } = useSimulator(s => ({ state: s.state, dispatch: s.dispatch }));
 
   const onKeyDown = useCallback(
     (ev: KeyboardEvent) => {

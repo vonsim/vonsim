@@ -28,12 +28,12 @@ export function MainMenu() {
 
         <Menu.Radio
           leading="icon-[carbon--devices]"
-          value={settings.devicesConfiguration}
-          onChange={settings.setDevicesConfiguration}
-          options={["switches-leds", "printer-pio", "printer-handshake"]}
-          getOptionLabel={option => translate(`menu.devicesConfiguration.${option}`)}
+          value={settings.devices}
+          onChange={settings.setDevices}
+          options={["switches-and-leds", "printer-with-pio", "printer-with-handshake"]}
+          getOptionLabel={option => translate(`menu.devices.${option}`)}
         >
-          {translate("menu.devicesConfiguration.label")}
+          {translate("menu.devices.label")}
         </Menu.Radio>
 
         <Menu.Radio
@@ -48,12 +48,12 @@ export function MainMenu() {
 
         <Menu.Radio
           leading="icon-[carbon--data-table]"
-          value={settings.memoryOnReset}
-          onChange={settings.setMemoryOnReset}
-          options={["keep", "empty", "random"]}
-          getOptionLabel={option => translate(`menu.memoryOnReset.${option}`)}
+          value={settings.memoryMode}
+          onChange={settings.setMemoryMode}
+          options={["reuse", "empty", "randomize"]}
+          getOptionLabel={option => translate(`menu.memoryMode.${option}`)}
         >
-          {translate("menu.memoryOnReset.label")}
+          {translate("menu.memoryMode.label")}
         </Menu.Radio>
 
         <Menu.Separator />

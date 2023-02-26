@@ -5,22 +5,19 @@ import { CPU } from "./components/CPU";
 import { F10 } from "./components/F10";
 import { Handshake } from "./components/Handshake";
 import { Header } from "./components/header";
-import { Leds } from "./components/Leds";
 import { Memory } from "./components/Memory";
 import { PIC } from "./components/PIC";
 import { PIO } from "./components/PIO";
 import { Printer } from "./components/Printer";
-import { Switches } from "./components/Switches";
+import { SwitchesAndLeds } from "./components/SwitchesAndLeds";
 import { Timer } from "./components/Timer";
 import { Editor } from "./editor";
 import { useMobile } from "./hooks/useMobile";
 import { useTranslate } from "./hooks/useTranslate";
-import { useSettings } from "./lib/settings";
 import { cn } from "./lib/utils";
 
 export default function App() {
   const translate = useTranslate();
-  const devices = useSettings(state => state.devicesConfiguration);
 
   const isMobile = useMobile();
   const [isEditorOpen, toggleEditor] = useToggle(true);
@@ -57,7 +54,8 @@ export default function App() {
             accent="[--color-accent:30_64_175]" // theme(colors.blue.800)
             className="flex flex-wrap items-start justify-center gap-4"
           >
-            {devices === "printer-handshake" ? <Handshake /> : <PIO />}
+            <Handshake />
+            <PIO />
             <PIC />
             <Timer />
           </Section>
@@ -69,14 +67,8 @@ export default function App() {
           >
             <Console className="w-80 grow" />
             <F10 />
-            {devices === "switches-leds" ? (
-              <div className="flex flex-col items-center gap-4">
-                <Switches />
-                <Leds />
-              </div>
-            ) : (
-              <Printer />
-            )}
+            <SwitchesAndLeds />
+            <Printer />
           </Section>
         </div>
       </main>

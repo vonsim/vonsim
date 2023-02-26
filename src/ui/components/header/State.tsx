@@ -1,11 +1,11 @@
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/lib/runner";
 import { cn } from "@/ui/lib/utils";
 
 export function State() {
   const translate = useTranslate();
 
-  const state = useRunner(runner => runner.state);
+  const state = useSimulator(s => s.state);
 
   return (
     <div

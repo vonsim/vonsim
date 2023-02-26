@@ -1,8 +1,8 @@
 import { Listbox } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { useRunner } from "@/ui/lib/runner";
 
 export function FrecuencyPicker({
   value,
@@ -17,7 +17,7 @@ export function FrecuencyPicker({
 }) {
   const translate = useTranslate();
 
-  const stopped = useRunner(runner => runner.state.type === "stopped");
+  const stopped = useSimulator(s => s.state.type === "stopped");
 
   return (
     <Listbox value={value} onChange={onChange} disabled={!stopped}>

@@ -178,11 +178,11 @@ export const en = {
 
     menu: {
       label: "Menu",
-      devicesConfiguration: {
+      devices: {
         label: "Devices",
-        "switches-leds": "Switches and LEDs",
-        "printer-pio": "Printer w/PIO",
-        "printer-handshake": "Printer w/Handshake",
+        "switches-and-leds": "Switches and LEDs",
+        "printer-with-pio": "Printer w/PIO",
+        "printer-with-handshake": "Printer w/Handshake",
       },
       memoryRepresentation: {
         label: "Representation mode",
@@ -192,11 +192,11 @@ export const en = {
         int: "2's complement",
         ascii: "ASCII",
       },
-      memoryOnReset: {
+      memoryMode: {
         label: "Memory on load",
-        random: "Random",
+        randomize: "Randomize",
         empty: "Empty",
-        keep: "Keep",
+        reuse: "Reuse",
       },
       language: "Language",
       documentation: "Documentation",

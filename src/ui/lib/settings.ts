@@ -3,8 +3,7 @@ import { persist } from "zustand/middleware";
 
 import { Language, LANGUAGES } from "@/config";
 import type { MemoryRepresentation } from "@/helpers";
-import type { DevicesConfiguration } from "@/simulator/devices";
-import type { MemoryConfig } from "@/simulator/program";
+import type { DevicesId, MemoryMode } from "@/simulator";
 
 export type SettingsStore = {
   language: Language;
@@ -13,17 +12,14 @@ export type SettingsStore = {
   memoryRepresentation: MemoryRepresentation;
   setMemoryRepresentation: (representation: MemoryRepresentation) => void;
 
-  memoryOnReset: MemoryConfig;
-  setMemoryOnReset: (mode: MemoryConfig) => void;
+  memoryMode: MemoryMode;
+  setMemoryMode: (mode: MemoryMode) => void;
 
-  devicesConfiguration: DevicesConfiguration;
-  setDevicesConfiguration: (config: DevicesConfiguration) => void;
+  devices: DevicesId;
+  setDevices: (id: DevicesId) => void;
 
-  cpuSpeed: number;
-  setCPUSpeed: (speed: number) => void;
-
-  printerSpeed: number;
-  setPrinterSpeed: (speed: number) => void;
+  speeds: { cpu: number; printer: number };
+  setSpeed: (device: "cpu" | "printer", speed: number) => void;
 };
 
 export const useSettings = create<SettingsStore>()(
@@ -35,19 +31,16 @@ export const useSettings = create<SettingsStore>()(
       memoryRepresentation: "bin",
       setMemoryRepresentation: representation => set({ memoryRepresentation: representation }),
 
-      memoryOnReset: "random",
-      setMemoryOnReset: mode => set({ memoryOnReset: mode }),
+      memoryMode: "randomize",
+      setMemoryMode: mode => set({ memoryMode: mode }),
 
-      devicesConfiguration: "switches-leds",
-      setDevicesConfiguration: config => set({ devicesConfiguration: config }),
+      devices: "switches-and-leds",
+      setDevices: id => set({ devices: id }),
 
-      cpuSpeed: 1,
-      setCPUSpeed: speed => set({ cpuSpeed: speed }),
-
-      printerSpeed: 0.125,
-      setPrinterSpeed: speed => set({ printerSpeed: speed }),
+      speeds: { cpu: 1, printer: 0.125 },
+      setSpeed: (device, speed) => set(state => ({ speeds: { ...state.speeds, [device]: speed } })),
     }),
-    { name: "settings", version: 0 },
+    { name: "settings", version: 1 },
   ),
 );
 

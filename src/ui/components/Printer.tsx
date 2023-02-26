@@ -1,9 +1,9 @@
 import { shallow } from "zustand/shallow";
 
 import { PRINTER_BUFFER_SIZE } from "@/config";
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useSettings } from "@/ui/lib/settings";
 import { cn } from "@/ui/lib/utils";
@@ -12,19 +12,21 @@ export function Printer({ className }: { className?: string }) {
   const translate = useTranslate();
   const settings = useSettings(
     state => ({
-      printerSpeed: state.printerSpeed,
-      setPrinterSpeed: state.setPrinterSpeed,
+      printerSpeed: state.speeds.printer,
+      setPrinterSpeed: (speed: number) => state.setSpeed("printer", speed),
     }),
     shallow,
   );
 
-  const { buffer, output } = useSimulator(
-    state => ({
-      buffer: state.devices.printer.buffer,
-      output: state.devices.printer.output,
-    }),
-    shallow,
-  );
+  const result = useSimulator(s => {
+    if ("printer" in s.simulator.devices) return s.simulator.devices.printer;
+    else return null;
+  });
+
+  // Printer is not connected
+  if (!result) return null;
+
+  const { buffer, output } = result;
 
   return (
     <Card title={translate("devices.external.printer.name")} className={className}>

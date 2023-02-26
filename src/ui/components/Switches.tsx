@@ -1,14 +1,25 @@
 import { Switch } from "@headlessui/react";
 
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { cn } from "@/ui/lib/utils";
 
 export function Switches({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const { state, toggle } = useSimulator(state => state.devices.switches);
+  const result = useSimulator(s => {
+    if ("switches" in s.simulator.devices) {
+      return { state: s.simulator.devices.switches, dispatch: s.dispatch };
+    } else {
+      return null;
+    }
+  });
+
+  // Switches are not connected
+  if (!result) return null;
+
+  const { state, dispatch } = result;
 
   /**
    * We do row-reverse to show this order:
@@ -28,7 +39,7 @@ export function Switches({ className }: { className?: string }) {
           <Switch
             key={i}
             checked={on}
-            onChange={() => toggle(i)}
+            onChange={() => dispatch("switch.toggle", i)}
             className={cn(
               "relative inline-flex h-14 w-8 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75",
               on ? "bg-sky-400" : "bg-sky-900",

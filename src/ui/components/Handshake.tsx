@@ -1,13 +1,19 @@
 import { renderMemoryCell } from "@/helpers";
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { Table } from "@/ui/components/common/Table";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function Handshake({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const handshake = useSimulator(state => state.devices.handshake);
+  const handshake = useSimulator(s => {
+    if ("handshake" in s.simulator.devices) return s.simulator.devices.handshake;
+    return null;
+  });
+
+  // Handshake is not connected
+  if (!handshake) return null;
 
   return (
     <Card title={translate("devices.internal.handshake.name")} className={className}>

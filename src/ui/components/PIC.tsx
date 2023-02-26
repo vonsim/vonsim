@@ -1,7 +1,7 @@
 import { byteArray, renderMemoryCell } from "@/helpers";
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
 import { Table } from "@/ui/components/common/Table";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
 const STATE = ["EOI", "IMR", "IRR", "ISR"] as const;
@@ -10,7 +10,7 @@ const CONNECTIONS = byteArray(i => `INT${i}` as const);
 export function PIC({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const pic = useSimulator(state => state.devices.pic);
+  const pic = useSimulator(s => s.simulator.devices.pic);
 
   return (
     <Card title={translate("devices.internal.pic.name")} className={className}>

@@ -1,17 +1,17 @@
 import { useKey } from "react-use";
 
-import { useSimulator } from "@/simulator";
 import { Card } from "@/ui/components/common/Card";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
 export function F10({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const press = useSimulator(state => state.devices.f10.press);
+  const dispatch = useSimulator(s => s.dispatch);
 
   useKey("F10", ev => {
     ev.preventDefault();
-    press();
+    dispatch("f10.press");
   });
 
   return (
@@ -22,7 +22,7 @@ export function F10({ className }: { className?: string }) {
           hover:bg-sky-400 hover:text-white
           focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400
         "
-        onClick={press}
+        onClick={() => dispatch("f10.press")}
       >
         {translate("devices.external.f10.interrupt")}
       </button>
