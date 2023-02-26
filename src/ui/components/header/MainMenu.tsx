@@ -1,5 +1,6 @@
 import type { Language } from "@/config";
 import { Menu } from "@/ui/components/common/Menu";
+import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useSettings } from "@/ui/lib/settings";
 
@@ -11,6 +12,8 @@ const languages: { [key in Language]: string } = {
 export function MainMenu() {
   const translate = useTranslate();
   const settings = useSettings();
+
+  const stopped = useSimulator(s => s.state.type === "stopped");
 
   return (
     <Menu strategy="fixed" placement="bottom-end" shift={8} offset={8}>
@@ -32,6 +35,7 @@ export function MainMenu() {
           onChange={settings.setDevices}
           options={["switches-and-leds", "printer-with-pio", "printer-with-handshake"]}
           getOptionLabel={option => translate(`menu.devices.${option}`)}
+          disabled={!stopped}
         >
           {translate("menu.devices.label")}
         </Menu.Radio>
