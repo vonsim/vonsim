@@ -65,12 +65,13 @@ export class SwitchesAndLeds extends BaseDevices {
   }
 
   setRegister(address: number, value: number): SimulatorResult<void> {
-    if (address === PIO.PA) this.#switches.syncPIO();
-    else if (address === PIO.PB || address === PIO.CB) this.#leds.syncPIO();
-
     const pio = this.#pio.setRegister(address, value);
     if (pio.isNone()) return super.setRegister(address, value);
-    else return Ok();
+
+    if (address === PIO.PA || address === PIO.CA) this.#switches.syncPIO();
+    else if (address === PIO.PB || address === PIO.CB) this.#leds.syncPIO();
+
+    return Ok();
   }
 
   toJSON() {
