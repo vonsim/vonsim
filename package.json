@@ -18,8 +18,7 @@
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [
-        "@algolia/client-search",
-        "csstype"
+        "@algolia/client-search"
       ]
     }
   },
@@ -41,9 +40,9 @@
     "klona": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.4.0",
     "react-use": "^17.4.0",
     "rust-optionals": "^3.0.0",
+    "sonner": "^0.1.1",
     "tailwind-merge": "^1.10.0",
     "ts-pattern": "^4.2.1",
     "zustand": "^4.3.3"

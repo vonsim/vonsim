@@ -41,9 +41,9 @@ specifiers:
   prettier-plugin-tailwindcss: ^0.2.3
   react: ^18.2.0
   react-dom: ^18.2.0
-  react-hot-toast: ^2.4.0
   react-use: ^17.4.0
   rust-optionals: ^3.0.0
+  sonner: ^0.1.1
   tailwind-merge: ^1.10.0
   tailwindcss: ^3.2.7
   ts-pattern: ^4.2.1
@@ -73,9 +73,9 @@ dependencies:
   klona: 2.0.6
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
-  react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
   react-use: 17.4.0_biqbaboplfbrettd7655fr4n2y
   rust-optionals: 3.0.0
+  sonner: 0.1.1_react@18.2.0
   tailwind-merge: 1.10.0
   ts-pattern: 4.2.1
   zustand: 4.3.3_immer@9.0.19+react@18.2.0
@@ -3979,15 +3979,6 @@ packages:
       slash: 3.0.0
     dev: true
 
-  /goober/2.1.11:
-    resolution: {integrity: sha512-5SS2lmxbhqH0u9ABEWq7WPU69a4i2pYcHeCxqaNq6Cw3mnrF0ghWNM4tEGid4dKy8XNIAUbuThuozDHHKJVh3A==}
-    peerDependencies:
-      csstype: ^3.0.10
-    peerDependenciesMeta:
-      csstype:
-        optional: true
-    dev: false
-
   /gopd/1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
     dependencies:
@@ -4955,20 +4946,6 @@ packages:
       react: 18.2.0
       scheduler: 0.23.0
 
-  /react-hot-toast/2.4.0_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    dependencies:
-      goober: 2.1.11
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-    transitivePeerDependencies:
-      - csstype
-    dev: false
-
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
@@ -5299,6 +5276,14 @@ packages:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 4.0.0
     dev: true
+
+  /sonner/0.1.1_react@18.2.0:
+    resolution: {integrity: sha512-ZNAqRwfoCbn72wrpyU6fzrrWPvSX7FqiI/4sGdmSBAhDOHN0YUAE/9d948eA1iFmAobGM3FjE1NnxbJ325WTXA==}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /source-map-js/1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}

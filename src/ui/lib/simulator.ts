@@ -30,7 +30,7 @@
  * otherwise it would be painful to debug.
  */
 
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { createStore } from "zustand/vanilla";
 
 import { compile } from "@/compiler";

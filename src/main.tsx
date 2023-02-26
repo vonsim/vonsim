@@ -2,7 +2,7 @@ import "@/ui/styles/index.css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Toaster } from "react-hot-toast";
+import { Toaster } from "sonner";
 
 import App from "@/ui/App";
 
@@ -11,7 +11,7 @@ window.codemirror = null;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLDivElement).render(
   <React.StrictMode>
-    <Toaster />
+    <Toaster richColors closeButton position="top-center" />
     <App />
   </React.StrictMode>,
 );
