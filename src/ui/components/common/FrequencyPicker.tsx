@@ -4,7 +4,7 @@ import { Menu } from "@/ui/components/common/Menu";
 import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
-export function FrecuencyPicker({
+export function FrequencyPicker({
   value,
   onChange,
   options,
@@ -23,7 +23,7 @@ export function FrecuencyPicker({
   return (
     <div className={className}>
       <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-slate-700">
-        {translate("frecuency")}
+        {translate("frequency")}
       </label>
       <Menu placement="right-start" offset={4}>
         <Menu.Button
@@ -38,7 +38,7 @@ export function FrecuencyPicker({
         </Menu.Button>
 
         <Menu.Content>
-          <Menu.Title>{translate("frecuency")}</Menu.Title>
+          <Menu.Title>{translate("frequency")}</Menu.Title>
           <Menu.Separator />
           {options.map((option, i) => (
             <Menu.Item

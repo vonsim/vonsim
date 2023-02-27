@@ -3,7 +3,7 @@ import { shallow } from "zustand/shallow";
 import { renderAddress, renderMemoryCell, renderWord, splitLowHigh } from "@/helpers";
 import { Card } from "@/ui/components/common/Card";
 import { CellView } from "@/ui/components/common/CellView";
-import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
+import { FrequencyPicker } from "@/ui/components/common/FrequencyPicker";
 import { Table } from "@/ui/components/common/Table";
 import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
@@ -27,7 +27,7 @@ export function CPU({ className }: { className?: string }) {
   return (
     <Card title={translate("cpu.name")} className={className}>
       <div className="flex">
-        <FrecuencyPicker
+        <FrequencyPicker
           className="py-2 px-4"
           value={settings.cpuSpeed}
           onChange={settings.setCPUSpeed}

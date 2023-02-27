@@ -2,7 +2,7 @@ import { shallow } from "zustand/shallow";
 
 import { PRINTER_BUFFER_SIZE } from "@/config";
 import { Card } from "@/ui/components/common/Card";
-import { FrecuencyPicker } from "@/ui/components/common/FrecuencyPicker";
+import { FrequencyPicker } from "@/ui/components/common/FrequencyPicker";
 import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 import { useSettings } from "@/ui/lib/settings";
@@ -32,7 +32,7 @@ export function Printer({ className }: { className?: string }) {
     <Card title={translate("devices.external.printer.name")} className={className}>
       <div className="flex flex-col sm:flex-row">
         <div className="h-36 w-32 px-4 py-1">
-          <FrecuencyPicker
+          <FrequencyPicker
             value={settings.printerSpeed}
             onChange={settings.setPrinterSpeed}
             options={[0.125, 0.25, 0.5, 1, 4, 16]}

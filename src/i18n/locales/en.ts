@@ -106,7 +106,7 @@ export const en = {
 
   ui: {
     computer: "Computer",
-    frecuency: "Frecuency",
+    frequency: "Frequency",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
 
     cpu: {
