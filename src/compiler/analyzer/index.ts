@@ -16,8 +16,6 @@
  *    the expressions in the operands.
  */
 
-import { klona } from "klona/json";
-
 import { CompilerError, safeMap } from "@/compiler/common";
 import type { Statement } from "@/compiler/parser/grammar";
 
@@ -102,5 +100,5 @@ export function analyze(statements: Statement[]): AnalysisResult {
   if (!instructionsResult.success) return instructionsResult;
   const instructions = instructionsResult.result;
 
-  return klona({ success: true, constants, data, instructions, codeMemory });
+  return structuredClone({ success: true, constants, data, instructions, codeMemory });
 }

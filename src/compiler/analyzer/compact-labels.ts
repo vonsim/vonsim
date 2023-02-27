@@ -1,5 +1,3 @@
-import { klona } from "klona";
-
 import type { LabelAddresses } from "./compute-addresses";
 import type { ProgramConstants } from "./evaluate/constants";
 
@@ -9,7 +7,7 @@ export type LabelMap = Map<
 >;
 
 export function compactLabels(addresses: LabelAddresses, constants: ProgramConstants): LabelMap {
-  const labelMap: LabelMap = klona(addresses);
+  const labelMap: LabelMap = structuredClone(addresses);
 
   for (const [label, value] of constants.entries()) {
     labelMap.set(label, { type: "constant", value });

@@ -1,4 +1,3 @@
-import { klona } from "klona/json";
 import { match } from "ts-pattern";
 
 import {
@@ -55,7 +54,7 @@ export function validateStatement(statement: Statement, labels: LabelTypes): Val
     .with({ instruction: intInstructionPattern }, validateIntInstruction)
     .exhaustive();
 
-  return klona(result);
+  return structuredClone(result);
 }
 
 export type {

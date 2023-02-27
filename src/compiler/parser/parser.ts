@@ -25,7 +25,6 @@
  * expect. More extensive validation is done by the semantic analyzer.
  */
 
-import { klona } from "klona/json";
 import { isMatching } from "ts-pattern";
 import type { Merge } from "type-fest";
 
@@ -48,7 +47,7 @@ export class Parser {
   private parsed = false;
 
   constructor(tokens: Token[]) {
-    this.tokens = klona(tokens);
+    this.tokens = structuredClone(tokens);
   }
 
   parseTokens(): Statement[] {
