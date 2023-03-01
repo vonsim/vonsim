@@ -4,6 +4,8 @@ import { Card } from "@/ui/components/common/Card";
 import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
 
+import styles from "./Console.module.css";
+
 export const CONSOLE_ID = "vonsim-console";
 
 export function Console({ className }: { className?: string }) {
@@ -21,7 +23,7 @@ export function Console({ className }: { className?: string }) {
 
   return (
     <Card title={translate("devices.external.console")} className={className}>
-      <div className="terminal">
+      <div className={styles.container}>
         <textarea
           id={CONSOLE_ID}
           autoComplete="off"
