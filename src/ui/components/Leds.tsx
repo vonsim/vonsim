@@ -33,12 +33,12 @@ export function Leds({ className }: { className?: string }) {
             key={i}
             className={cn(
               "relative h-8 w-8 rounded-full transition",
-              on ? "bg-sky-400" : "bg-sky-900",
+              on ? "bg-red-500" : "bg-gray-700 shadow-inner shadow-gray-900",
             )}
           >
             <div
               className={cn(
-                "absolute inset-0 rounded-full bg-sky-400 blur-sm transition",
+                "absolute inset-0 rounded-full bg-red-500 blur-sm transition",
                 on ? "opacity-100" : "opacity-0",
               )}
             />

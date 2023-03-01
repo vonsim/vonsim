@@ -42,7 +42,7 @@ export function Switches({ className }: { className?: string }) {
             onChange={() => dispatch("switch.toggle", i)}
             className={cn(
               "relative inline-flex h-14 w-8 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75",
-              on ? "bg-sky-400" : "bg-sky-900",
+              on ? "bg-red-600" : "bg-gray-700",
             )}
           >
             <span
