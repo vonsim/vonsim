@@ -41,14 +41,17 @@ export function Switches({ className }: { className?: string }) {
             checked={on}
             onChange={() => dispatch("switch.toggle", i)}
             className={cn(
-              "relative inline-flex h-14 w-8 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75",
+              "relative inline-flex h-14 w-8 shrink-0 cursor-pointer rounded-full border-2 border-transparent",
+              "transition-colors duration-300 ease-realistic focus:outline-none",
+              "focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75",
               on ? "bg-red-600" : "bg-gray-700",
             )}
           >
             <span
               aria-hidden="true"
               className={cn(
-                "pointer-events-none inline-block h-7 w-7 transform rounded-full bg-white shadow-lg ring-0 transition duration-100 ease-in-out",
+                "pointer-events-none inline-block h-7 w-7 transform rounded-full bg-white shadow-lg ring-0",
+                "transition-transform duration-200 ease-realistic-bounce",
                 on ? "translate-y-0" : "translate-y-6",
               )}
             />
