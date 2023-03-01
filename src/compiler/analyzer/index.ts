@@ -43,8 +43,10 @@ export type AnalysisResult =
   | { success: false; errors: unknown[] };
 
 export function analyze(statements: Statement[]): AnalysisResult {
-  if (statements.at(-1)?.type !== "end") {
-    throw new CompilerError("empty-program");
+  const lastStatement = statements.at(-1);
+  if (!lastStatement) throw new CompilerError("empty-program");
+  if (lastStatement.type !== "end") {
+    throw new CompilerError("end-must-be-the-last-statement").at(lastStatement);
   }
 
   // Get whether each label is a constant, a variable or an instruction.

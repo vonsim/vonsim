@@ -20,6 +20,7 @@ export const es: Locale = {
     "destination-cannot-be-immediate": "El destino no puede ser un valor inmediato.",
     "double-memory-access": "No se puede acceder a una memoria dos veces en la misma instrucción.",
     "empty-program": "Programa vacío. El programa debe tener, al menos, una instrucción END.",
+    "end-must-be-the-last-statement": "END debe ser la última instrucción.",
     "equ-not-found": label => `EQU "${label}" no encontrado.`,
     "expects-ax": "Este operando debe ser AX o AL.",
     "expects-dx": "El único registro válido es DX.",
@@ -67,7 +68,6 @@ export const es: Locale = {
       // prettier-ignore
       "ambiguous-unary": "Se detectó una expresión unaria ambigua. Use paréntesis para evitar ambigüedades.",
       "duplicated-label": label => `Etiqueta duplicada "${label}".`,
-      "end-must-be-the-last-statement": "END debe ser la última instrucción.",
       "expected-address-after-org": "Se esperaba una dirección después de ORG.",
       "expected-argument": "Se esperaba un argumento.",
       "expected-eos": "Se esperaba que la instrucción termine.",

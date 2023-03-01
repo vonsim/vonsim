@@ -19,6 +19,7 @@ export const en = {
     "destination-cannot-be-immediate": "The destination can't be an immediate value.",
     "double-memory-access": "Can't access to a memory location twice in the same instruction.",
     "empty-program": "Empty program. The program must have, at least, an END statement.",
+    "end-must-be-the-last-statement": "END must be the last statement.",
     "equ-not-found": (label: string) => `EQU "${label}" not found.`,
     "expects-ax": "This operand should be AX or AL.",
     "expects-dx": "The only valid register is DX.",
@@ -65,7 +66,6 @@ export const en = {
     parser: {
       "ambiguous-unary": "Ambiguous unary expression detected. Use parentheses to disambiguate.",
       "duplicated-label": (label: string) => `Duplicated label "${label}".`,
-      "end-must-be-the-last-statement": "END must be the last statement.",
       "expected-address-after-org": "Expected address after ORG.",
       "expected-argument": "Expected argument.",
       "expected-eos": "Expected end of statement.",

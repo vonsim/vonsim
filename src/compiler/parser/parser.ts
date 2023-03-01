@@ -72,7 +72,7 @@ export class Parser {
         while (!this.isAtEnd()) {
           if (this.match("EOL")) continue;
 
-          throw new CompilerError("parser.end-must-be-the-last-statement").at(
+          throw new CompilerError("end-must-be-the-last-statement").at(
             this.calculatePositionRange(token),
           );
         }
