@@ -2,7 +2,7 @@
   @apply h-full w-full bg-slate-800 text-slate-50;
 
   .cm-scroller {
-    @apply overflow-auto font-mono text-sm scrollbar-slate-800;
+    @apply overflow-auto font-mono text-sm scrollbar-slate-700;
   }
 
   .cm-activeLine {
