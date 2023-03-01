@@ -25,7 +25,10 @@ const MenuContext = createContext<MenuContextValue>({
   close: () => void 0,
 });
 
-export type MenuRootProps = Pick<FloatProps, "placement" | "shift" | "offset" | "strategy"> & {
+export type MenuRootProps = Pick<
+  FloatProps,
+  "placement" | "shift" | "offset" | "strategy" | "flip"
+> & {
   children: JSX.Element[];
 };
 export function MenuRoot(props: MenuRootProps) {

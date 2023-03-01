@@ -25,7 +25,7 @@ export function FrequencyPicker({
       <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-slate-700">
         {translate("frequency")}
       </label>
-      <Menu placement="right-start" offset={4}>
+      <Menu placement="right-start" flip offset={4}>
         <Menu.Button
           className="
             rounded-lg border border-sky-400 px-2 py-1 text-sm transition
