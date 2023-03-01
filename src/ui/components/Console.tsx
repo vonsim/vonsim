@@ -1,7 +1,8 @@
+import { useBoolean } from "react-use";
+
 import { Card } from "@/ui/components/common/Card";
 import { useSimulator } from "@/ui/hooks/useSimulator";
 import { useTranslate } from "@/ui/hooks/useTranslate";
-import { cn } from "@/ui/lib/utils";
 
 export const CONSOLE_ID = "vonsim-console";
 
@@ -14,22 +15,29 @@ export function Console({ className }: { className?: string }) {
     dispatch: s.dispatch,
   }));
 
+  const [focused, setFocused] = useBoolean(false);
+
+  const value = output + (state.type === "waiting-for-input" && focused ? "█" : "");
+
   return (
     <Card title={translate("devices.external.console")} className={className}>
-      <textarea
-        id={CONSOLE_ID}
-        autoComplete="off"
-        className={cn(
-          "h-36 w-full bg-gray-200 p-1 ring-inset ring-sky-400 focus:outline-none",
-          "resize-none overflow-y-auto whitespace-pre-wrap break-all align-bottom font-mono caret-transparent",
-          state.type === "waiting-for-input" && "focus:ring",
-        )}
-        value={output}
-        onInput={ev => {
-          ev.preventDefault();
-          dispatch("console.handleKey", ev.nativeEvent as InputEvent);
-        }}
-      />
+      <div className="terminal">
+        <textarea
+          id={CONSOLE_ID}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          className="h-36 w-full resize-none overflow-y-auto bg-transparent p-1 align-bottom caret-transparent scrollbar-white focus:outline-none"
+          value={value}
+          onInput={ev => {
+            ev.preventDefault();
+            dispatch("console.handleKey", ev.nativeEvent as InputEvent);
+          }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+        />
+      </div>
     </Card>
   );
 }

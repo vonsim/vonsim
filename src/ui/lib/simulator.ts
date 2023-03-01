@@ -258,7 +258,6 @@ export const simulatorStore = createStore<SimulatorStore>((set, get) => {
          */
         case "console.handleKey": {
           const ev = args[1];
-          ev.preventDefault();
 
           if (state.type !== "waiting-for-input") break;
 
