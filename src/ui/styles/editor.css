@@ -2,15 +2,7 @@
   @apply h-full w-full bg-slate-800 text-slate-50;
 
   .cm-scroller {
-    @apply overflow-auto font-mono text-sm;
-
-    &::-webkit-scrollbar {
-      @apply bg-slate-800;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      @apply rounded-full border-4 border-solid border-slate-800 bg-slate-700 p-1;
-    }
+    @apply overflow-auto font-mono text-sm scrollbar-slate-800;
   }
 
   .cm-activeLine {

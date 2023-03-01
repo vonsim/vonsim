@@ -36,7 +36,7 @@ export default function App() {
 
         <div
           className={cn(
-            "pretty-scrollbar w-full flex-col gap-16 overflow-auto bg-gray-100 p-8",
+            "w-full flex-col gap-16 overflow-auto bg-gray-100 p-8 scrollbar-gray-300",
             isMobile && isEditorOpen ? "hidden" : "flex",
           )}
         >

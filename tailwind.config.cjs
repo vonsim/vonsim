@@ -1,4 +1,7 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
+const plugin = require("tailwindcss/plugin");
+const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette").default;
+
 const { addDynamicIconSelectors } = require("@iconify/tailwind");
 
 /** @type {import('tailwindcss').Config} */
@@ -20,5 +23,32 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@headlessui/tailwindcss"), addDynamicIconSelectors()],
+  plugins: [
+    require("@headlessui/tailwindcss"),
+    addDynamicIconSelectors(),
+    plugin(({ matchUtilities, theme }) => {
+      matchUtilities(
+        {
+          scrollbar: value => ({
+            "&::-webkit-scrollbar": {
+              backgroundColor: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              borderRadius: "9999px",
+              borderStyle: "solid",
+              borderWidth: "4px",
+              borderColor: "transparent",
+              backgroundColor: value,
+              backgroundClip: "content-box",
+              padding: "1px",
+            },
+          }),
+        },
+        {
+          type: "color",
+          values: flattenColorPalette(theme("colors")),
+        },
+      );
+    }),
+  ],
 };

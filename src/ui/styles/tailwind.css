@@ -1,13 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.pretty-scrollbar {
-  &::-webkit-scrollbar {
-    @apply bg-gray-100;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply rounded-full border-4 border-solid border-gray-100 bg-gray-300 p-1;
-  }
-}
