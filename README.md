@@ -20,8 +20,10 @@
   - [x] Printer w/Handshake
 - [ ] Support indirect access with offset
 - [ ] Add custom VonSim syntax to docs
+- [ ] Add Printer w/CDMA
 - [x] Add mobile support
 - [ ] Add advanced filesave support
+- [ ] Split the source in different packages
 - [ ] Add ✨ animations ✨
 - [ ] Perf measurements
 
