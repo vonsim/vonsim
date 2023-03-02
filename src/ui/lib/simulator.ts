@@ -192,6 +192,9 @@ export const simulatorStore = createStore<SimulatorStore>((set, get) => {
               devices: { printerSpeed: speeds.printer },
             });
 
+            // Highlight the ORG 2000h line
+            if (result.initialStatement) highlightLine(result.initialStatement.position[0]);
+
             if (action === "step") set({ state: { type: "paused" } });
           }
 

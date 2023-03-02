@@ -14,6 +14,7 @@ import type { ProgramData } from "./analyzer/evaluate/data";
 import type { ProgramInstruction } from "./analyzer/evaluate/instruction";
 import { CompilerError } from "./common";
 import { Scanner } from "./lexer/scanner";
+import type { OriginChangeStatement } from "./parser/grammar";
 import { Parser } from "./parser/parser";
 
 export { CompilerError };
@@ -24,6 +25,7 @@ export type Program = {
   data: ProgramData[];
   instructions: ProgramInstruction[];
   codeMemory: CodeMemory;
+  initialStatement: OriginChangeStatement | null;
 };
 
 export type CompileResultSuccess = { success: true } & Program;

@@ -17,7 +17,8 @@
  */
 
 import { CompilerError, safeMap } from "@/compiler/common";
-import type { Statement } from "@/compiler/parser/grammar";
+import type { OriginChangeStatement, Statement } from "@/compiler/parser/grammar";
+import { INITIAL_IP } from "@/config";
 
 import { compactLabels } from "./compact-labels";
 import { CodeMemory, computeAddresses } from "./compute-addresses";
@@ -39,6 +40,7 @@ export type AnalysisResult =
       data: ProgramData[];
       instructions: ProgramInstruction[];
       codeMemory: CodeMemory;
+      initialStatement: OriginChangeStatement | null;
     }
   | { success: false; errors: unknown[] };
 
@@ -70,11 +72,17 @@ export function analyze(statements: Statement[]): AnalysisResult {
   const constantStatements: ValidatedConstantStatement[] = [];
   const dataStatements: ValidatedDataStatement[] = [];
   const instructionStatements: ValidatedInstructionStatement[] = [];
+  let initialStatement: OriginChangeStatement | null = null;
 
   for (const statement of validatedStatements) {
-    if (statement.type === "origin-change") continue;
+    if (statement.type === "origin-change") {
+      if (statement.newAddress === INITIAL_IP) initialStatement = statement;
+      continue;
+    }
+
     if (statement.type === "end") continue;
-    else if (statement.type === "EQU") constantStatements.push(statement);
+
+    if (statement.type === "EQU") constantStatements.push(statement);
     else if (statement.type === "DB" || statement.type === "DW") dataStatements.push(statement);
     else instructionStatements.push(statement);
   }
@@ -102,5 +110,12 @@ export function analyze(statements: Statement[]): AnalysisResult {
   if (!instructionsResult.success) return instructionsResult;
   const instructions = instructionsResult.result;
 
-  return structuredClone({ success: true, constants, data, instructions, codeMemory });
+  return structuredClone({
+    success: true,
+    constants,
+    data,
+    instructions,
+    codeMemory,
+    initialStatement,
+  });
 }
