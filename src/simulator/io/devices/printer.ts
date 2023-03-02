@@ -28,6 +28,10 @@ export class Printer implements Jsonable {
     this.#buffer.push(String.fromCharCode(char));
   }
 
+  clean() {
+    this.#output = "";
+  }
+
   get nextTick() {
     return this.#clock.nextTick;
   }

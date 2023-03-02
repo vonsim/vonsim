@@ -22,7 +22,17 @@ export function Console({ className }: { className?: string }) {
   const value = output + (state.type === "waiting-for-input" && focused ? "█" : "");
 
   return (
-    <Card title={translate("devices.external.console")} className={className}>
+    <Card
+      title={translate("devices.external.console")}
+      className={className}
+      actions={[
+        {
+          title: translate("clean"),
+          icon: "icon-[carbon--clean]",
+          onClick: () => dispatch("console.clean"),
+        },
+      ]}
+    >
       <div className={styles.container}>
         <textarea
           id={CONSOLE_ID}

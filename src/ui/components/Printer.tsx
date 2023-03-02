@@ -19,17 +19,29 @@ export function Printer({ className }: { className?: string }) {
   );
 
   const result = useSimulator(s => {
-    if ("printer" in s.simulator.devices) return s.simulator.devices.printer;
-    else return null;
+    if ("printer" in s.simulator.devices) {
+      return { ...s.simulator.devices.printer, dispatch: s.dispatch };
+    }
+    return null;
   });
 
   // Printer is not connected
   if (!result) return null;
 
-  const { buffer, output } = result;
+  const { buffer, output, dispatch } = result;
 
   return (
-    <Card title={translate("devices.external.printer.name")} className={className}>
+    <Card
+      title={translate("devices.external.printer.name")}
+      className={className}
+      actions={[
+        {
+          title: translate("clean"),
+          icon: "icon-[carbon--clean]",
+          onClick: () => dispatch("printer.clean"),
+        },
+      ]}
+    >
       <div className="flex flex-col sm:flex-row">
         <div className="h-36 w-32 px-4 py-1">
           <FrequencyPicker

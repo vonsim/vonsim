@@ -48,7 +48,9 @@ type Action =
   | [action: "stop"]
   | [action: "f10.press"]
   | [action: "switch.toggle", index: number]
-  | [action: "console.handleKey", event: InputEvent];
+  | [action: "console.handleKey", event: InputEvent]
+  | [action: "console.clean"]
+  | [action: "printer.clean"];
 
 export type SimulatorStore = {
   simulator: SimulatorState;
@@ -281,6 +283,16 @@ export const simulatorStore = createStore<SimulatorStore>((set, get) => {
           const previous = state.previousState;
           set({ state: { type: "paused" } });
           get().dispatch(previous === "running" ? "run" : "step");
+          break;
+        }
+
+        case "console.clean": {
+          simulator.devices.console.clean();
+          break;
+        }
+
+        case "printer.clean": {
+          if ("printer" in simulator.devices) simulator.devices.printer.clean();
           break;
         }
 

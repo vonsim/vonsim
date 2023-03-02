@@ -51,7 +51,7 @@ export default function App() {
 
           <Section
             title={translate("devices.internal.label")}
-            accent="[--color-accent:30_64_175]" // theme(colors.blue.800)
+            accent="[--color-accent:37_99_235]" // theme(colors.blue.600)
             className="flex flex-wrap items-start justify-center gap-4"
           >
             <Handshake />
@@ -62,7 +62,7 @@ export default function App() {
 
           <Section
             title={translate("devices.external.label")}
-            accent="[--color-accent:22_101_52]" // theme(colors.green.800)
+            accent="[--color-accent:21_128_61]" // theme(colors.green.700)
             className="flex flex-wrap items-start justify-center gap-4"
           >
             <Console className="w-80 grow" />

@@ -109,6 +109,7 @@ export const es: Locale = {
     computer: "Computadora",
     frequency: "Frecuencia",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
+    clean: "Limpiar",
 
     cpu: {
       name: "CPU",

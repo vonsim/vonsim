@@ -12,6 +12,10 @@ export class Console implements Jsonable {
     else this.#output = value.slice(formFeed + 1);
   }
 
+  clean() {
+    this.#output = "";
+  }
+
   toJSON() {
     return this.#output;
   }
