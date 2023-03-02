@@ -479,10 +479,10 @@ describe("Direct address", () => {
       ]
     `);
     expect(() => parse("INC [AX]")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected argument. (5:7)"',
+      '"The only register supported for indirect addressing is BX. (5:7)"',
     );
     expect(() => parse("INC [IP]")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected argument. (5:7)"',
+      '"The only register supported for indirect addressing is BX. (5:7)"',
     );
   });
 });

@@ -57,6 +57,14 @@ exports[`Fixtures > should match snapshot of fibonacci.asm 1`] = `
       "size": "byte",
     },
   ],
+  "initialStatement": {
+    "newAddress": 8192,
+    "position": [
+      271,
+      280,
+    ],
+    "type": "origin-change",
+  },
   "instructions": [
     {
       "meta": {
@@ -362,6 +370,14 @@ exports[`Fixtures > should match snapshot of multiplicar.asm 1`] = `
       "size": "word",
     },
   ],
+  "initialStatement": {
+    "newAddress": 8192,
+    "position": [
+      90,
+      99,
+    ],
+    "type": "origin-change",
+  },
   "instructions": [
     {
       "meta": {
@@ -748,6 +764,14 @@ exports[`Fixtures > should match snapshot of parcial.asm 1`] = `
       "size": "byte",
     },
   ],
+  "initialStatement": {
+    "newAddress": 8192,
+    "position": [
+      1674,
+      1683,
+    ],
+    "type": "origin-change",
+  },
   "instructions": [
     {
       "meta": {
@@ -1711,6 +1735,14 @@ exports[`Fixtures > should match snapshot of resto.asm 1`] = `
       "size": "word",
     },
   ],
+  "initialStatement": {
+    "newAddress": 8192,
+    "position": [
+      341,
+      350,
+    ],
+    "type": "origin-change",
+  },
   "instructions": [
     {
       "meta": {
@@ -1923,6 +1955,14 @@ exports[`Fixtures > should match snapshot of rotar.asm 1`] = `
       "size": "word",
     },
   ],
+  "initialStatement": {
+    "newAddress": 8192,
+    "position": [
+      567,
+      576,
+    ],
+    "type": "origin-change",
+  },
   "instructions": [
     {
       "meta": {
@@ -2256,6 +2296,14 @@ exports[`Fixtures > should match snapshot of sumador_de_tablas.asm 1`] = `
       "size": "word",
     },
   ],
+  "initialStatement": {
+    "newAddress": 8192,
+    "position": [
+      152,
+      161,
+    ],
+    "type": "origin-change",
+  },
   "instructions": [
     {
       "meta": {
@@ -2702,6 +2750,14 @@ exports[`Fixtures > should match snapshot of vocales.asm 1`] = `
       "size": "byte",
     },
   ],
+  "initialStatement": {
+    "newAddress": 8192,
+    "position": [
+      1127,
+      1136,
+    ],
+    "type": "origin-change",
+  },
   "instructions": [
     {
       "meta": {
