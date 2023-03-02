@@ -24,7 +24,6 @@ export function Card({
         {actions.map(({ icon, title, onClick }, i) => (
           <button key={i} className="h-5 w-5 outline-accent" onClick={onClick} title={title}>
             <span role="img" className={cn(icon, "h-full w-full")} />
-            <span className="sr-only">{title}</span>
           </button>
         ))}
       </p>
