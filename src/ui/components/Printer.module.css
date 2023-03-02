@@ -1,0 +1,29 @@
+.paper {
+  @apply h-36 overflow-y-auto border-l border-red-500 bg-gray-100 py-1 scrollbar-gray-300;
+
+  .inner {
+    @apply relative min-h-full w-[30ch] px-1;
+    @apply whitespace-pre-wrap break-all font-mono;
+
+    color: theme(colors.gray.900);
+    text-shadow: 0 0 2px theme(colors.gray.500);
+
+    &::after {
+      @apply pointer-events-none absolute inset-0 h-full w-full;
+      content: "";
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        theme(colors.sky.500),
+        theme(colors.sky.500) 1px,
+        transparent 0px,
+        transparent calc(theme(lineHeight.normal) * theme(fontSize.base))
+      );
+    }
+
+    ::selection {
+      background: #0080ff;
+      text-shadow: none;
+    }
+  }
+}
