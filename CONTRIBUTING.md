@@ -5,6 +5,7 @@
     - [The compiler](#the-compiler)
     - [The simulator](#the-simulator)
     - [The UI](#the-ui)
+    - [Internationalization](#internationalization)
   - [Setup the development environment](#setup-the-development-environment)
   - [Deployment](#deployment)
 
@@ -26,26 +27,25 @@ You'll find pretty much every where the [`ts-pattern`](https://github.com/gvergn
 
 ### The simulator
 
-Once the code has been compiled, it need to be executed. Under `src/simulator` there is all the logic related to running a program. The state of the simulator is managed with [zustand](https://github.com/pmndrs/zustand), a simple library that will later allows us to react to changes.
+Once the code has been compiled, it need to be executed. Under `src/simulator` there is all the logic related to running a program. The state of the simulator is encapsulated in a class (`Simulator`), with multiple subclasses representing the CPU, the memory, all the devices and the links between them.
 
-Interesting bits of the simulator:
-
-- `program.ts` has `loadProgram`, which load the program return by the compiler into the simulator;
-- `execute.ts` has the logic behind each instruction;
-- `devices/*` has each one of the devices.
+You'll have informatation about the inner workings as comments, specially in `src/simulator/index.ts`.
 
 ### The UI
 
 Given the abstractions made before, this is the "dumb" part of the app. Here you'll find, mostly, [**React**](https://reactjs.org/) components. If you want to make any change that involves anything visual, you should know the basics of React, hooks and JSX.
 
-Here, the connection to the simulator is made via two ways.
-
-- One is the `useSimulator` hook: components can use it to listen to changes of state (e.g. register values, LEDs on/off).
-- The other is `src/ui/runner.ts`, which makes the simulator _alive_ — it has control over the clocks an execution cycles. It's here and not inside `simulator` because it mostly handles interactions with the user.
+Here, the connection to the simulator is made inside `src/ui/lib/simulator.ts`. You'll find useful information there. Every component listens to changes via the `useSimulator` hook. Also, there are some user settings (see `src/ui/lib/settings.ts`) saved in Local Storage.
 
 Furthermore, for the styles we use [**Tailwind CSS**](https://tailwindcss.com/), a utility-first CSS framework. It's similar to doing inline CSS, but not quite. [Here is a good reading](https://tailwindcss.com/docs/utility-first) in case you've never used Tailwind.
 
 Finally, all the JavaScript and CSS files are generated with [Vite](https://vitejs.dev/). You shouldn't worry to much about it — just run `pnpm dev` and `pnpm build`.
+
+### Internationalization
+
+Although this simulator was first thought as a learning tool for the [Facultad de Informática de la UNLP](https://info.unlp.edu.ar) in Argentina, we want to make it as accessible as possible.
+
+We support both Spanish and English languages, declared inside `src/i18n/locales/`. There you'll find nested JSON-ish objects with literals (and some functions to make those literals more generic). You can add a new as deep as you want and then access it with.dot.notation. Also, when adding new keys, you may first add them to `en.ts` and then to the rest of locales - because TypeScript looks at that file when generating the autocompletion.
 
 ## Setup the development environment
 
