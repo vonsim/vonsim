@@ -6,7 +6,7 @@ Aquí se encuentran las instrucciones implementadas por VonSim.
   [`MOV`](./transferencia-de-datos#mov) [`PUSH`](./transferencia-de-datos#push) [`POP`](./transferencia-de-datos#pop) [`PUSHF`](./transferencia-de-datos#pushf) [`POPF`](./transferencia-de-datos#popf) [`IN`](./transferencia-de-datos#in) [`OUT`](./transferencia-de-datos#out)
 
 - Instrucciones aritméticas  
-  [`ADD`](./aritmeticas#add) [`ADC`](./aritmeticas#adc) [`SUB`](./aritmeticas#sub) [`CMP`](./aritmeticas#cmp) [`NEG`](./aritmeticas#neg) [`INC`](./aritmeticas#inc) [`DEC`](./aritmeticas#dec)
+  [`ADD`](./aritmeticas#add) [`ADC`](./aritmeticas#adc) [`SUB`](./aritmeticas#sub) [`SBB`](./aritmeticas#sbb) [`CMP`](./aritmeticas#cmp) [`NEG`](./aritmeticas#neg) [`INC`](./aritmeticas#inc) [`DEC`](./aritmeticas#dec)
 - Instrucciones lógicas  
   [`AND`](./logicas#and) [`OR`](./logicas#or) [`XOR`](./logicas#xor) [`NOT`](./logicas#not)
 - Instrucciones de transferencia de control  
