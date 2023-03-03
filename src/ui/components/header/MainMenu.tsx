@@ -85,7 +85,7 @@ export function MainMenu() {
           GitHub
         </Menu.Item>
         <Menu.Item
-          href="https://github.com/vonsim/vonsim/issues/new"
+          href="https://github.com/vonsim/vonsim/issues/new?labels=new+version"
           external
           leading="icon-[carbon--warning-filled]"
         >
