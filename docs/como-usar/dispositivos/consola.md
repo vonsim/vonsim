@@ -36,7 +36,8 @@ INT 0
 END
 ```
 
-Hay dos caracteres especiales:
+Hay tres caracteres especiales:
 
+- el carácter de retroceso (`BS`, 8 en decimal) borra el carácter previo;
 - el carácter de salto de línea (`LF`, 10 en decimal) imprime, en efecto, un salto de línea — útil para no imprimir todo en una sola línea;
 - el carácter de _form feed_ (`FF`, 12 en decimal) limpia la consola.
