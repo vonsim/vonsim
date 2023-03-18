@@ -33,8 +33,6 @@ specifiers:
   eslint-plugin-react-hooks: ^4.6.0
   eslint-plugin-regexp: ^1.13.0
   eslint-plugin-simple-import-sort: ^10.0.0
-  immer: ^9.0.19
-  just-diff: ^5.2.0
   postcss: ^8.4.21
   prettier: ^2.8.4
   prettier-plugin-tailwindcss: ^0.2.5
@@ -68,7 +66,6 @@ dependencies:
   '@replit/codemirror-vscode-keymap': 6.0.2_bk4ycdynbcw3rou2bmwl4zat5y
   clsx: 1.2.1
   dlv: 1.1.3
-  immer: 9.0.19
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-use: 17.4.0_biqbaboplfbrettd7655fr4n2y
@@ -76,7 +73,7 @@ dependencies:
   sonner: 0.2.0_biqbaboplfbrettd7655fr4n2y
   tailwind-merge: 1.10.0
   ts-pattern: 4.2.1
-  zustand: 4.3.6_immer@9.0.19+react@18.2.0
+  zustand: 4.3.6_react@18.2.0
 
 devDependencies:
   '@headlessui/tailwindcss': 0.1.2_tailwindcss@3.2.7
@@ -98,7 +95,6 @@ devDependencies:
   eslint-plugin-react-hooks: 4.6.0_eslint@8.36.0
   eslint-plugin-regexp: 1.13.0_eslint@8.36.0
   eslint-plugin-simple-import-sort: 10.0.0_eslint@8.36.0
-  just-diff: 5.2.0
   postcss: 8.4.21
   prettier: 2.8.4
   prettier-plugin-tailwindcss: 0.2.5_prettier@2.8.4
@@ -4054,10 +4050,6 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
-  /immer/9.0.19:
-    resolution: {integrity: sha512-eY+Y0qcsB4TZKwgQzLaE/lqYMlKhv5J9dyd2RhhtGhNo2njPXDqU9XPfcNfa3MIDsdtZt5KlkIsirlo4dHsWdQ==}
-    dev: false
-
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -4373,10 +4365,6 @@ packages:
     dependencies:
       array-includes: 3.1.6
       object.assign: 4.1.4
-    dev: true
-
-  /just-diff/5.2.0:
-    resolution: {integrity: sha512-6ufhP9SHjb7jibNFrNxyFZ6od3g+An6Ai9mhGRvcYe8UJlH0prseN64M+6ZBBUoKYHZsitDP42gAJ8+eVWr3lw==}
     dev: true
 
   /leven/3.1.0:
@@ -6165,7 +6153,7 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  /zustand/4.3.6_immer@9.0.19+react@18.2.0:
+  /zustand/4.3.6_react@18.2.0:
     resolution: {integrity: sha512-6J5zDxjxLE+yukC2XZWf/IyWVKnXT9b9HUv09VJ/bwGCpKNcaTqp7Ws28Xr8jnbvnZcdRaidztAPsXFBIqufiw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -6177,7 +6165,6 @@ packages:
       react:
         optional: true
     dependencies:
-      immer: 9.0.19
       react: 18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
