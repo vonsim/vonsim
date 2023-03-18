@@ -25,7 +25,7 @@ export class ALU implements Jsonable {
     this.#right = right;
     this.#operation = operation;
 
-    if ((["ADD", "ADC", "SUB", "SBB"] as const).includes(operation)) {
+    if (this.#isArithmetic(operation)) {
       return this.#arithmetic(operation, size);
     } else {
       return this.#logical(operation, size);
@@ -91,6 +91,10 @@ export class ALU implements Jsonable {
     };
 
     return this.#result;
+  }
+
+  #isArithmetic(operation: Operation): operation is ArithmeticOperation {
+    return (["ADD", "ADC", "SUB", "SBB"] as const).includes(operation);
   }
 
   encodeFlags(): number {
