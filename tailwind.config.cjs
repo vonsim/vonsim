@@ -11,7 +11,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['"Inter var"', ...defaultTheme.fontFamily.sans],
-        mono: ['"FiraCode VF"', ...defaultTheme.fontFamily.mono],
+        mono: ['"Fira Code VF"', ...defaultTheme.fontFamily.mono],
       },
 
       colors: {
