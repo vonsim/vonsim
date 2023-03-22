@@ -106,10 +106,14 @@ export const es: Locale = {
   },
 
   ui: {
+    clean: "Limpiar",
     computer: "Computadora",
     frequency: "Frecuencia",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
-    clean: "Limpiar",
+    update: {
+      "update-available": "¡Hay una nueva versión disponible!",
+      reload: "Actualizar",
+    },
 
     cpu: {
       name: "CPU",

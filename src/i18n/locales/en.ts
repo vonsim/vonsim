@@ -105,10 +105,14 @@ export const en = {
   },
 
   ui: {
+    clean: "Clean",
     computer: "Computer",
     frequency: "Frequency",
     hertz: (hz: number) => `${numberFormat(hz)} Hz`,
-    clean: "Clean",
+    update: {
+      "update-available": "There's a new version available!",
+      reload: "Update",
+    },
 
     cpu: {
       name: "CPU",

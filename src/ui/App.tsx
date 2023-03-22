@@ -1,4 +1,7 @@
+import { useCallback } from "react";
 import { useToggle } from "react-use";
+import { toast } from "sonner";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { Console } from "./components/Console";
 import { CPU } from "./components/CPU";
@@ -21,6 +24,17 @@ export default function App() {
 
   const isMobile = useMobile();
   const [isEditorOpen, toggleEditor] = useToggle(true);
+
+  const updatePrompt = useCallback(() => {
+    toast(translate("update.update-available"), {
+      action: {
+        label: translate("update.reload"),
+        onClick: () => window.location.reload(),
+      },
+    });
+  }, [translate]);
+
+  useRegisterSW({ onNeedRefresh: updatePrompt });
 
   return (
     <div className="flex h-screen w-screen flex-col">
