@@ -50,6 +50,7 @@ specifiers:
   vite-plugin-pwa: ^0.14.5
   vitepress: 1.0.0-alpha.61
   vitest: ^0.29.7
+  workbox-window: ^6.5.4
   zustand: ^4.3.6
 
 dependencies:
@@ -102,9 +103,10 @@ devDependencies:
   type-fest: 3.6.1
   typescript: 5.0.2
   vite: 4.2.1_@types+node@18.15.5
-  vite-plugin-pwa: 0.14.5_vite@4.2.1
+  vite-plugin-pwa: 0.14.5_2zwjfzulkrffi34qjwvtq6zb6a
   vitepress: 1.0.0-alpha.61_erfhifo2oa5moihqhvyxrpkx2m
   vitest: 0.29.7
+  workbox-window: 6.5.4
 
 packages:
 
@@ -5754,10 +5756,11 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-pwa/0.14.5_vite@4.2.1:
+  /vite-plugin-pwa/0.14.5_2zwjfzulkrffi34qjwvtq6zb6a:
     resolution: {integrity: sha512-LH3VCtoWx0scfim8Ph+daVl45uVRyWzXn3C3GUq92uWUui1p8eh+DjTQ23Pvb7SJ0SJtxZ99LCpOLCkFkaxokg==}
     peerDependencies:
       vite: ^3.1.0 || ^4.0.0
+      workbox-window: ^6.5.4
     dependencies:
       '@rollup/plugin-replace': 5.0.2_rollup@3.20.0
       debug: 4.3.4

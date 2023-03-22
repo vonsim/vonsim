@@ -74,6 +74,7 @@
     "vite": "^4.2.1",
     "vite-plugin-pwa": "^0.14.5",
     "vitepress": "1.0.0-alpha.61",
-    "vitest": "^0.29.7"
+    "vitest": "^0.29.7",
+    "workbox-window": "^6.5.4"
   }
 }
