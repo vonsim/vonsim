@@ -2,7 +2,7 @@ import { useId, useMemo, useState } from "react";
 import { useMeasure } from "react-use";
 import { toast } from "sonner";
 
-import { MAX_MEMORY_ADDRESS, MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
+import { MEMORY_SIZE, MIN_MEMORY_ADDRESS } from "@/config";
 import { renderAddress } from "@/helpers";
 import { Card } from "@/ui/components/common/Card";
 import { CellView } from "@/ui/components/common/CellView";
@@ -29,7 +29,7 @@ export function Memory({ className }: { className?: string }) {
     const rows = cols <= 4 ? 12 : 6;
 
     const cells = cols * rows;
-    const offset = MAX_MEMORY_ADDRESS - cells < start ? MAX_MEMORY_ADDRESS - cells : start;
+    const offset = MEMORY_SIZE - cells < start ? MEMORY_SIZE - cells : start;
     return { cols, cells, rows, offset };
   }, [start, width]);
 
