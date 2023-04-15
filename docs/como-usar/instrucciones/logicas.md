@@ -6,7 +6,7 @@
 
 Operación lógica _fuente_ AND _dest_ bit a bit.
 
-```asm
+```vonsim
 AND dest, fuente
 ```
 
@@ -16,7 +16,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Operación lógica _fuente_ OR _dest_ bit a bit.
 
-```asm
+```vonsim
 OR dest, fuente
 ```
 
@@ -26,7 +26,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Operación lógica _fuente_ XOR _dest_ bit a bit.
 
-```asm
+```vonsim
 XOR dest, fuente
 ```
 
@@ -36,7 +36,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Operación lógica NOT _dest_ bit a bit.
 
-```asm
+```vonsim
 NOT dest
 ```
 

@@ -6,7 +6,7 @@
 
 Llama a [subrutina](../subrutinas) cuyo inicio es _etiqueta_.
 
-```asm
+```vonsim
 CALL etiqueta
 ```
 
@@ -14,7 +14,7 @@ CALL etiqueta
 
 Retorna de la [subrutina](../subrutinas).
 
-```asm
+```vonsim
 RET
 ```
 
@@ -22,7 +22,7 @@ RET
 
 Salta si el último valor calculado es cero (flag Z=1).
 
-```asm
+```vonsim
 JZ etiqueta
 ```
 
@@ -30,7 +30,7 @@ JZ etiqueta
 
 Salta si el último valor calculado no es cero (flag Z=0).
 
-```asm
+```vonsim
 JNZ etiqueta
 ```
 
@@ -38,7 +38,7 @@ JNZ etiqueta
 
 Salta si el último valor calculado es negativo (flag S=1).
 
-```asm
+```vonsim
 JS etiqueta
 ```
 
@@ -46,7 +46,7 @@ JS etiqueta
 
 Salta si el último valor calculado no es negativo (flag S=0).
 
-```asm
+```vonsim
 JNS etiqueta
 ```
 
@@ -54,7 +54,7 @@ JNS etiqueta
 
 Salta si el último valor calculado produjo carry (flag C=1).
 
-```asm
+```vonsim
 JC etiqueta
 ```
 
@@ -62,7 +62,7 @@ JC etiqueta
 
 Salta si el último valor calculado no produjo carry (flag C=0).
 
-```asm
+```vonsim
 JNC etiqueta
 ```
 
@@ -70,7 +70,7 @@ JNC etiqueta
 
 Salta si el último valor calculado produjo overflow (flag O=1).
 
-```asm
+```vonsim
 JO etiqueta
 ```
 
@@ -78,7 +78,7 @@ JO etiqueta
 
 Salta si el último valor calculado no produjo overflow (flag O=0).
 
-```asm
+```vonsim
 JNO etiqueta
 ```
 
@@ -86,6 +86,6 @@ JNO etiqueta
 
 Salto incondicional a _etiqueta_
 
-```asm
+```vonsim
 JNO etiqueta
 ```

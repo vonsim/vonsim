@@ -6,7 +6,7 @@
 
 Suma _fuente_ y _dest_ y guarda el resultado en _dest_.
 
-```asm
+```vonsim
 ADD dest, fuente
 ```
 
@@ -16,7 +16,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Suma _fuente_, _dest_ y la flag C y guarda el resultado en _dest_.
 
-```asm
+```vonsim
 ADC dest, fuente
 ```
 
@@ -26,7 +26,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Resta _fuente_ a _dest_ y guarda el resultado en _dest_.
 
-```asm
+```vonsim
 SUB dest, fuente
 ```
 
@@ -36,7 +36,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Resta _fuente_ y la flag C a _dest_ y guarda el resultado en _dest_.
 
-```asm
+```vonsim
 SBB dest, fuente
 ```
 
@@ -46,7 +46,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Compara _fuente_ con _dest_. Es equivalente a hacer `SUB dest,fuente` pero sin guardar el resultado en memoria.
 
-```asm
+```vonsim
 CMP dest, fuente
 ```
 
@@ -56,7 +56,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Negativo de _dest_. Guarda el complemento a 2 (Ca2) de _dest_ en _dest_.
 
-```asm
+```vonsim
 NEG dest
 ```
 
@@ -66,7 +66,7 @@ Las posibles combinaciones de `dest` están detalladas [aquí](../modos-de-direc
 
 Incrementa _dest_ en 1.
 
-```asm
+```vonsim
 INC dest
 ```
 
@@ -76,7 +76,7 @@ Las posibles combinaciones de `dest` están detalladas [aquí](../modos-de-direc
 
 Disminuye _dest_ en 1.
 
-```asm
+```vonsim
 DEC dest
 ```
 

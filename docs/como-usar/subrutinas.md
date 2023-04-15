@@ -4,7 +4,7 @@ Las subrutinas en esencia son similares a las funciones, métodos o procedimient
 
 En el simulador, las subrutinas no son más que una porción de código que terminan con la instrucción [`RET`](./instrucciones/transferencia-de-control#ret). Por ejemplo:
 
-```asm
+```vonsim
 ORG 1000h
 num DB 4
 res DB ?
@@ -21,7 +21,7 @@ fin:   RET
 
 Para llamar a una subrutina, se utiliza la instrucción [`CALL`](./instrucciones/transferencia-de-control#call):
 
-```asm
+```vonsim
 ORG 2000h
 CALL espar
 HLT
@@ -30,7 +30,7 @@ END
 
 Internamente, `CALL` es similar a hacer
 
-```asm
+```vonsim
 ; Este código es didáctico, no corre en VonSim
 
 PUSH OFFSET sig   ; Apila la instrucción siguiente al CALL
@@ -40,7 +40,7 @@ sig: ...          ; instrucción siguiente al CALL
 
 y `RET` es similar a hacer
 
-```asm
+```vonsim
 ; Este código es didáctico, no corre en VonSim
 
 ; Desapila la instrucción apilada por CALL en el

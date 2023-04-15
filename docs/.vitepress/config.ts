@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import vonsimGrammar from "./theme/vonsim.tmLanguage.json";
 
 export default defineConfig({
   title: "VonSim",
@@ -90,5 +91,25 @@ export default defineConfig({
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/vonsim/vonsim" }],
     outlineTitle: "Contenidos",
+    search: {
+      provider: "local",
+      options: {
+        translations: {
+          button: {
+            buttonText: "Buscar",
+          },
+          modal: {
+            backButtonTitle: "Volver",
+            displayDetails: "Mostrar detalles",
+            noResultsText: "No se han encontrado resultados para",
+            resetButtonTitle: "Borrar búsqueda",
+            footer: {
+              navigateText: "para navegar",
+              selectText: "para seleccionar",
+            },
+          },
+        },
+      },
+    },
   },
 });

@@ -148,8 +148,8 @@ devDependencies:
     specifier: ^0.14.7
     version: 0.14.7(vite@4.2.1)(workbox-build@6.5.4)(workbox-window@6.5.4)
   vitepress:
-    specifier: 1.0.0-alpha.66
-    version: 1.0.0-alpha.66(@types/node@18.15.11)(@types/react@18.0.35)(react-dom@18.2.0)(react@18.2.0)
+    specifier: 1.0.0-alpha.67
+    version: 1.0.0-alpha.67(@types/node@18.15.11)(@types/react@18.0.35)(react-dom@18.2.0)(react@18.2.0)
   vitest:
     specifier: ^0.30.1
     version: 0.30.1
@@ -5868,8 +5868,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitepress@1.0.0-alpha.66(@types/node@18.15.11)(@types/react@18.0.35)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-p/qaXDuaxukCj61WDaw4npoHuvuPmh/MiRzgOrlz08MjkSemaVXj7KAIdXXdBKl9ebMoxYhuH9hKzqaXn9a3kg==}
+  /vitepress@1.0.0-alpha.67(@types/node@18.15.11)(@types/react@18.0.35)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-57vC0ALFp5irEmjFyOE7HCIiXB6ZEoDfsLl+sw7wTzDSX9LYfxSHQecu/C8knalqqI/oB6RZhWos0tUtH8lVTw==}
     hasBin: true
     dependencies:
       '@docsearch/css': 3.3.3

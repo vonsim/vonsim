@@ -6,7 +6,7 @@
 
 No hace nada por un ciclo.
 
-```asm
+```vonsim
 NOP
 ```
 
@@ -14,6 +14,6 @@ NOP
 
 Detiene la ejecución del microprocesador hasta que llegue una interrupción extern.
 
-```asm
+```vonsim
 HLT
 ```

@@ -6,7 +6,7 @@
 
 Copia _fuente_ en _dest_.
 
-```asm
+```vonsim
 MOV dest, fuente
 ```
 
@@ -16,7 +16,7 @@ Las posibles combinaciones de `dest,fuente` están detalladas [aquí](../modos-d
 
 Apila _fuente_ en la [pila](../pila). _fuente_ solo puede ser un registro de 16 bits.
 
-```asm
+```vonsim
 PUSH fuente
 ```
 
@@ -24,7 +24,7 @@ PUSH fuente
 
 Desapila el tope de la [pila](../pila) y lo carga en _dest_. _dest_ solo puede ser un registro de 16 bits.
 
-```asm
+```vonsim
 POP dest
 ```
 
@@ -32,7 +32,7 @@ POP dest
 
 Apila los flags.
 
-```asm
+```vonsim
 PUSHF ; no recibe operandos
 ```
 
@@ -40,7 +40,7 @@ PUSHF ; no recibe operandos
 
 Desapila los flags y los guarda en la ALU.
 
-```asm
+```vonsim
 POP ; no recibe operandos
 ```
 
@@ -48,7 +48,7 @@ POP ; no recibe operandos
 
 Carga el valor del puerto _fuente_ en _dest_. Sirve para leer los registros de los [dispositivos](../dispositivos/listado) mediante la memoria E/S.
 
-```asm
+```vonsim
 IN dest, fuente
 ```
 
@@ -67,7 +67,7 @@ donde _puerto_ es una dirección entre 0 y 255 (puede ser un operando inmediato 
 
 Carga en el puerto _dest_ el valor en _fuente_. Sirve para escribir en los registros de los [dispositivos](../dispositivos/listado) mediante la memoria E/S.
 
-```asm
+```vonsim
 OUT dest, fuente
 ```
 

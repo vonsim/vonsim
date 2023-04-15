@@ -4,7 +4,7 @@ El simulador cuenta con una consola para escribir y leer caracteres. Esta es un 
 
 Con la interrupción 6 (`INT 6`) se detiene la ejecución del código hasta que se escriba un carácter en la consola. El carácter que se escriba será guardado en la dirección de memoria almacenada en `BX` según su representación en ASCII.
 
-```asm
+```vonsim
 ORG 1000h
 car DB ?
 
@@ -23,7 +23,7 @@ Con la interrupción 7 (`INT 7`) se escribe una cadena de caracteres en la conso
 - `AL`: longitud de la cadena a imprimir
 - `BX`: dirección de memoria donde empieza la cadena
 
-```asm
+```vonsim
 ORG 1000h
 cadena db "Hola!"
 

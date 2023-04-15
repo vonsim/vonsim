@@ -4,7 +4,7 @@ Varias instrucciones constan de mover datos de un lugar para otro: ya sea copiar
 
 El más simple es el **direccionamiento inmediato**. En este caso, se utiliza un valor **fijo** al momento de compilación que no depende de las operaciones realizadas.
 
-```asm
+```vonsim
 ; Escribir 1000h en AX
 MOV AX, 1000h
 
@@ -20,7 +20,7 @@ MOV BX, OFFSET dato
 
 A continuación, se describe el **direccionamiento directo**. En vez de escribir el valor literal que queremos ejecutar, se escribe la dirección de memoria (o registro) donde se encuentra el valor.
 
-```asm
+```vonsim
 ; Copia el contenido de BX en AX
 MOV AX, BX
 
@@ -37,7 +37,7 @@ MOV AX, [OFFSET dato]
 
 Finalmente, el **direccionamiento indirecto** se utiliza cuando no sabemos de antemano la dirección de memoria que queremos utilizar. La única forma de utilizarlo es con `[BX]` (y con ningún otro registro).
 
-```asm
+```vonsim
 ; Guardar el valor de CX en la dirección a la
 ; que apunta el valor guardado en BX
 MOV [BX], CX
@@ -49,7 +49,7 @@ MOV AL, [BX]
 
 En algunos casos, el compilador puede detectar cuando la dirección a la que apunta `BX` debe tratarse como un byte o como un word. En otros, hay que explicitar:
 
-```asm
+```vonsim
 ; el compilador entiende que se trata de un byte
 MOV [BX], AL
 
@@ -64,7 +64,7 @@ MOV AX, [BX]
 
 Un ejemplo práctico de este concepto es un programa suma 1 a todos los valores de un arreglo.
 
-```asm
+```vonsim
           ; 1, 2, 3 pasa a ser 2, 3, 4
           ORG 1000h
           lista DB 1, 2, 3

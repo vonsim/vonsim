@@ -6,7 +6,7 @@
 
 Interrumpe al sistema operativo.
 
-```asm
+```vonsim
 INT n
 ```
 
@@ -16,7 +16,7 @@ _n_ debe ser una de las [posibles interrupciones por software](../interrupciones
 
 Retorna de una [interrupción por hardware](../interrupciones-por-hardware.md).
 
-```asm
+```vonsim
 IRET
 ```
 
@@ -24,7 +24,7 @@ IRET
 
 Inhabilita interrupciones enmascarables.
 
-```asm
+```vonsim
 CLI
 ```
 
@@ -32,6 +32,6 @@ CLI
 
 Habilita interrupciones enmascarables.
 
-```asm
+```vonsim
 STI
 ```

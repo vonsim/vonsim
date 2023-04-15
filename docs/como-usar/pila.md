@@ -6,7 +6,7 @@ En el simulador, cada elemento de la pila ocupa 16 bits (dos celdas de memoria).
 
 Para apilar, se utiliza la instrucción [`PUSH`](./instrucciones/transferencia-de-datos#push). Internamente, ejecutar una instrucción `PUSH` es similar a hacer
 
-```asm
+```vonsim
 ; Este código es didáctico, no corre en VonSim
 
 SUB SP, 2         ; Disminuye el Stack Pointer en 2
@@ -15,7 +15,7 @@ MOV [SP], fuente  ; Copia los contenidos de fuente a donde apunte el SP
 
 Para desapilar, se utiliza la instrucción [`POP`](./instrucciones/transferencia-de-datos#pop). Internamente, ejecutar una instrucción `POP` es similar a hacer
 
-```asm
+```vonsim
 ; Este código es didáctico, no corre en VonSim
 
 MOV dest, [SP]    ; Copia los contenidos de la celda a la que apunta SP en dest
