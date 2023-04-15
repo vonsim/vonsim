@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useToggle } from "react-use";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
