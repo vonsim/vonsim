@@ -31,7 +31,6 @@
   ```
 
 - [ ] Fix escape multicursor in editor
-- [ ] Add custom VonSim syntax to docs
 - [ ] Dark mode everywhere
 - [ ] Fix flags on Windows
 

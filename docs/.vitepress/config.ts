@@ -7,6 +7,19 @@ export default defineConfig({
   base: "/docs/",
   lastUpdated: true,
   cleanUrls: true,
+  markdown: {
+    languages: [
+      // From https://github.com/JuanM04/unlp-vscode/blob/main/syntaxes/vonsim.tmLanguage.yaml
+      // Copied 2023-04-15
+      {
+        id: "vonsim",
+        path: "vonsim.tmLanguage.json",
+        scopeName: "source.asm.vonsim",
+        aliases: ["vonsim", "asm"],
+        grammar: vonsimGrammar as any,
+      },
+    ],
+  },
   themeConfig: {
     logo: "/logo.svg",
     siteTitle: "Documentación",
