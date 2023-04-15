@@ -24,7 +24,7 @@ export function CellView({
       <Float placement="bottom" shift>
         <Popover.Button
           className={cn(
-            "w-full px-2 py-0.5 outline-none transition-colors hover:bg-accent/20 focus:bg-accent/75 focus:text-white",
+            "w-full px-2 py-0.5 font-mono outline-none transition-colors hover:bg-accent/20 focus:bg-accent/75 focus:text-white",
             className,
           )}
         >
