@@ -49,7 +49,7 @@ We support both Spanish and English languages, declared inside `src/i18n/locales
 
 ## Setup the development environment
 
-You'll need [Node.js v18](https://nodejs.org/) and [pnpm v7](https://pnpm.io). Once you have them installed, you can run the following inside the repo:
+You'll need [Node.js v18](https://nodejs.org/) and [pnpm v8](https://pnpm.io). Once you have them installed, you can run the following inside the repo:
 
 ```bash
 $ pnpm install # only the first time, install the dependencies
