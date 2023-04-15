@@ -22,8 +22,7 @@ export function Memory({ className }: { className?: string }) {
 
   // Calculate the grid size based on the width of the card
   const { cols, rows, cells, offset } = useMemo(() => {
-    if (window.devicePixelRatio === 0) return { cols: 0, rows: 0, cells: 0, offset: start };
-    const charWidth = 10 * window.devicePixelRatio; // Jetbrains Mono is 10px wide at 100% zoom and 16px (1rem)
+    const charWidth = 9.86; // Fira Code is 9.86px wide at 16px (1rem)
 
     const cols = Math.floor(width / (charWidth * 10)) || 1;
     const rows = cols <= 4 ? 12 : 6;
