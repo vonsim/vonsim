@@ -163,7 +163,7 @@ export type MenuRadioProps<Option> = {
   value: Option;
   onChange: (value: Option) => void;
   options: Option[];
-  getOptionLabel: (option: Option) => string;
+  getOptionLabel: (option: Option) => ReactNode;
 } & Pick<MenuItemProps, "leading" | "disabled" | "children">;
 export function MenuRadio<Options>({
   value,

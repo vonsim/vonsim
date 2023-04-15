@@ -17,6 +17,7 @@
   - [ ] Add animated diagrams
   - [ ] [Support mobile](https://github.com/prc5/react-zoom-pan-pinch)
 - [ ] Add Printer w/CDMA
+- [ ] Dark mode everywhere
 - [ ] Perf measurements
 - [ ] Add advanced filesave support
 - [ ] Support indirect access with offset (maybe revisit the codification)
@@ -31,8 +32,6 @@
   ```
 
 - [ ] Fix escape multicursor in editor
-- [ ] Dark mode everywhere
-- [ ] Fix flags on Windows
 
 More suggestions: https://github.com/vonsim/vonsim/issues/26
 
