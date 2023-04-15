@@ -67,7 +67,7 @@ export function Memory({ className }: { className?: string }) {
               }
             }}
           />
-          <div className="pointer-events-none absolute right-2 top-0 bottom-0">
+          <div className="pointer-events-none absolute bottom-0 right-2 top-0">
             <span>h</span>
           </div>
         </div>

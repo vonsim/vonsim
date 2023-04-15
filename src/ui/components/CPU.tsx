@@ -28,7 +28,7 @@ export function CPU({ className }: { className?: string }) {
     <Card title={translate("cpu.name")} className={className}>
       <div className="flex">
         <FrequencyPicker
-          className="py-2 px-4"
+          className="px-4 py-2"
           value={settings.cpuSpeed}
           onChange={settings.setCPUSpeed}
           options={[1, 2, 4, 8, 16, 32, 64]}

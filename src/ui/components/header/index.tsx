@@ -30,7 +30,7 @@ export function Header() {
   return (
     <header className="border-b border-slate-500/30 bg-slate-800 text-sm text-white">
       <div className="flex items-center lg:h-full">
-        <div className="flex select-none items-center justify-center py-2 px-4">
+        <div className="flex select-none items-center justify-center px-4 py-2">
           <span
             className={cn(
               "icon-[carbon--machine-learning] mr-2 block h-8 w-8",

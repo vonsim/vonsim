@@ -47,7 +47,7 @@ export function Printer({ className }: { className?: string }) {
       <div className="flex flex-col">
         <div className="flex">
           <FrequencyPicker
-            className="py-2 px-4"
+            className="px-4 py-2"
             value={settings.printerSpeed}
             onChange={settings.setPrinterSpeed}
             options={[0.125, 0.25, 0.5, 1, 4, 16]}

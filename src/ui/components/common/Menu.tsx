@@ -95,7 +95,7 @@ export function MenuTitle({ children }: MenuTitleProps) {
     <div className="flex items-center px-2 py-1.5 text-sm font-semibold text-slate-900">
       {current && (
         <button
-          className="mr-1 -ml-0.5 flex items-center justify-center rounded-full hover:bg-slate-100 focus:bg-slate-100"
+          className="-ml-0.5 mr-1 flex items-center justify-center rounded-full hover:bg-slate-100 focus:bg-slate-100"
           onClick={close}
         >
           <span className="icon-[carbon--chevron-left] h-5 w-5" />

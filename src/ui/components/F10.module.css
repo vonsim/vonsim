@@ -61,7 +61,7 @@
 }
 
 .front {
-  @apply relative block rounded-xl bg-red-600 py-3 px-10;
+  @apply relative block rounded-xl bg-red-600 px-10 py-3;
   @apply text-lg font-medium text-white;
   will-change: transform;
   transform: translateY(-4px);
