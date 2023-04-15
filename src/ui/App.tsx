@@ -25,16 +25,16 @@ export default function App() {
   const isMobile = useMobile();
   const [isEditorOpen, toggleEditor] = useToggle(true);
 
-  const updatePrompt = useCallback(() => {
-    toast(translate("update.update-available"), {
-      action: {
-        label: translate("update.reload"),
-        onClick: () => window.location.reload(),
-      },
-    });
-  }, [translate]);
-
-  useRegisterSW({ onNeedRefresh: updatePrompt });
+  const { updateServiceWorker } = useRegisterSW({
+    onNeedRefresh() {
+      toast(translate("update.update-available"), {
+        action: {
+          label: translate("update.reload"),
+          onClick: () => updateServiceWorker(true),
+        },
+      });
+    },
+  });
 
   return (
     <div className="flex h-screen w-screen flex-col">

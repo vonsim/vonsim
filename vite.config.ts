@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       includeAssets: ["fonts/**/*", "favicon.svg", "icon-192.png", "icon-512.png"],
       manifest: {
         name: "VonSim",
