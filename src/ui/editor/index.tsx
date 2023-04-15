@@ -1,7 +1,7 @@
 import { history } from "@codemirror/commands";
 import { indentOnInput } from "@codemirror/language";
 import { lintGutter } from "@codemirror/lint";
-import { EditorState } from "@codemirror/state";
+import { EditorState, EditorSelection } from "@codemirror/state";
 import {
   drawSelection,
   dropCursor,
@@ -67,7 +67,18 @@ export function Editor({ className }: { className?: string }) {
           EditorState.allowMultipleSelections.of(true),
           indentOnInput(),
           highlightActiveLine(),
-          keymap.of(vscodeKeymap),
+          keymap.of([
+            ...vscodeKeymap,
+            {
+              key: "Escape",
+              run: view => {
+                view.dispatch({
+                  selection: EditorSelection.create([view.state.selection.main], 0),
+                });
+                return true;
+              },
+            },
+          ]),
           VonSim(),
           lintGutter(),
           showPanel.of(lintSummaryPanel),

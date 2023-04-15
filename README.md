@@ -31,10 +31,6 @@
   mov al, letras + 2 ; copies "c"
   ```
 
-- [ ] Fix escape multicursor in editor
-
-More suggestions: https://github.com/vonsim/vonsim/issues/26
-
 ## Development setup
 
 You'll need [Node.js v18](https://nodejs.org/) and [pnpm v8](https://pnpm.io). Once you have them installed, you can run the following inside the repo:
