@@ -12,20 +12,28 @@
 
 ## To-do list
 
-- [x] Finish basic implementation
-- [x] Devices
-  - [x] Hardware interrupts
-  - [x] Lights and Switches
-  - [x] Printer
-  - [x] Printer w/Handshake
-- [ ] Support indirect access with offset
-- [ ] Add custom VonSim syntax to docs
-- [ ] Add Printer w/CDMA
-- [x] Add mobile support
-- [ ] Add advanced filesave support
-- [ ] Split the source in different packages
 - [ ] Add ✨ animations ✨
+  - [ ] Rethink the simulator
+  - [ ] Add animated diagrams
+  - [ ] [Support mobile](https://github.com/prc5/react-zoom-pan-pinch)
+- [ ] Add Printer w/CDMA
 - [ ] Perf measurements
+- [ ] Add advanced filesave support
+- [ ] Support indirect access with offset (maybe revisit the codification)
+- [ ] Support calling a custom interrupt with `INT`
+- [ ] Support adding an offset to a memory label
+
+  ```asm
+  letras db "abcd"
+  mov al, letras     ; copies "a"
+  mov al, letras + 1 ; copies "b"
+  mov al, letras + 2 ; copies "c"
+  ```
+
+- [ ] Fix escape multicursor in editor
+- [ ] Add custom VonSim syntax to docs
+- [ ] Dark mode everywhere
+- [ ] Fix flags on Windows
 
 More suggestions: https://github.com/vonsim/vonsim/issues/26
 
