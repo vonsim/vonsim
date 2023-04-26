@@ -1,11 +1,9 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
-const plugin = require("tailwindcss/plugin");
-const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette").default;
+import { addDynamicIconSelectors } from "@iconify/tailwind";
+import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
+import plugin from "tailwindcss/plugin";
 
-const { addDynamicIconSelectors } = require("@iconify/tailwind");
-
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: ["./index.html", "./src/ui/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -61,4 +59,20 @@ module.exports = {
       );
     }),
   ],
-};
+} satisfies Config;
+
+export default config;
+
+// From https://github.com/tailwindlabs/tailwindcss/blob/master/src/util/flattenColorPalette.js
+function flattenColorPalette(colors: Record<string, any>) {
+  return Object.assign(
+    {},
+    ...Object.entries(colors ?? {}).flatMap(([color, values]) =>
+      typeof values == "object"
+        ? Object.entries(flattenColorPalette(values)).map(([number, hex]) => ({
+            [color + (number === "DEFAULT" ? "" : `-${number}`)]: hex,
+          }))
+        : [{ [`${color}`]: values }],
+    ),
+  );
+}

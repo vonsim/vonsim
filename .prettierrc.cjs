@@ -11,5 +11,5 @@ module.exports = {
     require.resolve("prettier-plugin-tailwindcss"), // MUST come last
   ],
   pluginSearchDirs: false,
-  tailwindConfig: "./tailwind.config.cjs",
+  tailwindConfig: "./tailwind.config.ts",
 };
