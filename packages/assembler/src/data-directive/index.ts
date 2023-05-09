@@ -1,11 +1,12 @@
+import type { MemoryAddress } from "@vonsim/common/address";
+import { Byte, ByteSize } from "@vonsim/common/byte";
+import { forEachWithErrors } from "@vonsim/common/loops";
+
 import { CompilerError } from "@/error";
 import type { GlobalStore } from "@/global-store";
 import type { DataDirectiveStatement } from "@/parser/statement";
 import { Position } from "@/position";
 import type { DataDirectiveName } from "@/types";
-import type { MemoryAddress } from "~common/address";
-import { Byte, ByteSize } from "~common/byte";
-import { forEachWithErrors } from "~common/loops";
 
 import { DataValue, Unassigned } from "./value";
 

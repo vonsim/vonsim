@@ -1,10 +1,11 @@
+import type { ByteSize } from "@vonsim/common/byte";
+
 import { CompilerError } from "@/error";
 import type { GlobalStore } from "@/global-store";
 import type { Token } from "@/lexer/tokens";
 import type { NumberExpression } from "@/number-expression";
 import type { Position } from "@/position";
 import { RegisterName, WORD_REGISTERS } from "@/types";
-import type { ByteSize } from "~common/byte";
 
 /**
  * An operand of an instruction.

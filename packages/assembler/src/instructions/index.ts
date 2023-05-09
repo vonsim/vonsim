@@ -1,7 +1,8 @@
+import type { MemoryAddress } from "@vonsim/common/address";
+
 import type { GlobalStore } from "@/global-store";
 import type { InstructionStatement } from "@/parser/statement";
 import type { Position } from "@/position";
-import type { MemoryAddress } from "~common/address";
 
 import { BinaryInstruction } from "./binary";
 import { IntInstruction } from "./int";

@@ -1,9 +1,10 @@
+import type { ByteSize } from "@vonsim/common/byte";
+
 import { CompilerError } from "@/error";
 import type { Token, TokenType } from "@/lexer/tokens";
 import { NumberExpression } from "@/number-expression";
 import { Position } from "@/position";
 import { CONSTANTS, DATA_DIRECTIVES, INSTRUCTIONS, RegisterName, REGISTERS } from "@/types";
-import type { ByteSize } from "~common/byte";
 
 import {
   DataDirectiveValue,

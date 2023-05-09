@@ -1,9 +1,9 @@
+import { IOAddress, MemoryAddress } from "@vonsim/common/address";
+import { Byte, ByteSize } from "@vonsim/common/byte";
+import type { BaseLocale } from "@vonsim/common/i18n";
 import type { LiteralUnion } from "type-fest";
 
 import type { Token, TokenType } from "@/lexer/tokens";
-import { IOAddress, MemoryAddress } from "~common/address";
-import { Byte, ByteSize } from "~common/byte";
-import type { BaseLocale } from "~common/i18n";
 
 const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS);
 const maxIOAddress = IOAddress.from(IOAddress.MAX_ADDRESS);

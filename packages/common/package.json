@@ -1,5 +1,5 @@
 {
-  "name": "~common",
+  "name": "@vonsim/common",
   "exports": {
     "./address": "./src/address.ts",
     "./ascii": "./src/ascii.ts",

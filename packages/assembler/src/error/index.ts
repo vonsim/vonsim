@@ -1,5 +1,6 @@
+import { initTranlate, Language, LocaleCode, LocaleContext } from "@vonsim/common/i18n";
+
 import { Position } from "@/position";
-import { initTranlate, Language, LocaleCode, LocaleContext } from "~common/i18n";
 
 import { english } from "./messages/english";
 import { spanish } from "./messages/spanish";

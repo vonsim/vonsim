@@ -1,3 +1,5 @@
+import { MemoryAddress } from "@vonsim/common/address";
+import type { ByteSize } from "@vonsim/common/byte";
 import type { TupleToUnion } from "type-fest";
 
 import { CompilerError } from "@/error";
@@ -6,8 +8,6 @@ import { NumberExpression } from "@/number-expression";
 import type { InstructionStatement } from "@/parser/statement";
 import type { Position } from "@/position";
 import type { RegisterName } from "@/types";
-import { MemoryAddress } from "~common/address";
-import type { ByteSize } from "~common/byte";
 
 import { Instruction } from ".";
 

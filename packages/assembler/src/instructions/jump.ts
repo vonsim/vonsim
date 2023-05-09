@@ -1,10 +1,10 @@
+import { Byte, ByteSize } from "@vonsim/common/byte";
 import type { TupleToUnion } from "type-fest";
 
 import { CompilerError } from "@/error";
 import type { GlobalStore } from "@/global-store";
 import type { InstructionStatement } from "@/parser/statement";
 import type { Position } from "@/position";
-import { Byte, ByteSize } from "~common/byte";
 
 import { Instruction } from ".";
 

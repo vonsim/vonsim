@@ -38,4 +38,8 @@ export class Position {
 
     return new Position(start, end);
   }
+
+  toJSON() {
+    return [this.start, this.end];
+  }
 }

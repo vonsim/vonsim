@@ -1,5 +1,5 @@
-import { IOAddress, MemoryAddress } from "~common/address";
-import { Byte } from "~common/byte";
+import { IOAddress, MemoryAddress } from "@vonsim/common/address";
+import { Byte } from "@vonsim/common/byte";
 
 import type { Messages } from "..";
 

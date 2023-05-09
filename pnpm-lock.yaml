@@ -158,7 +158,7 @@ importers:
 
   packages/assembler:
     dependencies:
-      ~common:
+      '@vonsim/common':
         specifier: workspace:^
         version: link:../common
     devDependencies:

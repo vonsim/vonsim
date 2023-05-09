@@ -1,11 +1,12 @@
+import { MemoryAddress } from "@vonsim/common/address";
+import { forEachWithErrors } from "@vonsim/common/loops";
+
 import type { Constant } from "@/constant";
 import type { DataDirective } from "@/data-directive";
 import { CompilerError } from "@/error";
 import { Instruction } from "@/instructions";
 import { OriginChangeStatement, Statement } from "@/parser/statement";
 import type { ConstantName, DataDirectiveName } from "@/types";
-import { MemoryAddress } from "~common/address";
-import { forEachWithErrors } from "~common/loops";
 
 type LabelsMap = Map<
   string,

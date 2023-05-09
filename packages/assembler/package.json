@@ -4,7 +4,7 @@
     "lint": "tsc --noEmit && eslint"
   },
   "dependencies": {
-    "~common": "workspace:^"
+    "@vonsim/common": "workspace:^"
   },
   "devDependencies": {
     "eslint": "^8.39.0",
