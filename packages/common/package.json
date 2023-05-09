@@ -1,0 +1,23 @@
+{
+  "name": "~common",
+  "exports": {
+    "./address": "./src/address.ts",
+    "./ascii": "./src/ascii.ts",
+    "./byte": "./src/byte.ts",
+    "./i18n": "./src/i18n.ts",
+    "./loops": "./src/loops.ts"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit && eslint"
+  },
+  "dependencies": {
+    "dlv": "^1.1.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.39.0",
+    "eslint-config-custom": "workspace:^",
+    "tsconfig": "workspace:^",
+    "type-fest": "^3.9.0",
+    "typescript": "~5.0.4"
+  }
+}

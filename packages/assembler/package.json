@@ -1,0 +1,16 @@
+{
+  "name": "~assembler",
+  "scripts": {
+    "lint": "tsc --noEmit && eslint"
+  },
+  "dependencies": {
+    "~common": "workspace:^"
+  },
+  "devDependencies": {
+    "eslint": "^8.39.0",
+    "eslint-config-custom": "workspace:^",
+    "tsconfig": "workspace:^",
+    "type-fest": "^3.9.0",
+    "typescript": "~5.0.4"
+  }
+}
