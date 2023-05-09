@@ -11,8 +11,8 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "types": ["@total-typescript/ts-reset"]
+    "noEmit": true
   },
+  "include": ["reset.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

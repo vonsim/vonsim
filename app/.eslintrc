@@ -1,0 +1,21 @@
+{
+  "root": true,
+  "parserOptions": {
+    "ecmaFeatures": { "jsx": true }
+  },
+  "settings": {
+    "react": { "version": "detect" }
+  },
+  "extends": [
+    "custom",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:tailwindcss/recommended"
+  ],
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "react/no-unknown-property": "off",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off"
+  }
+}

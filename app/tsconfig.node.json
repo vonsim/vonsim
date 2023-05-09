@@ -1,9 +1,4 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true
-  },
+  "extends": "tsconfig/node.json",
   "include": ["scripts", "vite.config.ts"]
 }
