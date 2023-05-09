@@ -39,4 +39,12 @@ export class Token {
     this.lexeme = lexeme;
     this.position = position;
   }
+
+  toJSON() {
+    return {
+      type: this.type,
+      lexeme: this.lexeme,
+      position: this.position.toJSON(),
+    };
+  }
 }

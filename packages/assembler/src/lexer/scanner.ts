@@ -174,16 +174,15 @@ export class Scanner {
   // #=========================================================================#
 
   private addToken(type: TokenType) {
-    this.tokens.push({
-      type,
-      lexeme: this.source.slice(this.position.start, this.position.end),
-      position: this.position,
-    });
+    this.tokens.push(
+      new Token(type, this.source.slice(this.position.start, this.position.end), this.position),
+    );
   }
 
   private advance() {
+    const char = this.source.charAt(this.position.end);
     this.position = new Position(this.position.start, this.position.end + 1);
-    return this.source.charAt(this.position.end);
+    return char;
   }
 
   private isAlpha(c: string) {
