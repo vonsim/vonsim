@@ -1,5 +1,5 @@
 {
-  "name": "~assembler",
+  "name": "@vonsim/assembler",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -12,9 +12,9 @@
     "@vonsim/common": "workspace:^"
   },
   "devDependencies": {
+    "@vonsim/tsconfig": "workspace:^",
     "eslint": "^8.39.0",
-    "eslint-config-custom": "workspace:^",
-    "tsconfig": "workspace:^",
+    "eslint-config-vonsim": "workspace:^",
     "type-fest": "^3.9.0",
     "typescript": "~5.0.4",
     "vitest": "^0.30.1"

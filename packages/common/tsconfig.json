@@ -1,4 +1,4 @@
 {
-  "extends": "tsconfig/base.json",
+  "extends": "@vonsim/tsconfig/base.json",
   "include": ["src"]
 }

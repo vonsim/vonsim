@@ -15,9 +15,9 @@
   },
   "devDependencies": {
     "@types/dlv": "^1.1.2",
+    "@vonsim/tsconfig": "workspace:*",
     "eslint": "^8.39.0",
-    "eslint-config-custom": "workspace:^",
-    "tsconfig": "workspace:^",
+    "eslint-config-vonsim": "workspace:*",
     "type-fest": "^3.9.0",
     "typescript": "~5.0.4"
   }
