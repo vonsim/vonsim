@@ -113,11 +113,11 @@ export class IOAddress {
   }
 
   /**
-   * Returns the byte as a JSON number.
+   * Returns the byte as a JSON string.
    * Useful for serialization.
    */
-  toJSON(): number {
-    return this.#address.toJSON();
+  toJSON(): string {
+    return this.toString();
   }
 
   // #=========================================================================#
