@@ -1,3 +1,32 @@
+import { Byte } from "./byte";
+
+/**
+ * Converts a character to its decimal representation.
+ * @returns The decimal representation of the character, or null if the character is not in the ASCII table.
+ */
+export function charToDecimal(char: string): number | null {
+  const idx = char.charCodeAt(0); // Uses ASCII extended (UTF-8) for numbers 0-255
+  if (Byte.fitsUnsigned(idx, 8)) return idx;
+  else return null;
+}
+
+/**
+ * Converts a decimal to its character representation.
+ * @returns The character representation of the decimal, or null if the decimal is not in the ASCII table.
+ */
+export function decimalToChar(decimal: number): string | null {
+  if (!Byte.fitsUnsigned(decimal, 8)) return null;
+  return String.fromCharCode(decimal); // Uses ASCII extended (UTF-8) for numbers 0-255
+}
+
+/**
+ * Converts a number to its character representation in a legible way.
+ * @returns A legible representation of the character, or null if the decimal is not in the ASCII table.
+ */
+export function displayCharacter(decimal: number): string | null {
+  return ASCII_TABLE.at(decimal) ?? null;
+}
+
 // prettier-ignore
 const ASCII_TABLE = [
   // https://www.unicode.org/charts/PDF/U0000.pdf
@@ -19,20 +48,3 @@ const ASCII_TABLE = [
   "à", "á", "â", "ã", "ä", "å", "æ", "ç", "è", "é", "ê", "ë", "ì", "í", "î", "ï",
   "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "÷", "ø", "ù", "ú", "û", "ü", "ý", "þ", "ÿ",
 ];
-
-/**
- * Converts a character to its decimal representation.
- * @returns The decimal representation of the character, or null if the character is not in the ASCII table.
- */
-export function charToDecimal(char: string): number | null {
-  const idx = ASCII_TABLE.indexOf(char);
-  return idx === -1 ? null : idx;
-}
-
-/**
- * Converts a decimal to its character representation.
- * @returns The character representation of the decimal, or null if the decimal is not in the ASCII table.
- */
-export function decimalToChar(decimal: number): string | null {
-  return ASCII_TABLE.at(decimal) ?? null;
-}
