@@ -4,16 +4,6 @@ exports[`Fixtures > should match snapshot of fibonacci.asm 1`] = `
 {
   "data": [
     {
-      "directive": "EQU",
-      "label": "N",
-      "position": [
-        194,
-        200,
-      ],
-      "type": "data-directive",
-      "value": 10,
-    },
-    {
       "directive": "DB",
       "label": "INICIO",
       "position": [
@@ -1858,16 +1848,6 @@ exports[`Fixtures > should match snapshot of sumador_de_tablas.asm 1`] = `
 {
   "data": [
     {
-      "directive": "EQU",
-      "label": "LEN",
-      "position": [
-        35,
-        40,
-      ],
-      "type": "data-directive",
-      "value": 5,
-    },
-    {
       "directive": "DW",
       "label": "A",
       "position": [
@@ -2222,86 +2202,6 @@ exports[`Fixtures > should match snapshot of timer.asm 1`] = `
 {
   "data": [
     {
-      "directive": "EQU",
-      "label": "EOI",
-      "position": [
-        269,
-        276,
-      ],
-      "type": "data-directive",
-      "value": 32,
-    },
-    {
-      "directive": "EQU",
-      "label": "IMR",
-      "position": [
-        284,
-        291,
-      ],
-      "type": "data-directive",
-      "value": 33,
-    },
-    {
-      "directive": "EQU",
-      "label": "IRR",
-      "position": [
-        299,
-        306,
-      ],
-      "type": "data-directive",
-      "value": 34,
-    },
-    {
-      "directive": "EQU",
-      "label": "INT0",
-      "position": [
-        314,
-        321,
-      ],
-      "type": "data-directive",
-      "value": 36,
-    },
-    {
-      "directive": "EQU",
-      "label": "INT1",
-      "position": [
-        329,
-        336,
-      ],
-      "type": "data-directive",
-      "value": 37,
-    },
-    {
-      "directive": "EQU",
-      "label": "CONT",
-      "position": [
-        346,
-        353,
-      ],
-      "type": "data-directive",
-      "value": 16,
-    },
-    {
-      "directive": "EQU",
-      "label": "COMP",
-      "position": [
-        361,
-        368,
-      ],
-      "type": "data-directive",
-      "value": 17,
-    },
-    {
-      "directive": "EQU",
-      "label": "N_F10",
-      "position": [
-        378,
-        384,
-      ],
-      "type": "data-directive",
-      "value": 10,
-    },
-    {
       "directive": "DW",
       "label": null,
       "position": [
@@ -2312,16 +2212,6 @@ exports[`Fixtures > should match snapshot of timer.asm 1`] = `
       "values": [
         12312,
       ],
-    },
-    {
-      "directive": "EQU",
-      "label": "N_CLK",
-      "position": [
-        438,
-        444,
-      ],
-      "type": "data-directive",
-      "value": 11,
     },
     {
       "directive": "DW",
@@ -2454,56 +2344,6 @@ exports[`Fixtures > should match snapshot of timer.asm 1`] = `
       "values": [
         0,
       ],
-    },
-    {
-      "directive": "EQU",
-      "label": "INPUT_LEN",
-      "position": [
-        730,
-        767,
-      ],
-      "type": "data-directive",
-      "value": 33,
-    },
-    {
-      "directive": "EQU",
-      "label": "ERR_LEN",
-      "position": [
-        779,
-        811,
-      ],
-      "type": "data-directive",
-      "value": 16,
-    },
-    {
-      "directive": "EQU",
-      "label": "DISP_LEN",
-      "position": [
-        823,
-        853,
-      ],
-      "type": "data-directive",
-      "value": 4,
-    },
-    {
-      "directive": "EQU",
-      "label": "CERO",
-      "position": [
-        865,
-        872,
-      ],
-      "type": "data-directive",
-      "value": 48,
-    },
-    {
-      "directive": "EQU",
-      "label": "NUEVE",
-      "position": [
-        884,
-        891,
-      ],
-      "type": "data-directive",
-      "value": 57,
     },
   ],
   "instructions": [
