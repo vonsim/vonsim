@@ -13,6 +13,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["reset.d.ts"],
+  "files": ["./reset.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
