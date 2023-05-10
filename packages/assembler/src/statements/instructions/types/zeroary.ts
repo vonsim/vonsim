@@ -1,8 +1,8 @@
 import { CompilerError } from "@/error";
 import type { Position } from "@/position";
 
-import { InstructionStatement } from ".";
-import type { Operand } from "./operands";
+import type { Operand } from "../operands";
+import { InstructionStatement } from "../statement";
 
 type ZeroaryInstructionName = "PUSHF" | "POPF" | "RET" | "IRET" | "CLI" | "STI" | "NOP" | "HLT";
 

@@ -8,8 +8,8 @@ import { NumberExpression } from "@/number-expression";
 import { Position } from "@/position";
 import type { DataDirective as AllDataDirectives } from "@/types";
 
-import { DataDirectiveStatement } from ".";
-import { DataDirectiveValue } from "./value";
+import { DataDirectiveStatement } from "../statement";
+import type { DataDirectiveValue } from "../value";
 
 const unassigned = Symbol("unassigned");
 type Unassigned = typeof unassigned;

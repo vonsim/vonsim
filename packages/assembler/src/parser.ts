@@ -3,25 +3,23 @@ import type { Token, TokenType } from "@/lexer/tokens";
 import { NumberExpression } from "@/number-expression";
 import { Position } from "@/position";
 import {
+  createDataDirectiveStatement,
+  createInstructionStatement,
   DataDirectiveStatement,
-  EndStatement,
-  InstructionStatement,
-  OriginChangeStatement,
-  StatementType,
-} from "@/statements";
-import {
   DataDirectiveValue,
-  NumberExpressionDirectiveValue,
-  StringDirectiveValue,
-  UnassignedDirectiveValue,
-} from "@/statements/data-directive/value";
-import {
   DirectAddressOperand,
+  EndStatement,
   IndirectAddressOperand,
+  InstructionStatement,
+  NumberExpressionDirectiveValue,
   NumberExpressionOperand,
   Operand,
+  OriginChangeStatement,
   RegisterOperand,
-} from "@/statements/instructions/operands";
+  Statement,
+  StringDirectiveValue,
+  UnassignedDirectiveValue,
+} from "@/statements";
 import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "@/types";
 
 /**
@@ -39,7 +37,7 @@ import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "@/types";
  * - a data directive,
  * - or an instruction.
  *
- * @see {@link StatementType}.
+ * @see {@link Statement}.
  *
  * The last two can have multiple operands separated by commas. Inside each operand,
  * there can be a number expression, which is a sequence of numbers and operators
@@ -74,9 +72,9 @@ export class Parser {
     this.tokens = tokens;
   }
 
-  parse(): StatementType[] {
+  parse(): Statement[] {
     this.current = 0;
-    const statements: StatementType[] = [];
+    const statements: Statement[] = [];
 
     while (!this.isAtEnd()) {
       if (this.match("EOL")) continue;
@@ -87,7 +85,7 @@ export class Parser {
     return statements;
   }
 
-  private statement(): StatementType {
+  private statement(): Statement {
     const statement =
       this.originChangeStatement() ??
       this.endStatement() ??
@@ -102,7 +100,7 @@ export class Parser {
     return statement;
   }
 
-  private originChangeStatement(): StatementType | null {
+  private originChangeStatement(): OriginChangeStatement | null {
     const token = this.match("ORG");
     if (!token) return null;
 
@@ -119,7 +117,7 @@ export class Parser {
     );
   }
 
-  private endStatement(): StatementType | null {
+  private endStatement(): EndStatement | null {
     const token = this.match("END");
     if (!token) return null;
 
@@ -132,7 +130,7 @@ export class Parser {
     return new EndStatement(token.position);
   }
 
-  private dataDirectiveStatement(): StatementType | null {
+  private dataDirectiveStatement(): DataDirectiveStatement | null {
     const labelToken = this.match("IDENTIFIER");
     const directiveToken = this.match(...DATA_DIRECTIVES);
 
@@ -154,7 +152,7 @@ export class Parser {
     while (this.match("COMMA")) values.push(this.dataDirectiveValue());
 
     this.endOfStatement();
-    return DataDirectiveStatement.create(directiveToken, values, label);
+    return createDataDirectiveStatement(directiveToken, values, label);
   }
 
   private dataDirectiveValue(): DataDirectiveValue {
@@ -171,7 +169,7 @@ export class Parser {
     return new NumberExpressionDirectiveValue(this.numberExpression());
   }
 
-  private instructionStatement(): StatementType | null {
+  private instructionStatement(): InstructionStatement | null {
     const labelToken = this.match("LABEL");
 
     while (this.match("EOL")) continue; // Skip empty lines between labels and instructions
@@ -193,7 +191,7 @@ export class Parser {
 
     // Check for zeroary instructions
     if (this.isAtEndOfStatement()) {
-      return InstructionStatement.create(instructionToken, [], label);
+      return createInstructionStatement(instructionToken, [], label);
     }
 
     const operands: Operand[] = [this.instructionOperand()];
@@ -201,7 +199,7 @@ export class Parser {
     while (this.match("COMMA")) operands.push(this.instructionOperand());
 
     this.endOfStatement();
-    return InstructionStatement.create(instructionToken, operands, label);
+    return createInstructionStatement(instructionToken, operands, label);
   }
 
   private instructionOperand(): Operand {

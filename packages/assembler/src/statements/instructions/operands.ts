@@ -4,7 +4,7 @@ import { CompilerError } from "@/error";
 import type { GlobalStore } from "@/global-store";
 import type { Token } from "@/lexer/tokens";
 import type { NumberExpression } from "@/number-expression";
-import { Position } from "@/position";
+import type { Position } from "@/position";
 import { Register, WORD_REGISTERS } from "@/types";
 
 /**

@@ -4,8 +4,8 @@ import { CompilerError } from "@/error";
 import type { GlobalStore } from "@/global-store";
 import type { Position } from "@/position";
 
-import { InstructionStatement } from ".";
-import type { Operand } from "./operands";
+import type { Operand } from "../operands";
+import { InstructionStatement } from "../statement";
 
 type JumpInstructionName =
   | "CALL"

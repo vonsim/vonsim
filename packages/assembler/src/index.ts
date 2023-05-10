@@ -13,11 +13,11 @@ import { CompilerError } from "@/error";
 import { GlobalStore } from "@/global-store";
 import { Scanner } from "@/lexer/scanner";
 import { Parser } from "@/parser";
-import { DataDirectiveStatementType, InstructionStatementType } from "@/statements";
+import type { DataDirectiveStatement, InstructionStatement } from "@/statements";
 
 export type Program = {
-  data: DataDirectiveStatementType[];
-  instructions: InstructionStatementType[];
+  data: DataDirectiveStatement[];
+  instructions: InstructionStatement[];
   store: GlobalStore;
 };
 
@@ -71,8 +71,8 @@ export function compile(source: string): CompileResult {
 
     // Now that we know the addresses of each instruction and data directive,
     // we can compute the values of the operands.
-    const data: DataDirectiveStatementType[] = [];
-    const instructions: InstructionStatementType[] = [];
+    const data: DataDirectiveStatement[] = [];
+    const instructions: InstructionStatement[] = [];
     errors = forEachWithErrors(
       statements,
       item => {

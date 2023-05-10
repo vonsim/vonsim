@@ -2,8 +2,7 @@ import { MemoryAddress } from "@vonsim/common/address";
 import { forEachWithErrors } from "@vonsim/common/loops";
 
 import { CompilerError } from "@/error";
-import type { StatementType } from "@/statements";
-import type { Constant } from "@/statements/data-directive/constant";
+import type { Constant, Statement } from "@/statements";
 
 type LabelsMap = Map<
   string,
@@ -56,7 +55,7 @@ export class GlobalStore {
    * Loads the label types from the given statements
    * @returns Errors that occurred while loading the label types
    */
-  loadStatements(statements: StatementType[]): CompilerError<any>[] {
+  loadStatements(statements: Statement[]): CompilerError<any>[] {
     if (this.#statementsLoaded) {
       throw new Error("Tried to load statements twice");
     }
@@ -95,7 +94,7 @@ export class GlobalStore {
     return errors;
   }
 
-  computeAddresses(statements: StatementType[]): CompilerError<any>[] {
+  computeAddresses(statements: Statement[]): CompilerError<any>[] {
     if (this.#computedAddresses) {
       throw new Error("Tried to compute addresses twice");
     }

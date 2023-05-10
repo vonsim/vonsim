@@ -1,6 +1,6 @@
 import type { Position } from "@/position";
 
-import { Statement } from ".";
+import { Statement } from "./statement";
 
 export class OriginChangeStatement extends Statement {
   readonly type = "origin-change";

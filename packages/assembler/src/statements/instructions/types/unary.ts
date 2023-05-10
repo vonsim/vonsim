@@ -7,8 +7,8 @@ import { NumberExpression } from "@/number-expression";
 import type { Position } from "@/position";
 import type { Register } from "@/types";
 
-import { InstructionStatement } from ".";
-import type { Operand } from "./operands";
+import type { Operand } from "../operands";
+import { InstructionStatement } from "../statement";
 
 type UnaryInstructionName = "NEG" | "INC" | "DEC" | "NOT";
 

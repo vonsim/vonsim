@@ -6,8 +6,8 @@ import type { GlobalStore } from "@/global-store";
 import type { NumberExpression } from "@/number-expression";
 import type { Position } from "@/position";
 
-import { InstructionStatement } from ".";
-import type { Operand } from "./operands";
+import type { Operand } from "../operands";
+import { InstructionStatement } from "../statement";
 
 type IOInstructionName = "IN" | "OUT";
 

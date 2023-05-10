@@ -3,8 +3,8 @@ import type { GlobalStore } from "@/global-store";
 import type { NumberExpression } from "@/number-expression";
 import type { Position } from "@/position";
 
-import { DataDirectiveStatement } from ".";
-import type { DataDirectiveValue } from "./value";
+import { DataDirectiveStatement } from "../statement";
+import type { DataDirectiveValue } from "../value";
 
 /**
  * A constant.
