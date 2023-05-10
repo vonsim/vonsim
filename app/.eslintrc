@@ -7,7 +7,7 @@
     "react": { "version": "detect" }
   },
   "extends": [
-    "custom",
+    "vonsim",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:tailwindcss/recommended"
