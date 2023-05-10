@@ -9,18 +9,15 @@
 
 import { forEachWithErrors } from "@vonsim/common/loops";
 
-import { DataDirective } from "@/data-directive";
 import { CompilerError } from "@/error";
 import { GlobalStore } from "@/global-store";
-import { Instruction } from "@/instructions";
-import type { OriginChangeStatement } from "@/parser/statement";
-
-import { Scanner } from "./lexer/scanner";
-import { Parser } from "./parser/parser";
+import { Scanner } from "@/lexer/scanner";
+import { Parser } from "@/parser";
+import { DataDirectiveStatementType, InstructionStatementType } from "@/statements";
 
 export type Program = {
-  data: DataDirective[];
-  instructions: Instruction[];
+  data: DataDirectiveStatementType[];
+  instructions: InstructionStatementType[];
   store: GlobalStore;
 };
 
@@ -57,38 +54,32 @@ export function compile(source: string): CompileResult {
     errors = store.loadStatements(statements);
     if (errors.length > 0) return { success: false, errors };
 
-    // Convert generic statements into specific ones.
-    const evaluated: (OriginChangeStatement | DataDirective | Instruction)[] = [];
+    // Validate statements
     errors = forEachWithErrors(
       statements,
       statement => {
-        if (statement.isOriginChange()) {
-          evaluated.push(statement);
-        } else if (statement.isDataDirective()) {
-          evaluated.push(DataDirective.fromStatement(statement));
-        } else if (statement.isInstruction()) {
-          evaluated.push(Instruction.fromStatement(statement, store));
-        }
+        if (statement.isOriginChange() || statement.isEnd()) return;
+        statement.validate(store);
       },
       CompilerError.from,
     );
     if (errors.length > 0) return { success: false, errors };
 
     // Compute the addresses of each instruction and data directive.
-    errors = store.computeAddresses(evaluated);
+    errors = store.computeAddresses(statements);
     if (errors.length > 0) return { success: false, errors };
 
     // Now that we know the addresses of each instruction and data directive,
     // we can compute the values of the operands.
-    const data: DataDirective[] = [];
-    const instructions: Instruction[] = [];
+    const data: DataDirectiveStatementType[] = [];
+    const instructions: InstructionStatementType[] = [];
     errors = forEachWithErrors(
-      evaluated,
+      statements,
       item => {
-        if (item instanceof DataDirective) {
+        if (item.isDataDirective()) {
           item.evaluateExpressions(store);
           data.push(item);
-        } else if (item instanceof Instruction) {
+        } else if (item.isInstruction()) {
           item.evaluateExpressions(store);
           instructions.push(item);
         }
@@ -97,7 +88,7 @@ export function compile(source: string): CompileResult {
     );
     if (errors.length > 0) return { success: false, errors };
 
-    return structuredClone({ success: true, data, instructions, store });
+    return { success: true, data, instructions, store };
   } catch (error) {
     return { success: false, errors: [CompilerError.from(error)] };
   }

@@ -1,12 +1,12 @@
-import type { RegisterName } from "@/types";
+import type { Register } from "@/types";
 
 /**
  * Returns the bits of a register (3 bits)
  * @param reg Register
  * @see /docs/especificaciones/codificacion.md
  */
-export function registerToBits(reg: RegisterName) {
-  const bits: { [key in RegisterName]: number } = {
+export function registerToBits(reg: Register) {
+  const bits: { [key in Register]: number } = {
     AX: 0b000,
     CX: 0b001,
     DX: 0b010,

@@ -1,8 +1,10 @@
 import { CompilerError } from "@/error";
 import type { GlobalStore } from "@/global-store";
 import type { NumberExpression } from "@/number-expression";
-import type { ConstantStatement } from "@/parser/statement";
 import type { Position } from "@/position";
+
+import { DataDirectiveStatement } from ".";
+import type { DataDirectiveValue } from "./value";
 
 /**
  * A constant.
@@ -30,22 +32,40 @@ import type { Position } from "@/position";
  * ---
  * This class is: MUTABLE
  */
-export class Constant {
+export class Constant extends DataDirectiveStatement {
+  readonly directive = "EQU";
   #status: "not-processed" | "processing" | "processed" = "not-processed";
+  #initialValue: NumberExpression | null = null;
   #value: number | null = null;
 
-  constructor(
-    readonly name: string,
-    private readonly initialValue: NumberExpression,
-    readonly position: Position,
-  ) {}
+  constructor(values: DataDirectiveValue[], label: string | null, position: Position) {
+    super(values, label, position);
+  }
 
-  /**
-   * Evaluate the value of a constant.
-   * This is done this way because constants can be defined anywhere in the program and
-   * can reference other constants, so we need to prevent circular references.
-   */
-  evaluate(store: GlobalStore): number {
+  validate(): void {
+    if (this.#initialValue) throw new Error("Constant already validated");
+
+    if (!this.label) {
+      throw new CompilerError("constant-must-have-a-label").at(this);
+    }
+
+    if (this.values.length !== 1) {
+      throw new CompilerError("constant-must-have-one-value").at(this);
+    }
+
+    const value = this.values[0];
+    if (value.type === "string") {
+      throw new CompilerError("cannot-accept-strings", "EQU").at(value);
+    }
+    if (value.type === "unassigned") {
+      throw new CompilerError("cannot-be-unassinged", "EQU").at(value);
+    }
+    this.#initialValue = value.value;
+  }
+
+  evaluateExpressions(store: GlobalStore): number {
+    if (!this.#initialValue) throw new Error("Constant not validated");
+
     if (this.#status === "processed") return this.#value!;
 
     if (this.#status === "processing") {
@@ -54,23 +74,14 @@ export class Constant {
     }
 
     this.#status = "processed";
-    const result = this.initialValue.evaluate(store);
+    const result = this.#initialValue.evaluate(store);
     this.#status = "processed";
     this.#value = result;
     return result;
   }
 
-  /**
-   * Create a constant from a statement.
-   */
-  static fromStatement(statement: ConstantStatement): Constant {
-    if (statement.value.isString()) {
-      throw new CompilerError("cannot-accept-strings", "EQU").at(statement.value);
-    }
-    if (statement.value.isUnassigned()) {
-      throw new CompilerError("cannot-be-unassinged", "EQU").at(statement.value);
-    }
-
-    return new Constant(statement.label, statement.value.value, statement.position);
+  // Alias for evaluateExpressions
+  evaluate(store: GlobalStore) {
+    return this.evaluateExpressions(store);
   }
 }

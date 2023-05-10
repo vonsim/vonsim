@@ -4,8 +4,8 @@ import { CompilerError } from "@/error";
 import type { GlobalStore } from "@/global-store";
 import type { Token } from "@/lexer/tokens";
 import type { NumberExpression } from "@/number-expression";
-import type { Position } from "@/position";
-import { RegisterName, WORD_REGISTERS } from "@/types";
+import { Position } from "@/position";
+import { Register, WORD_REGISTERS } from "@/types";
 
 /**
  * An operand of an instruction.
@@ -22,29 +22,39 @@ import { RegisterName, WORD_REGISTERS } from "@/types";
  * This class is: IMMUTABLE
  */
 abstract class Operand {
+  abstract type: "register" | "indirect-address" | "direct-address" | "number-expression";
+
   constructor(readonly position: Position) {}
 
   isRegister(): this is RegisterOperand {
-    return this instanceof RegisterOperand;
+    return this.type === "register";
   }
 
   isIndirectAddress(): this is IndirectAddressOperand {
-    return this instanceof IndirectAddressOperand;
+    return this.type === "indirect-address";
   }
 
   isDirectAddress(): this is DirectAddressOperand {
-    return this instanceof DirectAddressOperand;
+    return this.type === "direct-address";
   }
 
   isNumberExpression(): this is NumberExpressionOperand {
-    return this instanceof NumberExpressionOperand;
+    return this.type === "number-expression";
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      position: this.position.toJSON(),
+    };
   }
 }
 
 export class RegisterOperand extends Operand {
-  readonly value: RegisterName;
+  readonly type = "register";
+  readonly value: Register;
 
-  constructor(token: Token & { type: RegisterName }) {
+  constructor(token: Token & { type: Register }) {
     super(token.position);
     this.value = token.type;
   }
@@ -52,25 +62,59 @@ export class RegisterOperand extends Operand {
   get size(): ByteSize {
     return WORD_REGISTERS.includes(this.value) ? 16 : 8;
   }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      value: this.value,
+    };
+  }
 }
 
 export class IndirectAddressOperand extends Operand {
-  constructor(readonly size: ByteSize | "auto", position: Position) {
+  readonly type = "indirect-address";
+  readonly size: ByteSize | "auto";
+
+  constructor(size: "BYTE" | "WORD" | undefined, position: Position) {
     super(position);
+    if (size) this.size = size === "BYTE" ? 8 : 16;
+    else this.size = "auto";
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      size: this.size,
+    };
   }
 }
 
 export class DirectAddressOperand extends Operand {
+  readonly type = "direct-address";
+  readonly size: ByteSize | "auto";
+
   constructor(
-    readonly size: ByteSize | "auto",
     readonly value: NumberExpression,
+    size: "BYTE" | "WORD" | undefined,
     position: Position,
   ) {
     super(position);
+    if (size) this.size = size === "BYTE" ? 8 : 16;
+    else this.size = "auto";
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      size: this.size,
+      value: this.value.toJSON(),
+    };
   }
 }
 
 export class NumberExpressionOperand extends Operand {
+  readonly type = "number-expression";
+
   constructor(readonly value: NumberExpression) {
     super(value.position);
   }
@@ -92,6 +136,13 @@ export class NumberExpressionOperand extends Operand {
 
     const type = store.getLabelType(label.value)!;
     return type === "DB" ? 8 : type === "DW" ? 16 : false;
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      value: this.value.toJSON(),
+    };
   }
 }
 

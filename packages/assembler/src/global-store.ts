@@ -1,17 +1,14 @@
 import { MemoryAddress } from "@vonsim/common/address";
 import { forEachWithErrors } from "@vonsim/common/loops";
 
-import type { Constant } from "@/constant";
-import type { DataDirective } from "@/data-directive";
 import { CompilerError } from "@/error";
-import { Instruction } from "@/instructions";
-import { OriginChangeStatement, Statement } from "@/parser/statement";
-import type { ConstantName, DataDirectiveName } from "@/types";
+import type { StatementType } from "@/statements";
+import type { Constant } from "@/statements/data-directive/constant";
 
 type LabelsMap = Map<
   string,
-  | { type: DataDirectiveName | "instruction"; address: MemoryAddress }
-  | { type: ConstantName; constant: Constant }
+  | { type: "DB" | "DW" | "instruction"; address: MemoryAddress }
+  | { type: "EQU"; constant: Constant }
 >;
 
 /**
@@ -59,7 +56,7 @@ export class GlobalStore {
    * Loads the label types from the given statements
    * @returns Errors that occurred while loading the label types
    */
-  loadStatements(statements: Statement[]): CompilerError<any>[] {
+  loadStatements(statements: StatementType[]): CompilerError<any>[] {
     if (this.#statementsLoaded) {
       throw new Error("Tried to load statements twice");
     }
@@ -77,19 +74,19 @@ export class GlobalStore {
         continue;
       }
 
-      if (statement.isConstant()) {
+      if (statement.isInstruction()) {
+        this.labels.set(statement.label, {
+          type: "instruction",
+          address: MemoryAddress.from(0),
+        });
+      } else if (statement.directive === "EQU") {
         this.labels.set(statement.label, {
           type: "EQU",
-          constant: statement.toConstant(),
-        });
-      } else if (statement.isDataDirective()) {
-        this.labels.set(statement.label, {
-          type: statement.directive,
-          address: MemoryAddress.from(0),
+          constant: statement,
         });
       } else {
         this.labels.set(statement.label, {
-          type: "instruction",
+          type: statement.directive,
           address: MemoryAddress.from(0),
         });
       }
@@ -98,9 +95,7 @@ export class GlobalStore {
     return errors;
   }
 
-  computeAddresses(
-    statements: (OriginChangeStatement | DataDirective | Instruction)[],
-  ): CompilerError<any>[] {
+  computeAddresses(statements: StatementType[]): CompilerError<any>[] {
     if (this.#computedAddresses) {
       throw new Error("Tried to compute addresses twice");
     }
@@ -114,7 +109,10 @@ export class GlobalStore {
     const errors = forEachWithErrors(
       statements,
       statement => {
-        if (statement instanceof OriginChangeStatement) {
+        if (statement.isEnd()) return;
+        if (statement.isDataDirective() && statement.directive === "EQU") return;
+
+        if (statement.isOriginChange()) {
           pointer = statement.newAddress;
           return;
         }
@@ -124,7 +122,6 @@ export class GlobalStore {
         }
 
         const length = statement.length;
-        const isInstruction = statement instanceof Instruction;
 
         for (let i = 0; i < length; i++) {
           if (!MemoryAddress.inRange(pointer, i)) {
@@ -137,14 +134,14 @@ export class GlobalStore {
           }
 
           occupiedMemory.add(address.value);
-          if (isInstruction) this.codeMemory.add(address.value);
+          if (statement.isInstruction()) this.codeMemory.add(address.value);
         }
 
         const startAddress = MemoryAddress.from(pointer);
         statement.setStart(startAddress);
         if (statement.label) {
           this.labels.set(statement.label, {
-            type: isInstruction ? "instruction" : statement.directive,
+            type: statement.isInstruction() ? "instruction" : statement.directive,
             address: startAddress,
           });
         }

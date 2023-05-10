@@ -16,6 +16,8 @@ export const spanish: Messages = {
   "cannot-be-unassinged": directive => `${directive} no puede estar sin asignar.`,
   "cannot-be-word": "Este operando no puede ser de 16 bits.",
   "circular-reference": "Se detectó una referencia circular.",
+  "constant-must-have-a-label": "La constante debe tener una etiqueta.",
+  "constant-must-have-one-value": "La constante debe tener una exactamente un valor.",
   "destination-cannot-be-immediate": "El destino no puede ser un valor inmediato.",
   "double-memory-access": "No se puede acceder a una memoria dos veces en la misma instrucción.",
   "duplicated-label": label => `Etiqueta duplicada "${label}".`,
@@ -83,7 +85,6 @@ export const spanish: Messages = {
     "expected-type": (expected, got) => `Se esperaba ${expected}, se obtuvo ${got}.`,
     // prettier-ignore
     "indirect-addressing-must-be-bx": "El único registro válido para el direccionamiento indirecto es BX.",
-    "must-have-a-label": "La constante debe tener una etiqueta.",
     "unclosed-parenthesis": "Paréntesis sin cerrar.",
     // prettier-ignore
     "unexpected-identifier": "Identificador inesperado. Tal vez te olvidaste agregar dos puntos (:) para hacerlo una etiqueta.",

@@ -27,11 +27,12 @@ export class Position {
   /**
    * Merge multiple positions into one that contains all of them.
    */
-  static merge(...positions: Position[]): Position {
-    if (positions.length === 0) throw new Error("Cannot merge 0 positions");
-    let start = positions[0].start;
-    let end = positions[0].end;
-    for (const position of positions) {
+  static merge(...positions: (Position | null | undefined)[]): Position {
+    const arr = positions.filter(Boolean);
+    if (arr.length === 0) throw new Error("Cannot merge 0 positions");
+    let start = arr[0].start;
+    let end = arr[0].end;
+    for (const position of arr) {
       if (position.start < start) start = position.start;
       if (position.end > end) end = position.end;
     }
@@ -40,6 +41,6 @@ export class Position {
   }
 
   toJSON() {
-    return [this.start, this.end];
+    return this.range;
   }
 }

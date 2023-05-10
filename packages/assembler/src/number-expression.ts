@@ -27,24 +27,33 @@ import type { Position } from "@/position";
  * This class is: IMMUTABLE
  */
 export abstract class NumberExpression {
+  abstract readonly type: "number-literal" | "label" | "unary-operation" | "binary-operation";
+
   constructor(readonly position: Position) {}
 
   abstract evaluate(store: GlobalStore): number;
 
   isNumberLiteral(): this is NumberLiteral {
-    return this instanceof NumberLiteral;
+    return this.type === "number-literal";
   }
 
   isLabel(): this is Label {
-    return this instanceof Label;
+    return this.type === "label";
   }
 
   isUnaryOperation(): this is UnaryOperation {
-    return this instanceof UnaryOperation;
+    return this.type === "unary-operation";
   }
 
   isBinaryOperation(): this is BinaryOperation {
-    return this instanceof BinaryOperation;
+    return this.type === "binary-operation";
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      position: this.position.toJSON(),
+    };
   }
 
   // Convenience methods for creating number expressions
@@ -62,6 +71,8 @@ export abstract class NumberExpression {
 }
 
 class NumberLiteral extends NumberExpression {
+  readonly type = "number-literal";
+
   constructor(readonly value: number, position: Position) {
     super(position);
   }
@@ -69,9 +80,18 @@ class NumberLiteral extends NumberExpression {
   evaluate(): number {
     return this.value;
   }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      value: this.value,
+    };
+  }
 }
 
 class Label extends NumberExpression {
+  readonly type = "label";
+
   constructor(readonly value: string, readonly offset: boolean, position: Position) {
     super(position);
   }
@@ -93,9 +113,19 @@ class Label extends NumberExpression {
 
     return store.getLabelValue(this.value)!;
   }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      value: this.value,
+      offset: this.offset,
+    };
+  }
 }
 
 class UnaryOperation extends NumberExpression {
+  readonly type = "unary-operation";
+
   constructor(readonly operator: "+" | "-", readonly right: NumberExpression, position: Position) {
     super(position);
   }
@@ -103,9 +133,19 @@ class UnaryOperation extends NumberExpression {
   evaluate(store: GlobalStore): number {
     return this.operator === "+" ? this.right.evaluate(store) : -this.right.evaluate(store);
   }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      operator: this.operator,
+      right: this.right.toJSON(),
+    };
+  }
 }
 
 class BinaryOperation extends NumberExpression {
+  readonly type = "binary-operation";
+
   constructor(
     readonly left: NumberExpression,
     readonly operator: "+" | "-" | "*",
@@ -121,5 +161,14 @@ class BinaryOperation extends NumberExpression {
       : this.operator === "-"
       ? this.left.evaluate(store) - this.right.evaluate(store)
       : this.left.evaluate(store) * this.right.evaluate(store);
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      operator: this.operator,
+      left: this.left.toJSON(),
+      right: this.right.toJSON(),
+    };
   }
 }

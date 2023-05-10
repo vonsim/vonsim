@@ -18,6 +18,8 @@ export const english = {
   "cannot-be-unassinged": (directive: string) => `${directive} can't be unassigned.`,
   "cannot-be-word": "This operand can't be of 16 bits.",
   "circular-reference": "Circular reference detected.",
+  "constant-must-have-a-label": "Constant must have a label.",
+  "constant-must-have-one-value": "Constant must have exactly one value.",
   "destination-cannot-be-immediate": "The destination can't be an immediate value.",
   "double-memory-access": "Can't access to a memory location twice in the same instruction.",
   "duplicated-label": (label: string) => `Duplicated label "${label}".`,
@@ -85,7 +87,6 @@ export const english = {
     "expected-type": (expected: LiteralUnion<TokenType, string>, got: TokenType) => `Expected ${expected}, got ${got}.`,
     // prettier-ignore
     "indirect-addressing-must-be-bx": "The only register supported for indirect addressing is BX.",
-    "must-have-a-label": "Constant must have a label.",
     "unclosed-parenthesis": "Unclosed parenthesis.",
     // prettier-ignore
     "unexpected-identifier": "Unexpected identifier. You may have forgotten a colon (:) to make it a label.",

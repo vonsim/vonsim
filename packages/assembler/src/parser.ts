@@ -1,32 +1,28 @@
-import type { ByteSize } from "@vonsim/common/byte";
-
 import { CompilerError } from "@/error";
 import type { Token, TokenType } from "@/lexer/tokens";
 import { NumberExpression } from "@/number-expression";
 import { Position } from "@/position";
-import { CONSTANTS, DATA_DIRECTIVES, INSTRUCTIONS, RegisterName, REGISTERS } from "@/types";
-
+import {
+  DataDirectiveStatement,
+  EndStatement,
+  InstructionStatement,
+  OriginChangeStatement,
+  StatementType,
+} from "@/statements";
 import {
   DataDirectiveValue,
   NumberExpressionDirectiveValue,
   StringDirectiveValue,
   UnassignedDirectiveValue,
-} from "./directive-value";
+} from "@/statements/data-directive/value";
 import {
   DirectAddressOperand,
   IndirectAddressOperand,
   NumberExpressionOperand,
   Operand,
   RegisterOperand,
-} from "./operands";
-import {
-  ConstantStatement,
-  DataDirectiveStatement,
-  EndStatement,
-  InstructionStatement,
-  OriginChangeStatement,
-  Statement,
-} from "./statement";
+} from "@/statements/instructions/operands";
+import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "@/types";
 
 /**
  * The Parser
@@ -43,7 +39,7 @@ import {
  * - a data directive,
  * - or an instruction.
  *
- * @see {@link Statement}.
+ * @see {@link StatementType}.
  *
  * The last two can have multiple operands separated by commas. Inside each operand,
  * there can be a number expression, which is a sequence of numbers and operators
@@ -75,12 +71,12 @@ export class Parser {
   private current = 0;
 
   constructor(tokens: Token[]) {
-    this.tokens = structuredClone(tokens);
+    this.tokens = tokens;
   }
 
-  parse(): Statement[] {
+  parse(): StatementType[] {
     this.current = 0;
-    const statements: Statement[] = [];
+    const statements: StatementType[] = [];
 
     while (!this.isAtEnd()) {
       if (this.match("EOL")) continue;
@@ -91,11 +87,10 @@ export class Parser {
     return statements;
   }
 
-  private statement(): Statement {
+  private statement(): StatementType {
     const statement =
       this.originChangeStatement() ??
       this.endStatement() ??
-      this.constantStatement() ??
       this.dataDirectiveStatement() ??
       this.instructionStatement();
 
@@ -107,7 +102,7 @@ export class Parser {
     return statement;
   }
 
-  private originChangeStatement(): Statement | null {
+  private originChangeStatement(): StatementType | null {
     const token = this.match("ORG");
     if (!token) return null;
 
@@ -124,7 +119,7 @@ export class Parser {
     );
   }
 
-  private endStatement(): Statement | null {
+  private endStatement(): StatementType | null {
     const token = this.match("END");
     if (!token) return null;
 
@@ -137,33 +132,7 @@ export class Parser {
     return new EndStatement(token.position);
   }
 
-  private constantStatement(): Statement | null {
-    const labelToken = this.match("IDENTIFIER");
-    const directiveToken = this.match(...CONSTANTS);
-
-    // Note: the code above will consume the label token if it exists, so it
-    // handles the case where there is a label but no directive and vice versa.
-
-    if (labelToken && !directiveToken) {
-      throw new CompilerError("parser.unexpected-identifier").at(labelToken);
-    }
-
-    if (!directiveToken) return null;
-
-    // Labels always uppercase
-    const label = labelToken?.lexeme.toUpperCase() || null;
-
-    if (!label) {
-      throw new CompilerError("parser.must-have-a-label").at(directiveToken);
-    }
-
-    const value = this.dataDirectiveValue();
-    this.endOfStatement();
-
-    return new ConstantStatement(directiveToken, value, label);
-  }
-
-  private dataDirectiveStatement(): Statement | null {
+  private dataDirectiveStatement(): StatementType | null {
     const labelToken = this.match("IDENTIFIER");
     const directiveToken = this.match(...DATA_DIRECTIVES);
 
@@ -185,7 +154,7 @@ export class Parser {
     while (this.match("COMMA")) values.push(this.dataDirectiveValue());
 
     this.endOfStatement();
-    return new DataDirectiveStatement(directiveToken, values, label);
+    return DataDirectiveStatement.create(directiveToken, values, label);
   }
 
   private dataDirectiveValue(): DataDirectiveValue {
@@ -202,7 +171,7 @@ export class Parser {
     return new NumberExpressionDirectiveValue(this.numberExpression());
   }
 
-  private instructionStatement(): Statement | null {
+  private instructionStatement(): StatementType | null {
     const labelToken = this.match("LABEL");
 
     while (this.match("EOL")) continue; // Skip empty lines between labels and instructions
@@ -224,7 +193,7 @@ export class Parser {
 
     // Check for zeroary instructions
     if (this.isAtEndOfStatement()) {
-      return new InstructionStatement(instructionToken, [], label);
+      return InstructionStatement.create(instructionToken, [], label);
     }
 
     const operands: Operand[] = [this.instructionOperand()];
@@ -232,21 +201,19 @@ export class Parser {
     while (this.match("COMMA")) operands.push(this.instructionOperand());
 
     this.endOfStatement();
-    return new InstructionStatement(instructionToken, operands, label);
+    return InstructionStatement.create(instructionToken, operands, label);
   }
 
   private instructionOperand(): Operand {
     // Could be a register
     if (this.match(...REGISTERS)) {
-      const registerToken = this.previous() as Token & { type: RegisterName };
+      const registerToken = this.previous() as Token & { type: Register };
       return new RegisterOperand(registerToken);
     }
 
     // Could start with BYTE PTR or WORD PTR
-    let size: ByteSize | "auto" = "auto";
-    if (this.match("BYTE", "WORD")) {
-      size = this.previous().type === "BYTE" ? 8 : 16;
-
+    const sizeToken = this.match("BYTE", "WORD");
+    if (sizeToken) {
       this.consume(
         "PTR",
         new CompilerError("parser.expected-literal-after-literal", "PTR", this.previous().type),
@@ -264,7 +231,10 @@ export class Parser {
           new CompilerError("parser.expected-literal-after-literal", "]", "BX"),
         );
 
-        return new IndirectAddressOperand(size, Position.merge(start.position, end.position));
+        return new IndirectAddressOperand(
+          sizeToken?.type,
+          Position.merge(sizeToken?.position, start.position, end.position),
+        );
       } else {
         const expression = this.numberExpression();
         const end = this.consume(
@@ -273,12 +243,12 @@ export class Parser {
         );
 
         return new DirectAddressOperand(
-          size,
           expression,
-          Position.merge(start.position, end.position),
+          sizeToken?.type,
+          Position.merge(sizeToken?.position, start.position, end.position),
         );
       }
-    } else if (size !== "auto") {
+    } else if (sizeToken) {
       // Found BYTE PTR or WORD PTR but no left bracket
       throw new CompilerError("parser.expected-literal-after-literal", "[", "PTR");
     }
@@ -371,27 +341,29 @@ export class Parser {
       return NumberExpression.numberLiteral(value, numberToken.position);
     }
 
-    if (this.match("OFFSET")) {
-      const offsetToken = this.previous();
-
-      const identifierToken = this.consume(
-        "IDENTIFIER",
-        new CompilerError("parser.expected-label-after-offset"),
-      );
-      return NumberExpression.label(
-        identifierToken.lexeme.toUpperCase(),
-        true,
-        Position.merge(offsetToken.position, identifierToken.position),
-      );
-    }
-
     if (this.match("LEFT_PAREN")) {
       const expression = this.numberExpression();
       this.consume("RIGHT_PAREN", new CompilerError("parser.unclosed-parenthesis"));
       return expression;
     }
 
-    throw new CompilerError("parser.expected-argument").at(this.peek());
+    const offsetToken = this.match("OFFSET");
+    const identifierToken = this.match("IDENTIFIER");
+
+    if (offsetToken && !identifierToken) {
+      throw new CompilerError("parser.expected-label-after-offset").at(this.peek());
+    }
+
+    if (!identifierToken) {
+      // Nothing above matched, so it must be an invalid expression
+      throw new CompilerError("parser.expected-argument").at(this.peek());
+    }
+
+    return NumberExpression.label(
+      identifierToken.lexeme.toUpperCase(),
+      offsetToken !== null,
+      Position.merge(offsetToken?.position, identifierToken.position),
+    );
   }
 
   private unaryNE(): NumberExpression {

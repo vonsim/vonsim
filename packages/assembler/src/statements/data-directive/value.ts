@@ -13,7 +13,7 @@ import type { Position } from "@/position";
  * This class is: IMMUTABLE
  */
 abstract class DataDirectiveValue {
-  abstract readonly type: "string" | "unassigned" | "numberExpression";
+  abstract readonly type: "string" | "unassigned" | "number-expression";
 
   constructor(readonly position: Position) {}
 
@@ -26,15 +26,29 @@ abstract class DataDirectiveValue {
   }
 
   isNumberExpression(): this is NumberExpressionDirectiveValue {
-    return this.type === "numberExpression";
+    return this.type === "number-expression";
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      position: this.position.toJSON(),
+    };
   }
 }
 
 export class StringDirectiveValue extends DataDirectiveValue {
   readonly type = "string";
 
-  constructor(readonly str: string, position: Position) {
+  constructor(readonly value: string, position: Position) {
     super(position);
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      value: this.value,
+    };
   }
 }
 
@@ -47,10 +61,17 @@ export class UnassignedDirectiveValue extends DataDirectiveValue {
 }
 
 export class NumberExpressionDirectiveValue extends DataDirectiveValue {
-  readonly type = "numberExpression";
+  readonly type = "number-expression";
 
   constructor(readonly value: NumberExpression) {
     super(value.position);
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      value: this.value.toJSON(),
+    };
   }
 }
 
