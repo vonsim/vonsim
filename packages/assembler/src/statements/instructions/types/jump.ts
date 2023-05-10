@@ -64,7 +64,11 @@ export class JumpInstruction extends InstructionStatement {
   toJSON() {
     return {
       ...super.toJSON(),
-      disp: this.#disp?.toJSON(),
+      ...(this.#disp
+        ? { disp: this.#disp }
+        : this.#jumpTo
+        ? { jumpTo: this.#jumpTo }
+        : { operands: this.operands.map(o => o.toJSON()) }),
     };
   }
 

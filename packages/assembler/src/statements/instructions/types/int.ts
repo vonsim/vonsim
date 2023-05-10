@@ -52,7 +52,11 @@ export class IntInstruction extends InstructionStatement {
   toJSON() {
     return {
       ...super.toJSON(),
-      int: this.#value?.toJSON(),
+      ...(this.#value
+        ? { value: this.#value.toJSON() }
+        : this.#initialValue
+        ? { initialValue: this.#initialValue.toJSON() }
+        : { operands: this.operands.map(o => o.toJSON()) }),
     };
   }
 

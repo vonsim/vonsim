@@ -70,6 +70,15 @@ export class Data extends DataDirectiveStatement {
     return this.#initialValues.length * (this.size / 8);
   }
 
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      values: (this.#values ?? this.#initialValues ?? this.values).map(v =>
+        v === unassigned ? "?" : v.toJSON(),
+      ),
+    };
+  }
+
   /**
    * Creates a data directive from a statement.
    */

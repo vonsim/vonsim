@@ -43,7 +43,9 @@ export class StackInstruction extends InstructionStatement {
   toJSON() {
     return {
       ...super.toJSON(),
-      register: this.#register,
+      ...(this.#register
+        ? { register: this.#register }
+        : { operands: this.operands.map(o => o.toJSON()) }),
     };
   }
 

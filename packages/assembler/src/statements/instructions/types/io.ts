@@ -69,7 +69,8 @@ export class IOInstruction extends InstructionStatement {
   toJSON() {
     return {
       ...super.toJSON(),
-      ...(this.#operation || {}),
+      ...(this.#operation ??
+        this.#initialOperation ?? { operands: this.operands.map(o => o.toJSON()) }),
     };
   }
 

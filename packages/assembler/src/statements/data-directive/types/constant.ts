@@ -42,6 +42,13 @@ export class Constant extends DataDirectiveStatement {
     super(values, label, position);
   }
 
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      value: this.#value ?? this.#initialValue?.toJSON() ?? this.values.map(v => v.toJSON()),
+    };
+  }
+
   validate(): void {
     if (this.#initialValue) throw new Error("Constant already validated");
 
