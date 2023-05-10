@@ -13,7 +13,7 @@ export function forEachWithErrors<T, E>(
     try {
       cb(array[i], i, array);
     } catch (error) {
-      errors.push(err(err, i, array));
+      errors.push(err(error, i, array));
     }
   }
 
