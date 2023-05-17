@@ -3,7 +3,7 @@ import { Byte, ByteSize } from "@vonsim/common/byte";
 import type { BaseLocale } from "@vonsim/common/i18n";
 import type { LiteralUnion } from "type-fest";
 
-import type { Token, TokenType } from "@/lexer/tokens";
+import type { Token, TokenType } from "../../lexer/tokens";
 
 const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS);
 const maxIOAddress = IOAddress.from(IOAddress.MAX_ADDRESS);

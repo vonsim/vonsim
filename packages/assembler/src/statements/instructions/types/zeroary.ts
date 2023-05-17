@@ -1,6 +1,5 @@
-import { CompilerError } from "@/error";
-import type { Position } from "@/position";
-
+import { CompilerError } from "../../../error";
+import type { Position } from "../../../position";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 

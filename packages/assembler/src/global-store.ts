@@ -1,8 +1,8 @@
 import { MemoryAddress } from "@vonsim/common/address";
 import { forEachWithErrors } from "@vonsim/common/loops";
 
-import { CompilerError } from "@/error";
-import type { Constant, Statement } from "@/statements";
+import { CompilerError } from "./error";
+import type { Constant, Statement } from "./statements";
 
 type LabelsMap = Map<
   string,

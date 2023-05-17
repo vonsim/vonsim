@@ -1,7 +1,6 @@
-import { CompilerError } from "@/error";
-import type { Position } from "@/position";
-import type { WordRegister } from "@/types";
-
+import { CompilerError } from "../../../error";
+import type { Position } from "../../../position";
+import type { WordRegister } from "../../../types";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 

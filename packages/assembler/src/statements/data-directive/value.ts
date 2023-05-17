@@ -1,5 +1,5 @@
-import type { NumberExpression } from "@/number-expression";
-import type { Position } from "@/position";
+import type { NumberExpression } from "../../number-expression";
+import type { Position } from "../../position";
 
 /**
  * An argument of a data directive.

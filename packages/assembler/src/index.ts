@@ -1,10 +1,10 @@
 import { forEachWithErrors } from "@vonsim/common/loops";
 
-import { CompilerError } from "@/error";
-import { GlobalStore } from "@/global-store";
-import { Scanner } from "@/lexer/scanner";
-import { Parser } from "@/parser";
-import type { Data, InstructionStatement } from "@/statements";
+import { CompilerError } from "./error";
+import { GlobalStore } from "./global-store";
+import { Scanner } from "./lexer/scanner";
+import { Parser } from "./parser";
+import type { Data, InstructionStatement } from "./statements";
 
 export type Program = {
   data: Data[];
@@ -84,3 +84,5 @@ export function compile(source: string): CompileResult {
     return { success: false, errors: [CompilerError.from(error)] };
   }
 }
+
+export type { Data, GlobalStore, InstructionStatement };

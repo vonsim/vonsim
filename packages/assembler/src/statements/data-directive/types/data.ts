@@ -2,12 +2,11 @@ import { charToDecimal } from "@vonsim/common/ascii";
 import { Byte, ByteSize } from "@vonsim/common/byte";
 import { forEachWithErrors } from "@vonsim/common/loops";
 
-import { CompilerError } from "@/error";
-import type { GlobalStore } from "@/global-store";
-import { NumberExpression } from "@/number-expression";
-import { Position } from "@/position";
-import type { DataDirective as AllDataDirectives } from "@/types";
-
+import { CompilerError } from "../../../error";
+import type { GlobalStore } from "../../../global-store";
+import { NumberExpression } from "../../../number-expression";
+import { Position } from "../../../position";
+import type { DataDirective as AllDataDirectives } from "../../../types";
 import { DataDirectiveStatement } from "../statement";
 import type { DataDirectiveValue } from "../value";
 

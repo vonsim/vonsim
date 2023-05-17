@@ -1,12 +1,11 @@
 import { MemoryAddress } from "@vonsim/common/address";
 import type { ByteSize } from "@vonsim/common/byte";
 
-import { CompilerError } from "@/error";
-import type { GlobalStore } from "@/global-store";
-import { NumberExpression } from "@/number-expression";
-import type { Position } from "@/position";
-import type { Register } from "@/types";
-
+import { CompilerError } from "../../../error";
+import type { GlobalStore } from "../../../global-store";
+import { NumberExpression } from "../../../number-expression";
+import type { Position } from "../../../position";
+import type { Register } from "../../../types";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 

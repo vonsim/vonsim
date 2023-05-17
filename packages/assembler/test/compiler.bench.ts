@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 
 import { bench, describe } from "vitest";
 
-import { compile } from "@/index";
+import { compile } from "../src";
 
 describe("Compiler benchmarks", async () => {
   const path = new URL("./fixtures/", import.meta.url);

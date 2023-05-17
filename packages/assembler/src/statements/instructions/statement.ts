@@ -1,9 +1,8 @@
 import type { MemoryAddress } from "@vonsim/common/address";
 
-import type { GlobalStore } from "@/global-store";
-import type { Position } from "@/position";
-import type { Instruction } from "@/types";
-
+import type { GlobalStore } from "../../global-store";
+import type { Position } from "../../position";
+import type { Instruction } from "../../types";
 import { Statement } from "../statement";
 import type { Operand } from "./operands";
 import type { BinaryInstruction } from "./types/binary";

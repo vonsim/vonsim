@@ -1,9 +1,8 @@
 import { Byte, ByteSize } from "@vonsim/common/byte";
 
-import { CompilerError } from "@/error";
-import type { GlobalStore } from "@/global-store";
-import type { Position } from "@/position";
-
+import { CompilerError } from "../../../error";
+import type { GlobalStore } from "../../../global-store";
+import type { Position } from "../../../position";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 

@@ -1,7 +1,7 @@
-import { CompilerError } from "@/error";
-import type { Token, TokenType } from "@/lexer/tokens";
-import { NumberExpression } from "@/number-expression";
-import { Position } from "@/position";
+import { CompilerError } from "./error";
+import type { Token, TokenType } from "./lexer/tokens";
+import { NumberExpression } from "./number-expression";
+import { Position } from "./position";
 import {
   createDataDirectiveStatement,
   createInstructionStatement,
@@ -19,8 +19,8 @@ import {
   Statement,
   StringDirectiveValue,
   UnassignedDirectiveValue,
-} from "@/statements";
-import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "@/types";
+} from "./statements";
+import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "./types";
 
 /**
  * The Parser

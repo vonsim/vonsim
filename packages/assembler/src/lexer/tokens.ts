@@ -1,5 +1,5 @@
-import type { Position } from "@/position";
-import type { Keyword } from "@/types";
+import type { Position } from "../position";
+import type { Keyword } from "../types";
 
 export type TokenType =
   // Single-character tokens.
