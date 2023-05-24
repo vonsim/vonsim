@@ -239,6 +239,31 @@ importers:
         specifier: ~5.0.4
         version: 5.0.4
 
+  packages/simulator:
+    dependencies:
+      '@vonsim/assembler':
+        specifier: workspace:^
+        version: link:../assembler
+      '@vonsim/common':
+        specifier: workspace:^
+        version: link:../common
+    devDependencies:
+      '@vonsim/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      eslint:
+        specifier: ^8.39.0
+        version: 8.39.0
+      eslint-config-vonsim:
+        specifier: workspace:^
+        version: link:../eslint-config-vonsim
+      type-fest:
+        specifier: ^3.9.0
+        version: 3.9.0
+      typescript:
+        specifier: ~5.0.4
+        version: 5.0.4
+
   packages/tsconfig:
     dependencies:
       '@total-typescript/ts-reset':

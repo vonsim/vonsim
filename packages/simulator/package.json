@@ -1,0 +1,14 @@
+{
+  "name": "@vonsim/simulator",
+  "dependencies": {
+    "@vonsim/assembler": "workspace:^",
+    "@vonsim/common": "workspace:^"
+  },
+  "devDependencies": {
+    "@vonsim/tsconfig": "workspace:^",
+    "eslint": "^8.39.0",
+    "eslint-config-vonsim": "workspace:^",
+    "type-fest": "^3.9.0",
+    "typescript": "~5.0.4"
+  }
+}
