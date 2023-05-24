@@ -36,6 +36,10 @@ export class Byte {
     this.#size = size;
   }
 
+  get size(): ByteSize {
+    return this.#size;
+  }
+
   /**
    * Unsigned integer.
    * @returns The byte interpreted as a unsigned integer.
@@ -69,6 +73,26 @@ export class Byte {
   get highByte(): Byte {
     if (this.#size === 8) return new Byte(0, 8);
     else return Byte.fromUnsigned((this.#value >> 8) & Byte.maxValue(8), 8);
+  }
+
+  /**
+   * Returns the same byte but with its low part replaced.
+   * @param byte The new low part.
+   * @returns A new byte.
+   */
+  withLowByte(byte: Byte): Byte {
+    if (byte.size !== 8) throw new TypeError("Byte must be 8 bits");
+    return Byte.fromUnsigned((this.#value & ~Byte.maxValue(8)) | byte.unsigned, this.#size);
+  }
+
+  /**
+   * Returns the same byte but with its high part replaced.
+   * @param byte The new high part.
+   * @returns A new byte.
+   */
+  withHighByte(byte: Byte): Byte {
+    if (byte.size !== 8) throw new TypeError("Byte must be 8 bits");
+    return Byte.fromUnsigned((this.#value & Byte.maxValue(8)) | (byte.unsigned << 8), this.#size);
   }
 
   /**
@@ -120,6 +144,14 @@ export class Byte {
    * Useful for serialization.
    */
   toJSON(): number {
+    return this.#value;
+  }
+
+  /**
+   * Returns the value of the byte.
+   * Useful when calling `Number(byte)`.
+   */
+  valueOf(): number {
     return this.#value;
   }
 
