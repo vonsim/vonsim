@@ -3,12 +3,12 @@ import { Byte } from "@vonsim/common/byte";
 
 import type { Messages } from "..";
 
-const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS);
-const maxIOAddress = IOAddress.from(IOAddress.MAX_ADDRESS);
+const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
+const maxIOAddress = IOAddress.from(IOAddress.MAX_ADDRESS).toString();
 
 export const spanish: Messages = {
   // prettier-ignore
-  "address-has-code": address => `La dirección de memoria ${address} tiene instrucciones. No se puede usar como dirección de datos.`,
+  "address-has-code": address => `La dirección de memoria ${MemoryAddress.format(address)} tiene instrucciones. No se puede usar como dirección de datos.`,
   // prettier-ignore
   "address-out-of-range": address => `La dirección de memoria ${address} está fuera de rango (dirección máxima de memoria: ${maxAddress}).`,
   "cannot-accept-strings": directive => `${directive} no puede aceptar cadenas de texto.`,
@@ -33,7 +33,7 @@ export const spanish: Messages = {
   "expects-two-operands": "Esta instrucción espera dos operandos.",
   "expects-word-register": "Esta instrucción espera un registro de 16 bits como su operando.",
   // prettier-ignore
-  "instruction-out-of-range": address => `Esta instrucción se colocaría en la dirección ${(address)}, la cual se encuentra fuera del rango de memoria (dirección máxima de memoria: ${(maxAddress)}).`,
+  "instruction-out-of-range": address => `Esta instrucción se colocaría en la dirección ${MemoryAddress.format(address)}, la cual se encuentra fuera del rango de memoria (dirección máxima de memoria: ${(maxAddress)}).`,
   "invalid-interrupt": interrupt => `${interrupt} no es un número de interrupción válido.`,
   // prettier-ignore
   "io-address-out-of-range": address => `La dirección de E/S ${address} está fuera de rango (dirección máxima de memoria E/S: ${maxIOAddress}).`,

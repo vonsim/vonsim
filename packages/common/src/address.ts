@@ -22,8 +22,29 @@ export class MemoryAddress {
   }
 
   /**
+   * Return the address as a byte.
+   */
+  get byte(): Byte {
+    return this.#address;
+  }
+
+  /**
+   * Return the low byte of the address (little endian).
+   */
+  get lowByte(): Byte {
+    return this.#address.lowByte;
+  }
+
+  /**
+   * Return the high byte of the address (little endian).
+   */
+  get highByte(): Byte {
+    return this.#address.highByte;
+  }
+
+  /**
    * Returns the byte as a string.
-   * @param [trailinhG=false] Whether to add a trailing 'h'.
+   * @param [trailinhG=true] Whether to add a trailing 'h'.
    */
   toString(trailingH = true): string {
     let result = this.#address.toString("hex");
@@ -39,20 +60,21 @@ export class MemoryAddress {
     return this.#address.toJSON();
   }
 
+  valueOf(): number {
+    return this.#address.valueOf();
+  }
+
   // #=========================================================================#
   // # Static methods                                                          #
   // #=========================================================================#
 
   /**
    * Returns whether the given address is in range.
-   * @param address Either a number, a Byte, or a MemoryAddress.
-   * @param [offset=0] An optional offset to add to the address.
+   * @param {MemoryAddressLike} address Either a number, a Byte, or a MemoryAddress.
    * @returns Whether the address is in range.
    */
-  static inRange(address: MemoryAddress | Byte | number, offset = 0): boolean {
-    if (address instanceof MemoryAddress) address = address.value;
-    if (address instanceof Byte) address = address.unsigned;
-    address += offset;
+  static inRange(address: MemoryAddressLike): boolean {
+    address = Number(address);
 
     return (
       Number.isSafeInteger(address) &&
@@ -63,14 +85,11 @@ export class MemoryAddress {
 
   /**
    * Creates a new MemoryAddress.
-   * @param address Either a number, a Byte, or a MemoryAddress.
-   * @param [offset=0] An optional offset to add to the address.
+   * @param {MemoryAddressLike} address Either a number, a Byte, or a MemoryAddress.
    * @returns A new MemoryAddress.
    */
-  static from(address: MemoryAddress | Byte | number, offset = 0): MemoryAddress {
-    if (address instanceof MemoryAddress) address = address.value;
-    if (address instanceof Byte) address = address.unsigned;
-    address += offset;
+  static from(address: MemoryAddressLike): MemoryAddress {
+    address = Number(address);
 
     if (!MemoryAddress.inRange(address)) {
       throw new RangeError(`Address ${address} is out of range.`);
@@ -79,7 +98,28 @@ export class MemoryAddress {
     const byte = Byte.fromUnsigned(address, 16);
     return new MemoryAddress(byte);
   }
+
+  /**
+   * Formats the given address as a string (even if it's out of range)
+   * @param address Either a number, a Byte, or a MemoryAddress.
+   * @param [trailingH=true] Whether to add a trailing 'h'.
+   * @returns A new MemoryAddress.
+   */
+  static format(address: MemoryAddressLike, trailingH = true): string {
+    address = Number(address);
+
+    if (!Number.isSafeInteger(address) || address < 0) {
+      return "????";
+    }
+
+    let result = address.toString(16).padStart(4, "0").toUpperCase();
+    if (trailingH) result += "h";
+
+    return result;
+  }
 }
+
+export type MemoryAddressLike = MemoryAddress | Byte | number;
 
 /**
  * Input/Output address.
@@ -104,7 +144,7 @@ export class IOAddress {
 
   /**
    * Returns the byte as a string.
-   * @param [trailinhG=false] Whether to add a trailing 'h'.
+   * @param [trailinhG=true] Whether to add a trailing 'h'.
    */
   toString(trailingH = true): string {
     let result = this.#address.toString("hex");
@@ -126,14 +166,11 @@ export class IOAddress {
 
   /**
    * Returns whether the given address is in range.
-   * @param address Either a number, a Byte, or a IOAddress.
-   * @param [offset=0] An optional offset to add to the address.
+   * @param {IOAddressLike} address Either a number, a Byte, or a IOAddress.
    * @returns Whether the address is in range.
    */
-  static inRange(address: IOAddress | Byte | number, offset = 0): boolean {
-    if (address instanceof IOAddress) address = address.value;
-    if (address instanceof Byte) address = address.unsigned;
-    address += offset;
+  static inRange(address: IOAddressLike): boolean {
+    address = Number(address);
 
     return (
       Number.isSafeInteger(address) &&
@@ -144,16 +181,13 @@ export class IOAddress {
 
   /**
    * Creates a new IOAddress.
-   * @param address Either a number, a Byte, or a IOAddress.
-   * @param [offset=0] An optional offset to add to the address.
+   * @param {IOAddressLike} address Either a number, a Byte, or a IOAddress.
    * @returns A new IOAddress.
    */
-  static from(address: MemoryAddress | Byte | number, offset = 0): IOAddress {
-    if (address instanceof MemoryAddress) address = address.value;
-    if (address instanceof Byte) address = address.unsigned;
-    address += offset;
+  static from(address: IOAddressLike): IOAddress {
+    address = Number(address);
 
-    if (!MemoryAddress.inRange(address)) {
+    if (!IOAddress.inRange(address)) {
       throw new RangeError(`Address ${address} is out of range.`);
     }
 
@@ -161,3 +195,5 @@ export class IOAddress {
     return new IOAddress(byte);
   }
 }
+
+export type IOAddressLike = IOAddress | Byte | number;

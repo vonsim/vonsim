@@ -1,18 +1,18 @@
-import { IOAddress, MemoryAddress } from "@vonsim/common/address";
+import { IOAddress, MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
 import { Byte, ByteSize } from "@vonsim/common/byte";
 import type { BaseLocale } from "@vonsim/common/i18n";
 import type { LiteralUnion } from "type-fest";
 
 import type { Token, TokenType } from "../../lexer/tokens";
 
-const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS);
-const maxIOAddress = IOAddress.from(IOAddress.MAX_ADDRESS);
+const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
+const maxIOAddress = IOAddress.from(IOAddress.MAX_ADDRESS).toString();
 
 export const english = {
   // prettier-ignore
   "address-has-code": (address: MemoryAddress) => `Memory address ${address} has instructions. It cannot be used as a data address.`,
   // prettier-ignore
-  "address-out-of-range": (address: number) => `Memory address ${address} is out of range (max memory address: ${maxAddress}).`,
+  "address-out-of-range": (address: MemoryAddressLike) => `Memory address ${MemoryAddress.format(address)} is out of range (max memory address: ${maxAddress}).`,
   "cannot-accept-strings": (directive: string) => `${directive} can't accept strings.`,
   "cannot-be-indirect": "This operand can't be an indirect memory address.",
   "cannot-be-unassinged": (directive: string) => `${directive} can't be unassigned.`,
@@ -35,7 +35,7 @@ export const english = {
   "expects-two-operands": "This instruction expects two operands.",
   "expects-word-register": "This instruction expects a 16-bits register as its operand.",
   // prettier-ignore
-  "instruction-out-of-range": (address: number) => `This instruction would be placed in address ${address}, which is outside the memory range (max memory address: ${maxAddress}).`,
+  "instruction-out-of-range": (address: MemoryAddressLike) => `This instruction would be placed in address ${MemoryAddress.format(address)}, which is outside the memory range (max memory address: ${maxAddress}).`,
   "invalid-interrupt": (interrupt: number) => `Invalid interrupt number ${interrupt}.`,
   // prettier-ignore
   "io-address-out-of-range": (address: number) => `I/O address ${address} is out of range (max I/O address: ${maxIOAddress}).`,
