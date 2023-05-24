@@ -86,3 +86,4 @@ export function compile(source: string): CompileResult {
 }
 
 export type { Data, GlobalStore, InstructionStatement };
+export * from "./types";
