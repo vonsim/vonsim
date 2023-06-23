@@ -47,8 +47,7 @@ export class JumpInstruction extends InstructionStatement {
    * @see /docs/especificaciones/codificacion.md
    */
   get length(): number {
-    if (this.instruction === "CALL" || this.instruction === "JMP") return 3;
-    else return 2;
+    return 3;
   }
 
   /**

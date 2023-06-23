@@ -59,20 +59,13 @@ export class UnaryInstruction extends InstructionStatement {
     if (!this.#initialOperation) throw new Error("Instruction not validated");
     const { mode } = this.#initialOperation;
 
-    switch (mode) {
-      case "reg": {
-        if (this.instruction === "NEG" || this.instruction === "NOT") return 2;
-        else return 1;
-      }
-
-      case "mem-direct": {
-        return 4;
-      }
-
-      case "mem-indirect": {
-        return 2;
-      }
+    // opcode + mode
+    let length = 2;
+    if (mode === "mem-direct") {
+      length += 2; // 2-byte address
     }
+
+    return length;
   }
 
   get operation(): Operation {

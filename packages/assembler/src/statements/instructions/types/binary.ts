@@ -72,33 +72,18 @@ export class BinaryInstruction extends InstructionStatement {
    */
   get length(): number {
     if (!this.#initialOperation) throw new Error("Instruction not validated");
-    const { mode, out, src } = this.#initialOperation;
+    const { mode, size } = this.#initialOperation;
 
-    switch (mode) {
-      case "reg<-reg": {
-        return 2;
-      }
-
-      case "reg<-mem": {
-        if (src.mode === "direct") return 4;
-        else return 2;
-      }
-
-      case "reg<-imd": {
-        if (this.instruction === "MOV") return 3;
-        else return 4;
-      }
-
-      case "mem<-reg": {
-        if (out.mode === "direct") return 4;
-        else return 2;
-      }
-
-      case "mem<-imd": {
-        if (out.mode === "direct") return 6;
-        else return 4;
-      }
+    // opcode + mode
+    let length = 2;
+    if (mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd") {
+      length += 2; // 2-byte address
     }
+    if (mode === "reg<-imd" || mode === "mem<-imd") {
+      length += size / 8; // imd size
+    }
+
+    return length;
   }
 
   get operation(): Operation {
