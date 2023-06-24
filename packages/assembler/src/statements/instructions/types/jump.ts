@@ -1,4 +1,4 @@
-import { Byte, ByteSize } from "@vonsim/common/byte";
+import { MemoryAddress } from "@vonsim/common/address";
 
 import { CompilerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
@@ -31,7 +31,7 @@ type JumpInstructionName =
  */
 export class JumpInstruction extends InstructionStatement {
   #jumpTo: string | null = null;
-  #disp: Byte | null = null;
+  #address: MemoryAddress | null = null;
 
   constructor(
     readonly instruction: JumpInstructionName,
@@ -51,19 +51,19 @@ export class JumpInstruction extends InstructionStatement {
   }
 
   /**
-   * Returns jump displacement (8 or 16 bits).
+   * Returns jump destination.
    */
-  get disp(): Byte {
-    if (this.#disp === null) throw new Error("Instruction not evaluated");
+  get address(): MemoryAddress {
+    if (this.#address === null) throw new Error("Instruction not evaluated");
 
-    return this.#disp;
+    return this.#address;
   }
 
   toJSON() {
     return {
       ...super.toJSON(),
-      ...(this.#disp
-        ? { disp: this.#disp }
+      ...(this.#address
+        ? { address: this.#address.toJSON() }
         : this.#jumpTo
         ? { jumpTo: this.#jumpTo }
         : { operands: this.operands.map(o => o.toJSON()) }),
@@ -97,17 +97,13 @@ export class JumpInstruction extends InstructionStatement {
 
   evaluateExpressions(store: GlobalStore) {
     if (!this.#jumpTo) throw new Error("Instruction not validated");
-    if (this.#disp) throw new Error("Instruction aready evaluated");
+    if (this.#address) throw new Error("Instruction aready evaluated");
 
-    const address = store.getLabelValue(this.#jumpTo)!;
-    const disp = address - (this.start.value + this.length);
-
-    const dispSize: ByteSize = this.instruction === "CALL" || this.instruction === "JMP" ? 16 : 8;
-
-    if (!Byte.fitsSigned(disp, dispSize)) {
-      throw new CompilerError("jump-too-far", disp, dispSize).at(this);
+    const addr = store.getLabelValue(this.#jumpTo)!;
+    if (!MemoryAddress.inRange(addr)) {
+      throw new CompilerError("address-out-of-range", addr).at(this);
     }
 
-    this.#disp = Byte.fromSigned(disp, dispSize);
+    this.#address = MemoryAddress.from(addr);
   }
 }

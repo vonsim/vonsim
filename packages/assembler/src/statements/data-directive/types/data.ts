@@ -1,5 +1,5 @@
 import { charToDecimal } from "@vonsim/common/ascii";
-import { Byte, ByteSize } from "@vonsim/common/byte";
+import { AnyByte, Byte, ByteSize } from "@vonsim/common/byte";
 import { forEachWithErrors } from "@vonsim/common/loops";
 
 import { CompilerError } from "../../../error";
@@ -48,7 +48,7 @@ type DataDirective = Exclude<AllDataDirectives, "EQU">;
 export class Data extends DataDirectiveStatement {
   readonly size: ByteSize;
   #initialValues: (NumberExpression | Unassigned)[] | null = null;
-  #values: (Byte | Unassigned)[] | null = null;
+  #values: (AnyByte | Unassigned)[] | null = null;
 
   constructor(
     readonly directive: DataDirective,
@@ -132,7 +132,7 @@ export class Data extends DataDirectiveStatement {
           if (!Byte.fits(evaluated, this.size)) {
             throw new CompilerError("value-out-of-range", evaluated, this.size).at(this);
           }
-          const byte = Byte.fromNumber(evaluated, this.size);
+          const byte = Byte.fromNumber(evaluated, this.size) as AnyByte;
           this.#values!.push(byte);
         }
       },

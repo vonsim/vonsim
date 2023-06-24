@@ -1,4 +1,4 @@
-import { Byte } from "./byte";
+import { AnyByte, Byte } from "./byte";
 
 /**
  * Memory address.
@@ -11,9 +11,9 @@ export class MemoryAddress {
   static readonly MIN_ADDRESS = 0x0000;
   static readonly MAX_ADDRESS = 0x7fff;
 
-  #address: Byte;
+  #address: Byte<16>;
 
-  private constructor(address: Byte) {
+  private constructor(address: Byte<16>) {
     this.#address = address;
   }
 
@@ -24,22 +24,8 @@ export class MemoryAddress {
   /**
    * Return the address as a byte.
    */
-  get byte(): Byte {
+  get byte(): Byte<16> {
     return this.#address;
-  }
-
-  /**
-   * Return the low byte of the address (little endian).
-   */
-  get lowByte(): Byte {
-    return this.#address.lowByte;
-  }
-
-  /**
-   * Return the high byte of the address (little endian).
-   */
-  get highByte(): Byte {
-    return this.#address.highByte;
   }
 
   /**
@@ -119,7 +105,7 @@ export class MemoryAddress {
   }
 }
 
-export type MemoryAddressLike = MemoryAddress | Byte | number;
+export type MemoryAddressLike = MemoryAddress | AnyByte | number;
 
 /**
  * Input/Output address.
@@ -132,9 +118,9 @@ export class IOAddress {
   static readonly MIN_ADDRESS = 0x00;
   static readonly MAX_ADDRESS = 0x7f;
 
-  #address: Byte;
+  #address: Byte<8>;
 
-  private constructor(address: Byte) {
+  private constructor(address: Byte<8>) {
     this.#address = address;
   }
 
@@ -196,4 +182,4 @@ export class IOAddress {
   }
 }
 
-export type IOAddressLike = IOAddress | Byte | number;
+export type IOAddressLike = IOAddress | AnyByte | number;

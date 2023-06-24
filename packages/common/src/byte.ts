@@ -2,6 +2,7 @@ import { charToDecimal, decimalToChar } from "./ascii";
 
 export type ByteSize = 8 | 16;
 export type ByteRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
+export type AnyByte = Byte<8> | Byte<16>;
 
 /**
  * General purpose byte.
@@ -10,7 +11,7 @@ export type ByteRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
  * ---
  * This class is: IMMUTABLE
  */
-export class Byte {
+export class Byte<TSize extends ByteSize> {
   /**
    * The unsigned value of the byte.
    */
@@ -19,7 +20,7 @@ export class Byte {
   /**
    * The size of the byte.
    */
-  #size: ByteSize;
+  #size: TSize;
 
   /**
    * Wraps a number into a byte.
@@ -30,14 +31,22 @@ export class Byte {
    * @param input An integer between `Byte.minSignedValue(size)` and `Byte.maxValue(size)`.
    * @param size The size of the byte.
    */
-  private constructor(input: number, size: ByteSize) {
+  private constructor(input: number, size: TSize) {
     // This ensures that the value is stored as an integer.
     this.#value = input | 0;
     this.#size = size;
   }
 
-  get size(): ByteSize {
+  get size(): TSize {
     return this.#size;
+  }
+
+  is8bits(): this is Byte<8> {
+    return this.#size === 8;
+  }
+
+  is16bits(): this is Byte<16> {
+    return this.#size === 16;
   }
 
   /**
@@ -61,8 +70,8 @@ export class Byte {
    * Return the low byte of the word (little endian).
    * If the byte is already 8 bits, it returns itself.
    */
-  get lowByte(): Byte {
-    if (this.#size === 8) return this;
+  get lowByte(): Byte<8> {
+    if (this.is8bits()) return this;
     else return Byte.fromUnsigned(this.#value & Byte.maxValue(8), 8);
   }
 
@@ -70,8 +79,8 @@ export class Byte {
    * Return the high byte of the word (little endian).
    * If the byte is already 8 bits, it returns 0.
    */
-  get highByte(): Byte {
-    if (this.#size === 8) return new Byte(0, 8);
+  get highByte(): Byte<8> {
+    if (this.is8bits()) return new Byte(0, 8);
     else return Byte.fromUnsigned((this.#value >> 8) & Byte.maxValue(8), 8);
   }
 
@@ -80,8 +89,8 @@ export class Byte {
    * @param byte The new low part.
    * @returns A new byte.
    */
-  withLowByte(byte: Byte): Byte {
-    if (byte.size !== 8) throw new TypeError("Byte must be 8 bits");
+  withLowByte(byte: Byte<8>): Byte<TSize> {
+    if (byte.is16bits()) throw new TypeError("Byte must be 8 bits");
     return Byte.fromUnsigned((this.#value & ~Byte.maxValue(8)) | byte.unsigned, this.#size);
   }
 
@@ -90,9 +99,9 @@ export class Byte {
    * @param byte The new high part.
    * @returns A new byte.
    */
-  withHighByte(byte: Byte): Byte {
-    if (byte.size !== 8) throw new TypeError("Byte must be 8 bits");
-    return Byte.fromUnsigned((this.#value & Byte.maxValue(8)) | (byte.unsigned << 8), this.#size);
+  withHighByte(byte: Byte<8>): Byte<16> {
+    if (byte.is16bits()) throw new TypeError("Byte must be 8 bits");
+    return Byte.fromUnsigned((this.#value & Byte.maxValue(8)) | (byte.unsigned << 8), 16);
   }
 
   /**
@@ -219,7 +228,7 @@ export class Byte {
    * @returns A byte with the given value (unsigned binary)
    * @throws If the number does not fit in a byte.
    */
-  static fromUnsigned(value: number, size: ByteSize): Byte {
+  static fromUnsigned<TSize extends ByteSize>(value: number, size: TSize): Byte<TSize> {
     if (!Byte.fitsUnsigned(value, size)) {
       throw new RangeError(`Value ${value} does not fit in a ${size}-bit byte.`);
     }
@@ -233,7 +242,7 @@ export class Byte {
    * @returns A byte with the given value (2's complement)
    * @throws If the number does not fit in a byte.
    */
-  static fromSigned(value: number, size: ByteSize): Byte {
+  static fromSigned<TSize extends ByteSize>(value: number, size: TSize): Byte<TSize> {
     if (!Byte.fitsSigned(value, size)) {
       throw new RangeError(`Value ${value} does not fit in a ${size}-bit byte.`);
     }
@@ -249,7 +258,7 @@ export class Byte {
    * @returns A byte with the given value.
    * @throws If the number does not fit in a byte.
    */
-  static fromNumber(number: number, size: ByteSize): Byte {
+  static fromNumber<TSize extends ByteSize>(number: number, size: TSize): Byte<TSize> {
     if (number < 0) return Byte.fromSigned(number, size);
     else return Byte.fromUnsigned(number, size);
   }
@@ -260,7 +269,7 @@ export class Byte {
    * @returns The byte corresponding to the character.
    * @throws If the character is not in the ASCII table.
    */
-  static fromChar(char: string): Byte {
+  static fromChar(char: string): Byte<8> {
     const code = charToDecimal(char) ?? -1;
     return Byte.fromUnsigned(code, 8);
   }
@@ -269,7 +278,7 @@ export class Byte {
    * @param size The size of the byte.
    * @returns A random byte.
    */
-  static random(size: ByteSize): Byte {
+  static random<TSize extends ByteSize>(size: TSize): Byte<TSize> {
     const value = Math.round(Math.random() * Byte.maxValue(size));
     return new Byte(value, size);
   }

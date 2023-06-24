@@ -1,5 +1,4 @@
 import { IOAddress, MemoryAddress } from "@vonsim/common/address";
-import { Byte } from "@vonsim/common/byte";
 
 import type { Messages } from "..";
 
@@ -37,8 +36,6 @@ export const spanish: Messages = {
   "invalid-interrupt": interrupt => `${interrupt} no es un número de interrupción válido.`,
   // prettier-ignore
   "io-address-out-of-range": address => `La dirección de E/S ${address} está fuera de rango (dirección máxima de memoria E/S: ${maxIOAddress}).`,
-  // prettier-ignore
-  "jump-too-far": (disp, dispSize) => `Este salto es demasiado lejano (${disp} bytes). El desplazamiento máximo para esta instrucción es de ${Byte.maxSignedValue(dispSize)} bytes.`,
   "label-not-found": label => `La etiqueta "${label}" no ha sido definida.`,
   // prettier-ignore
   "label-should-be-a-number": label => `La etiqueta ${label} debería apuntar a una constante EQU o a una instrucción. Quizás quiso escribir OFFSET ${label}.`,

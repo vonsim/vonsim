@@ -5,19 +5,20 @@ import { CompilerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { Position } from "../../../position";
-import type { Register } from "../../../types";
+import type { ByteRegister, Register, WordRegister } from "../../../types";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
 type UnaryInstructionName = "NEG" | "INC" | "DEC" | "NOT";
 
 type InitialOperation =
-  | { mode: "reg"; out: Register }
+  | { mode: "reg"; size: ByteSize; out: Register }
   | { mode: "mem-direct"; size: ByteSize; address: NumberExpression }
   | { mode: "mem-indirect"; size: ByteSize };
 
 type Operation =
-  | { mode: "reg"; out: Register }
+  | { mode: "reg"; size: 8; out: ByteRegister }
+  | { mode: "reg"; size: 16; out: WordRegister }
   | { mode: "mem-direct"; size: ByteSize; address: MemoryAddress }
   | { mode: "mem-indirect"; size: ByteSize };
 
@@ -92,7 +93,7 @@ export class UnaryInstruction extends InstructionStatement {
     const out = this.operands[0];
 
     if (out.isRegister()) {
-      this.#initialOperation = { mode: "reg", out: out.value };
+      this.#initialOperation = { mode: "reg", size: out.size, out: out.value };
       return;
     }
 
@@ -145,7 +146,7 @@ export class UnaryInstruction extends InstructionStatement {
 
     switch (op.mode) {
       case "reg": {
-        this.#operation = { mode: "reg", out: op.out };
+        this.#operation = { mode: "reg", size: op.size, out: op.out } as Operation;
         return;
       }
 

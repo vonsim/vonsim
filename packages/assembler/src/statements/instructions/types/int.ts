@@ -20,7 +20,7 @@ type IntInstructionName = "INT";
  */
 export class IntInstruction extends InstructionStatement {
   #initialValue: NumberExpression | null = null;
-  #value: Byte | null = null;
+  #value: Byte<8> | null = null;
 
   constructor(
     readonly instruction: IntInstructionName,
@@ -42,7 +42,7 @@ export class IntInstruction extends InstructionStatement {
   /**
    * Returns the interrput number (8 bits).
    */
-  get value(): Byte {
+  get value(): Byte<8> {
     if (!this.#value) throw new Error("Instruction not evaluated");
 
     return this.#value;

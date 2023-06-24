@@ -1,11 +1,11 @@
 import { MemoryAddress } from "@vonsim/common/address";
-import { Byte, ByteSize } from "@vonsim/common/byte";
+import { AnyByte, Byte, ByteSize } from "@vonsim/common/byte";
 
 import { CompilerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { Position } from "../../../position";
-import type { Register } from "../../../types";
+import type { ByteRegister, Register, WordRegister } from "../../../types";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
@@ -23,11 +23,16 @@ type InitialOperation =
 type MemoryAccess = { mode: "direct"; address: MemoryAddress } | { mode: "indirect" };
 
 type Operation =
-  | { mode: "reg<-reg"; size: ByteSize; out: Register; src: Register }
-  | { mode: "reg<-mem"; size: ByteSize; out: Register; src: MemoryAccess }
-  | { mode: "reg<-imd"; size: ByteSize; out: Register; src: Byte }
-  | { mode: "mem<-reg"; size: ByteSize; out: MemoryAccess; src: Register }
-  | { mode: "mem<-imd"; size: ByteSize; out: MemoryAccess; src: Byte };
+  | { mode: "reg<-reg"; size: 8; out: ByteRegister; src: ByteRegister }
+  | { mode: "reg<-reg"; size: 16; out: WordRegister; src: WordRegister }
+  | { mode: "reg<-mem"; size: 8; out: ByteRegister; src: MemoryAccess }
+  | { mode: "reg<-mem"; size: 16; out: WordRegister; src: MemoryAccess }
+  | { mode: "reg<-imd"; size: 8; out: ByteRegister; src: Byte<8> }
+  | { mode: "reg<-imd"; size: 16; out: WordRegister; src: Byte<16> }
+  | { mode: "mem<-reg"; size: 8; out: MemoryAccess; src: ByteRegister }
+  | { mode: "mem<-reg"; size: 16; out: MemoryAccess; src: WordRegister }
+  | { mode: "mem<-imd"; size: 8; out: MemoryAccess; src: Byte<8> }
+  | { mode: "mem<-imd"; size: 16; out: MemoryAccess; src: Byte<16> };
 
 /**
  * BinaryInstruction:
@@ -287,7 +292,7 @@ export class BinaryInstruction extends InstructionStatement {
 
     switch (mode) {
       case "reg<-reg": {
-        this.#operation = { mode, size, out, src };
+        this.#operation = { mode, size, out, src } as Operation;
         return;
       }
 
@@ -300,7 +305,7 @@ export class BinaryInstruction extends InstructionStatement {
             src.mode === "direct"
               ? { mode: "direct", address: evaluateAddress(src.address) }
               : { mode: "indirect" },
-        };
+        } as Operation;
         return;
       }
 
@@ -309,8 +314,8 @@ export class BinaryInstruction extends InstructionStatement {
         if (!Byte.fits(computed, size)) {
           throw new CompilerError("value-out-of-range", computed, size).at(src);
         }
-        const byte = Byte.fromNumber(computed, size);
-        this.#operation = { mode, size, out, src: byte };
+        const byte = Byte.fromNumber(computed, size) as AnyByte;
+        this.#operation = { mode, size, out, src: byte } as Operation;
         return;
       }
 
@@ -323,7 +328,7 @@ export class BinaryInstruction extends InstructionStatement {
               ? { mode: "direct", address: evaluateAddress(out.address) }
               : { mode: "indirect" },
           src,
-        };
+        } as Operation;
         return;
       }
 
@@ -332,7 +337,7 @@ export class BinaryInstruction extends InstructionStatement {
         if (!Byte.fits(computed, size)) {
           throw new CompilerError("value-out-of-range", computed, size).at(src);
         }
-        const byte = Byte.fromNumber(computed, size);
+        const byte = Byte.fromNumber(computed, size) as AnyByte;
 
         this.#operation = {
           mode,
@@ -342,7 +347,7 @@ export class BinaryInstruction extends InstructionStatement {
               ? { mode: "direct", address: evaluateAddress(out.address) }
               : { mode: "indirect" },
           src: byte,
-        };
+        } as Operation;
         return;
       }
 

@@ -1,5 +1,5 @@
 import { IOAddress, MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
-import { Byte, ByteSize } from "@vonsim/common/byte";
+import type { ByteSize } from "@vonsim/common/byte";
 import type { BaseLocale } from "@vonsim/common/i18n";
 import type { LiteralUnion } from "type-fest";
 
@@ -39,8 +39,6 @@ export const english = {
   "invalid-interrupt": (interrupt: number) => `Invalid interrupt number ${interrupt}.`,
   // prettier-ignore
   "io-address-out-of-range": (address: number) => `I/O address ${address} is out of range (max I/O address: ${maxIOAddress}).`,
-  // prettier-ignore
-  "jump-too-far": (disp: number, dispSize: ByteSize) => `This jump is too far (${disp} bytes). The maximum displacement for this instruction is ${Byte.maxSignedValue(dispSize)} bytes.`,
   "label-not-found": (label: string) => `Label "${label}" has not been defined.`,
   // prettier-ignore
   "label-should-be-a-number": (label: string) => `Label ${label} should point to a EQU declaration or to a instruction. Maybe you ment to write OFFSET ${label}.`,
