@@ -123,10 +123,10 @@ export class GlobalStore {
         const length = statement.length;
 
         for (let i = 0; i < length; i++) {
-          if (!MemoryAddress.inRange(pointer)) {
-            throw new CompilerError("instruction-out-of-range", pointer).at(statement);
+          if (!MemoryAddress.inRange(pointer + i)) {
+            throw new CompilerError("instruction-out-of-range", pointer + i).at(statement);
           }
-          const address = MemoryAddress.from(pointer);
+          const address = MemoryAddress.from(pointer + i);
 
           if (occupiedMemory.has(address.value)) {
             throw new CompilerError("occupied-address", address).at(statement);
@@ -134,8 +134,6 @@ export class GlobalStore {
 
           occupiedMemory.add(address.value);
           if (statement.isInstruction()) this.codeMemory.add(address.value);
-
-          pointer++;
         }
 
         const startAddress = MemoryAddress.from(pointer);
@@ -146,6 +144,7 @@ export class GlobalStore {
             address: startAddress,
           });
         }
+        pointer += length;
       },
       CompilerError.from,
     );
