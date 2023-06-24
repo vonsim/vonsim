@@ -97,6 +97,7 @@ export abstract class InstructionStatement extends Statement {
   toJSON() {
     return {
       ...super.toJSON(),
+      ...(this.#start ? { start: this.#start.toJSON() } : {}),
       instruction: this.instruction,
       label: this.label,
     };

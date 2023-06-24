@@ -74,6 +74,7 @@ export abstract class DataDirectiveStatement extends Statement {
   toJSON() {
     return {
       ...super.toJSON(),
+      ...(this.#start ? { start: this.#start.toJSON() } : {}),
       directive: this.directive,
       label: this.label,
     };
