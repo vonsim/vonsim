@@ -70,7 +70,7 @@ export class Byte<TSize extends ByteSize> {
    * Return the low byte of the word (little endian).
    * If the byte is already 8 bits, it returns itself.
    */
-  get lowByte(): Byte<8> {
+  get low(): Byte<8> {
     if (this.is8bits()) return this;
     else return Byte.fromUnsigned(this.#value & Byte.maxValue(8), 8);
   }
@@ -79,7 +79,7 @@ export class Byte<TSize extends ByteSize> {
    * Return the high byte of the word (little endian).
    * If the byte is already 8 bits, it returns 0.
    */
-  get highByte(): Byte<8> {
+  get high(): Byte<8> {
     if (this.is8bits()) return new Byte(0, 8);
     else return Byte.fromUnsigned((this.#value >> 8) & Byte.maxValue(8), 8);
   }
@@ -89,7 +89,7 @@ export class Byte<TSize extends ByteSize> {
    * @param byte The new low part.
    * @returns A new byte.
    */
-  withLowByte(byte: Byte<8>): Byte<TSize> {
+  withLow(byte: Byte<8>): Byte<TSize> {
     if (byte.is16bits()) throw new TypeError("Byte must be 8 bits");
     return Byte.fromUnsigned((this.#value & ~Byte.maxValue(8)) | byte.unsigned, this.#size);
   }
@@ -99,7 +99,7 @@ export class Byte<TSize extends ByteSize> {
    * @param byte The new high part.
    * @returns A new byte.
    */
-  withHighByte(byte: Byte<8>): Byte<16> {
+  withHigh(byte: Byte<8>): Byte<16> {
     if (byte.is16bits()) throw new TypeError("Byte must be 8 bits");
     return Byte.fromUnsigned((this.#value & Byte.maxValue(8)) | (byte.unsigned << 8), 16);
   }
@@ -114,6 +114,18 @@ export class Byte<TSize extends ByteSize> {
     }
 
     return (this.#value & (1 << index)) !== 0;
+  }
+
+  /**
+   * Returns the byte as a Uint8Array.
+   */
+  toUint8Array(): Uint8Array {
+    if (this.is8bits()) {
+      return new Uint8Array([this.unsigned]);
+    } else {
+      // Little endian
+      return new Uint8Array([this.low.unsigned, this.high.unsigned]);
+    }
   }
 
   /**
@@ -143,7 +155,7 @@ export class Byte<TSize extends ByteSize> {
 
       case "ascii": {
         if (this.#size === 8) return decimalToChar(this.#value) ?? "---";
-        else return this.lowByte.toString("ascii") + this.highByte.toString("ascii");
+        else return this.low.toString("ascii") + this.high.toString("ascii");
       }
     }
   }
@@ -281,5 +293,13 @@ export class Byte<TSize extends ByteSize> {
   static random<TSize extends ByteSize>(size: TSize): Byte<TSize> {
     const value = Math.round(Math.random() * Byte.maxValue(size));
     return new Byte(value, size);
+  }
+
+  /**
+   * @param size The size of the byte.
+   * @returns A zero byte.
+   */
+  static zero<TSize extends ByteSize>(size: TSize): Byte<TSize> {
+    return new Byte(0, size);
   }
 }
