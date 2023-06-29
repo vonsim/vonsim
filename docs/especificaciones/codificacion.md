@@ -161,7 +161,7 @@ Luego del opcode, estas instrucciones (salvo `RET`) reciben una dirección absol
 |    `CLI`    | `0001 1000` |
 |    `STI`    | `0001 1001` |
 |    `INT`    | `0001 1010` |
-|   `IRET`    | `0001 1010` |
+|   `IRET`    | `0001 1011` |
 
 Luego del opcode, `INT` recibe el número de instrucción (ocupa un byte).
 

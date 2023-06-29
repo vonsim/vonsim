@@ -9,7 +9,6 @@ import type { Data, InstructionStatement } from "./statements";
 export type Program = {
   data: Data[];
   instructions: InstructionStatement[];
-  store: GlobalStore;
 };
 
 export type CompileResultSuccess = { success: true } & Program;
@@ -79,12 +78,12 @@ export function compile(source: string): CompileResult {
     );
     if (errors.length > 0) return { success: false, errors };
 
-    return { success: true, data, instructions, store };
+    return { success: true, data, instructions };
   } catch (error) {
     return { success: false, errors: [CompilerError.from(error)] };
   }
 }
 
-export type { GlobalStore };
 export type * from "./statements";
+export { unassigned } from "./statements";
 export * from "./types";

@@ -10,7 +10,7 @@ import type { DataDirective as AllDataDirectives } from "../../../types";
 import { DataDirectiveStatement } from "../statement";
 import type { DataDirectiveValue } from "../value";
 
-const unassigned = Symbol("unassigned");
+export const unassigned = Symbol("unassigned");
 type Unassigned = typeof unassigned;
 type DataDirective = Exclude<AllDataDirectives, "EQU">;
 
@@ -67,6 +67,12 @@ export class Data extends DataDirectiveStatement {
     if (!this.#initialValues) throw new Error("Data directive not validated");
 
     return this.#initialValues.length * (this.size / 8);
+  }
+
+  getValues(): (AnyByte | Unassigned)[] {
+    if (!this.#values) throw new Error("Data directive not evaluated");
+
+    return this.#values;
   }
 
   toJSON() {

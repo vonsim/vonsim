@@ -6,19 +6,20 @@ import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { Position } from "../../../position";
 import type { ByteRegister, Register, WordRegister } from "../../../types";
+import { registerToBits } from "../encoding";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
 type UnaryInstructionName = "NEG" | "INC" | "DEC" | "NOT";
 
 type InitialOperation =
-  | { mode: "reg"; size: ByteSize; out: Register }
+  | { mode: "reg"; size: ByteSize; reg: Register }
   | { mode: "mem-direct"; size: ByteSize; address: NumberExpression }
   | { mode: "mem-indirect"; size: ByteSize };
 
 type Operation =
-  | { mode: "reg"; size: 8; out: ByteRegister }
-  | { mode: "reg"; size: 16; out: WordRegister }
+  | { mode: "reg"; size: 8; reg: ByteRegister }
+  | { mode: "reg"; size: 16; reg: WordRegister }
   | { mode: "mem-direct"; size: ByteSize; address: MemoryAddress }
   | { mode: "mem-indirect"; size: ByteSize };
 
@@ -69,6 +70,51 @@ export class UnaryInstruction extends InstructionStatement {
     return length;
   }
 
+  /**
+   * Returns the bytes of the instruction.
+   * @see /docs/especificaciones/codificacion.md
+   */
+  toBytes(): Uint8Array {
+    const bytes: number[] = [];
+
+    const opcodes: { [key in UnaryInstructionName]: number } = {
+      NOT: 0b0100_000_0,
+      NEG: 0b0100_001_0,
+      INC: 0b0100_010_0,
+      DEC: 0b0100_011_0,
+    };
+    bytes[0] = opcodes[this.instruction];
+
+    if (this.operation.size === 16) bytes[0] |= 1;
+
+    switch (this.operation.mode) {
+      case "reg": {
+        bytes[1] = 0b00_000_000;
+        bytes[1] |= registerToBits(this.operation.reg);
+        break;
+      }
+
+      case "mem-direct": {
+        bytes[1] = 0b01_000_000;
+        const address = this.operation.address.byte;
+        bytes.push(address.low.unsigned);
+        bytes.push(address.high.unsigned);
+        break;
+      }
+
+      case "mem-indirect": {
+        bytes[1] = 0b01_001_000;
+        break;
+      }
+
+      default: {
+        const _exhaustiveCheck: never = this.operation;
+        return _exhaustiveCheck;
+      }
+    }
+    return new Uint8Array(bytes);
+  }
+
   get operation(): Operation {
     if (!this.#operation) throw new Error("Instruction not evaluated");
 
@@ -93,7 +139,7 @@ export class UnaryInstruction extends InstructionStatement {
     const out = this.operands[0];
 
     if (out.isRegister()) {
-      this.#initialOperation = { mode: "reg", size: out.size, out: out.value };
+      this.#initialOperation = { mode: "reg", size: out.size, reg: out.value };
       return;
     }
 
@@ -146,7 +192,7 @@ export class UnaryInstruction extends InstructionStatement {
 
     switch (op.mode) {
       case "reg": {
-        this.#operation = { mode: "reg", size: op.size, out: op.out } as Operation;
+        this.#operation = { mode: "reg", size: op.size, reg: op.reg } as Operation;
         return;
       }
 

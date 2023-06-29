@@ -3,7 +3,7 @@ import { Position } from "../../position";
 import type { DataDirective } from "../../types";
 import type { DataDirectiveStatementType } from "./statement";
 import { Constant } from "./types/constant";
-import { Data } from "./types/data";
+import { Data, unassigned } from "./types/data";
 import type { DataDirectiveValue } from "./value";
 
 export function createDataDirectiveStatement(
@@ -24,4 +24,4 @@ export function createDataDirectiveStatement(
 
 export type { DataDirectiveStatementType as DataDirectiveStatement };
 export * from "./value";
-export { Constant, Data };
+export { Constant, Data, unassigned };

@@ -1,6 +1,7 @@
 import { CompilerError } from "../../../error";
 import type { Position } from "../../../position";
 import type { WordRegister } from "../../../types";
+import { registerToBits } from "../encoding";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
@@ -37,6 +38,27 @@ export class StackInstruction extends InstructionStatement {
   get length(): number {
     // These instructions are all 1 byte long.
     return 1;
+  }
+
+  /**
+   * Returns the bytes of the instruction.
+   * @see /docs/especificaciones/codificacion.md
+   */
+  toBytes(): Uint8Array {
+    const opcodes: { [key in StackInstructionName]: number } = {
+      PUSH: 0b01100_000,
+      POP: 0b01101_000,
+    };
+
+    let byte = opcodes[this.instruction];
+    byte |= registerToBits(this.register);
+    return new Uint8Array([byte]);
+  }
+
+  get register(): WordRegister {
+    if (!this.#register) throw new Error("Instruction not evaluated");
+
+    return this.#register;
   }
 
   toJSON() {

@@ -6,6 +6,7 @@ import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { Position } from "../../../position";
 import type { ByteRegister, Register, WordRegister } from "../../../types";
+import { registerToBits } from "../encoding";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
@@ -95,6 +96,92 @@ export class BinaryInstruction extends InstructionStatement {
     if (!this.#operation) throw new Error("Instruction not evaluated");
 
     return this.#operation;
+  }
+
+  /**
+   * Returns the bytes of the instruction.
+   * @see /docs/especificaciones/codificacion.md
+   */
+  toBytes(): Uint8Array {
+    const { mode, size, out, src } = this.operation;
+    const bytes: number[] = [];
+
+    const opcodes: { [key in BinaryInstructionName]: number } = {
+      MOV: 0b10_0000_00,
+      AND: 0b10_0001_00,
+      OR: 0b10_0010_00,
+      XOR: 0b10_0011_00,
+      ADD: 0b10_0100_00,
+      ADC: 0b10_0101_00,
+      SUB: 0b10_0110_00,
+      SBB: 0b10_0111_00,
+      CMP: 0b10_1000_00,
+    };
+    bytes[0] = opcodes[this.instruction];
+
+    if (size === 16) bytes[0] |= 1;
+
+    switch (mode) {
+      case "reg<-reg": {
+        bytes[1] = 0b11_000_000;
+        bytes[1] |= registerToBits(src) << 3;
+        bytes[1] |= registerToBits(out) << 0;
+        break;
+      }
+
+      case "reg<-mem": {
+        if (src.mode === "direct") {
+          bytes[1] = 0b01_000_000;
+          bytes.push(src.address.byte.low.unsigned);
+          bytes.push(src.address.byte.high.unsigned);
+        } else {
+          bytes[1] = 0b01_001_000;
+        }
+        bytes[1] |= registerToBits(out) << 0;
+        break;
+      }
+
+      case "reg<-imd": {
+        bytes[1] = 0b10_000_000;
+        bytes[1] |= registerToBits(out) << 0;
+        bytes.push(src.low.unsigned);
+        if (size === 16) bytes.push(src.high.unsigned);
+        break;
+      }
+
+      case "mem<-reg": {
+        bytes[0] = 0b10;
+        if (out.mode === "direct") {
+          bytes[1] = 0b00_000_000;
+          bytes.push(out.address.byte.low.unsigned);
+          bytes.push(out.address.byte.high.unsigned);
+        } else {
+          bytes[1] = 0b00_001_000;
+        }
+        bytes[1] |= registerToBits(src) << 0;
+        break;
+      }
+
+      case "mem<-imd": {
+        bytes[0] = 0b10;
+        if (out.mode === "direct") {
+          bytes[1] = 0b10_000_000;
+          bytes.push(out.address.byte.low.unsigned);
+          bytes.push(out.address.byte.high.unsigned);
+        } else {
+          bytes[1] = 0b10_001_000;
+        }
+        bytes.push(src.low.unsigned);
+        if (size === 16) bytes.push(src.high.unsigned);
+        break;
+      }
+
+      default: {
+        const _exhaustiveCheck: never = mode;
+        return _exhaustiveCheck;
+      }
+    }
+    return new Uint8Array(bytes);
   }
 
   toJSON() {

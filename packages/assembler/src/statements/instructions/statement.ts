@@ -75,6 +75,7 @@ export abstract class InstructionStatement extends Statement {
 
   abstract readonly instruction: Instruction;
   abstract get length(): number;
+  abstract toBytes(): Uint8Array;
   abstract validate(store: GlobalStore): void;
   abstract evaluateExpressions(store: GlobalStore): void;
 

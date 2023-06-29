@@ -57,6 +57,30 @@ export class IOInstruction extends InstructionStatement {
     else return 1;
   }
 
+  /**
+   * Returns the bytes of the instruction.
+   * @see /docs/especificaciones/codificacion.md
+   */
+  toBytes(): Uint8Array {
+    const bytes: number[] = [];
+
+    const opcodes: { [key in IOInstructionName]: number } = {
+      IN: 0b0101_00_00,
+      OUT: 0b0101_01_00,
+    };
+    bytes[0] = opcodes[this.instruction];
+
+    if (this.operation.size === 16) bytes[0] |= 1;
+
+    if (this.operation.port === "fixed") {
+      bytes[1] = this.operation.address.value;
+    } else {
+      bytes[0] |= 0b10;
+    }
+
+    return new Uint8Array(bytes);
+  }
+
   get operation(): Operation {
     if (this.#operation === null) {
       throw new Error("Operation not set");

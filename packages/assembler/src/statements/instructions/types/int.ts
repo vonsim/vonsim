@@ -40,6 +40,14 @@ export class IntInstruction extends InstructionStatement {
   }
 
   /**
+   * Returns the bytes of the instruction.
+   * @see /docs/especificaciones/codificacion.md
+   */
+  toBytes(): Uint8Array {
+    return new Uint8Array([0b0001_1010, this.value.unsigned]);
+  }
+
+  /**
    * Returns the interrput number (8 bits).
    */
   get value(): Byte<8> {

@@ -51,6 +51,33 @@ export class JumpInstruction extends InstructionStatement {
   }
 
   /**
+   * Returns the bytes of the instruction.
+   * @see /docs/especificaciones/codificacion.md
+   */
+  toBytes(): Uint8Array {
+    const bytes: number[] = [];
+
+    const opcodes: { [key in JumpInstructionName]: number } = {
+      JC: 0b0010_0000,
+      JNC: 0b0010_0001,
+      JZ: 0b0010_0010,
+      JNZ: 0b0010_0011,
+      JS: 0b0010_0100,
+      JNS: 0b0010_0101,
+      JO: 0b0010_0110,
+      JNO: 0b0010_0111,
+      JMP: 0b0011_0000,
+      CALL: 0b0011_0001,
+    };
+
+    bytes.push(opcodes[this.instruction]);
+    bytes.push(this.address.byte.low.unsigned);
+    bytes.push(this.address.byte.high.unsigned);
+
+    return new Uint8Array(bytes);
+  }
+
+  /**
    * Returns jump destination.
    */
   get address(): MemoryAddress {
