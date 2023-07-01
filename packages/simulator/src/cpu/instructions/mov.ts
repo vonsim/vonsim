@@ -3,8 +3,8 @@ import { Byte } from "@vonsim/common/byte";
 
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
-import type { Physical8bitsRegisters } from "../event";
 import { Instruction } from "../instruction";
+import type { Physical8bitsRegisters } from "../micro-ops";
 
 export class MOVInstruction extends Instruction<"MOV"> {
   get operation() {

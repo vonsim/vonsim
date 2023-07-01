@@ -26,6 +26,9 @@ export class MiscInstruction extends Instruction<"CLI" | "STI" | "NOP" | "HLT"> 
       yield { chip: "cpu", type: "cycle.update", phase: "execute" };
       computer.cpu.setFlag("IF", true);
       yield { chip: "cpu", type: "register.update", register: "FLAGS", value: computer.cpu.FLAGS };
+    } else if (this.name === "HLT") {
+      yield { chip: "cpu", type: "halt" };
+      return false;
     }
 
     return true;

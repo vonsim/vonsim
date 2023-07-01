@@ -31,11 +31,15 @@ export class INTInstruction extends Instruction<"INT"> {
 
     const number = this.number.unsigned;
     switch (number) {
-      case 0:
-      case 3: {
+      case 0: {
         // INT 0 - Halt
+        yield { chip: "cpu", type: "int.0" };
+        return false; // Halt
+      }
+
+      case 3: {
         // INT 3 - Breakpoint
-        yield { chip: "cpu", type: `int.${number}` };
+        yield { chip: "cpu", type: "int.3" };
         return true;
       }
 

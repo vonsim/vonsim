@@ -15,8 +15,6 @@ type Flag =
   | "IF" // Interrupt Flag
   | "OF"; // Overflow Flag
 
-type ExitStatus = "halted" | "error";
-
 export class CPU extends Component {
   #instructions: Map<number, InstructionType> = new Map();
   #IP = MemoryAddress.from(0x2000);
@@ -59,17 +57,15 @@ export class CPU extends Component {
    * Executes one instruction at a time, yielding the micro-operations that it will execute.
    * @returns The exit status of the CPU (either "halted" or "error").
    */
-  *tick(): EventGenerator<ExitStatus> {
+  *tick(): EventGenerator {
     while (true) {
       const instruction = this.#instructions.get(this.#IP.value);
       if (!instruction) {
         yield { chip: "cpu", type: "error", error: new SimulatorError("no-instruction", this.#IP) };
-        return "error";
+        return;
       }
-      const success = yield* instruction.execute(this.computer);
-      if (!success) return "error";
-
-      if (instruction.name === "HLT") return "halted";
+      const continueExecuting = yield* instruction.execute(this.computer);
+      if (!continueExecuting) return;
 
       // Check for interrupts
       if (this.getFlag("IF") && this.computer.io.pic.isINTRActive()) {

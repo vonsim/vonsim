@@ -3,7 +3,7 @@ import type { Instruction as InstructionName, InstructionStatement } from "@vons
 import type { Computer } from "../computer";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
-import type { Physical8bitsRegisters } from "./event";
+import type { Physical8bitsRegisters } from "./micro-ops";
 
 /**
  * Represents an instruction that can be executed by the CPU.
@@ -34,7 +34,7 @@ export abstract class Instruction<TInstruction extends InstructionName> {
   /**
    * Executes the instruction.
    * Returns a generator that yields the micro-operations that the CPU will execute.
-   * Once the generator is done, it returns either `true` or `false` depending on whether the instruction was successful or not.
+   * Once the generator is done, it returns either `true` or `false` depending on whether the program should keep running or not.
    * @param computer The computer that will execute the instruction.
    */
   abstract execute(computer: Computer): EventGenerator<boolean>;

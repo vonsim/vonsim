@@ -1,4 +1,4 @@
-import type { CPUMicroOperation } from "./cpu/event";
+import type { CPUMicroOperation } from "./cpu/micro-ops";
 import type { ChipSelectEvent } from "./io";
 import type { PICOperation } from "./io/pic";
 import type { MemoryOperation } from "./memory";

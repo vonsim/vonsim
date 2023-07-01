@@ -56,4 +56,5 @@ export type CPUMicroOperation =
   | { type: "int.0" | "int.3" | "int.6" | "int.7" }
   | { type: "console.read" } // This event must be followed by a generator.next(Byte<8>)
   | { type: "console.write"; char: Byte<8> }
-  | { type: "error"; error: SimulatorError<any> };
+  | { type: "error"; error: SimulatorError<any> }
+  | { type: "halt" };
