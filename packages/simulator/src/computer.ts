@@ -1,3 +1,5 @@
+import type { JsonValue } from "type-fest";
+
 import type { ComponentReset } from "./component";
 import { CPU } from "./cpu";
 import { IO } from "./io";
@@ -22,5 +24,13 @@ export class Computer {
   loadProgram(options: ComputerProgram) {
     this.cpu.reset(options);
     this.memory.reset(options);
+  }
+
+  toJSON(): JsonValue {
+    return {
+      cpu: this.cpu.toJSON(),
+      memory: this.memory.toJSON(),
+      io: this.io.toJSON(),
+    };
   }
 }
