@@ -1,4 +1,4 @@
-import { MemoryAddress } from "@vonsim/common/address";
+import { IOAddress, MemoryAddress } from "@vonsim/common/address";
 
 import type { Messages } from "..";
 
@@ -12,7 +12,7 @@ export const spanish: Messages = {
   "compile-error": "Error de compilación. Solucione los errores y vuelva a intentar.",
   "invalid-action": "Acción inválida.",
   // prettier-ignore
-  "io-memory-not-implemented": address => `La dirección de memoria E/S ${address} no está implementada.`,
+  "io-memory-not-implemented": address => `La dirección de memoria E/S ${IOAddress.format(address)} no está implementada.`,
   // prettier-ignore
   "no-instruction": address => `Se esperaba una instrucción en la dirección de memoria ${address} pero no se encontró ninguna.`,
   "no-program": "No hay ningún programa cargado. Compilá antes de ejecutar.",
