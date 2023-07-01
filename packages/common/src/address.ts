@@ -129,6 +129,13 @@ export class IOAddress {
   }
 
   /**
+   * Return the address as a byte.
+   */
+  get byte(): Byte<8> {
+    return this.#address;
+  }
+
+  /**
    * Returns the byte as a string.
    * @param [trailinhG=true] Whether to add a trailing 'h'.
    */
@@ -139,11 +146,15 @@ export class IOAddress {
   }
 
   /**
-   * Returns the byte as a JSON string.
+   * Returns the byte as a JSON number.
    * Useful for serialization.
    */
-  toJSON(): string {
-    return this.toString();
+  toJSON(): number {
+    return this.#address.toJSON();
+  }
+
+  valueOf(): number {
+    return this.#address.valueOf();
   }
 
   // #=========================================================================#
@@ -179,6 +190,25 @@ export class IOAddress {
 
     const byte = Byte.fromUnsigned(address, 8);
     return new IOAddress(byte);
+  }
+
+  /**
+   * Formats the given address as a string (even if it's out of range)
+   * @param address Either a number, a Byte, or a IOAddress.
+   * @param [trailingH=true] Whether to add a trailing 'h'.
+   * @returns A new IOAddress.
+   */
+  static format(address: IOAddressLike, trailingH = true): string {
+    address = Number(address);
+
+    if (!Number.isSafeInteger(address) || address < 0) {
+      return "??";
+    }
+
+    let result = address.toString(16).padStart(2, "0").toUpperCase();
+    if (trailingH) result += "h";
+
+    return result;
   }
 }
 
