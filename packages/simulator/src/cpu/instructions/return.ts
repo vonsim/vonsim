@@ -28,7 +28,6 @@ export class ReturnInstruction extends Instruction<"RET" | "IRET"> {
     if (this.name === "IRET") {
       const FLAGS = yield* computer.cpu.popFromStack();
       if (!FLAGS) return false; // Stack underflow
-      yield { chip: "cpu", type: "cycle.update", phase: "writeback" };
       computer.cpu.FLAGS = FLAGS;
       yield { chip: "cpu", type: "register.copy", input: "id", output: "FLAGS" };
       // NOTE: IRET doesn't need to explicitly set IF to true, since it's already set to true by default.

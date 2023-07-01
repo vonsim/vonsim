@@ -2,7 +2,6 @@ import type { Instruction as InstructionName } from "@vonsim/assembler";
 import type { Byte } from "@vonsim/common/byte";
 
 import type { SimulatorError } from "../error";
-import type { ReservedInterrupt } from "./instructions/int";
 
 export type Physical8bitsRegisters =
   | `${"A" | "B" | "C" | "D"}${"L" | "H"}` // General Purpose Registers
@@ -54,5 +53,7 @@ export type CPUMicroOperation =
   | { type: "register.update"; register: Physical8bitsRegisters; value: Byte<8> }
   | { type: "register.update"; register: Physical16bitsRegisters; value: Byte<16> }
   | { type: "inta.on" | "inta.off" }
-  | { type: "int.reserved"; interrupt: ReservedInterrupt }
+  | { type: "int.0" | "int.3" | "int.6" | "int.7" }
+  | { type: "console.read" } // This event must be followed by a generator.next(Byte<8>)
+  | { type: "console.write"; char: Byte<8> }
   | { type: "error"; error: SimulatorError<any> };
