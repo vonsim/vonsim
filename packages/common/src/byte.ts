@@ -117,6 +117,37 @@ export class Byte<TSize extends ByteSize> {
   }
 
   /**
+   * Sets the bit at the given index set to 1. (Does not mutate it.)
+   * @returns A new byte.
+   */
+  setBit(index: number): Byte<TSize> {
+    if (!Number.isSafeInteger(index) || index < 0 || index >= this.#size) {
+      throw new RangeError(`Index ${index} out of bounds for byte of size ${this.#size}`);
+    }
+
+    return Byte.fromUnsigned(this.#value | (1 << index), this.#size);
+  }
+
+  /**
+   * Sets the bit at the given index set to 0. (Does not mutate it.)
+   * @returns A new byte.
+   */
+  clearBit(index: number): Byte<TSize> {
+    if (!Number.isSafeInteger(index) || index < 0 || index >= this.#size) {
+      throw new RangeError(`Index ${index} out of bounds for byte of size ${this.#size}`);
+    }
+
+    return Byte.fromUnsigned(this.#value & ~(1 << index), this.#size);
+  }
+
+  /**
+   * @returns wheather the Byte is zero or not.
+   */
+  isZero(): boolean {
+    return this.unsigned === 0;
+  }
+
+  /**
    * Returns the byte as a Uint8Array.
    */
   toUint8Array(): Uint8Array {
