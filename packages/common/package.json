@@ -8,7 +8,7 @@
     "./loops": "./src/loops.ts"
   },
   "scripts": {
-    "lint": "tsc --noEmit && eslint"
+    "lint": "tsc --noEmit && eslint --ignore-path .gitignore ."
   },
   "dependencies": {
     "dlv": "^1.1.3"
