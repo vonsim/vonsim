@@ -53,7 +53,7 @@ export class IO extends Component {
    * Writes a byte to IO memory at the specified address.
    * @param address The address to write the byte to.
    * @param value The byte to write.
-   * @returns Wheather the operation succedeed or not (boolean).
+   * @returns Whether the operation succedeed or not (boolean).
    */
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     for (const [name, module] of this.#modules) {

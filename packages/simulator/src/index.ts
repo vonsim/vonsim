@@ -21,7 +21,7 @@ export class Simulator {
   /**
    * Loads a program into the computer!
    * @param options.program The program to load.
-   * @param options.memory Wheather to leave all data (memory, registers, etc.) `unchanged`, `randomize` it or `clean` it.
+   * @param options.memory Whether to leave all data (memory, registers, etc.) `unchanged`, `randomize` it or `clean` it.
    * @param options.devices Which devices to connect to the computer.
    */
   loadProgram(options: ComputerProgram) {

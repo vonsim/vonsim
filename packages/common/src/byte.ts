@@ -152,7 +152,7 @@ export class Byte<TSize extends ByteSize> {
   }
 
   /**
-   * @returns wheather the Byte is zero or not.
+   * @returns Whether the Byte is zero or not.
    */
   isZero(): boolean {
     return this.unsigned === 0;
