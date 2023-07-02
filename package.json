@@ -20,7 +20,7 @@
     }
   },
   "devDependencies": {
-    "turbo": "^1.9.3",
+    "turbo": "^1.10.7",
     "vitepress": "1.0.0-alpha.74"
   }
 }

@@ -2,13 +2,13 @@
   "name": "eslint-config-vonsim",
   "main": "index.cjs",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.59.2",
-    "@typescript-eslint/parser": "^5.59.2",
-    "eslint": "^8.39.0",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-regexp": "^1.14.0",
+    "eslint-plugin-regexp": "^1.15.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "typescript": "~5.0.4"
+    "typescript": "~5.1.6"
   }
 }
