@@ -8,7 +8,7 @@ import type { EventGenerator } from "../events";
 import { PIC } from "./pic";
 
 export type ChipSelectEvent =
-  | { type: "selected"; cs: "pic" }
+  | { type: "selected"; chip: "pic" }
   | { type: "error"; error: SimulatorError<"io-memory-not-implemented"> };
 
 export class IO extends Component {
@@ -36,13 +36,13 @@ export class IO extends Component {
     for (const [name, module] of this.#modules) {
       const register = module.chipSelect(address);
       if (register) {
-        yield { chip: "chip-select", type: "selected", cs: name };
+        yield { component: "chip-select", type: "selected", chip: name };
         return yield* module.read(register);
       }
     }
 
     yield {
-      chip: "chip-select",
+      component: "chip-select",
       type: "error",
       error: new SimulatorError("io-memory-not-implemented", address),
     };
@@ -59,14 +59,14 @@ export class IO extends Component {
     for (const [name, module] of this.#modules) {
       const register = module.chipSelect(address);
       if (register) {
-        yield { chip: "chip-select", type: "selected", cs: name };
+        yield { component: "chip-select", type: "selected", chip: name };
         yield* module.write(register, value);
         return true;
       }
     }
 
     yield {
-      chip: "chip-select",
+      component: "chip-select",
       type: "error",
       error: new SimulatorError("io-memory-not-implemented", address),
     };

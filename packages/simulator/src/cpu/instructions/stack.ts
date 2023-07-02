@@ -10,7 +10,7 @@ export class StackInstruction extends Instruction<"PUSH" | "POP" | "PUSHF" | "PO
         : "FLAGS";
 
     yield {
-      chip: "cpu",
+      component: "cpu",
       type: "cycle.start",
       instruction: {
         name: this.name,
@@ -21,26 +21,26 @@ export class StackInstruction extends Instruction<"PUSH" | "POP" | "PUSHF" | "PO
 
     // All these intructions are one byte long.
     yield* super.consumeInstruction(computer, "IR");
-    yield { chip: "cpu", type: "decode" };
-    yield { chip: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { component: "cpu", type: "decode" };
+    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
 
     if (this.name === "PUSH" || this.name === "PUSHF") {
       const value = register === "FLAGS" ? computer.cpu.FLAGS : computer.cpu.getRegister(register);
-      yield { chip: "cpu", type: "register.copy", input: register, output: "id" };
+      yield { component: "cpu", type: "register.copy", input: register, output: "id" };
 
-      yield { chip: "cpu", type: "cycle.update", phase: "writeback" };
+      yield { component: "cpu", type: "cycle.update", phase: "writeback" };
 
       return yield* computer.cpu.pushToStack(value);
     } else {
       const value = yield* computer.cpu.popFromStack();
       if (!value) return false; // Stack underflow
 
-      yield { chip: "cpu", type: "cycle.update", phase: "writeback" };
+      yield { component: "cpu", type: "cycle.update", phase: "writeback" };
 
       if (register === "FLAGS") computer.cpu.FLAGS = value;
       else computer.cpu.setRegister(register, value);
 
-      yield { chip: "cpu", type: "register.copy", input: "id", output: register };
+      yield { component: "cpu", type: "register.copy", input: "id", output: register };
       return true;
     }
   }

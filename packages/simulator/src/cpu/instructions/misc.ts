@@ -5,7 +5,7 @@ import { Instruction } from "../instruction";
 export class MiscInstruction extends Instruction<"CLI" | "STI" | "NOP" | "HLT"> {
   *execute(computer: Computer): EventGenerator<boolean> {
     yield {
-      chip: "cpu",
+      component: "cpu",
       type: "cycle.start",
       instruction: {
         name: this.name,
@@ -15,19 +15,29 @@ export class MiscInstruction extends Instruction<"CLI" | "STI" | "NOP" | "HLT"> 
     };
 
     yield* super.consumeInstruction(computer, "IR");
-    yield { chip: "cpu", type: "decode" };
-    yield { chip: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { component: "cpu", type: "decode" };
+    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
 
     if (this.name === "CLI") {
-      yield { chip: "cpu", type: "cycle.update", phase: "execute" };
+      yield { component: "cpu", type: "cycle.update", phase: "execute" };
       computer.cpu.setFlag("IF", false);
-      yield { chip: "cpu", type: "register.update", register: "FLAGS", value: computer.cpu.FLAGS };
+      yield {
+        component: "cpu",
+        type: "register.update",
+        register: "FLAGS",
+        value: computer.cpu.FLAGS,
+      };
     } else if (this.name === "STI") {
-      yield { chip: "cpu", type: "cycle.update", phase: "execute" };
+      yield { component: "cpu", type: "cycle.update", phase: "execute" };
       computer.cpu.setFlag("IF", true);
-      yield { chip: "cpu", type: "register.update", register: "FLAGS", value: computer.cpu.FLAGS };
+      yield {
+        component: "cpu",
+        type: "register.update",
+        register: "FLAGS",
+        value: computer.cpu.FLAGS,
+      };
     } else if (this.name === "HLT") {
-      yield { chip: "cpu", type: "halt" };
+      yield { component: "cpu", type: "halt" };
       return false;
     }
 

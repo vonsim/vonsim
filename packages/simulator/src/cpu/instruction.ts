@@ -47,7 +47,7 @@ export abstract class Instruction<TInstruction extends InstructionName> {
    */
   protected *consumeInstruction(computer: Computer, dest: Physical8bitsRegisters): EventGenerator {
     let IP = computer.cpu.getIP();
-    yield { chip: "cpu", type: "mar.set", register: "IP" };
+    yield { component: "cpu", type: "mar.set", register: "IP" };
 
     const byte = yield* computer.memory.read(IP);
     if (!byte) {
@@ -58,7 +58,7 @@ export abstract class Instruction<TInstruction extends InstructionName> {
     }
 
     IP = computer.cpu.setIP(IP.value + 1);
-    yield { chip: "cpu", type: "register.update", register: "IP", value: IP.byte };
-    yield { chip: "cpu", type: "mbr.get", register: dest };
+    yield { component: "cpu", type: "register.update", register: "IP", value: IP.byte };
+    yield { component: "cpu", type: "mbr.get", register: dest };
   }
 }

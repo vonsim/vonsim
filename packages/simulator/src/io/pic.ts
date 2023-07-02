@@ -78,7 +78,7 @@ export class PIC extends IOModule<PICRegister> {
     // If the ISR is zero, no interrupt is being handled.
     if (this.#getPending() !== null) {
       // There is a pending interrupt -> turn on the INTR line
-      yield { chip: "pic", type: "intr.on" };
+      yield { component: "pic", type: "intr.on" };
     }
   }
 
@@ -97,7 +97,7 @@ export class PIC extends IOModule<PICRegister> {
   }
 
   *read(register: PICRegister): EventGenerator<Byte<8>> {
-    yield { chip: "pic", type: "read", register };
+    yield { component: "pic", type: "read", register };
 
     let value: Byte<8>;
     if (register === "EOI") value = Byte.zero(8);
@@ -109,36 +109,36 @@ export class PIC extends IOModule<PICRegister> {
       value = this.#lines[line];
     }
 
-    yield { chip: "pic", type: "read.ok", value };
+    yield { component: "pic", type: "read.ok", value };
     return value;
   }
 
   *write(register: PICRegister, value: Byte<8>): EventGenerator {
-    yield { chip: "pic", type: "write", register, value };
+    yield { component: "pic", type: "write", register, value };
 
     if (register === "EOI") {
       if (!this.#ISR.isZero()) {
         // If the ISR is not zero, an interrupt is being handled.
         // Also, the INTR line is active.
-        yield { chip: "pic", type: "intr.off" };
+        yield { component: "pic", type: "intr.off" };
 
         this.#ISR = Byte.zero(8);
-        yield { chip: "pic", type: "register.update", register: "ISR", value: this.#ISR };
+        yield { component: "pic", type: "register.update", register: "ISR", value: this.#ISR };
         yield* this.#updateINTR();
       }
     } else if (register === "IMR") {
       this.#IMR = value;
-      yield { chip: "pic", type: "register.update", register: "IMR", value: this.#IMR };
+      yield { component: "pic", type: "register.update", register: "IMR", value: this.#IMR };
       yield* this.#updateINTR();
     } else if (register === "IRR" || register === "ISR") {
       // Do nothing -- these registers are read-only
     } else {
       const line = Number(register.slice(3));
       this.#lines[line] = value;
-      yield { chip: "pic", type: "register.update", register, value };
+      yield { component: "pic", type: "register.update", register, value };
     }
 
-    yield { chip: "pic", type: "write.ok" };
+    yield { component: "pic", type: "write.ok" };
   }
 
   /**
@@ -154,7 +154,7 @@ export class PIC extends IOModule<PICRegister> {
     if (this.#IRR.bit(line)) return;
 
     this.#IRR = this.#IRR.setBit(line);
-    yield { chip: "pic", type: "register.update", register: "IRR", value: this.#IRR };
+    yield { component: "pic", type: "register.update", register: "IRR", value: this.#IRR };
     yield* this.#updateINTR();
   }
 
@@ -173,7 +173,7 @@ export class PIC extends IOModule<PICRegister> {
    * @returns The interrupt number (8-bits).
    */
   *handleINTR(): EventGenerator<Byte<8>> {
-    yield { chip: "cpu", type: "inta.on" };
+    yield { component: "cpu", type: "inta.on" };
 
     if (!this.#ISR.isZero()) {
       // If the ISR is not zero, an interrupt is being handled.
@@ -188,17 +188,17 @@ export class PIC extends IOModule<PICRegister> {
 
     // Update ISR and IRR
     this.#IRR = this.#IRR.clearBit(pending);
-    yield { chip: "pic", type: "register.update", register: "IRR", value: this.#IRR };
+    yield { component: "pic", type: "register.update", register: "IRR", value: this.#IRR };
     this.#ISR = this.#ISR.setBit(pending);
-    yield { chip: "pic", type: "register.update", register: "ISR", value: this.#ISR };
+    yield { component: "pic", type: "register.update", register: "ISR", value: this.#ISR };
 
-    yield { chip: "cpu", type: "inta.off" };
+    yield { component: "cpu", type: "inta.off" };
 
     // Send interrupt number
-    yield { chip: "cpu", type: "inta.on" };
+    yield { component: "cpu", type: "inta.on" };
     const number = this.#lines[pending];
-    yield { chip: "pic", type: "int.send", number };
-    yield { chip: "cpu", type: "inta.off" };
+    yield { component: "pic", type: "int.send", number };
+    yield { component: "cpu", type: "inta.off" };
     return number;
   }
 

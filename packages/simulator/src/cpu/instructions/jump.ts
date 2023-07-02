@@ -13,7 +13,7 @@ export class JumpInstruction extends Instruction<
 
   *execute(computer: Computer): EventGenerator<boolean> {
     yield {
-      chip: "cpu",
+      component: "cpu",
       type: "cycle.start",
       instruction: {
         name: this.name,
@@ -24,8 +24,8 @@ export class JumpInstruction extends Instruction<
 
     // All these intructions are 3 bytes long.
     yield* super.consumeInstruction(computer, "IR");
-    yield { chip: "cpu", type: "decode" };
-    yield { chip: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { component: "cpu", type: "decode" };
+    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
 
     let jump: boolean;
     switch (this.name) {
@@ -64,26 +64,26 @@ export class JumpInstruction extends Instruction<
     }
 
     if (!jump) {
-      yield { chip: "cpu", type: "cycle.update", phase: "writeback" };
+      yield { component: "cpu", type: "cycle.update", phase: "writeback" };
       const IP = Byte.fromUnsigned(computer.cpu.getIP().value + 2, 16);
       computer.cpu.setIP(IP);
-      yield { chip: "cpu", type: "register.update", register: "IP", value: IP };
+      yield { component: "cpu", type: "register.update", register: "IP", value: IP };
       return true;
     }
 
     // Consume jump address
     yield* super.consumeInstruction(computer, "ri.l");
     yield* super.consumeInstruction(computer, "ri.h");
-    yield { chip: "cpu", type: "cycle.update", phase: "writeback" };
+    yield { component: "cpu", type: "cycle.update", phase: "writeback" };
 
     if (this.name === "CALL") {
       const IP = computer.cpu.getIP().byte;
-      yield { chip: "cpu", type: "register.copy", input: "IP", output: "id" };
+      yield { component: "cpu", type: "register.copy", input: "IP", output: "id" };
       yield* computer.cpu.pushToStack(IP);
     }
 
     computer.cpu.setIP(this.jumpTo);
-    yield { chip: "cpu", type: "register.update", register: "IP", value: this.jumpTo.byte };
+    yield { component: "cpu", type: "register.update", register: "IP", value: this.jumpTo.byte };
 
     return true;
   }

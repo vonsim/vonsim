@@ -25,7 +25,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
 
   *execute(computer: Computer): EventGenerator<boolean> {
     yield {
-      chip: "cpu",
+      component: "cpu",
       type: "cycle.start",
       instruction: {
         name: this.name,
@@ -35,17 +35,17 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
     };
 
     yield* super.consumeInstruction(computer, "IR");
-    yield { chip: "cpu", type: "decode" };
-    yield { chip: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { component: "cpu", type: "decode" };
+    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
 
     if (this.operation.port === "fixed") {
-      yield { chip: "cpu", type: "register.update", register: "ri", value: Byte.zero(16) };
+      yield { component: "cpu", type: "register.update", register: "ri", value: Byte.zero(16) };
       yield* super.consumeInstruction(computer, "ri.l");
     } else {
-      yield { chip: "cpu", type: "register.copy", input: "DX", output: "ri" };
+      yield { component: "cpu", type: "register.copy", input: "DX", output: "ri" };
       if (!computer.cpu.getRegister("DX").high.isZero()) {
         yield {
-          chip: "cpu",
+          component: "cpu",
           type: "error",
           error: new SimulatorError("io-memory-not-implemented", computer.cpu.getRegister("DX")),
         };
@@ -53,7 +53,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
       }
     }
 
-    yield { chip: "cpu", type: "cycle.update", phase: "writeback" };
+    yield { component: "cpu", type: "cycle.update", phase: "writeback" };
 
     let port =
       this.operation.port === "variable"
@@ -61,29 +61,29 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
         : this.operation.address.byte;
 
     if (this.name === "IN") {
-      yield { chip: "cpu", type: "mar.set", register: "ri" };
+      yield { component: "cpu", type: "mar.set", register: "ri" };
       const low = yield* computer.io.read(port);
       if (!low) return false; // Error reading IO
       computer.cpu.setRegister("AL", low);
-      yield { chip: "cpu", type: "mbr.get", register: "AL" };
+      yield { component: "cpu", type: "mbr.get", register: "AL" };
       if (this.operation.size === 16) {
         port = Byte.fromUnsigned(port.unsigned + 1, 8);
-        yield { chip: "cpu", type: "register.update", register: "ri.l", value: port };
-        yield { chip: "cpu", type: "mar.set", register: "ri" };
+        yield { component: "cpu", type: "register.update", register: "ri.l", value: port };
+        yield { component: "cpu", type: "mar.set", register: "ri" };
         const high = yield* computer.io.read(port);
         if (!high) return false; // Error reading IO
         computer.cpu.setRegister("AH", high);
-        yield { chip: "cpu", type: "mbr.get", register: "AH" };
+        yield { component: "cpu", type: "mbr.get", register: "AH" };
       }
     } else {
-      yield { chip: "cpu", type: "mar.set", register: "ri" };
-      yield { chip: "cpu", type: "mbr.set", register: "AL" };
+      yield { component: "cpu", type: "mar.set", register: "ri" };
+      yield { component: "cpu", type: "mbr.set", register: "AL" };
       if (!(yield* computer.io.write(port, computer.cpu.getRegister("AL")))) return false; // Error reading IO
       if (this.operation.size === 16) {
         port = Byte.fromUnsigned(port.unsigned + 1, 8);
-        yield { chip: "cpu", type: "register.update", register: "ri.l", value: port };
-        yield { chip: "cpu", type: "mar.set", register: "ri" };
-        yield { chip: "cpu", type: "mbr.set", register: "AH" };
+        yield { component: "cpu", type: "register.update", register: "ri.l", value: port };
+        yield { component: "cpu", type: "mar.set", register: "ri" };
+        yield { component: "cpu", type: "mbr.set", register: "AH" };
         if (!(yield* computer.io.write(port, computer.cpu.getRegister("AH")))) return false; // Error reading IO
       }
     }

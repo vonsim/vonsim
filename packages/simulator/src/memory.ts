@@ -55,11 +55,11 @@ export class Memory extends Component {
    */
   *read(address: MemoryAddressLike): EventGenerator<Byte<8> | null> {
     address = Number(address);
-    yield { chip: "memory", type: "read", address };
+    yield { component: "memory", type: "read", address };
 
     if (!MemoryAddress.inRange(address)) {
       yield {
-        chip: "memory",
+        component: "memory",
         type: "read.error",
         error: new SimulatorError("address-out-of-range", address),
       };
@@ -67,7 +67,7 @@ export class Memory extends Component {
     }
 
     const value = Byte.fromUnsigned(this.#buffer.at(address)!, 8);
-    yield { chip: "memory", type: "read.ok", value };
+    yield { component: "memory", type: "read.ok", value };
     return value;
   }
 
@@ -79,11 +79,11 @@ export class Memory extends Component {
    */
   *write(address: MemoryAddressLike, value: Byte<8>): EventGenerator<boolean> {
     address = Number(address);
-    yield { chip: "memory", type: "write", address, value };
+    yield { component: "memory", type: "write", address, value };
 
     if (!MemoryAddress.inRange(address)) {
       yield {
-        chip: "memory",
+        component: "memory",
         type: "write.error",
         error: new SimulatorError("address-out-of-range", address),
       };
@@ -92,7 +92,7 @@ export class Memory extends Component {
 
     if (this.#reservedMemory.has(address)) {
       yield {
-        chip: "memory",
+        component: "memory",
         type: "write.error",
         error: new SimulatorError("address-has-instruction", address),
       };
@@ -100,7 +100,7 @@ export class Memory extends Component {
     }
 
     this.#buffer.set([value.unsigned], address);
-    yield { chip: "memory", type: "write.ok" };
+    yield { component: "memory", type: "write.ok" };
     return true;
   }
 

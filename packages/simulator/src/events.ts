@@ -4,9 +4,9 @@ import type { PICOperation } from "./io/pic";
 import type { MemoryOperation } from "./memory";
 
 export type SimulatorEvent =
-  | ({ chip: "cpu" } & CPUMicroOperation)
-  | ({ chip: "memory" } & MemoryOperation)
-  | ({ chip: "chip-select" } & ChipSelectEvent)
-  | ({ chip: "pic" } & PICOperation);
+  | ({ component: "cpu" } & CPUMicroOperation)
+  | ({ component: "memory" } & MemoryOperation)
+  | ({ component: "chip-select" } & ChipSelectEvent)
+  | ({ component: "pic" } & PICOperation);
 
 export type EventGenerator<TReturn = void> = Generator<SimulatorEvent, TReturn>;
