@@ -159,6 +159,22 @@ export class Byte<TSize extends ByteSize> {
   }
 
   /**
+   * Returns whether this byte is equal to the other byte.
+   * If the other byte is a number, if it is signed, it will be compared against this.signed,
+   * otherwise it will be compared against this.unsigned.
+   * @param other A byte or a number.
+   * @returns Whether the two bytes are equal.
+   */
+  equals(other: AnyByte | number): boolean {
+    if (typeof other === "number") {
+      if (other < 0) return this.signed === other;
+      else return this.unsigned === other;
+    } else {
+      return this.#value === other.#value;
+    }
+  }
+
+  /**
    * Returns the byte as a Uint8Array.
    */
   toUint8Array(): Uint8Array {
