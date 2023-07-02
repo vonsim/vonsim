@@ -1,4 +1,4 @@
-import { Byte } from "@vonsim/common/byte";
+import { AnyByte, Byte } from "@vonsim/common/byte";
 
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
@@ -68,13 +68,16 @@ export class ALUBinaryInstruction extends Instruction<
 
     yield { component: "cpu", type: "cycle.update", phase: "decoded" };
 
-    let left: Byte<typeof size>;
+    let left: AnyByte;
     if (mode === "reg<-reg" || mode === "reg<-mem" || mode === "reg<-imd") {
       // Move out operand to left register
-      left = computer.cpu.getRegister(out);
-      if (size === 8)
+      if (size === 8) {
+        left = computer.cpu.getRegister(out);
         yield { component: "cpu", type: "register.copy", input: out, output: "left.l" };
-      else yield { component: "cpu", type: "register.copy", input: out, output: "left" };
+      } else {
+        left = computer.cpu.getRegister(out);
+        yield { component: "cpu", type: "register.copy", input: out, output: "left" };
+      }
     } else {
       // Fetch left operand, which is the memory cell
       if (out.mode === "direct") {
@@ -104,13 +107,16 @@ export class ALUBinaryInstruction extends Instruction<
       }
     }
 
-    let right: Byte<typeof size>;
+    let right: AnyByte;
     if (mode === "reg<-reg" || mode === "mem<-reg") {
       // Move src operand to right register
-      right = computer.cpu.getRegister(src);
-      if (size === 8)
+      if (size === 8) {
+        right = computer.cpu.getRegister(src);
         yield { component: "cpu", type: "register.copy", input: src, output: "right.l" };
-      else yield { component: "cpu", type: "register.copy", input: src, output: "right" };
+      } else {
+        right = computer.cpu.getRegister(src);
+        yield { component: "cpu", type: "register.copy", input: src, output: "right" };
+      }
     } else if (mode === "reg<-imd" || mode === "mem<-imd") {
       // Move immediate value to right register
       yield* this.consumeInstruction(computer, "right.l");
@@ -147,8 +153,7 @@ export class ALUBinaryInstruction extends Instruction<
 
     yield { component: "cpu", type: "cycle.update", phase: "execute" };
 
-    let result: Byte<typeof size>;
-
+    let result: AnyByte;
     switch (this.name) {
       case "AND":
       case "OR":
@@ -162,7 +167,7 @@ export class ALUBinaryInstruction extends Instruction<
             ? left.signed | right.signed
             : left.signed ^ right.signed;
 
-        result = Byte.fromSigned(signed, size);
+        result = Byte.fromSigned(signed, size) as AnyByte;
         computer.cpu.setFlag("CF", false);
         computer.cpu.setFlag("OF", false);
         break;
@@ -175,10 +180,10 @@ export class ALUBinaryInstruction extends Instruction<
 
         if (unsigned > Byte.maxValue(size)) {
           computer.cpu.setFlag("CF", true);
-          result = Byte.fromUnsigned(unsigned - Byte.maxValue(size) - 1, size);
+          result = Byte.fromUnsigned(unsigned - Byte.maxValue(size) - 1, size) as AnyByte;
         } else {
           computer.cpu.setFlag("CF", false);
-          result = Byte.fromUnsigned(unsigned, size);
+          result = Byte.fromUnsigned(unsigned, size) as AnyByte;
         }
 
         // When adding, the overflow flag is set if
@@ -200,10 +205,10 @@ export class ALUBinaryInstruction extends Instruction<
 
         if (unsigned < 0) {
           computer.cpu.setFlag("CF", true);
-          result = Byte.fromUnsigned(unsigned + Byte.maxValue(size) + 1, size);
+          result = Byte.fromUnsigned(unsigned + Byte.maxValue(size) + 1, size) as AnyByte;
         } else {
           computer.cpu.setFlag("CF", false);
-          result = Byte.fromUnsigned(unsigned, size);
+          result = Byte.fromUnsigned(unsigned, size) as AnyByte;
         }
 
         // When subtracting, the overflow flag is set if
@@ -221,14 +226,26 @@ export class ALUBinaryInstruction extends Instruction<
     computer.cpu.setFlag("ZF", result.unsigned === 0);
     computer.cpu.setFlag("SF", result.signed < 0);
 
-    yield {
-      component: "cpu",
-      type: "alu.execute",
-      operation: this.name === "CMP" ? "SUB" : this.name,
-      size,
-      result,
-      flags: computer.cpu.FLAGS,
-    };
+    // This if is kind of unnecessary, but TypeScript likes it
+    if (size === 8) {
+      yield {
+        component: "cpu",
+        type: "alu.execute",
+        operation: this.name === "CMP" ? "SUB" : this.name,
+        size,
+        result: result as Byte<8>,
+        flags: computer.cpu.FLAGS,
+      };
+    } else {
+      yield {
+        component: "cpu",
+        type: "alu.execute",
+        operation: this.name === "CMP" ? "SUB" : this.name,
+        size,
+        result: result as Byte<16>,
+        flags: computer.cpu.FLAGS,
+      };
+    }
 
     if (this.name === "CMP") return true; // No writeback
 
@@ -236,10 +253,13 @@ export class ALUBinaryInstruction extends Instruction<
 
     if (mode === "reg<-reg" || mode === "reg<-mem" || mode === "reg<-imd") {
       // Move result to out operand
-      computer.cpu.setRegister(out, result);
-      if (size === 8)
+      if (size === 8) {
+        computer.cpu.setRegister(out, result as Byte<8>);
         yield { component: "cpu", type: "register.copy", input: "result.l", output: out };
-      else yield { component: "cpu", type: "register.copy", input: "result", output: out };
+      } else {
+        computer.cpu.setRegister(out, result as Byte<16>);
+        yield { component: "cpu", type: "register.copy", input: "result", output: out };
+      }
     } else {
       const lowAddress = out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
       if (size === 16) {

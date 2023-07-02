@@ -1,4 +1,4 @@
-import { Byte } from "@vonsim/common/byte";
+import { AnyByte, Byte } from "@vonsim/common/byte";
 
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
@@ -52,15 +52,25 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
 
     yield { component: "cpu", type: "cycle.update", phase: "decoded" };
 
-    let left: Byte<(typeof this)["operation"]["size"]>;
+    let left: AnyByte;
     if (this.operation.mode === "reg") {
       // Move operand to left register
-      const reg = this.operation.reg;
-      left = computer.cpu.getRegister(reg);
       if (this.operation.size === 8) {
-        yield { component: "cpu", type: "register.copy", input: reg, output: "left.l" };
+        left = computer.cpu.getRegister(this.operation.reg);
+        yield {
+          component: "cpu",
+          type: "register.copy",
+          input: this.operation.reg,
+          output: "left.l",
+        };
       } else {
-        yield { component: "cpu", type: "register.copy", input: reg, output: "left" };
+        left = computer.cpu.getRegister(this.operation.reg);
+        yield {
+          component: "cpu",
+          type: "register.copy",
+          input: this.operation.reg,
+          output: "left",
+        };
       }
     } else {
       // Fetch operand, which is the memory cell
@@ -112,18 +122,18 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
 
     yield { component: "cpu", type: "cycle.update", phase: "execute" };
 
-    let result: Byte<(typeof this)["operation"]["size"]>;
+    let result: AnyByte;
 
     switch (this.name) {
       case "NOT": {
-        result = Byte.fromSigned(~left.signed, this.operation.size);
+        result = Byte.fromSigned(~left.signed, this.operation.size) as AnyByte;
         computer.cpu.setFlag("CF", false);
         computer.cpu.setFlag("OF", false);
         break;
       }
 
       case "NEG": {
-        result = Byte.fromSigned(-left.signed, this.operation.size);
+        result = Byte.fromSigned(-left.signed, this.operation.size) as AnyByte;
         computer.cpu.setFlag("CF", !left.isZero());
         computer.cpu.setFlag("OF", left.signed === Byte.minSignedValue(this.operation.size));
         break;
@@ -137,10 +147,10 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
           result = Byte.fromUnsigned(
             unsigned - Byte.maxValue(this.operation.size) - 1,
             this.operation.size,
-          );
+          ) as AnyByte;
         } else {
           computer.cpu.setFlag("CF", false);
-          result = Byte.fromUnsigned(unsigned, this.operation.size);
+          result = Byte.fromUnsigned(unsigned, this.operation.size) as AnyByte;
         }
 
         // When adding, the overflow flag is set if the sum of two positive numbers
@@ -158,10 +168,10 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
           result = Byte.fromUnsigned(
             unsigned + Byte.maxValue(this.operation.size) + 1,
             this.operation.size,
-          );
+          ) as AnyByte;
         } else {
           computer.cpu.setFlag("CF", false);
-          result = Byte.fromUnsigned(unsigned, this.operation.size);
+          result = Byte.fromUnsigned(unsigned, this.operation.size) as AnyByte;
         }
 
         // When subtracting, the overflow flag is set if a negative number minus a
@@ -175,24 +185,38 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
     computer.cpu.setFlag("ZF", result.unsigned === 0);
     computer.cpu.setFlag("SF", result.signed < 0);
 
-    yield {
-      component: "cpu",
-      type: "alu.execute",
-      operation: this.name === "INC" ? "ADD" : this.name === "DEC" ? "SUB" : this.name,
-      size,
-      result,
-      flags: computer.cpu.FLAGS,
-    };
+    // This if is kind of unnecessary, but TypeScript likes it
+    if (this.operation.size === 8) {
+      yield {
+        component: "cpu",
+        type: "alu.execute",
+        operation: this.name === "INC" ? "ADD" : this.name === "DEC" ? "SUB" : this.name,
+        size: this.operation.size,
+        result: result as Byte<8>,
+        flags: computer.cpu.FLAGS,
+      };
+    } else {
+      yield {
+        component: "cpu",
+        type: "alu.execute",
+        operation: this.name === "INC" ? "ADD" : this.name === "DEC" ? "SUB" : this.name,
+        size: this.operation.size,
+        result: result as Byte<16>,
+        flags: computer.cpu.FLAGS,
+      };
+    }
 
     yield { component: "cpu", type: "cycle.update", phase: "writeback" };
 
     if (this.operation.mode === "reg") {
       // Move result to operand
-      const reg = this.operation.reg;
-      computer.cpu.setRegister(reg, result);
       if (this.operation.size === 8) {
+        const reg = this.operation.reg;
+        computer.cpu.setRegister(reg, result as Byte<8>);
         yield { component: "cpu", type: "register.copy", input: "result.l", output: reg };
       } else {
+        const reg = this.operation.reg;
+        computer.cpu.setRegister(reg, result as Byte<16>);
         yield { component: "cpu", type: "register.copy", input: "result", output: reg };
       }
     } else {
