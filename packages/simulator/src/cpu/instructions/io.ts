@@ -67,7 +67,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
       computer.cpu.setRegister("AL", low);
       yield { component: "cpu", type: "mbr.get", register: "AL" };
       if (this.operation.size === 16) {
-        port = Byte.fromUnsigned(port.unsigned + 1, 8);
+        port = port.add(1);
         yield { component: "cpu", type: "register.update", register: "ri.l", value: port };
         yield { component: "cpu", type: "mar.set", register: "ri" };
         const high = yield* computer.io.read(port);
@@ -80,7 +80,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
       yield { component: "cpu", type: "mbr.set", register: "AL" };
       if (!(yield* computer.io.write(port, computer.cpu.getRegister("AL")))) return false; // Error reading IO
       if (this.operation.size === 16) {
-        port = Byte.fromUnsigned(port.unsigned + 1, 8);
+        port = port.add(1);
         yield { component: "cpu", type: "register.update", register: "ri.l", value: port };
         yield { component: "cpu", type: "mar.set", register: "ri" };
         yield { component: "cpu", type: "mbr.set", register: "AH" };

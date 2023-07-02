@@ -80,7 +80,7 @@ export class INTInstruction extends Instruction<"INT"> {
           if (!computer.memory.write(address, char)) return false; // Error writing to memory
         } else {
           // INT 7 - Write string to console, starting from [BX] and of length AL
-          const start = computer.cpu.getRegister("BX").unsigned;
+          const start = computer.cpu.getRegister("BX");
           yield { component: "cpu", type: "register.copy", input: "BX", output: "ri" };
 
           const length = computer.cpu.getRegister("AL").unsigned;
@@ -88,14 +88,14 @@ export class INTInstruction extends Instruction<"INT"> {
 
           for (let i = 0; i < length; i++) {
             yield { component: "cpu", type: "mar.set", register: "ri" };
-            const char = yield* computer.memory.read(start + i);
+            const char = yield* computer.memory.read(start.add(i));
             if (!char) return false; // Error reading from memory
             yield { component: "cpu", type: "console.write", char };
             yield {
               component: "cpu",
               type: "register.update",
               register: "ri",
-              value: Byte.fromUnsigned(start + i + 1, 16),
+              value: start.add(i + 1),
             };
             yield {
               component: "cpu",

@@ -286,7 +286,7 @@ export class CPU extends Component {
       yield { component: "cpu", type: "error", error: new SimulatorError("stack-overflow") };
       return false;
     }
-    SP = Byte.fromUnsigned(SP.unsigned - 1, 16);
+    SP = SP.add(-1);
     yield { component: "cpu", type: "register.update", register: "SP", value: SP };
     yield { component: "cpu", type: "mar.set", register: "SP" };
     yield { component: "cpu", type: "mbr.set", register: "id.h" };
@@ -296,7 +296,7 @@ export class CPU extends Component {
       yield { component: "cpu", type: "error", error: new SimulatorError("stack-overflow") };
       return false;
     }
-    SP = Byte.fromUnsigned(SP.unsigned - 1, 16);
+    SP = SP.add(-1);
     yield { component: "cpu", type: "register.update", register: "SP", value: SP };
     yield { component: "cpu", type: "mar.set", register: "SP" };
     yield { component: "cpu", type: "mbr.set", register: "id.l" };
@@ -321,7 +321,7 @@ export class CPU extends Component {
     const low = yield* this.computer.memory.read(SP);
     if (!low) return null; // Error reading memory
     yield { component: "cpu", type: "mbr.get", register: "id.l" };
-    SP = Byte.fromUnsigned(SP.unsigned + 1, 16);
+    SP = SP.add(1);
     yield { component: "cpu", type: "register.update", register: "SP", value: SP };
 
     if (!MemoryAddress.inRange(SP)) {
@@ -332,7 +332,7 @@ export class CPU extends Component {
     const high = yield* this.computer.memory.read(SP);
     if (!high) return null; // Error reading memory
     yield { component: "cpu", type: "mbr.get", register: "id.h" };
-    SP = Byte.fromUnsigned(SP.unsigned + 1, 16);
+    SP = SP.add(1);
     yield { component: "cpu", type: "register.update", register: "SP", value: SP };
 
     return low.withHigh(high);

@@ -1,5 +1,4 @@
-import { WordRegister } from "@vonsim/assembler";
-import { Byte } from "@vonsim/common/byte";
+import type { WordRegister } from "@vonsim/assembler";
 
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
@@ -105,7 +104,8 @@ export class MOVInstruction extends Instruction<"MOV"> {
 
       case "reg<-mem": {
         yield { component: "cpu", type: "mar.set", register: "ri" };
-        const lowAddress = src.mode === "direct" ? src.address : computer.cpu.getRegister("BX");
+        const lowAddress =
+          src.mode === "direct" ? src.address.byte : computer.cpu.getRegister("BX");
         const lowValue = yield* computer.memory.read(lowAddress);
         if (!lowValue) return false; // Error reading memory
         yield { component: "cpu", type: "mbr.get", register: "id.l" };
@@ -114,7 +114,7 @@ export class MOVInstruction extends Instruction<"MOV"> {
           yield { component: "cpu", type: "register.copy", input: "id.l", output: out };
           return true;
         } else {
-          const highAddress = Byte.fromUnsigned(Number(lowAddress) + 1, 16);
+          const highAddress = lowAddress.add(1);
           yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
           yield { component: "cpu", type: "mar.set", register: "ri" };
           const highValue = yield* computer.memory.read(highAddress);
@@ -148,9 +148,10 @@ export class MOVInstruction extends Instruction<"MOV"> {
           const value = computer.cpu.getRegister(src);
           yield { component: "cpu", type: "mar.set", register: "ri" };
           yield { component: "cpu", type: "mbr.set", register: low };
-          const lowAddress = out.mode === "direct" ? out.address : computer.cpu.getRegister("BX");
+          const lowAddress =
+            out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
           if (!(yield* computer.memory.write(lowAddress, value.low))) return false; // Error writing memory
-          const highAddress = Byte.fromUnsigned(Number(lowAddress) + 1, 16);
+          const highAddress = lowAddress.add(1);
           yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
           yield { component: "cpu", type: "mar.set", register: "ri" };
           yield { component: "cpu", type: "mbr.set", register: high };
@@ -160,12 +161,13 @@ export class MOVInstruction extends Instruction<"MOV"> {
       }
 
       case "mem<-imd": {
-        const lowAddress = out.mode === "direct" ? out.address : computer.cpu.getRegister("BX");
+        const lowAddress =
+          out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
         yield { component: "cpu", type: "mar.set", register: "ri" };
         yield { component: "cpu", type: "mbr.set", register: "id.l" };
         if (!(yield* computer.memory.write(lowAddress, src.low))) return false; // Error writing memory
         if (size === 8) return true;
-        const highAddress = Byte.fromUnsigned(Number(lowAddress) + 1, 16);
+        const highAddress = lowAddress.add(1);
         yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
         yield { component: "cpu", type: "mar.set", register: "ri" };
         yield { component: "cpu", type: "mbr.set", register: "id.h" };

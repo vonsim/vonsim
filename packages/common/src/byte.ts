@@ -141,6 +141,17 @@ export class Byte<TSize extends ByteSize> {
   }
 
   /**
+   * Returns a new byte of the same size that is the sum of the two bytes.
+   * @param other A byte or a number.
+   * @throws If the sum does not fit in a byte.
+   * @returns A new byte.
+   */
+  add(other: AnyByte | number): Byte<TSize> {
+    other = Number(other);
+    return Byte.fromUnsigned(this.#value + other, this.#size);
+  }
+
+  /**
    * @returns wheather the Byte is zero or not.
    */
   isZero(): boolean {

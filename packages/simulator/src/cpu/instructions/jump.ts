@@ -1,5 +1,3 @@
-import { Byte } from "@vonsim/common/byte";
-
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
@@ -65,7 +63,7 @@ export class JumpInstruction extends Instruction<
 
     if (!jump) {
       yield { component: "cpu", type: "cycle.update", phase: "writeback" };
-      const IP = Byte.fromUnsigned(computer.cpu.getIP().value + 2, 16);
+      const IP = computer.cpu.getIP().byte.add(2);
       computer.cpu.setIP(IP);
       yield { component: "cpu", type: "register.update", register: "IP", value: IP };
       return true;

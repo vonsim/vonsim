@@ -92,7 +92,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       if (!lowValue) return false; // Error reading memory
       yield { component: "cpu", type: "mbr.get", register: "left.l" };
       if (this.operation.size === 16) {
-        const highAddress = Byte.fromUnsigned(lowAddress.unsigned + 1, 16);
+        const highAddress = lowAddress.add(1);
         yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
         yield { component: "cpu", type: "mar.set", register: "ri" };
         const highValue = yield* computer.memory.read(lowAddress);
@@ -231,7 +231,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       yield { component: "cpu", type: "mbr.set", register: "result.l" };
       if (!(yield* computer.memory.write(lowAddress, result.low))) return false; // Error writing memory
       if (this.operation.size === 16) {
-        const highAddress = Byte.fromUnsigned(lowAddress.unsigned + 1, 16);
+        const highAddress = lowAddress.add(1);
         yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
         yield { component: "cpu", type: "mar.set", register: "ri" };
         yield { component: "cpu", type: "mbr.set", register: "result.h" };
