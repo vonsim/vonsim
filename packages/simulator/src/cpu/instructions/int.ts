@@ -63,10 +63,7 @@ export class INTInstruction extends Instruction<"INT"> {
           const address = computer.cpu.getRegister("BX");
           yield { component: "cpu", type: "register.copy", input: "BX", output: "ri" };
 
-          const char = yield { component: "cpu", type: "console.read" };
-          if (!(char instanceof Byte) || !char.is8bits()) {
-            throw new Error("INT 6 was not given a valid 8-bit character!");
-          }
+          const char = yield* computer.devices.console.read();
 
           yield {
             component: "cpu",
@@ -90,7 +87,7 @@ export class INTInstruction extends Instruction<"INT"> {
             yield { component: "cpu", type: "mar.set", register: "ri" };
             const char = yield* computer.memory.read(start.add(i));
             if (!char) return false; // Error reading from memory
-            yield { component: "cpu", type: "console.write", char };
+            yield* computer.devices.console.write(char);
             yield {
               component: "cpu",
               type: "register.update",

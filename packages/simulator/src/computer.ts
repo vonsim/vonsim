@@ -2,6 +2,7 @@ import type { JsonValue } from "type-fest";
 
 import type { ComponentReset } from "./component";
 import { CPU } from "./cpu";
+import { Devices } from "./devices";
 import { IO } from "./io";
 import { Memory } from "./memory";
 
@@ -11,11 +12,14 @@ export class Computer {
   readonly cpu: CPU;
   readonly memory: Memory;
   readonly io: IO;
+  readonly devices: Devices;
 
   constructor() {
-    this.cpu = new CPU({ computer: this });
-    this.memory = new Memory({ computer: this });
-    this.io = new IO({ computer: this });
+    const options = { computer: this } as const;
+    this.cpu = new CPU(options);
+    this.memory = new Memory(options);
+    this.io = new IO(options);
+    this.devices = new Devices(options);
   }
 
   /**
@@ -31,6 +35,7 @@ export class Computer {
       cpu: this.cpu.toJSON(),
       memory: this.memory.toJSON(),
       io: this.io.toJSON(),
+      devices: this.devices.toJSON(),
     };
   }
 }

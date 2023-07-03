@@ -2,9 +2,9 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte, ByteSize } from "@vonsim/common/byte";
 import type { JsonObject } from "type-fest";
 
-import type { ComponentReset } from "../component";
-import type { EventGenerator } from "../events";
-import { IOModule } from "./module";
+import type { ComponentReset } from "../../component";
+import type { EventGenerator } from "../../events";
+import { IOModule } from "../module";
 
 type InterruptLine = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 type PICRegister = "EOI" | "IMR" | "IRR" | "ISR" | `INT${InterruptLine}`;
@@ -14,9 +14,9 @@ export type PICOperation =
   | { type: "read.ok"; value: Byte<8> }
   | { type: "write"; register: PICRegister; value: Byte<8> }
   | { type: "write.ok" }
+  | { type: "register.update"; register: Omit<PICRegister, "EOI">; value: Byte<8> }
   | { type: "intr.on" | "intr.off" }
-  | { type: "int.send"; number: Byte<8> }
-  | { type: "register.update"; register: Omit<PICRegister, "EOI">; value: Byte<8> };
+  | { type: "int.send"; number: Byte<8> };
 
 /**
  * Programmable Interrupt Controller.

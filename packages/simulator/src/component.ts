@@ -7,10 +7,12 @@ export type ComponentOptions = {
   computer: Computer;
 };
 
+export type DevicesConfiguration = "pio-switches-and-leds" | "pio-printer" | "handshake";
+
 export type ComponentReset = {
   program: Program;
   memory: "unchanged" | "clean" | "randomize";
-  devices: "pio-switches" | "pio-printer" | "handshake";
+  devices: DevicesConfiguration;
 };
 
 export abstract class Component {

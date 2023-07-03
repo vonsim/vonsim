@@ -54,4 +54,25 @@ export class Simulator {
     if (done) throw new Error("Called tick on a finished ticker!");
     return value;
   }
+
+  /**
+   * Returns an object with all the devices of the computer
+   * that can be interacted with from the outside.
+   */
+  get devices() {
+    return {
+      clock: { tick: this.#computer.devices.clock.tick },
+      console: { clear: this.#computer.devices.console.clear },
+      f10: { press: this.#computer.devices.f10.press },
+      printer: this.#computer.devices.printer
+        ? {
+            clear: this.#computer.devices.printer.clear,
+            print: this.#computer.devices.printer.print,
+          }
+        : null,
+      switches: this.#computer.devices.switches
+        ? { toggle: this.#computer.devices.switches.toggle }
+        : null,
+    };
+  }
 }
