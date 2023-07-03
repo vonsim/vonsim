@@ -8,13 +8,13 @@ import { SimulatorError } from "./error";
 import type { EventGenerator } from "./events";
 
 export type MemoryOperation =
-  | { type: "read"; address: MemoryAddressLike }
-  | { type: "read.ok"; value: Byte<8> }
-  | { type: "read.error"; error: SimulatorError<"address-out-of-range"> }
-  | { type: "write"; address: MemoryAddressLike; value: Byte<8> }
-  | { type: "write.ok" }
+  | { type: "memory:read"; address: MemoryAddressLike }
+  | { type: "memory:read.ok"; value: Byte<8> }
+  | { type: "memory:read.error"; error: SimulatorError<"address-out-of-range"> }
+  | { type: "memory:write"; address: MemoryAddressLike; value: Byte<8> }
+  | { type: "memory:write.ok" }
   | {
-      type: "write.error";
+      type: "memory:write.error";
       error: SimulatorError<"address-has-instruction"> | SimulatorError<"address-out-of-range">;
     };
 
@@ -55,19 +55,18 @@ export class Memory extends Component {
    */
   *read(address: MemoryAddressLike): EventGenerator<Byte<8> | null> {
     address = Number(address);
-    yield { component: "memory", type: "read", address };
+    yield { type: "memory:read", address };
 
     if (!MemoryAddress.inRange(address)) {
       yield {
-        component: "memory",
-        type: "read.error",
+        type: "memory:read.error",
         error: new SimulatorError("address-out-of-range", address),
       };
       return null;
     }
 
     const value = Byte.fromUnsigned(this.#buffer.at(address)!, 8);
-    yield { component: "memory", type: "read.ok", value };
+    yield { type: "memory:read.ok", value };
     return value;
   }
 
@@ -79,12 +78,11 @@ export class Memory extends Component {
    */
   *write(address: MemoryAddressLike, value: Byte<8>): EventGenerator<boolean> {
     address = Number(address);
-    yield { component: "memory", type: "write", address, value };
+    yield { type: "memory:write", address, value };
 
     if (!MemoryAddress.inRange(address)) {
       yield {
-        component: "memory",
-        type: "write.error",
+        type: "memory:write.error",
         error: new SimulatorError("address-out-of-range", address),
       };
       return false;
@@ -92,15 +90,14 @@ export class Memory extends Component {
 
     if (this.#reservedMemory.has(address)) {
       yield {
-        component: "memory",
-        type: "write.error",
+        type: "memory:write.error",
         error: new SimulatorError("address-has-instruction", address),
       };
       return false;
     }
 
     this.#buffer.set([value.unsigned], address);
-    yield { component: "memory", type: "write.ok" };
+    yield { type: "memory:write.ok" };
     return true;
   }
 

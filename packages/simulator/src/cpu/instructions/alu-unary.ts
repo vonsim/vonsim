@@ -31,8 +31,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
 
   *execute(computer: Computer): EventGenerator<boolean> {
     yield {
-      component: "cpu",
-      type: "cycle.start",
+      type: "cpu:cycle.start",
       instruction: {
         name: this.name,
         operands: this.#formatOperands(),
@@ -46,31 +45,21 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
 
     // All intructions are, at least, 2 bytes long.
     yield* super.consumeInstruction(computer, "IR");
-    yield { component: "cpu", type: "decode" };
+    yield { type: "cpu:decode" };
     yield* super.consumeInstruction(computer, "IR");
-    yield { component: "cpu", type: "decode" };
+    yield { type: "cpu:decode" };
 
-    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded" };
 
     let left: AnyByte;
     if (this.operation.mode === "reg") {
       // Move operand to left register
       if (this.operation.size === 8) {
         left = computer.cpu.getRegister(this.operation.reg);
-        yield {
-          component: "cpu",
-          type: "register.copy",
-          input: this.operation.reg,
-          output: "left.l",
-        };
+        yield { type: "cpu:register.copy", input: this.operation.reg, output: "left.l" };
       } else {
         left = computer.cpu.getRegister(this.operation.reg);
-        yield {
-          component: "cpu",
-          type: "register.copy",
-          input: this.operation.reg,
-          output: "left",
-        };
+        yield { type: "cpu:register.copy", input: this.operation.reg, output: "left" };
       }
     } else {
       // Fetch operand, which is the memory cell
@@ -80,24 +69,24 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
-        yield { component: "cpu", type: "register.copy", input: "BX", output: "ri" };
+        yield { type: "cpu:register.copy", input: "BX", output: "ri" };
       }
 
       const lowAddress =
         this.operation.mode === "mem-direct"
           ? this.operation.address.byte
           : computer.cpu.getRegister("BX");
-      yield { component: "cpu", type: "mar.set", register: "ri" };
+      yield { type: "cpu:mar.set", register: "ri" };
       const lowValue = yield* computer.memory.read(lowAddress);
       if (!lowValue) return false; // Error reading memory
-      yield { component: "cpu", type: "mbr.get", register: "left.l" };
+      yield { type: "cpu:mbr.get", register: "left.l" };
       if (this.operation.size === 16) {
         const highAddress = lowAddress.add(1);
-        yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-        yield { component: "cpu", type: "mar.set", register: "ri" };
+        yield { type: "cpu:register.update", register: "ri", value: highAddress };
+        yield { type: "cpu:mar.set", register: "ri" };
         const highValue = yield* computer.memory.read(lowAddress);
         if (!highValue) return false; // Error reading memory
-        yield { component: "cpu", type: "mbr.get", register: "left.h" };
+        yield { type: "cpu:mbr.get", register: "left.h" };
         left = lowValue.withHigh(highValue);
       } else {
         left = lowValue;
@@ -105,22 +94,12 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
     }
 
     if (this.name === "INC") {
-      yield {
-        component: "cpu",
-        type: "register.update",
-        register: "right",
-        value: Byte.fromSigned(1, 16),
-      };
+      yield { type: "cpu:register.update", register: "right", value: Byte.fromSigned(1, 16) };
     } else if (this.name === "DEC") {
-      yield {
-        component: "cpu",
-        type: "register.update",
-        register: "right",
-        value: Byte.fromSigned(-1, 16),
-      };
+      yield { type: "cpu:register.update", register: "right", value: Byte.fromSigned(-1, 16) };
     }
 
-    yield { component: "cpu", type: "cycle.update", phase: "execute" };
+    yield { type: "cpu:cycle.update", phase: "execute" };
 
     let result: AnyByte;
 
@@ -188,8 +167,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
     // This if is kind of unnecessary, but TypeScript likes it
     if (this.operation.size === 8) {
       yield {
-        component: "cpu",
-        type: "alu.execute",
+        type: "cpu:alu.execute",
         operation: this.name === "INC" ? "ADD" : this.name === "DEC" ? "SUB" : this.name,
         size: this.operation.size,
         result: result as Byte<8>,
@@ -197,8 +175,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       };
     } else {
       yield {
-        component: "cpu",
-        type: "alu.execute",
+        type: "cpu:alu.execute",
         operation: this.name === "INC" ? "ADD" : this.name === "DEC" ? "SUB" : this.name,
         size: this.operation.size,
         result: result as Byte<16>,
@@ -206,18 +183,18 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       };
     }
 
-    yield { component: "cpu", type: "cycle.update", phase: "writeback" };
+    yield { type: "cpu:cycle.update", phase: "writeback" };
 
     if (this.operation.mode === "reg") {
       // Move result to operand
       if (this.operation.size === 8) {
         const reg = this.operation.reg;
         computer.cpu.setRegister(reg, result as Byte<8>);
-        yield { component: "cpu", type: "register.copy", input: "result.l", output: reg };
+        yield { type: "cpu:register.copy", input: "result.l", output: reg };
       } else {
         const reg = this.operation.reg;
         computer.cpu.setRegister(reg, result as Byte<16>);
-        yield { component: "cpu", type: "register.copy", input: "result", output: reg };
+        yield { type: "cpu:register.copy", input: "result", output: reg };
       }
     } else {
       const lowAddress =
@@ -225,16 +202,16 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
           ? this.operation.address.byte
           : computer.cpu.getRegister("BX");
       if (this.operation.size === 16) {
-        yield { component: "cpu", type: "register.update", register: "ri", value: lowAddress };
+        yield { type: "cpu:register.update", register: "ri", value: lowAddress };
       }
-      yield { component: "cpu", type: "mar.set", register: "ri" };
-      yield { component: "cpu", type: "mbr.set", register: "result.l" };
+      yield { type: "cpu:mar.set", register: "ri" };
+      yield { type: "cpu:mbr.set", register: "result.l" };
       if (!(yield* computer.memory.write(lowAddress, result.low))) return false; // Error writing memory
       if (this.operation.size === 16) {
         const highAddress = lowAddress.add(1);
-        yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-        yield { component: "cpu", type: "mar.set", register: "ri" };
-        yield { component: "cpu", type: "mbr.set", register: "result.h" };
+        yield { type: "cpu:register.update", register: "ri", value: highAddress };
+        yield { type: "cpu:mar.set", register: "ri" };
+        yield { type: "cpu:mbr.set", register: "result.h" };
         if (!(yield* computer.memory.write(lowAddress, result.high))) return false; // Error writing memory
       }
     }

@@ -11,8 +11,8 @@ import { PIOSwitchesAndLeds } from "./modules/pio/switches-and-leds";
 import { Timer } from "./modules/timer";
 
 export type ChipSelectEvent =
-  | { type: "selected"; chip: TupleToUnion<typeof IO.MODULES> }
-  | { type: "error"; error: SimulatorError<"io-memory-not-implemented"> };
+  | { type: "cs:selected"; chip: TupleToUnion<typeof IO.MODULES> }
+  | { type: "cs:error"; error: SimulatorError<"io-memory-not-implemented"> };
 
 export class IO extends Component {
   static readonly SIZE = IOAddress.MAX_ADDRESS + 1;
@@ -65,16 +65,12 @@ export class IO extends Component {
       if (!module) continue;
       const register = module.chipSelect(address);
       if (register) {
-        yield { component: "chip-select", type: "selected", chip: name };
+        yield { type: "cs:selected", chip: name };
         return yield* module.read(register as never);
       }
     }
 
-    yield {
-      component: "chip-select",
-      type: "error",
-      error: new SimulatorError("io-memory-not-implemented", address),
-    };
+    yield { type: "cs:error", error: new SimulatorError("io-memory-not-implemented", address) };
     return null;
   }
 
@@ -90,17 +86,13 @@ export class IO extends Component {
       if (!module) continue;
       const register = module.chipSelect(address);
       if (register) {
-        yield { component: "chip-select", type: "selected", chip: name };
+        yield { type: "cs:selected", chip: name };
         yield* module.write(register as never, value);
         return true;
       }
     }
 
-    yield {
-      component: "chip-select",
-      type: "error",
-      error: new SimulatorError("io-memory-not-implemented", address),
-    };
+    yield { type: "cs:error", error: new SimulatorError("io-memory-not-implemented", address) };
     return false;
   }
 

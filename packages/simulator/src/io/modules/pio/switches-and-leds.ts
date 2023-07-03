@@ -23,7 +23,7 @@ export class PIOSwitchesAndLeds extends PIO {
       PA = (switches & CA) | (PA & ~CA);
       if (PA !== this.PA.unsigned) {
         this.PA = Byte.fromUnsigned(PA, 8);
-        yield { component: "pio", type: "register.update", register: "PA", value: this.PA };
+        yield { type: "pio:register.update", register: "PA", value: this.PA };
       }
     } else {
       let PB = this.PB.unsigned;
@@ -39,7 +39,7 @@ export class PIOSwitchesAndLeds extends PIO {
       PB = PB & ~CB;
       if (PB !== this.PB.unsigned) {
         this.PB = Byte.fromUnsigned(PB, 8);
-        yield { component: "pio", type: "register.update", register: "PB", value: this.PB };
+        yield { type: "pio:register.update", register: "PB", value: this.PB };
       }
     }
   }

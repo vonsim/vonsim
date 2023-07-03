@@ -46,8 +46,7 @@ export class MOVInstruction extends Instruction<"MOV"> {
     const { mode, size, out, src } = this.operation;
 
     yield {
-      component: "cpu",
-      type: "cycle.start",
+      type: "cpu:cycle.start",
       instruction: {
         name: this.name,
         operands: this.#formatOperands(),
@@ -61,11 +60,11 @@ export class MOVInstruction extends Instruction<"MOV"> {
 
     // All intructions are, at least, 2 bytes long.
     yield* super.consumeInstruction(computer, "IR");
-    yield { component: "cpu", type: "decode" };
+    yield { type: "cpu:decode" };
     yield* super.consumeInstruction(computer, "IR");
-    yield { component: "cpu", type: "decode" };
+    yield { type: "cpu:decode" };
 
-    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded" };
 
     if (
       this.operation.mode === "reg<-mem" ||
@@ -80,7 +79,7 @@ export class MOVInstruction extends Instruction<"MOV"> {
         yield* super.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
-        yield { component: "cpu", type: "register.copy", input: "BX", output: "ri" };
+        yield { type: "cpu:register.copy", input: "BX", output: "ri" };
       }
     }
     if (this.operation.mode === "reg<-imd" || this.operation.mode === "mem<-imd") {
@@ -89,72 +88,72 @@ export class MOVInstruction extends Instruction<"MOV"> {
       if (this.operation.size === 16) yield* super.consumeInstruction(computer, "id.h");
     }
 
-    yield { component: "cpu", type: "cycle.update", phase: "writeback" };
+    yield { type: "cpu:cycle.update", phase: "writeback" };
 
     switch (mode) {
       case "reg<-reg": {
         // Yes, this is silly, but it ensures type safety.
         if (size === 8) {
-          yield { component: "cpu", type: "register.copy", input: src, output: out };
+          yield { type: "cpu:register.copy", input: src, output: out };
         } else {
-          yield { component: "cpu", type: "register.copy", input: src, output: out };
+          yield { type: "cpu:register.copy", input: src, output: out };
         }
         return true;
       }
 
       case "reg<-mem": {
-        yield { component: "cpu", type: "mar.set", register: "ri" };
+        yield { type: "cpu:mar.set", register: "ri" };
         const lowAddress =
           src.mode === "direct" ? src.address.byte : computer.cpu.getRegister("BX");
         const lowValue = yield* computer.memory.read(lowAddress);
         if (!lowValue) return false; // Error reading memory
-        yield { component: "cpu", type: "mbr.get", register: "id.l" };
+        yield { type: "cpu:mbr.get", register: "id.l" };
         if (size === 8) {
           computer.cpu.setRegister(out, lowValue);
-          yield { component: "cpu", type: "register.copy", input: "id.l", output: out };
+          yield { type: "cpu:register.copy", input: "id.l", output: out };
           return true;
         } else {
           const highAddress = lowAddress.add(1);
-          yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-          yield { component: "cpu", type: "mar.set", register: "ri" };
+          yield { type: "cpu:register.update", register: "ri", value: highAddress };
+          yield { type: "cpu:mar.set", register: "ri" };
           const highValue = yield* computer.memory.read(highAddress);
           if (!highValue) return false; // Error reading memory
-          yield { component: "cpu", type: "mbr.get", register: "id.h" };
+          yield { type: "cpu:mbr.get", register: "id.h" };
           const value = lowValue.withHigh(highValue);
           computer.cpu.setRegister(out, value);
-          yield { component: "cpu", type: "register.copy", input: "id", output: out };
+          yield { type: "cpu:register.copy", input: "id", output: out };
           return true;
         }
       }
 
       case "reg<-imd": {
         if (size === 8) {
-          yield { component: "cpu", type: "register.copy", input: "id.l", output: out };
+          yield { type: "cpu:register.copy", input: "id.l", output: out };
         } else {
-          yield { component: "cpu", type: "register.copy", input: "id", output: out };
+          yield { type: "cpu:register.copy", input: "id", output: out };
         }
         return true;
       }
 
       case "mem<-reg": {
         if (size === 8) {
-          yield { component: "cpu", type: "mar.set", register: "ri" };
-          yield { component: "cpu", type: "mbr.set", register: src };
+          yield { type: "cpu:mar.set", register: "ri" };
+          yield { type: "cpu:mbr.set", register: src };
           const address = out.mode === "direct" ? out.address : computer.cpu.getRegister("BX");
           const value = computer.cpu.getRegister(src);
           if (!(yield* computer.memory.write(address, value))) return false; // Error writing memory
         } else {
           const [low, high] = this.#splitRegister(src);
           const value = computer.cpu.getRegister(src);
-          yield { component: "cpu", type: "mar.set", register: "ri" };
-          yield { component: "cpu", type: "mbr.set", register: low };
+          yield { type: "cpu:mar.set", register: "ri" };
+          yield { type: "cpu:mbr.set", register: low };
           const lowAddress =
             out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
           if (!(yield* computer.memory.write(lowAddress, value.low))) return false; // Error writing memory
           const highAddress = lowAddress.add(1);
-          yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-          yield { component: "cpu", type: "mar.set", register: "ri" };
-          yield { component: "cpu", type: "mbr.set", register: high };
+          yield { type: "cpu:register.update", register: "ri", value: highAddress };
+          yield { type: "cpu:mar.set", register: "ri" };
+          yield { type: "cpu:mbr.set", register: high };
           if (!(yield* computer.memory.write(lowAddress, value.high))) return false; // Error writing memory
         }
         return true;
@@ -163,14 +162,14 @@ export class MOVInstruction extends Instruction<"MOV"> {
       case "mem<-imd": {
         const lowAddress =
           out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
-        yield { component: "cpu", type: "mar.set", register: "ri" };
-        yield { component: "cpu", type: "mbr.set", register: "id.l" };
+        yield { type: "cpu:mar.set", register: "ri" };
+        yield { type: "cpu:mbr.set", register: "id.l" };
         if (!(yield* computer.memory.write(lowAddress, src.low))) return false; // Error writing memory
         if (size === 8) return true;
         const highAddress = lowAddress.add(1);
-        yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-        yield { component: "cpu", type: "mar.set", register: "ri" };
-        yield { component: "cpu", type: "mbr.set", register: "id.h" };
+        yield { type: "cpu:register.update", register: "ri", value: highAddress };
+        yield { type: "cpu:mar.set", register: "ri" };
+        yield { type: "cpu:mbr.set", register: "id.h" };
         if (!(yield* computer.memory.write(highAddress, src.high))) return false; // Error writing memory
         return true;
       }

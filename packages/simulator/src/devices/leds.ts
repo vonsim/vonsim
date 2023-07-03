@@ -4,7 +4,7 @@ import type { JsonValue } from "type-fest";
 import { Component, ComponentReset } from "../component";
 import type { EventGenerator } from "../events";
 
-export type LedsEvent = { type: "update"; state: Byte<8> };
+export type LedsEvent = { type: "leds:update"; state: Byte<8> };
 
 export class Leds extends Component {
   #state = Byte.zero(8);
@@ -25,7 +25,7 @@ export class Leds extends Component {
    * Updates the state of the Leds. Called by the PIO.
    */
   *update(state: Byte<8>): EventGenerator {
-    yield { component: "leds", type: "update", state };
+    yield { type: "leds:update", state };
   }
 
   toJSON(): JsonValue {

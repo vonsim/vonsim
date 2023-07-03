@@ -61,11 +61,7 @@ export class CPU extends Component {
     while (true) {
       const instruction = this.#instructions.get(this.#IP.value);
       if (!instruction) {
-        yield {
-          component: "cpu",
-          type: "error",
-          error: new SimulatorError("no-instruction", this.#IP),
-        };
+        yield { type: "cpu:error", error: new SimulatorError("no-instruction", this.#IP) };
         return;
       }
       const continueExecuting = yield* instruction.execute(this.computer);
@@ -73,14 +69,14 @@ export class CPU extends Component {
 
       // Check for interrupts
       if (this.getFlag("IF") && this.computer.io.pic.isINTRActive()) {
-        yield { component: "cpu", type: "cycle.update", phase: "interrupt" };
+        yield { type: "cpu:cycle.update", phase: "interrupt" };
         const intn = yield* this.computer.io.pic.handleINTR();
-        yield { component: "cpu", type: "mbr.get", register: "ri.l" };
-        yield { component: "cpu", type: "register.update", register: "ri.h", value: Byte.zero(8) };
+        yield { type: "cpu:mbr.get", register: "ri.l" };
+        yield { type: "cpu:register.update", register: "ri.h", value: Byte.zero(8) };
         yield* this.startInterrupt(intn);
       }
 
-      yield { component: "cpu", type: "cycle.end" };
+      yield { type: "cpu:cycle.end" };
     }
   }
 
@@ -283,23 +279,23 @@ export class CPU extends Component {
     let SP = this.getRegister("SP");
 
     if (!MemoryAddress.inRange(SP.unsigned - 1)) {
-      yield { component: "cpu", type: "error", error: new SimulatorError("stack-overflow") };
+      yield { type: "cpu:error", error: new SimulatorError("stack-overflow") };
       return false;
     }
     SP = SP.add(-1);
-    yield { component: "cpu", type: "register.update", register: "SP", value: SP };
-    yield { component: "cpu", type: "mar.set", register: "SP" };
-    yield { component: "cpu", type: "mbr.set", register: "id.h" };
+    yield { type: "cpu:register.update", register: "SP", value: SP };
+    yield { type: "cpu:mar.set", register: "SP" };
+    yield { type: "cpu:mbr.set", register: "id.h" };
     if (!(yield* this.computer.memory.write(SP, value.high))) return false; // Error writing memory
 
     if (!MemoryAddress.inRange(SP.unsigned - 1)) {
-      yield { component: "cpu", type: "error", error: new SimulatorError("stack-overflow") };
+      yield { type: "cpu:error", error: new SimulatorError("stack-overflow") };
       return false;
     }
     SP = SP.add(-1);
-    yield { component: "cpu", type: "register.update", register: "SP", value: SP };
-    yield { component: "cpu", type: "mar.set", register: "SP" };
-    yield { component: "cpu", type: "mbr.set", register: "id.l" };
+    yield { type: "cpu:register.update", register: "SP", value: SP };
+    yield { type: "cpu:mar.set", register: "SP" };
+    yield { type: "cpu:mbr.set", register: "id.l" };
     if (!(yield* this.computer.memory.write(SP, value.low))) return false; // Error writing memory
 
     return true;
@@ -314,26 +310,26 @@ export class CPU extends Component {
     let SP = this.getRegister("SP");
 
     if (!MemoryAddress.inRange(SP)) {
-      yield { component: "cpu", type: "error", error: new SimulatorError("stack-underflow") };
+      yield { type: "cpu:error", error: new SimulatorError("stack-underflow") };
       return null;
     }
-    yield { component: "cpu", type: "mar.set", register: "SP" };
+    yield { type: "cpu:mar.set", register: "SP" };
     const low = yield* this.computer.memory.read(SP);
     if (!low) return null; // Error reading memory
-    yield { component: "cpu", type: "mbr.get", register: "id.l" };
+    yield { type: "cpu:mbr.get", register: "id.l" };
     SP = SP.add(1);
-    yield { component: "cpu", type: "register.update", register: "SP", value: SP };
+    yield { type: "cpu:register.update", register: "SP", value: SP };
 
     if (!MemoryAddress.inRange(SP)) {
-      yield { component: "cpu", type: "error", error: new SimulatorError("stack-underflow") };
+      yield { type: "cpu:error", error: new SimulatorError("stack-underflow") };
       return null;
     }
-    yield { component: "cpu", type: "mar.set", register: "SP" };
+    yield { type: "cpu:mar.set", register: "SP" };
     const high = yield* this.computer.memory.read(SP);
     if (!high) return null; // Error reading memory
-    yield { component: "cpu", type: "mbr.get", register: "id.h" };
+    yield { type: "cpu:mbr.get", register: "id.h" };
     SP = SP.add(1);
-    yield { component: "cpu", type: "register.update", register: "SP", value: SP };
+    yield { type: "cpu:register.update", register: "SP", value: SP };
 
     return low.withHigh(high);
   }
@@ -348,27 +344,27 @@ export class CPU extends Component {
    * @param number The interrupt number (0-255).
    */
   *startInterrupt(number: Byte<8>): EventGenerator<boolean> {
-    yield { component: "cpu", type: "register.copy", input: "FLAGS", output: "id" };
+    yield { type: "cpu:register.copy", input: "FLAGS", output: "id" };
     if (!(yield* this.pushToStack(this.FLAGS))) return false; // Stack overflow
     this.setFlag("IF", false);
-    yield { component: "cpu", type: "register.update", register: "FLAGS", value: this.FLAGS };
-    yield { component: "cpu", type: "register.copy", input: "IP", output: "id" };
+    yield { type: "cpu:register.update", register: "FLAGS", value: this.FLAGS };
+    yield { type: "cpu:register.copy", input: "IP", output: "id" };
     if (!(yield* this.pushToStack(this.#IP.byte))) return false; // Stack overflow
 
     let vector = MemoryAddress.from(number.unsigned * 4);
-    yield { component: "cpu", type: "register.update", register: "ri", value: vector.byte };
-    yield { component: "cpu", type: "mar.set", register: "ri" };
+    yield { type: "cpu:register.update", register: "ri", value: vector.byte };
+    yield { type: "cpu:mar.set", register: "ri" };
 
     const low = yield* this.computer.memory.read(vector);
     if (!low) return false; // Error reading memory
-    yield { component: "cpu", type: "mbr.get", register: "id.l" };
+    yield { type: "cpu:mbr.get", register: "id.l" };
     vector = MemoryAddress.from(vector.value + 1);
     const high = yield* this.computer.memory.read(vector);
     if (!high) return false; // Error reading memory
-    yield { component: "cpu", type: "mbr.get", register: "id.h" };
+    yield { type: "cpu:mbr.get", register: "id.h" };
 
     this.setIP(low.withHigh(high));
-    yield { component: "cpu", type: "register.update", register: "IP", value: this.#IP.byte };
+    yield { type: "cpu:register.update", register: "IP", value: this.#IP.byte };
 
     return true;
   }

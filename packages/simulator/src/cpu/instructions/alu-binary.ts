@@ -47,8 +47,7 @@ export class ALUBinaryInstruction extends Instruction<
     const { mode, size, out, src } = this.operation;
 
     yield {
-      component: "cpu",
-      type: "cycle.start",
+      type: "cpu:cycle.start",
       instruction: {
         name: this.name,
         operands: this.#formatOperands(),
@@ -62,21 +61,21 @@ export class ALUBinaryInstruction extends Instruction<
 
     // All intructions are, at least, 2 bytes long.
     yield* super.consumeInstruction(computer, "IR");
-    yield { component: "cpu", type: "decode" };
+    yield { type: "cpu:decode" };
     yield* super.consumeInstruction(computer, "IR");
-    yield { component: "cpu", type: "decode" };
+    yield { type: "cpu:decode" };
 
-    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded" };
 
     let left: AnyByte;
     if (mode === "reg<-reg" || mode === "reg<-mem" || mode === "reg<-imd") {
       // Move out operand to left register
       if (size === 8) {
         left = computer.cpu.getRegister(out);
-        yield { component: "cpu", type: "register.copy", input: out, output: "left.l" };
+        yield { type: "cpu:register.copy", input: out, output: "left.l" };
       } else {
         left = computer.cpu.getRegister(out);
-        yield { component: "cpu", type: "register.copy", input: out, output: "left" };
+        yield { type: "cpu:register.copy", input: out, output: "left" };
       }
     } else {
       // Fetch left operand, which is the memory cell
@@ -86,21 +85,21 @@ export class ALUBinaryInstruction extends Instruction<
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
-        yield { component: "cpu", type: "register.copy", input: "BX", output: "ri" };
+        yield { type: "cpu:register.copy", input: "BX", output: "ri" };
       }
 
       const lowAddress = out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
-      yield { component: "cpu", type: "mar.set", register: "ri" };
+      yield { type: "cpu:mar.set", register: "ri" };
       const lowValue = yield* computer.memory.read(lowAddress);
       if (!lowValue) return false; // Error reading memory
-      yield { component: "cpu", type: "mbr.get", register: "left.l" };
+      yield { type: "cpu:mbr.get", register: "left.l" };
       if (size === 16) {
         const highAddress = lowAddress.add(1);
-        yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-        yield { component: "cpu", type: "mar.set", register: "ri" };
+        yield { type: "cpu:register.update", register: "ri", value: highAddress };
+        yield { type: "cpu:mar.set", register: "ri" };
         const highValue = yield* computer.memory.read(lowAddress);
         if (!highValue) return false; // Error reading memory
-        yield { component: "cpu", type: "mbr.get", register: "left.h" };
+        yield { type: "cpu:mbr.get", register: "left.h" };
         left = lowValue.withHigh(highValue);
       } else {
         left = lowValue;
@@ -112,10 +111,10 @@ export class ALUBinaryInstruction extends Instruction<
       // Move src operand to right register
       if (size === 8) {
         right = computer.cpu.getRegister(src);
-        yield { component: "cpu", type: "register.copy", input: src, output: "right.l" };
+        yield { type: "cpu:register.copy", input: src, output: "right.l" };
       } else {
         right = computer.cpu.getRegister(src);
-        yield { component: "cpu", type: "register.copy", input: src, output: "right" };
+        yield { type: "cpu:register.copy", input: src, output: "right" };
       }
     } else if (mode === "reg<-imd" || mode === "mem<-imd") {
       // Move immediate value to right register
@@ -130,28 +129,28 @@ export class ALUBinaryInstruction extends Instruction<
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
-        yield { component: "cpu", type: "register.copy", input: "BX", output: "ri" };
+        yield { type: "cpu:register.copy", input: "BX", output: "ri" };
       }
 
       const lowAddress = src.mode === "direct" ? src.address.byte : computer.cpu.getRegister("BX");
-      yield { component: "cpu", type: "mar.set", register: "ri" };
+      yield { type: "cpu:mar.set", register: "ri" };
       const lowValue = yield* computer.memory.read(lowAddress);
       if (!lowValue) return false; // Error reading memory
-      yield { component: "cpu", type: "mbr.get", register: "right.l" };
+      yield { type: "cpu:mbr.get", register: "right.l" };
       if (size === 16) {
         const highAddress = lowAddress.add(1);
-        yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-        yield { component: "cpu", type: "mar.set", register: "ri" };
+        yield { type: "cpu:register.update", register: "ri", value: highAddress };
+        yield { type: "cpu:mar.set", register: "ri" };
         const highValue = yield* computer.memory.read(lowAddress);
         if (!highValue) return false; // Error reading memory
-        yield { component: "cpu", type: "mbr.get", register: "right.h" };
+        yield { type: "cpu:mbr.get", register: "right.h" };
         right = lowValue.withHigh(highValue);
       } else {
         right = lowValue;
       }
     }
 
-    yield { component: "cpu", type: "cycle.update", phase: "execute" };
+    yield { type: "cpu:cycle.update", phase: "execute" };
 
     let result: AnyByte;
     switch (this.name) {
@@ -229,8 +228,7 @@ export class ALUBinaryInstruction extends Instruction<
     // This if is kind of unnecessary, but TypeScript likes it
     if (size === 8) {
       yield {
-        component: "cpu",
-        type: "alu.execute",
+        type: "cpu:alu.execute",
         operation: this.name === "CMP" ? "SUB" : this.name,
         size,
         result: result as Byte<8>,
@@ -238,8 +236,7 @@ export class ALUBinaryInstruction extends Instruction<
       };
     } else {
       yield {
-        component: "cpu",
-        type: "alu.execute",
+        type: "cpu:alu.execute",
         operation: this.name === "CMP" ? "SUB" : this.name,
         size,
         result: result as Byte<16>,
@@ -249,30 +246,30 @@ export class ALUBinaryInstruction extends Instruction<
 
     if (this.name === "CMP") return true; // No writeback
 
-    yield { component: "cpu", type: "cycle.update", phase: "writeback" };
+    yield { type: "cpu:cycle.update", phase: "writeback" };
 
     if (mode === "reg<-reg" || mode === "reg<-mem" || mode === "reg<-imd") {
       // Move result to out operand
       if (size === 8) {
         computer.cpu.setRegister(out, result as Byte<8>);
-        yield { component: "cpu", type: "register.copy", input: "result.l", output: out };
+        yield { type: "cpu:register.copy", input: "result.l", output: out };
       } else {
         computer.cpu.setRegister(out, result as Byte<16>);
-        yield { component: "cpu", type: "register.copy", input: "result", output: out };
+        yield { type: "cpu:register.copy", input: "result", output: out };
       }
     } else {
       const lowAddress = out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
       if (size === 16) {
-        yield { component: "cpu", type: "register.update", register: "ri", value: lowAddress };
+        yield { type: "cpu:register.update", register: "ri", value: lowAddress };
       }
-      yield { component: "cpu", type: "mar.set", register: "ri" };
-      yield { component: "cpu", type: "mbr.set", register: "result.l" };
+      yield { type: "cpu:mar.set", register: "ri" };
+      yield { type: "cpu:mbr.set", register: "result.l" };
       if (!(yield* computer.memory.write(lowAddress, result.low))) return false; // Error writing memory
       if (size === 16) {
         const highAddress = lowAddress.add(1);
-        yield { component: "cpu", type: "register.update", register: "ri", value: highAddress };
-        yield { component: "cpu", type: "mar.set", register: "ri" };
-        yield { component: "cpu", type: "mbr.set", register: "result.h" };
+        yield { type: "cpu:register.update", register: "ri", value: highAddress };
+        yield { type: "cpu:mar.set", register: "ri" };
+        yield { type: "cpu:mbr.set", register: "result.h" };
         if (!(yield* computer.memory.write(lowAddress, result.high))) return false; // Error writing memory
       }
     }

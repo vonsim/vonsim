@@ -8,12 +8,12 @@ import { IOModule } from "../module";
 type TimerRegister = "CONT" | "COMP";
 
 export type TimerOperation =
-  | { type: "read"; register: TimerRegister }
-  | { type: "read.ok"; value: Byte<8> }
-  | { type: "write"; register: TimerRegister; value: Byte<8> }
-  | { type: "write.ok" }
-  | { type: "register.update"; register: TimerRegister; value: Byte<8> }
-  | { type: "interrupt" };
+  | { type: "timer:read"; register: TimerRegister }
+  | { type: "timer:read.ok"; value: Byte<8> }
+  | { type: "timer:write"; register: TimerRegister; value: Byte<8> }
+  | { type: "timer:write.ok" }
+  | { type: "timer:register.update"; register: TimerRegister; value: Byte<8> }
+  | { type: "timer:interrupt" };
 
 export class Timer extends IOModule<TimerRegister> {
   #CONT = Byte.zero(8);
@@ -32,26 +32,26 @@ export class Timer extends IOModule<TimerRegister> {
   }
 
   *read(register: TimerRegister): EventGenerator<Byte<8>> {
-    yield { component: "timer", type: "read", register };
+    yield { type: "timer:read", register };
 
     let value: Byte<8>;
     if (register === "CONT") value = this.#CONT;
     else if (register === "COMP") value = this.#COMP;
     else return register; // Exhaustive check
 
-    yield { component: "timer", type: "read.ok", value };
+    yield { type: "timer:read.ok", value };
     return value;
   }
 
   *write(register: TimerRegister, value: Byte<8>): EventGenerator {
-    yield { component: "timer", type: "write", register, value };
+    yield { type: "timer:write", register, value };
 
     if (register === "CONT") this.#CONT = value;
     else if (register === "COMP") this.#COMP = value;
     else return register; // Exhaustive check
 
-    yield { component: "timer", type: "register.update", register, value };
-    yield { component: "timer", type: "write.ok" };
+    yield { type: "timer:register.update", register, value };
+    yield { type: "timer:write.ok" };
   }
 
   /**
@@ -61,9 +61,9 @@ export class Timer extends IOModule<TimerRegister> {
     const value = this.#CONT.unsigned === Byte.maxValue(8) ? Byte.zero(8) : this.#CONT.add(1);
 
     this.#CONT = value;
-    yield { component: "timer", type: "register.update", register: "CONT", value };
+    yield { type: "timer:register.update", register: "CONT", value };
     if (this.#COMP.equals(value)) {
-      yield { component: "timer", type: "interrupt" };
+      yield { type: "timer:interrupt" };
       yield* this.computer.io.pic.interrupt(1);
     }
   }

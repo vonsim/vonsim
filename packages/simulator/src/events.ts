@@ -12,17 +12,17 @@ import type { TimerOperation } from "./io/modules/timer";
 import type { MemoryOperation } from "./memory";
 
 export type SimulatorEvent =
-  | ({ component: "cpu" } & CPUMicroOperation)
-  | ({ component: "memory" } & MemoryOperation)
-  | ({ component: "chip-select" } & ChipSelectEvent)
-  | ({ component: "console" } & ConsoleEvent)
-  | ({ component: "clock" } & ClockEvent)
-  | ({ component: "f10" } & F10Event)
-  | ({ component: "leds" } & LedsEvent)
-  | ({ component: "switches" } & SwitchesEvent)
-  | ({ component: "pic" } & PICOperation)
-  | ({ component: "pio" } & PIOOperation)
-  | ({ component: "timer" } & TimerOperation)
-  | ({ component: "printer" } & PrinterEvent);
+  | ClockEvent // clock:*
+  | ConsoleEvent // console:*
+  | CPUMicroOperation // cpu:*
+  | ChipSelectEvent // cs:*
+  | F10Event // f10:*
+  | LedsEvent // leds:*
+  | MemoryOperation // memory:*
+  | PICOperation // pic:*
+  | PIOOperation // pio:*
+  | PrinterEvent // printer:*
+  | SwitchesEvent // switches:*
+  | TimerOperation; // timer:*
 
 export type EventGenerator<TReturn = void> = Generator<SimulatorEvent, TReturn>;

@@ -6,10 +6,10 @@ import { Component, ComponentReset } from "../component";
 import type { EventGenerator } from "../events";
 
 export type PrinterEvent =
-  | { type: "buffer.add"; char: Byte<8> }
-  | { type: "buffer.pop"; char: Byte<8> }
-  | { type: "paper.replace" }
-  | { type: "paper.print"; char: string };
+  | { type: "printer:buffer.add"; char: Byte<8> }
+  | { type: "printer:buffer.pop"; char: Byte<8> }
+  | { type: "printer:paper.replace" }
+  | { type: "printer:paper.print"; char: string };
 
 export class Printer extends Component {
   static readonly BUFFER_SIZE = 5;
@@ -38,7 +38,7 @@ export class Printer extends Component {
   *addToBuffer(char: Byte<8>): EventGenerator {
     if (!this.busy) {
       this.#buffer.push(char);
-      yield { component: "printer", type: "buffer.add", char };
+      yield { type: "printer:buffer.add", char };
     }
   }
 
@@ -47,7 +47,7 @@ export class Printer extends Component {
    */
   *clear(): EventGenerator {
     this.#paper = "";
-    yield { component: "printer", type: "paper.replace" };
+    yield { type: "printer:paper.replace" };
   }
 
   /**
@@ -59,7 +59,7 @@ export class Printer extends Component {
 
     const [first, ...rest] = this.#buffer;
     this.#buffer = rest;
-    yield { component: "printer", type: "buffer.pop", char: first };
+    yield { type: "printer:buffer.pop", char: first };
 
     if (first.unsigned === 12) {
       // Character is a form feed
@@ -67,7 +67,7 @@ export class Printer extends Component {
     } else {
       const char = decimalToChar(first.unsigned)!;
       this.#paper += char;
-      yield { component: "printer", type: "paper.print", char };
+      yield { type: "printer:paper.print", char };
     }
   }
 

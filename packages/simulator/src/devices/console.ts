@@ -5,7 +5,7 @@ import type { JsonValue } from "type-fest";
 import { Component, ComponentReset } from "../component";
 import type { EventGenerator } from "../events";
 
-export type ConsoleEvent = { type: "read" } | { type: "write"; char: Byte<8> };
+export type ConsoleEvent = { type: "console:read" } | { type: "console:write"; char: Byte<8> };
 
 export class Console extends Component {
   #screen = "";
@@ -35,7 +35,7 @@ export class Console extends Component {
    */
   *read(): EventGenerator<Byte<8>> {
     // This event must be followed by a generator.next(Byte<8>)
-    const char = yield { component: "console", type: "read" };
+    const char = yield { type: "console:read" };
 
     if (!(char instanceof Byte) || !char.is8bits()) {
       throw new Error("INT 6 was not given a valid 8-bit character!");
@@ -67,7 +67,7 @@ export class Console extends Component {
         break;
     }
 
-    yield { component: "console", type: "write", char };
+    yield { type: "console:write", char };
   }
 
   toJSON(): JsonValue {

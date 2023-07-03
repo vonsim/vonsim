@@ -36,25 +36,24 @@ export type InstructionMetadata = {
 };
 
 export type CPUMicroOperation =
-  | { type: "cycle.start"; instruction: InstructionMetadata } // Start of a cycle
-  | { type: "cycle.update"; phase: "decoded" } // Once there is enough information to know what an instruction will do (not the operands yet)
-  | { type: "cycle.update"; phase: "execute" } // Once the operands are known
-  | { type: "cycle.update"; phase: "writeback" } // Once the instruction has been executed and the result is ready to be written back
-  | { type: "cycle.update"; phase: "interrupt" }
-  | { type: "cycle.end" } // End of a cycle
-  | { type: "alu.execute"; operation: string; size: 8; result: Byte<8>; flags: Byte<16> }
-  | { type: "alu.execute"; operation: string; size: 16; result: Byte<16>; flags: Byte<16> }
-  | { type: "decode" }
-  | { type: "mar.set"; register: "IP" | "SP" | "ri" }
-  | { type: "mbr.get"; register: Physical8bitsRegisters }
-  | { type: "mbr.set"; register: Physical8bitsRegisters }
-  | { type: "register.copy"; input: Physical8bitsRegisters; output: Physical8bitsRegisters }
-  | { type: "register.copy"; input: Physical16bitsRegisters; output: Physical16bitsRegisters }
-  | { type: "register.update"; register: Physical8bitsRegisters; value: Byte<8> }
-  | { type: "register.update"; register: Physical16bitsRegisters; value: Byte<16> }
-  | { type: "inta.on" | "inta.off" }
-  | { type: "int.0" | "int.3" | "int.6" | "int.7" }
-  | { type: "console.read" } // This event must be followed by a generator.next(Byte<8>)
-  | { type: "console.write"; char: Byte<8> }
-  | { type: "error"; error: SimulatorError<any> }
-  | { type: "halt" };
+  | { type: "cpu:cycle.start"; instruction: InstructionMetadata } // Start of a cycle
+  | { type: "cpu:cycle.update"; phase: "decoded" } // Once there is enough information to know what an instruction will do (not the operands yet)
+  | { type: "cpu:cycle.update"; phase: "execute" } // Once the operands are known
+  | { type: "cpu:cycle.update"; phase: "writeback" } // Once the instruction has been executed and the result is ready to be written back
+  | { type: "cpu:cycle.update"; phase: "interrupt" }
+  | { type: "cpu:cycle.end" } // End of a cycle
+  | { type: "cpu:alu.execute"; operation: string; size: 8; result: Byte<8>; flags: Byte<16> }
+  | { type: "cpu:alu.execute"; operation: string; size: 16; result: Byte<16>; flags: Byte<16> }
+  | { type: "cpu:decode" }
+  | { type: "cpu:mar.set"; register: "IP" | "SP" | "ri" }
+  | { type: "cpu:mbr.get"; register: Physical8bitsRegisters }
+  | { type: "cpu:mbr.set"; register: Physical8bitsRegisters }
+  | { type: "cpu:register.copy"; input: Physical8bitsRegisters; output: Physical8bitsRegisters }
+  | { type: "cpu:register.copy"; input: Physical16bitsRegisters; output: Physical16bitsRegisters }
+  | { type: "cpu:register.update"; register: Physical8bitsRegisters; value: Byte<8> }
+  | { type: "cpu:register.update"; register: Physical16bitsRegisters; value: Byte<16> }
+  | { type: "cpu:inta.on" }
+  | { type: "cpu:inta.off" }
+  | { type: `cpu:int.${0 | 3 | 6 | 7}` }
+  | { type: "cpu:error"; error: SimulatorError<any> }
+  | { type: "cpu:halt" };

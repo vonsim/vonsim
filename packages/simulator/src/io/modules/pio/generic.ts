@@ -10,11 +10,11 @@ export type PIOPort = "A" | "B";
 export type PIORegister = `P${PIOPort}` | `C${PIOPort}`;
 
 export type PIOOperation =
-  | { type: "read"; register: PIORegister }
-  | { type: "read.ok"; value: Byte<8> }
-  | { type: "write"; register: PIORegister; value: Byte<8> }
-  | { type: "write.ok" }
-  | { type: "register.update"; register: PIORegister; value: Byte<8> };
+  | { type: "pio:read"; register: PIORegister }
+  | { type: "pio:read.ok"; value: Byte<8> }
+  | { type: "pio:write"; register: PIORegister; value: Byte<8> }
+  | { type: "pio:write.ok" }
+  | { type: "pio:register.update"; register: PIORegister; value: Byte<8> };
 
 export abstract class PIO extends IOModule<PIORegister> {
   protected PA = Byte.zero(8);
@@ -46,7 +46,7 @@ export abstract class PIO extends IOModule<PIORegister> {
   }
 
   *read(register: PIORegister): EventGenerator<Byte<8>> {
-    yield { component: "pio", type: "read", register };
+    yield { type: "pio:read", register };
 
     let value: Byte<8>;
     if (register === "PA") value = this.PA;
@@ -55,12 +55,12 @@ export abstract class PIO extends IOModule<PIORegister> {
     else if (register === "CB") value = this.CB;
     else return register; // Exhaustive check
 
-    yield { component: "pio", type: "read.ok", value };
+    yield { type: "pio:read.ok", value };
     return value;
   }
 
   *write(register: PIORegister, value: Byte<8>): EventGenerator {
-    yield { component: "pio", type: "write", register, value };
+    yield { type: "pio:write", register, value };
 
     if (register === "PA") this.PA = value;
     else if (register === "PB") this.PB = value;
@@ -68,12 +68,12 @@ export abstract class PIO extends IOModule<PIORegister> {
     else if (register === "CB") this.CB = value;
     else return register; // Exhaustive check
 
-    yield { component: "pio", type: "register.update", register, value };
+    yield { type: "pio:register.update", register, value };
 
     if (register === "PA" || register === "CA") yield* this.updatePort("A");
     else yield* this.updatePort("B");
 
-    yield { component: "pio", type: "write.ok" };
+    yield { type: "pio:write.ok" };
   }
 
   /**

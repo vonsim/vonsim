@@ -4,7 +4,7 @@ import type { JsonValue } from "type-fest";
 import { Component, ComponentReset } from "../component";
 import type { EventGenerator } from "../events";
 
-export type SwitchesEvent = { type: "toggle"; index: number };
+export type SwitchesEvent = { type: "switches:toggle"; index: number };
 
 export class Switches extends Component {
   #connected = false;
@@ -31,7 +31,7 @@ export class Switches extends Component {
 
     if (this.#state.bit(index)) this.#state = this.#state.clearBit(index);
     else this.#state = this.#state.setBit(index);
-    yield { component: "switches", type: "toggle", index };
+    yield { type: "switches:toggle", index };
 
     yield* this.computer.io.pio!.updatePort("A");
   }

@@ -11,8 +11,7 @@ export class JumpInstruction extends Instruction<
 
   *execute(computer: Computer): EventGenerator<boolean> {
     yield {
-      component: "cpu",
-      type: "cycle.start",
+      type: "cpu:cycle.start",
       instruction: {
         name: this.name,
         operands: [this.jumpTo.toString()],
@@ -22,8 +21,8 @@ export class JumpInstruction extends Instruction<
 
     // All these intructions are 3 bytes long.
     yield* super.consumeInstruction(computer, "IR");
-    yield { component: "cpu", type: "decode" };
-    yield { component: "cpu", type: "cycle.update", phase: "decoded" };
+    yield { type: "cpu:decode" };
+    yield { type: "cpu:cycle.update", phase: "decoded" };
 
     let jump: boolean;
     switch (this.name) {
@@ -62,26 +61,26 @@ export class JumpInstruction extends Instruction<
     }
 
     if (!jump) {
-      yield { component: "cpu", type: "cycle.update", phase: "writeback" };
+      yield { type: "cpu:cycle.update", phase: "writeback" };
       const IP = computer.cpu.getIP().byte.add(2);
       computer.cpu.setIP(IP);
-      yield { component: "cpu", type: "register.update", register: "IP", value: IP };
+      yield { type: "cpu:register.update", register: "IP", value: IP };
       return true;
     }
 
     // Consume jump address
     yield* super.consumeInstruction(computer, "ri.l");
     yield* super.consumeInstruction(computer, "ri.h");
-    yield { component: "cpu", type: "cycle.update", phase: "writeback" };
+    yield { type: "cpu:cycle.update", phase: "writeback" };
 
     if (this.name === "CALL") {
       const IP = computer.cpu.getIP().byte;
-      yield { component: "cpu", type: "register.copy", input: "IP", output: "id" };
+      yield { type: "cpu:register.copy", input: "IP", output: "id" };
       yield* computer.cpu.pushToStack(IP);
     }
 
     computer.cpu.setIP(this.jumpTo);
-    yield { component: "cpu", type: "register.update", register: "IP", value: this.jumpTo.byte };
+    yield { type: "cpu:register.update", register: "IP", value: this.jumpTo.byte };
 
     return true;
   }

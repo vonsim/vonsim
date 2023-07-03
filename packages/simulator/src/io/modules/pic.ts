@@ -10,13 +10,14 @@ type InterruptLine = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 type PICRegister = "EOI" | "IMR" | "IRR" | "ISR" | `INT${InterruptLine}`;
 
 export type PICOperation =
-  | { type: "read"; register: PICRegister }
-  | { type: "read.ok"; value: Byte<8> }
-  | { type: "write"; register: PICRegister; value: Byte<8> }
-  | { type: "write.ok" }
-  | { type: "register.update"; register: Omit<PICRegister, "EOI">; value: Byte<8> }
-  | { type: "intr.on" | "intr.off" }
-  | { type: "int.send"; number: Byte<8> };
+  | { type: "pic:read"; register: PICRegister }
+  | { type: "pic:read.ok"; value: Byte<8> }
+  | { type: "pic:write"; register: PICRegister; value: Byte<8> }
+  | { type: "pic:write.ok" }
+  | { type: "pic:register.update"; register: Omit<PICRegister, "EOI">; value: Byte<8> }
+  | { type: "pic:intr.on" }
+  | { type: "pic:intr.off" }
+  | { type: "pic:int.send"; number: Byte<8> };
 
 /**
  * Programmable Interrupt Controller.
@@ -78,7 +79,7 @@ export class PIC extends IOModule<PICRegister> {
     // If the ISR is zero, no interrupt is being handled.
     if (this.#getPending() !== null) {
       // There is a pending interrupt -> turn on the INTR line
-      yield { component: "pic", type: "intr.on" };
+      yield { type: "pic:intr.on" };
     }
   }
 
@@ -97,7 +98,7 @@ export class PIC extends IOModule<PICRegister> {
   }
 
   *read(register: PICRegister): EventGenerator<Byte<8>> {
-    yield { component: "pic", type: "read", register };
+    yield { type: "pic:read", register };
 
     let value: Byte<8>;
     if (register === "EOI") value = Byte.zero(8);
@@ -109,36 +110,36 @@ export class PIC extends IOModule<PICRegister> {
       value = this.#lines[line];
     }
 
-    yield { component: "pic", type: "read.ok", value };
+    yield { type: "pic:read.ok", value };
     return value;
   }
 
   *write(register: PICRegister, value: Byte<8>): EventGenerator {
-    yield { component: "pic", type: "write", register, value };
+    yield { type: "pic:write", register, value };
 
     if (register === "EOI") {
       if (!this.#ISR.isZero()) {
         // If the ISR is not zero, an interrupt is being handled.
         // Also, the INTR line is active.
-        yield { component: "pic", type: "intr.off" };
+        yield { type: "pic:intr.off" };
 
         this.#ISR = Byte.zero(8);
-        yield { component: "pic", type: "register.update", register: "ISR", value: this.#ISR };
+        yield { type: "pic:register.update", register: "ISR", value: this.#ISR };
         yield* this.#updateINTR();
       }
     } else if (register === "IMR") {
       this.#IMR = value;
-      yield { component: "pic", type: "register.update", register: "IMR", value: this.#IMR };
+      yield { type: "pic:register.update", register: "IMR", value: this.#IMR };
       yield* this.#updateINTR();
     } else if (register === "IRR" || register === "ISR") {
       // Do nothing -- these registers are read-only
     } else {
       const line = Number(register.slice(3));
       this.#lines[line] = value;
-      yield { component: "pic", type: "register.update", register, value };
+      yield { type: "pic:register.update", register, value };
     }
 
-    yield { component: "pic", type: "write.ok" };
+    yield { type: "pic:write.ok" };
   }
 
   /**
@@ -154,7 +155,7 @@ export class PIC extends IOModule<PICRegister> {
     if (this.#IRR.bit(line)) return;
 
     this.#IRR = this.#IRR.setBit(line);
-    yield { component: "pic", type: "register.update", register: "IRR", value: this.#IRR };
+    yield { type: "pic:register.update", register: "IRR", value: this.#IRR };
     yield* this.#updateINTR();
   }
 
@@ -173,7 +174,7 @@ export class PIC extends IOModule<PICRegister> {
    * @returns The interrupt number (8-bits).
    */
   *handleINTR(): EventGenerator<Byte<8>> {
-    yield { component: "cpu", type: "inta.on" };
+    yield { type: "cpu:inta.on" };
 
     if (!this.#ISR.isZero()) {
       // If the ISR is not zero, an interrupt is being handled.
@@ -188,17 +189,17 @@ export class PIC extends IOModule<PICRegister> {
 
     // Update ISR and IRR
     this.#IRR = this.#IRR.clearBit(pending);
-    yield { component: "pic", type: "register.update", register: "IRR", value: this.#IRR };
+    yield { type: "pic:register.update", register: "IRR", value: this.#IRR };
     this.#ISR = this.#ISR.setBit(pending);
-    yield { component: "pic", type: "register.update", register: "ISR", value: this.#ISR };
+    yield { type: "pic:register.update", register: "ISR", value: this.#ISR };
 
-    yield { component: "cpu", type: "inta.off" };
+    yield { type: "cpu:inta.off" };
 
     // Send interrupt number
-    yield { component: "cpu", type: "inta.on" };
+    yield { type: "cpu:inta.on" };
     const number = this.#lines[pending];
-    yield { component: "pic", type: "int.send", number };
-    yield { component: "cpu", type: "inta.off" };
+    yield { type: "pic:int.send", number };
+    yield { type: "cpu:inta.off" };
     return number;
   }
 
