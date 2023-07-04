@@ -2,16 +2,19 @@ import { decimalToChar } from "@vonsim/common/ascii";
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentReset } from "../component";
-import type { EventGenerator } from "../events";
+import { Component, ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
 
 export type ConsoleEvent = { type: "console:read" } | { type: "console:write"; char: Byte<8> };
 
 export class Console extends Component {
-  #screen = "";
+  #screen: string;
 
-  reset({ memory }: ComponentReset): void {
-    if (memory === "clean") {
+  constructor(options: ComponentInit) {
+    super(options);
+    if (options.data === "unchanged") {
+      this.#screen = options.previous.io.console.#screen;
+    } else {
       this.#screen = "";
     }
   }

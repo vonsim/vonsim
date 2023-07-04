@@ -1,12 +1,13 @@
 import { Byte } from "@vonsim/common/byte";
 
 import type { EventGenerator } from "../../../events";
+import type { IOPIOSwitchesAndLeds } from "../../configurations";
 import { PIO, PIOPort } from "./generic";
 
 export class PIOSwitchesAndLeds extends PIO {
   *updatePort(port: PIOPort): EventGenerator {
     if (port === "A") {
-      const switches = this.computer.devices.switches!.state.unsigned;
+      const switches = (this.computer.io as IOPIOSwitchesAndLeds).switches.state.unsigned;
       let PA = this.PA.unsigned;
       const CA = this.CA.unsigned;
 

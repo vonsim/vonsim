@@ -2,8 +2,8 @@ import { decimalToChar } from "@vonsim/common/ascii";
 import type { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentReset } from "../component";
-import type { EventGenerator } from "../events";
+import { Component, ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
 
 export type PrinterEvent =
   | { type: "printer:buffer.add"; char: Byte<8> }
@@ -14,11 +14,15 @@ export type PrinterEvent =
 export class Printer extends Component {
   static readonly BUFFER_SIZE = 5;
 
-  #buffer: Byte<8>[] = [];
-  #paper = "";
+  #buffer: Byte<8>[];
+  #paper: string;
 
-  reset({ memory }: ComponentReset): void {
-    if (memory !== "unchanged") {
+  constructor(options: ComponentInit) {
+    super(options);
+    if (options.data === "unchanged" && "printer" in options.previous.io) {
+      this.#buffer = options.previous.io.printer.#buffer;
+      this.#paper = options.previous.io.printer.#paper;
+    } else {
       this.#buffer = [];
       this.#paper = "";
     }

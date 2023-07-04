@@ -2,6 +2,7 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
+import type { ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
 import { IOModule } from "../module";
 
@@ -16,10 +17,11 @@ export type TimerOperation =
   | { type: "timer:interrupt" };
 
 export class Timer extends IOModule<TimerRegister> {
-  #CONT = Byte.zero(8);
-  #COMP = Byte.zero(8);
+  #CONT: Byte<8>;
+  #COMP: Byte<8>;
 
-  reset(): void {
+  constructor(options: ComponentInit) {
+    super(options);
     this.#CONT = Byte.zero(8);
     this.#COMP = Byte.zero(8);
   }

@@ -1,21 +1,22 @@
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentReset } from "../component";
-import type { EventGenerator } from "../events";
+import { Component, ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
 
 export type SwitchesEvent = { type: "switches:toggle"; index: number };
 
 export class Switches extends Component {
-  #connected = false;
-  #state = Byte.zero(8);
+  #state: Byte<8>;
 
-  reset({ memory, devices }: ComponentReset): void {
-    this.#connected = devices === "pio-switches-and-leds";
-    if (memory === "clean") {
-      this.#state = Byte.zero(8);
-    } else if (memory === "randomize") {
+  constructor(options: ComponentInit) {
+    super(options);
+    if (options.data === "unchanged" && "switches" in options.previous.io) {
+      this.#state = options.previous.io.switches.#state;
+    } else if (options.data === "randomize") {
       this.#state = Byte.random(8);
+    } else {
+      this.#state = Byte.zero(8);
     }
   }
 
@@ -27,13 +28,13 @@ export class Switches extends Component {
    * Toggles the switch at the given index. Called by the outside.
    */
   *toggle(index: number): EventGenerator {
-    if (!this.#connected) return;
+    if (!("pio" in this.computer.io)) return;
 
     if (this.#state.bit(index)) this.#state = this.#state.clearBit(index);
     else this.#state = this.#state.setBit(index);
     yield { type: "switches:toggle", index };
 
-    yield* this.computer.io.pio!.updatePort("A");
+    yield* this.computer.io.pio.updatePort("A");
   }
 
   toJSON(): JsonValue {

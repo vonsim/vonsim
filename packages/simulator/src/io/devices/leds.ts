@@ -1,19 +1,22 @@
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentReset } from "../component";
-import type { EventGenerator } from "../events";
+import { Component, ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
 
 export type LedsEvent = { type: "leds:update"; state: Byte<8> };
 
 export class Leds extends Component {
-  #state = Byte.zero(8);
+  #state: Byte<8>;
 
-  reset({ memory }: ComponentReset): void {
-    if (memory === "clean") {
-      this.#state = Byte.zero(8);
-    } else if (memory === "randomize") {
+  constructor(options: ComponentInit) {
+    super(options);
+    if (options.data === "unchanged" && "leds" in options.previous.io) {
+      this.#state = options.previous.io.leds.#state;
+    } else if (options.data === "randomize") {
       this.#state = Byte.random(8);
+    } else {
+      this.#state = Byte.zero(8);
     }
   }
 

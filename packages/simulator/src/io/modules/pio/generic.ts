@@ -2,7 +2,7 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import type { ComponentReset } from "../../../component";
+import type { ComponentInit } from "../../../component";
 import type { EventGenerator } from "../../../events";
 import { IOModule } from "../../module";
 
@@ -17,22 +17,28 @@ export type PIOOperation =
   | { type: "pio:register.update"; register: PIORegister; value: Byte<8> };
 
 export abstract class PIO extends IOModule<PIORegister> {
-  protected PA = Byte.zero(8);
-  protected PB = Byte.zero(8);
-  protected CA = Byte.zero(8);
-  protected CB = Byte.zero(8);
+  protected PA: Byte<8>;
+  protected PB: Byte<8>;
+  protected CA: Byte<8>;
+  protected CB: Byte<8>;
 
-  reset({ memory }: ComponentReset): void {
-    if (memory === "clean") {
-      this.PA = Byte.zero(8);
-      this.PB = Byte.zero(8);
-      this.CA = Byte.zero(8);
-      this.CB = Byte.zero(8);
-    } else if (memory === "randomize") {
+  constructor(options: ComponentInit) {
+    super(options);
+    if (options.data === "unchanged" && "pio" in options.previous.io) {
+      this.PA = (options.previous.io.pio as PIO).PA;
+      this.PB = (options.previous.io.pio as PIO).PB;
+      this.CA = (options.previous.io.pio as PIO).CA;
+      this.CB = (options.previous.io.pio as PIO).CB;
+    } else if (options.data === "randomize") {
       this.PA = Byte.random(8);
       this.PB = Byte.random(8);
       this.CA = Byte.random(8);
       this.CB = Byte.random(8);
+    } else {
+      this.PA = Byte.zero(8);
+      this.PB = Byte.zero(8);
+      this.CA = Byte.zero(8);
+      this.CB = Byte.zero(8);
     }
   }
 

@@ -1,33 +1,30 @@
+import type { Program } from "@vonsim/assembler";
 import type { JsonValue } from "type-fest";
 
-import type { ComponentReset } from "./component";
 import { CPU } from "./cpu";
-import { Devices } from "./devices";
-import { IO } from "./io";
+import { IOHandshake, IOPIOPrinter, IOPIOSwitchesAndLeds } from "./io/configurations";
 import { Memory } from "./memory";
 
-export type ComputerProgram = ComponentReset;
+export type DevicesConfiguration = "pio-switches-and-leds" | "pio-printer" | "handshake";
+
+export type ComputerOptions = {
+  program: Program;
+  devices: DevicesConfiguration;
+} & ({ data: "clean" | "randomize" } | { data: "unchanged"; previous: Computer });
 
 export class Computer {
   readonly cpu: CPU;
   readonly memory: Memory;
-  readonly io: IO;
-  readonly devices: Devices;
+  readonly io: IOPIOSwitchesAndLeds | IOPIOPrinter | IOHandshake;
 
-  constructor() {
-    const options = { computer: this } as const;
-    this.cpu = new CPU(options);
-    this.memory = new Memory(options);
-    this.io = new IO(options);
-    this.devices = new Devices(options);
-  }
-
-  /**
-   * Loads a program into the computer!
-   */
-  loadProgram(options: ComputerProgram) {
-    this.cpu.reset(options);
-    this.memory.reset(options);
+  constructor(options: ComputerOptions) {
+    const init = { computer: this, ...options } as const;
+    this.cpu = new CPU(init);
+    this.memory = new Memory(init);
+    if (options.devices === "pio-switches-and-leds") this.io = new IOPIOSwitchesAndLeds(init);
+    else if (options.devices === "pio-printer") this.io = new IOPIOPrinter(init);
+    else if (options.devices === "handshake") this.io = new IOHandshake(init);
+    else throw new Error("Invalid devices configuration");
   }
 
   toJSON(): JsonValue {
@@ -35,7 +32,6 @@ export class Computer {
       cpu: this.cpu.toJSON(),
       memory: this.memory.toJSON(),
       io: this.io.toJSON(),
-      devices: this.devices.toJSON(),
     };
   }
 }

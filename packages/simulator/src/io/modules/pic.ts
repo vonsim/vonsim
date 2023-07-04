@@ -2,7 +2,7 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte, ByteSize } from "@vonsim/common/byte";
 import type { JsonObject } from "type-fest";
 
-import type { ComponentReset } from "../../component";
+import type { ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
 import { IOModule } from "../module";
 
@@ -40,19 +40,23 @@ export type PICOperation =
 export class PIC extends IOModule<PICRegister> {
   static readonly LINES = 8 satisfies ByteSize;
 
-  #IMR = Byte.fromUnsigned(0xff, 8);
-  #IRR = Byte.fromUnsigned(0x00, 8);
-  #ISR = Byte.fromUnsigned(0x00, 8);
-  #lines: Byte<8>[] = new Array(PIC.LINES).fill(Byte.zero(8));
+  #IMR: Byte<8>;
+  #IRR: Byte<8>;
+  #ISR: Byte<8>;
+  #lines: Byte<8>[];
 
-  reset({ memory }: ComponentReset): void {
+  constructor(options: ComponentInit) {
+    super(options);
     this.#IMR = Byte.fromUnsigned(0xff, 8);
     this.#IRR = Byte.fromUnsigned(0x00, 8);
     this.#ISR = Byte.fromUnsigned(0x00, 8);
-    if (memory === "clean") {
-      this.#lines = this.#lines.fill(Byte.zero(8));
-    } else if (memory === "randomize") {
-      this.#lines = this.#lines.map(() => Byte.random(8));
+
+    if (options.data === "unchanged") {
+      this.#lines = options.previous.io.pic.#lines;
+    } else if (options.data === "randomize") {
+      this.#lines = new Array(PIC.LINES).fill(Byte.zero(8)).map(() => Byte.random(8));
+    } else {
+      this.#lines = new Array(PIC.LINES).fill(Byte.zero(8));
     }
   }
 

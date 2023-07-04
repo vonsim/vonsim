@@ -3,7 +3,7 @@ import { MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
 import { AnyByte, Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentReset } from "../component";
+import { Component, ComponentInit } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 import { InstructionType, statementToInstruction } from "./instructions";
@@ -16,48 +16,63 @@ type Flag =
   | "OF"; // Overflow Flag
 
 export class CPU extends Component {
-  #instructions: Map<number, InstructionType> = new Map();
-  #IP = MemoryAddress.from(0x2000);
+  #instructions: Map<number, InstructionType>;
 
-  #registers: Record<WordRegister, Byte<16>> = {
-    AX: Byte.zero(16),
-    BX: Byte.zero(16),
-    CX: Byte.zero(16),
-    DX: Byte.zero(16),
-    SP: Byte.fromUnsigned(MemoryAddress.MAX_ADDRESS + 1, 16),
-  };
-  #flags: Record<Flag, boolean> = { CF: false, ZF: false, SF: false, IF: true, OF: false };
+  #registers: Record<WordRegister, Byte<16>>;
+  #flags: Record<Flag, boolean>;
+  #IP: MemoryAddress;
 
-  reset({ program, memory }: ComponentReset): void {
-    this.#registers.SP = Byte.fromUnsigned(MemoryAddress.MAX_ADDRESS + 1, 16);
-    this.#flags = { CF: false, ZF: false, SF: false, IF: false, OF: false };
-    this.#IP = MemoryAddress.from(0x2000);
+  constructor(options: ComponentInit) {
+    super(options);
 
-    if (memory === "clean") {
-      this.#registers.AX = Byte.zero(16);
-      this.#registers.BX = Byte.zero(16);
-      this.#registers.CX = Byte.zero(16);
-      this.#registers.DX = Byte.zero(16);
-    } else if (memory === "randomize") {
-      this.#registers.AX = Byte.random(16);
-      this.#registers.BX = Byte.random(16);
-      this.#registers.CX = Byte.random(16);
-      this.#registers.DX = Byte.random(16);
+    const SP = Byte.fromUnsigned(MemoryAddress.MAX_ADDRESS + 1, 16);
+    const IF = true;
+
+    if (options.data === "unchanged") {
+      this.#registers = options.previous.cpu.#registers;
+      this.#registers.SP = SP;
+      this.#flags = options.previous.cpu.#flags;
+      this.#flags.IF = true;
+    } else if (options.data === "randomize") {
+      this.#registers = {
+        AX: Byte.random(16),
+        BX: Byte.random(16),
+        CX: Byte.random(16),
+        DX: Byte.random(16),
+        SP,
+      };
+      this.#flags = {
+        CF: Math.random() > 0.5,
+        ZF: Math.random() > 0.5,
+        SF: Math.random() > 0.5,
+        IF,
+        OF: Math.random() > 0.5,
+      };
+    } else {
+      this.#registers = {
+        AX: Byte.zero(16),
+        BX: Byte.zero(16),
+        CX: Byte.zero(16),
+        DX: Byte.zero(16),
+        SP,
+      };
+      this.#flags = { CF: false, ZF: true, SF: false, IF, OF: false };
     }
 
+    this.#IP = MemoryAddress.from(0x2000);
+
     this.#instructions = new Map();
-    for (const statement of program.instructions) {
+    for (const statement of options.program.instructions) {
       const instruction = statementToInstruction(statement);
       this.#instructions.set(instruction.start.value, instruction);
     }
   }
 
   /**
-   * CPU ticker.
+   * CPU runner.
    * Executes one instruction at a time, yielding the micro-operations that it will execute.
-   * @returns The exit status of the CPU (either "halted" or "error").
    */
-  *tick(): EventGenerator {
+  *run(): EventGenerator {
     while (true) {
       const instruction = this.#instructions.get(this.#IP.value);
       if (!instruction) {

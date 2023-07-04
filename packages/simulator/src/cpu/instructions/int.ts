@@ -57,7 +57,7 @@ export class INTInstruction extends Instruction<"INT"> {
           const address = computer.cpu.getRegister("BX");
           yield { type: "cpu:register.copy", input: "BX", output: "ri" };
 
-          const char = yield* computer.devices.console.read();
+          const char = yield* computer.io.console.read();
 
           yield { type: "cpu:register.update", register: "id", value: char.withHigh(Byte.zero(8)) };
 
@@ -76,7 +76,7 @@ export class INTInstruction extends Instruction<"INT"> {
             yield { type: "cpu:mar.set", register: "ri" };
             const char = yield* computer.memory.read(start.add(i));
             if (!char) return false; // Error reading from memory
-            yield* computer.devices.console.write(char);
+            yield* computer.io.console.write(char);
             yield { type: "cpu:register.update", register: "ri", value: start.add(i + 1) };
             yield {
               type: "cpu:register.update",

@@ -3,7 +3,7 @@ import { MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentReset } from "./component";
+import { Component, ComponentInit } from "./component";
 import { SimulatorError } from "./error";
 import type { EventGenerator } from "./events";
 
@@ -21,17 +21,20 @@ export type MemoryOperation =
 export class Memory extends Component {
   static readonly SIZE = MemoryAddress.MAX_ADDRESS + 1;
 
-  #buffer = new Uint8Array(Memory.SIZE);
-  #reservedMemory: Set<number> = new Set();
+  #buffer: Uint8Array;
+  #reservedMemory: Set<number>;
 
-  reset({ program, memory }: ComponentReset): void {
-    if (memory === "clean") {
-      this.#buffer = new Uint8Array(Memory.SIZE);
-    } else if (memory === "randomize") {
+  constructor(options: ComponentInit) {
+    super(options);
+    if (options.data === "unchanged") {
+      this.#buffer = options.previous.memory.#buffer;
+    } else if (options.data === "randomize") {
       this.#buffer = new Uint8Array(Memory.SIZE).map(() => Byte.random(8).unsigned);
+    } else {
+      this.#buffer = new Uint8Array(Memory.SIZE);
     }
 
-    for (const directive of program.data) {
+    for (const directive of options.program.data) {
       let offset = directive.start.value;
       for (const value of directive.getValues()) {
         if (value !== unassigned) this.#buffer.set(value.toUint8Array(), offset);
@@ -40,7 +43,7 @@ export class Memory extends Component {
     }
 
     this.#reservedMemory = new Set();
-    for (const instruction of program.instructions) {
+    for (const instruction of options.program.instructions) {
       this.#buffer.set(instruction.toBytes(), instruction.start.value);
       for (let i = 0; i < instruction.length; i++) {
         this.#reservedMemory.add(instruction.start.value + i);
