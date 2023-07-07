@@ -1,5 +1,6 @@
+import { Position } from "@vonsim/common/position";
+
 import type { Token } from "../../lexer/tokens";
-import { Position } from "../../position";
 import type { Instruction } from "../../types";
 import type { Operand } from "./operands";
 import type { InstructionStatementType } from "./statement";

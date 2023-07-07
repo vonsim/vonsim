@@ -1,10 +1,10 @@
 import { IOAddress } from "@vonsim/common/address";
 import type { ByteSize } from "@vonsim/common/byte";
+import type { Position } from "@vonsim/common/position";
 
 import { CompilerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import type { NumberExpression } from "../../../number-expression";
-import type { Position } from "../../../position";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 

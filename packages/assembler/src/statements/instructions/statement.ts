@@ -1,7 +1,7 @@
 import type { MemoryAddress } from "@vonsim/common/address";
+import type { Position } from "@vonsim/common/position";
 
 import type { GlobalStore } from "../../global-store";
-import type { Position } from "../../position";
 import type { Instruction } from "../../types";
 import { Statement } from "../statement";
 import type { Operand } from "./operands";

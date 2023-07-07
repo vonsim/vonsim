@@ -1,10 +1,10 @@
 import type { ByteSize } from "@vonsim/common/byte";
+import type { Position } from "@vonsim/common/position";
 
 import { CompilerError } from "../../error";
 import type { GlobalStore } from "../../global-store";
 import type { Token } from "../../lexer/tokens";
 import type { NumberExpression } from "../../number-expression";
-import type { Position } from "../../position";
 import { Register, WORD_REGISTERS } from "../../types";
 
 /**

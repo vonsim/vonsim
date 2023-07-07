@@ -5,7 +5,8 @@
     "./ascii": "./src/ascii.ts",
     "./byte": "./src/byte.ts",
     "./i18n": "./src/i18n.ts",
-    "./loops": "./src/loops.ts"
+    "./loops": "./src/loops.ts",
+    "./position": "./src/position.ts"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint --ignore-path .gitignore ."

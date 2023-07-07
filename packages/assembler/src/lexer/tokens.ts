@@ -1,4 +1,5 @@
-import type { Position } from "../position";
+import type { Position } from "@vonsim/common/position";
+
 import type { Keyword } from "../types";
 
 export type TokenType =

@@ -1,7 +1,8 @@
+import { Position } from "@vonsim/common/position";
+
 import { CompilerError } from "./error";
 import type { Token, TokenType } from "./lexer/tokens";
 import { NumberExpression } from "./number-expression";
-import { Position } from "./position";
 import {
   createDataDirectiveStatement,
   createInstructionStatement,

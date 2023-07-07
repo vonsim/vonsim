@@ -1,4 +1,5 @@
-import type { Position } from "../position";
+import type { Position } from "@vonsim/common/position";
+
 import type { DataDirectiveStatement } from "./data-directive";
 import type { EndStatement } from "./end";
 import type { InstructionStatement } from "./instructions";

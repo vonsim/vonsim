@@ -1,5 +1,6 @@
+import { Position } from "@vonsim/common/position";
+
 import { CompilerError } from "../error";
-import { Position } from "../position";
 import { Keyword, KEYWORDS } from "../types";
 import { Token, TokenType } from "./tokens";
 

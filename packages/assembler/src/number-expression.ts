@@ -1,6 +1,7 @@
+import type { Position } from "@vonsim/common/position";
+
 import { CompilerError } from "./error";
 import type { GlobalStore } from "./global-store";
-import type { Position } from "./position";
 
 /**
  * A number expression is a recursive data structure that represents a number

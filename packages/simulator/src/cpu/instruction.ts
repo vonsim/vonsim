@@ -1,4 +1,6 @@
 import type { Instruction as InstructionName, InstructionStatement } from "@vonsim/assembler";
+import type { MemoryAddress } from "@vonsim/common/address";
+import type { Position } from "@vonsim/common/position";
 
 import type { Computer } from "../computer";
 import { SimulatorError } from "../error";
@@ -23,11 +25,11 @@ export abstract class Instruction<TInstruction extends InstructionName> {
     return this.statement.instruction;
   }
 
-  get start(): InstructionStatement["start"] {
+  get start(): MemoryAddress {
     return this.statement.start;
   }
 
-  get position(): InstructionStatement["position"] {
+  get position(): Position {
     return this.statement.position;
   }
 

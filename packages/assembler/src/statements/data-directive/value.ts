@@ -1,5 +1,6 @@
+import type { Position } from "@vonsim/common/position";
+
 import type { NumberExpression } from "../../number-expression";
-import type { Position } from "../../position";
 
 /**
  * An argument of a data directive.

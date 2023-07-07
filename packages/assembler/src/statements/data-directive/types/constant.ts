@@ -1,7 +1,8 @@
+import type { Position } from "@vonsim/common/position";
+
 import { CompilerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import type { NumberExpression } from "../../../number-expression";
-import type { Position } from "../../../position";
 import { DataDirectiveStatement } from "../statement";
 import type { DataDirectiveValue } from "../value";
 

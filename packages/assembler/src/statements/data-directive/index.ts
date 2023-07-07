@@ -1,5 +1,6 @@
+import { Position } from "@vonsim/common/position";
+
 import type { Token } from "../../lexer/tokens";
-import { Position } from "../../position";
 import type { DataDirective } from "../../types";
 import type { DataDirectiveStatementType } from "./statement";
 import { Constant } from "./types/constant";
