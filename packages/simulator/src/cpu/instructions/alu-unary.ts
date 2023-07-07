@@ -34,6 +34,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: this.#formatOperands(),
         willUse: {
           ri: this.operation.mode === "mem-direct" || this.operation.mode === "mem-indirect",

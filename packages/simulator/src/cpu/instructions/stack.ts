@@ -13,6 +13,7 @@ export class StackInstruction extends Instruction<"PUSH" | "POP" | "PUSHF" | "PO
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: register !== "FLAGS" ? [register] : [],
         willUse: { id: true, writeback: true },
       },

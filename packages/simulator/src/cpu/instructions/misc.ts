@@ -8,6 +8,7 @@ export class MiscInstruction extends Instruction<"CLI" | "STI" | "NOP" | "HLT"> 
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: [],
         willUse: { execute: this.name === "CLI" || this.name === "STI" },
       },

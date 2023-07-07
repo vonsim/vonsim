@@ -8,6 +8,7 @@ export class ReturnInstruction extends Instruction<"RET" | "IRET"> {
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: [],
         willUse: { id: true, writeback: true },
       },

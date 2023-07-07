@@ -49,6 +49,7 @@ export class MOVInstruction extends Instruction<"MOV"> {
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: this.#formatOperands(),
         willUse: {
           ri: mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd",

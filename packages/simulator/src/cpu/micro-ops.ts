@@ -1,5 +1,6 @@
 import type { Instruction as InstructionName } from "@vonsim/assembler";
 import type { Byte } from "@vonsim/common/byte";
+import type { Position } from "@vonsim/common/position";
 
 import type { SimulatorError } from "../error";
 
@@ -26,6 +27,7 @@ export type Physical16bitsRegisters =
 
 export type InstructionMetadata = {
   name: InstructionName;
+  position: Position;
   operands: string[];
   willUse: Partial<{
     ri: boolean;

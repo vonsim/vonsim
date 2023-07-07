@@ -14,6 +14,7 @@ export class INTInstruction extends Instruction<"INT"> {
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: [this.number.toString("uint")],
         willUse: { id: true, execute: true },
       },

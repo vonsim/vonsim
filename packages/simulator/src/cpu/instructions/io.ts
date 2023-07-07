@@ -28,6 +28,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: this.#formatOperands(),
         willUse: { ri: true, writeback: true },
       },

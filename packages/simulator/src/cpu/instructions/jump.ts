@@ -14,6 +14,7 @@ export class JumpInstruction extends Instruction<
       type: "cpu:cycle.start",
       instruction: {
         name: this.name,
+        position: this.position,
         operands: [this.jumpTo.toString()],
         willUse: { id: this.name === "CALL", ri: true, writeback: true },
       },
