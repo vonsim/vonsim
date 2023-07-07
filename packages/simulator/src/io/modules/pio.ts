@@ -2,9 +2,9 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import type { ComponentInit } from "../../../component";
-import type { EventGenerator } from "../../../events";
-import { IOModule } from "../../module";
+import type { ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
+import { IOModule } from "../module";
 
 export type PIOPort = "A" | "B";
 export type PIORegister = `P${PIOPort}` | `C${PIOPort}`;
@@ -16,19 +16,21 @@ export type PIOOperation =
   | { type: "pio:write.ok" }
   | { type: "pio:register.update"; register: PIORegister; value: Byte<8> };
 
-export abstract class PIO extends IOModule<PIORegister> {
+export abstract class GenericPIO<
+  TDevices extends "pio-switches-and-leds" | "pio-printer",
+> extends IOModule<PIORegister, TDevices> {
   protected PA: Byte<8>;
   protected PB: Byte<8>;
   protected CA: Byte<8>;
   protected CB: Byte<8>;
 
-  constructor(options: ComponentInit) {
+  constructor(options: ComponentInit<TDevices>) {
     super(options);
     if (options.data === "unchanged" && "pio" in options.previous.io) {
-      this.PA = (options.previous.io.pio as PIO).PA;
-      this.PB = (options.previous.io.pio as PIO).PB;
-      this.CA = (options.previous.io.pio as PIO).CA;
-      this.CB = (options.previous.io.pio as PIO).CB;
+      this.PA = (options.previous.io.pio as GenericPIO<TDevices>).PA;
+      this.PB = (options.previous.io.pio as GenericPIO<TDevices>).PB;
+      this.CA = (options.previous.io.pio as GenericPIO<TDevices>).CA;
+      this.CB = (options.previous.io.pio as GenericPIO<TDevices>).CB;
     } else if (options.data === "randomize") {
       this.PA = Byte.random(8);
       this.PB = Byte.random(8);

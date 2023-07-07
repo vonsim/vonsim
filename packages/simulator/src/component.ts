@@ -4,12 +4,14 @@ import type { Computer, ComputerOptions, DevicesConfiguration } from "./computer
 
 export type { DevicesConfiguration };
 
-export type ComponentInit = { computer: Computer } & ComputerOptions;
+export type ComponentInit<TDevices extends DevicesConfiguration = DevicesConfiguration> = {
+  computer: Computer<TDevices>;
+} & ComputerOptions<TDevices>;
 
-export abstract class Component {
-  protected computer: Computer;
+export abstract class Component<TDevices extends DevicesConfiguration = DevicesConfiguration> {
+  protected computer: Computer<TDevices>;
 
-  constructor(options: ComponentInit) {
+  constructor(options: ComponentInit<TDevices>) {
     this.computer = options.computer;
   }
 

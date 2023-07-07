@@ -1,29 +1,36 @@
 import type { Program } from "@vonsim/assembler";
-import type { JsonValue } from "type-fest";
+import type { JsonValue, Simplify } from "type-fest";
 
 import { CPU } from "./cpu";
-import { IOHandshake, IOPIOPrinter, IOPIOSwitchesAndLeds } from "./io/configurations";
+import { Handshake, PIOPrinter, PIOSwitchesAndLeds } from "./io/configurations";
 import { Memory } from "./memory";
 
-export type DevicesConfiguration = "pio-switches-and-leds" | "pio-printer" | "handshake";
-
-export type ComputerOptions = {
+export type ComputerOptions<TDevices extends DevicesConfiguration = DevicesConfiguration> = {
   program: Program;
-  devices: DevicesConfiguration;
+  devices: TDevices;
 } & ({ data: "clean" | "randomize" } | { data: "unchanged"; previous: Computer });
 
-export class Computer {
+export type DevicesMap = {
+  "pio-switches-and-leds": PIOSwitchesAndLeds;
+  "pio-printer": PIOPrinter;
+  handshake: Handshake;
+};
+
+export type DevicesConfiguration = Simplify<keyof DevicesMap>;
+export type Devicess = DevicesMap[DevicesConfiguration];
+
+export class Computer<TDevices extends DevicesConfiguration = DevicesConfiguration> {
   readonly cpu: CPU;
   readonly memory: Memory;
-  readonly io: IOPIOSwitchesAndLeds | IOPIOPrinter | IOHandshake;
+  readonly io: DevicesMap[TDevices];
 
-  constructor(options: ComputerOptions) {
+  constructor(options: ComputerOptions<TDevices>) {
     const init = { computer: this, ...options } as const;
     this.cpu = new CPU(init);
     this.memory = new Memory(init);
-    if (options.devices === "pio-switches-and-leds") this.io = new IOPIOSwitchesAndLeds(init);
-    else if (options.devices === "pio-printer") this.io = new IOPIOPrinter(init);
-    else if (options.devices === "handshake") this.io = new IOHandshake(init);
+    if (options.devices === "pio-switches-and-leds") this.io = new PIOSwitchesAndLeds(init);
+    else if (options.devices === "pio-printer") this.io = new PIOPrinter(init);
+    else if (options.devices === "handshake") this.io = new Handshake(init);
     else throw new Error("Invalid devices configuration");
   }
 

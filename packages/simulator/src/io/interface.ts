@@ -2,7 +2,7 @@ import { IOAddress, IOAddressLike } from "@vonsim/common/address";
 import type { Byte } from "@vonsim/common/byte";
 import type { JsonObject } from "type-fest";
 
-import { Component, ComponentInit } from "../component";
+import { Component, ComponentInit, DevicesConfiguration } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 import { Clock } from "./devices/clocks";
@@ -15,7 +15,9 @@ export type ChipSelectEvent =
   | { type: "cs:selected"; chip: "handshake" | "pic" | "pio" | "timer" }
   | { type: "cs:error"; error: SimulatorError<"io-memory-not-implemented"> };
 
-export abstract class IOInterface extends Component {
+export abstract class IOInterface<
+  TDevices extends DevicesConfiguration,
+> extends Component<TDevices> {
   static readonly SIZE = IOAddress.MAX_ADDRESS + 1;
 
   // Devices
@@ -27,7 +29,7 @@ export abstract class IOInterface extends Component {
   readonly pic: PIC;
   readonly timer: Timer;
 
-  constructor(options: ComponentInit) {
+  constructor(options: ComponentInit<TDevices>) {
     super(options);
 
     this.clock = new Clock(options);

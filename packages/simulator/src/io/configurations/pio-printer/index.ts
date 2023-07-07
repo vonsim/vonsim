@@ -2,26 +2,23 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import type { Byte } from "@vonsim/common/byte";
 import type { JsonObject } from "type-fest";
 
-import type { ComponentInit } from "../../component";
-import type { EventGenerator } from "../../events";
-import { Leds } from "../devices/leds";
-import { Switches } from "../devices/switches";
-import { IOInterface } from "../interface";
-import { PIOSwitchesAndLeds } from "../modules/pio/switches-and-leds";
+import type { ComponentInit } from "../../../component";
+import type { EventGenerator } from "../../../events";
+import { IOInterface } from "../../interface";
+import { PIO } from "./pio";
+import { Printer } from "./printer";
 
-export class IOPIOSwitchesAndLeds extends IOInterface {
+export class PIOPrinter extends IOInterface<"pio-printer"> {
   // Devices
-  readonly leds: Leds;
-  readonly switches: Switches;
+  readonly printer: Printer;
 
   // Modules
-  readonly pio: PIOSwitchesAndLeds;
+  readonly pio: PIO;
 
-  constructor(options: ComponentInit) {
+  constructor(options: ComponentInit<"pio-printer">) {
     super(options);
-    this.leds = new Leds(options);
-    this.switches = new Switches(options);
-    this.pio = new PIOSwitchesAndLeds(options);
+    this.printer = new Printer(options);
+    this.pio = new PIO(options);
   }
 
   /**
@@ -59,8 +56,7 @@ export class IOPIOSwitchesAndLeds extends IOInterface {
   toJSON(): JsonObject {
     return {
       ...super.toJSON(),
-      leds: this.leds.toJSON(),
-      switches: this.switches.toJSON(),
+      printer: this.printer.toJSON(),
       pio: this.pio.toJSON(),
     };
   }

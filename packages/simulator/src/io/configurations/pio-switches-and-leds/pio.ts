@@ -1,13 +1,12 @@
 import { Byte } from "@vonsim/common/byte";
 
 import type { EventGenerator } from "../../../events";
-import type { IOPIOSwitchesAndLeds } from "../../configurations";
-import { PIO, PIOPort } from "./generic";
+import { GenericPIO, PIOPort } from "../../modules/pio";
 
-export class PIOSwitchesAndLeds extends PIO {
+export class PIO extends GenericPIO<"pio-switches-and-leds"> {
   *updatePort(port: PIOPort): EventGenerator {
     if (port === "A") {
-      const switches = (this.computer.io as IOPIOSwitchesAndLeds).switches.state.unsigned;
+      const switches = this.computer.io.switches.state.unsigned;
       let PA = this.PA.unsigned;
       const CA = this.CA.unsigned;
 
@@ -34,14 +33,11 @@ export class PIOSwitchesAndLeds extends PIO {
       // PB & ~CB
       // => the value of the leds in each position where the CB is 0 (output)
       // => 0 where the CB is 1 (input)
-      // So, the value of PB willbe that result, since the values of the LEDs
+      // So, the value of PB will be that result, since the values of the LEDs
       // shall be only the ones set by the PIO, where the CB is 0 (output).
 
       PB = PB & ~CB;
-      if (PB !== this.PB.unsigned) {
-        this.PB = Byte.fromUnsigned(PB, 8);
-        yield { type: "pio:register.update", register: "PB", value: this.PB };
-      }
+      yield* this.computer.io.leds.update(Byte.fromUnsigned(PB, 8));
     }
   }
 }

@@ -1,3 +1,3 @@
-export { IOHandshake } from "./hanshake";
-export { IOPIOPrinter } from "./pio-printer";
-export { IOPIOSwitchesAndLeds } from "./pio-switches-and-leds";
+export { Handshake } from "./handshake";
+export { PIOPrinter } from "./pio-printer";
+export { PIOSwitchesAndLeds } from "./pio-switches-and-leds";

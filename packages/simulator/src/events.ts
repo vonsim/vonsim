@@ -1,13 +1,13 @@
 import type { CPUMicroOperation } from "./cpu/micro-ops";
+import type { LedsEvent } from "./io/configurations/pio-switches-and-leds/leds";
+import type { SwitchesEvent } from "./io/configurations/pio-switches-and-leds/switches";
 import type { ClockEvent } from "./io/devices/clocks";
 import type { ConsoleEvent } from "./io/devices/console";
 import type { F10Event } from "./io/devices/f10";
-import type { LedsEvent } from "./io/devices/leds";
 import type { PrinterEvent } from "./io/devices/printer";
-import type { SwitchesEvent } from "./io/devices/switches";
 import type { ChipSelectEvent } from "./io/interface";
 import type { PICOperation } from "./io/modules/pic";
-import type { PIOOperation } from "./io/modules/pio/generic";
+import type { PIOOperation } from "./io/modules/pio";
 import type { TimerOperation } from "./io/modules/timer";
 import type { MemoryOperation } from "./memory";
 

@@ -1,16 +1,17 @@
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentInit } from "../../component";
-import type { EventGenerator } from "../../events";
+import { Component, ComponentInit } from "../../../component";
+import type { EventGenerator } from "../../../events";
 
 export type SwitchesEvent = { type: "switches:toggle"; index: number };
 
-export class Switches extends Component {
+export class Switches extends Component<"pio-switches-and-leds"> {
   #state: Byte<8>;
 
-  constructor(options: ComponentInit) {
+  constructor(options: ComponentInit<"pio-switches-and-leds">) {
     super(options);
+    this.computer = options.computer;
     if (options.data === "unchanged" && "switches" in options.previous.io) {
       this.#state = options.previous.io.switches.#state;
     } else if (options.data === "randomize") {
@@ -28,8 +29,6 @@ export class Switches extends Component {
    * Toggles the switch at the given index. Called by the outside.
    */
   *toggle(index: number): EventGenerator {
-    if (!("pio" in this.computer.io)) return;
-
     if (this.#state.bit(index)) this.#state = this.#state.clearBit(index);
     else this.#state = this.#state.setBit(index);
     yield { type: "switches:toggle", index };
