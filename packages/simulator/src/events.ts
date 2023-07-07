@@ -1,4 +1,5 @@
 import type { CPUMicroOperation } from "./cpu/micro-ops";
+import type { HandshakeOperation } from "./io/configurations/handshake/handshake";
 import type { LedsEvent } from "./io/configurations/pio-switches-and-leds/leds";
 import type { SwitchesEvent } from "./io/configurations/pio-switches-and-leds/switches";
 import type { ClockEvent } from "./io/devices/clocks";
@@ -17,6 +18,7 @@ export type SimulatorEvent =
   | CPUMicroOperation // cpu:*
   | ChipSelectEvent // cs:*
   | F10Event // f10:*
+  | HandshakeOperation // handshake:*
   | LedsEvent // leds:*
   | MemoryOperation // memory:*
   | PICOperation // pic:*

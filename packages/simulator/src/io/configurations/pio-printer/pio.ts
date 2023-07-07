@@ -37,7 +37,7 @@ export class PIO extends GenericPIO<"pio-printer"> {
       // If the value is the same as the previous one, Printer.setStrobe
       // won't fire any event.
       if (this.line("A", 1) === "output") {
-        this.computer.io.printer.setStrobe(this.PA.bit(1));
+        yield* this.computer.io.printer.setStrobe(this.PA.bit(1));
       }
     }
   }
