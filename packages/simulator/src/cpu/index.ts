@@ -84,7 +84,7 @@ export class CPU extends Component {
 
       // Check for interrupts
       if (this.getFlag("IF") && this.computer.io.pic.isINTRActive()) {
-        yield { type: "cpu:cycle.update", phase: "interrupt" };
+        yield { type: "cpu:cycle.interrupt" };
         const intn = yield* this.computer.io.pic.handleINTR();
         yield { type: "cpu:mbr.get", register: "ri.l" };
         yield { type: "cpu:register.update", register: "ri.h", value: Byte.zero(8) };

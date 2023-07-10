@@ -42,7 +42,7 @@ export type CPUMicroOperation =
   | { type: "cpu:cycle.update"; phase: "decoded" } // Once there is enough information to know what an instruction will do (not the operands yet)
   | { type: "cpu:cycle.update"; phase: "execute" } // Once the operands are known
   | { type: "cpu:cycle.update"; phase: "writeback" } // Once the instruction has been executed and the result is ready to be written back
-  | { type: "cpu:cycle.update"; phase: "interrupt" }
+  | { type: "cpu:cycle.interrupt" }
   | { type: "cpu:cycle.end" } // End of a cycle
   | { type: "cpu:alu.execute"; operation: string; size: 8; result: Byte<8>; flags: Byte<16> }
   | { type: "cpu:alu.execute"; operation: string; size: 16; result: Byte<16>; flags: Byte<16> }
