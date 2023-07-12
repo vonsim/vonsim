@@ -387,10 +387,10 @@ export class CPU extends Component {
   toJSON() {
     return {
       AX: this.#registers.AX.toJSON(),
-      BX: this.#registers.AX.toJSON(),
-      CX: this.#registers.AX.toJSON(),
-      DX: this.#registers.AX.toJSON(),
-      SP: this.#registers.AX.toJSON(),
+      BX: this.#registers.BX.toJSON(),
+      CX: this.#registers.CX.toJSON(),
+      DX: this.#registers.DX.toJSON(),
+      SP: this.#registers.SP.toJSON(),
       IP: this.#IP.toJSON(),
       FLAGS: this.FLAGS.toJSON(),
     } satisfies JsonObject;
