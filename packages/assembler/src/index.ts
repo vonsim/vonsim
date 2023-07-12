@@ -1,6 +1,6 @@
 import { forEachWithErrors } from "@vonsim/common/loops";
 
-import { CompilerError } from "./error";
+import { AssemblerError } from "./error";
 import { GlobalStore } from "./global-store";
 import { Scanner } from "./lexer/scanner";
 import { Parser } from "./parser";
@@ -11,14 +11,14 @@ export type Program = {
   instructions: InstructionStatement[];
 };
 
-export type CompileResultSuccess = { success: true } & Program;
-export type CompileResultError = {
+export type AssembleResultSuccess = { success: true } & Program;
+export type AssembleResultError = {
   success: false;
-  errors: CompilerError<any>[];
+  errors: AssemblerError<any>[];
 };
-export type CompileResult = CompileResultSuccess | CompileResultError;
+export type AssembleResult = AssembleResultSuccess | AssembleResultError;
 
-export function compile(source: string): CompileResult {
+export function assemble(source: string): AssembleResult {
   try {
     const scanner = new Scanner(source);
     const tokens = scanner.scanTokens();
@@ -28,12 +28,12 @@ export function compile(source: string): CompileResult {
 
     const lastStatement = statements.at(-1);
 
-    if (!lastStatement) throw new CompilerError("empty-program");
+    if (!lastStatement) throw new AssemblerError("empty-program");
     if (!lastStatement.isEnd()) {
-      throw new CompilerError("end-must-be-the-last-statement").at(lastStatement);
+      throw new AssemblerError("end-must-be-the-last-statement").at(lastStatement);
     }
 
-    let errors: CompilerError<any>[] = [];
+    let errors: AssemblerError<any>[] = [];
 
     // Global store for the program.
     // Stores labels, constants and reserved memory.
@@ -51,7 +51,7 @@ export function compile(source: string): CompileResult {
         if (statement.isOriginChange() || statement.isEnd()) return;
         statement.validate(store);
       },
-      CompilerError.from,
+      AssemblerError.from,
     );
     if (errors.length > 0) return { success: false, errors };
 
@@ -74,13 +74,13 @@ export function compile(source: string): CompileResult {
           instructions.push(item);
         }
       },
-      CompilerError.from,
+      AssemblerError.from,
     );
     if (errors.length > 0) return { success: false, errors };
 
     return { success: true, data, instructions };
   } catch (error) {
-    return { success: false, errors: [CompilerError.from(error)] };
+    return { success: false, errors: [AssemblerError.from(error)] };
   }
 }
 

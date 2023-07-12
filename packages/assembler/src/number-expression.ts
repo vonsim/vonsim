@@ -1,11 +1,11 @@
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "./error";
+import { AssemblerError } from "./error";
 import type { GlobalStore } from "./global-store";
 
 /**
  * A number expression is a recursive data structure that represents a number
- * that can be computed at compile time.
+ * that can be computed at assemble time.
  *
  * It can be:
  * - A number literal
@@ -99,17 +99,17 @@ class Label extends NumberExpression {
 
   evaluate(store: GlobalStore): number {
     if (!store.labelExists(this.value)) {
-      throw new CompilerError("label-not-found", this.value).at(this.position);
+      throw new AssemblerError("label-not-found", this.value).at(this.position);
     }
 
     const type = store.getLabelType(this.value)!;
 
     if ((type === "DB" || type === "DW") && !this.offset) {
-      throw new CompilerError("label-should-be-a-number", this.value).at(this.position);
+      throw new AssemblerError("label-should-be-a-number", this.value).at(this.position);
     }
 
     if ((type === "EQU" || type === "instruction") && this.offset) {
-      throw new CompilerError("offset-only-with-data-directive").at(this.position);
+      throw new AssemblerError("offset-only-with-data-directive").at(this.position);
     }
 
     return store.getLabelValue(this.value)!;

@@ -2,7 +2,7 @@ import { IOAddress } from "@vonsim/common/address";
 import type { ByteSize } from "@vonsim/common/byte";
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import type { NumberExpression } from "../../../number-expression";
 import type { Operand } from "../operands";
@@ -101,21 +101,21 @@ export class IOInstruction extends InstructionStatement {
     if (this.#initialOperation) throw new Error("Instruction already validated");
 
     if (this.operands.length !== 2) {
-      throw new CompilerError("expects-two-operands").at(this);
+      throw new AssemblerError("expects-two-operands").at(this);
     }
 
     const internal = this.operands[this.instruction === "IN" ? 0 : 1];
     const external = this.operands[this.instruction === "IN" ? 1 : 0];
 
     if (!internal.isRegister() || (internal.value !== "AL" && internal.value !== "AX")) {
-      throw new CompilerError("expects-ax").at(internal);
+      throw new AssemblerError("expects-ax").at(internal);
     }
 
     const size: ByteSize = internal.value === "AX" ? 16 : 8;
 
     if (external.isRegister()) {
       if (external.value !== "DX") {
-        throw new CompilerError("expects-dx").at(external);
+        throw new AssemblerError("expects-dx").at(external);
       }
 
       this.#initialOperation = { port: "variable", size };
@@ -128,7 +128,7 @@ export class IOInstruction extends InstructionStatement {
     }
 
     // external isn't a number expression
-    throw new CompilerError("expects-immediate").at(external);
+    throw new AssemblerError("expects-immediate").at(external);
   }
 
   evaluateExpressions(store: GlobalStore) {
@@ -140,7 +140,7 @@ export class IOInstruction extends InstructionStatement {
     if (op.port === "fixed") {
       const computed = op.address.evaluate(store);
       if (!IOAddress.inRange(computed)) {
-        throw new CompilerError("io-address-out-of-range", computed).at(this);
+        throw new AssemblerError("io-address-out-of-range", computed).at(this);
       }
 
       const address = IOAddress.from(computed);

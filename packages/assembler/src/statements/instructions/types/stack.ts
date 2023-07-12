@@ -1,6 +1,6 @@
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { WordRegister } from "../../../types";
 import { registerToBits } from "../encoding";
 import type { Operand } from "../operands";
@@ -75,12 +75,12 @@ export class StackInstruction extends InstructionStatement {
     if (this.#register) throw new Error("Instruction already validated");
 
     if (this.operands.length !== 1) {
-      throw new CompilerError("expects-one-operand").at(this);
+      throw new AssemblerError("expects-one-operand").at(this);
     }
 
     const operand = this.operands[0];
     if (!operand.isRegister() || operand.size !== 16) {
-      throw new CompilerError("expects-word-register").at(operand);
+      throw new AssemblerError("expects-word-register").at(operand);
     }
 
     this.#register = operand.value as WordRegister;

@@ -1,7 +1,7 @@
 import type { ByteSize } from "@vonsim/common/byte";
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../error";
+import { AssemblerError } from "../../error";
 import type { GlobalStore } from "../../global-store";
 import type { Token } from "../../lexer/tokens";
 import type { NumberExpression } from "../../number-expression";
@@ -131,7 +131,7 @@ export class NumberExpressionOperand extends Operand {
     if (label.offset) return false;
 
     if (!store.labelExists(label.value)) {
-      throw new CompilerError("label-not-found", label.value).at(this.position);
+      throw new AssemblerError("label-not-found", label.value).at(this.position);
     }
 
     const type = store.getLabelType(label.value)!;

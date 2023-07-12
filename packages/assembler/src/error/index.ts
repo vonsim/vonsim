@@ -11,11 +11,11 @@ const translate = initTranlate<Messages>({
   es: spanish,
 });
 
-export type CompilerErrorCode = LocaleCode<Messages>;
-export type CompilerErrorContext<Code extends CompilerErrorCode> = LocaleContext<Messages, Code>;
+export type AssemblerErrorCode = LocaleCode<Messages>;
+export type AssemblerErrorContext<Code extends AssemblerErrorCode> = LocaleContext<Messages, Code>;
 
 /**
- * An error that can be thrown by the compiler.
+ * An error that can be thrown by the assembly.
  *
  * The basic idea of the error system is that each error has a code and maybe some parameters.
  * This way, the error messages can be translated to different languages.
@@ -23,22 +23,22 @@ export type CompilerErrorContext<Code extends CompilerErrorCode> = LocaleContext
  * @see {@link initTranlate}
  *
  * @example
- * new CompilerError("double-memory-access")
- * new CompilerError("label-not-found", label)
+ * new AssemblerError("double-memory-access")
+ * new AssemblerError("label-not-found", label)
  */
-export class CompilerError<Code extends CompilerErrorCode> extends Error {
+export class AssemblerError<Code extends AssemblerErrorCode> extends Error {
   public readonly code: Code;
-  private readonly context: CompilerErrorContext<Code>;
+  private readonly context: AssemblerErrorContext<Code>;
   public position: Position | null;
 
-  constructor(code: Code, ...context: CompilerErrorContext<Code>) {
+  constructor(code: Code, ...context: AssemblerErrorContext<Code>) {
     super();
     this.code = code;
     this.context = context;
     this.position = null;
 
     if (code === "unexpected-error") {
-      console.error("[Unexpected Compiler Error]", ...context);
+      console.error("[Unexpected Assembler Error]", ...context);
     }
   }
 
@@ -72,8 +72,8 @@ export class CompilerError<Code extends CompilerErrorCode> extends Error {
     return this.message;
   }
 
-  static from(err: unknown): CompilerError<any> {
-    if (err instanceof CompilerError) return err;
-    else return new CompilerError("unexpected-error", err);
+  static from(err: unknown): AssemblerError<any> {
+    if (err instanceof AssemblerError) return err;
+    else return new AssemblerError("unexpected-error", err);
   }
 }

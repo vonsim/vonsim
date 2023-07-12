@@ -1,6 +1,6 @@
 import { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "./error";
+import { AssemblerError } from "./error";
 import type { Token, TokenType } from "./lexer/tokens";
 import { NumberExpression } from "./number-expression";
 import {
@@ -42,7 +42,7 @@ import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "./types";
  *
  * The last two can have multiple operands separated by commas. Inside each operand,
  * there can be a number expression, which is a sequence of numbers and operators
- * that can be evaluated at compile time.
+ * that can be evaluated at assemble time.
  *
  * @see {@link NumberExpression}.
  *
@@ -95,7 +95,7 @@ export class Parser {
 
     if (!statement) {
       const token = this.peek();
-      throw new CompilerError("parser.expected-instruction", token).at(token);
+      throw new AssemblerError("parser.expected-instruction", token).at(token);
     }
 
     return statement;
@@ -107,7 +107,7 @@ export class Parser {
 
     const addressToken = this.consume(
       "NUMBER",
-      new CompilerError("parser.expected-address-after-org"),
+      new AssemblerError("parser.expected-address-after-org"),
     );
     const address = this.parseNumber(addressToken);
 
@@ -125,7 +125,7 @@ export class Parser {
     while (!this.isAtEnd()) {
       if (this.match("EOL")) continue;
 
-      throw new CompilerError("end-must-be-the-last-statement").at(token);
+      throw new AssemblerError("end-must-be-the-last-statement").at(token);
     }
 
     return new EndStatement(token.position);
@@ -139,7 +139,7 @@ export class Parser {
     // handles the case where there is a label but no directive and vice versa.
 
     if (labelToken && !directiveToken) {
-      throw new CompilerError("parser.unexpected-identifier").at(labelToken);
+      throw new AssemblerError("parser.unexpected-identifier").at(labelToken);
     }
 
     if (!directiveToken) return null;
@@ -182,7 +182,7 @@ export class Parser {
 
     if (labelToken && !instructionToken) {
       const next = this.peek();
-      throw new CompilerError("parser.expected-instruction-after-label", next).at(next);
+      throw new AssemblerError("parser.expected-instruction-after-label", next).at(next);
     }
 
     if (!instructionToken) return null;
@@ -215,7 +215,7 @@ export class Parser {
     if (sizeToken) {
       this.consume(
         "PTR",
-        new CompilerError("parser.expected-literal-after-literal", "PTR", this.previous().type),
+        new AssemblerError("parser.expected-literal-after-literal", "PTR", this.previous().type),
       );
     }
 
@@ -224,10 +224,10 @@ export class Parser {
       const start = this.previous();
 
       if (this.check(...REGISTERS)) {
-        this.consume("BX", new CompilerError("parser.indirect-addressing-must-be-bx"));
+        this.consume("BX", new AssemblerError("parser.indirect-addressing-must-be-bx"));
         const end = this.consume(
           "RIGHT_BRACKET",
-          new CompilerError("parser.expected-literal-after-literal", "]", "BX"),
+          new AssemblerError("parser.expected-literal-after-literal", "]", "BX"),
         );
 
         return new IndirectAddressOperand(
@@ -238,7 +238,7 @@ export class Parser {
         const expression = this.numberExpression();
         const end = this.consume(
           "RIGHT_BRACKET",
-          new CompilerError("parser.expected-literal-after-expression", "]"),
+          new AssemblerError("parser.expected-literal-after-expression", "]"),
         );
 
         return new DirectAddressOperand(
@@ -249,7 +249,7 @@ export class Parser {
       }
     } else if (sizeToken) {
       // Found BYTE PTR or WORD PTR but no left bracket
-      throw new CompilerError("parser.expected-literal-after-literal", "[", "PTR");
+      throw new AssemblerError("parser.expected-literal-after-literal", "[", "PTR");
     }
 
     // Could be a label or a literal
@@ -276,14 +276,14 @@ export class Parser {
 
   private consume<T extends TokenType>(
     type: T | T[],
-    error?: CompilerError<any>,
+    error?: AssemblerError<any>,
   ): Token & { type: T } {
     if (!Array.isArray(type)) type = [type];
 
     const token = this.match(...type);
     if (token) return token;
 
-    error ||= new CompilerError("parser.expected-type", type.join(","), this.peek().type);
+    error ||= new AssemblerError("parser.expected-type", type.join(","), this.peek().type);
     throw error.at(this.peek());
   }
 
@@ -291,7 +291,7 @@ export class Parser {
     if (this.isAtEnd()) return;
     if (this.check("EOL")) return this.advance();
 
-    throw new CompilerError("parser.expected-eos").at(this.peek());
+    throw new AssemblerError("parser.expected-eos").at(this.peek());
   }
 
   private isAtEnd() {
@@ -342,7 +342,7 @@ export class Parser {
 
     if (this.match("LEFT_PAREN")) {
       const expression = this.numberExpression();
-      this.consume("RIGHT_PAREN", new CompilerError("parser.unclosed-parenthesis"));
+      this.consume("RIGHT_PAREN", new AssemblerError("parser.unclosed-parenthesis"));
       return expression;
     }
 
@@ -350,12 +350,12 @@ export class Parser {
     const identifierToken = this.match("IDENTIFIER");
 
     if (offsetToken && !identifierToken) {
-      throw new CompilerError("parser.expected-label-after-offset").at(this.peek());
+      throw new AssemblerError("parser.expected-label-after-offset").at(this.peek());
     }
 
     if (!identifierToken) {
       // Nothing above matched, so it must be an invalid expression
-      throw new CompilerError("parser.expected-argument").at(this.peek());
+      throw new AssemblerError("parser.expected-argument").at(this.peek());
     }
 
     return NumberExpression.label(
@@ -371,7 +371,7 @@ export class Parser {
 
       // Prevent ambiguous cases like `(--1)` or `(+-1)`
       if (this.check("PLUS", "MINUS")) {
-        throw new CompilerError("parser.ambiguous-unary").at(this.peek());
+        throw new AssemblerError("parser.ambiguous-unary").at(this.peek());
       }
 
       const right = this.unaryNE();

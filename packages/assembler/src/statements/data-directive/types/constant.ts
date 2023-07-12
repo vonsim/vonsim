@@ -1,6 +1,6 @@
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import type { NumberExpression } from "../../../number-expression";
 import { DataDirectiveStatement } from "../statement";
@@ -13,7 +13,7 @@ import type { DataDirectiveValue } from "../value";
  * my_constant EQU 42
  * ```
  *
- * Constants are evaluated at compile time and can be used anywhere in the program.
+ * Constants are evaluated at assemble time and can be used anywhere in the program.
  * They can only have a single value. It can't be a string nor unassigned. Also, it needs a label.
  *
  * When a constant is created, a generic NumberExpression is assigned as its initial value.
@@ -53,19 +53,19 @@ export class Constant extends DataDirectiveStatement {
     if (this.#initialValue) throw new Error("Constant already validated");
 
     if (!this.label) {
-      throw new CompilerError("constant-must-have-a-label").at(this);
+      throw new AssemblerError("constant-must-have-a-label").at(this);
     }
 
     if (this.values.length !== 1) {
-      throw new CompilerError("constant-must-have-one-value").at(this);
+      throw new AssemblerError("constant-must-have-one-value").at(this);
     }
 
     const value = this.values[0];
     if (value.type === "string") {
-      throw new CompilerError("cannot-accept-strings", "EQU").at(value);
+      throw new AssemblerError("cannot-accept-strings", "EQU").at(value);
     }
     if (value.type === "unassigned") {
-      throw new CompilerError("cannot-be-unassinged", "EQU").at(value);
+      throw new AssemblerError("cannot-be-unassinged", "EQU").at(value);
     }
     this.#initialValue = value.value;
   }
@@ -77,7 +77,7 @@ export class Constant extends DataDirectiveStatement {
 
     if (this.#status === "processing") {
       // Trying to evaluate a constant that is being evaluated
-      throw new CompilerError("circular-reference").at(this.position);
+      throw new AssemblerError("circular-reference").at(this.position);
     }
 
     this.#status = "processed";

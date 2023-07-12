@@ -1,7 +1,7 @@
 import { Byte } from "@vonsim/common/byte";
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { Operand } from "../operands";
@@ -71,13 +71,13 @@ export class IntInstruction extends InstructionStatement {
     if (this.#initialValue) throw new Error("Instruction already validated");
 
     if (this.operands.length !== 1) {
-      throw new CompilerError("expects-one-operand").at(this);
+      throw new AssemblerError("expects-one-operand").at(this);
     }
 
     const operand = this.operands[0];
 
     if (!operand.isNumberExpression()) {
-      throw new CompilerError("expects-immediate").at(operand);
+      throw new AssemblerError("expects-immediate").at(operand);
     }
 
     this.#initialValue = operand.value;
@@ -89,7 +89,7 @@ export class IntInstruction extends InstructionStatement {
 
     const computed = this.#initialValue.evaluate(store);
     if (!Byte.fitsUnsigned(computed, 8)) {
-      throw new CompilerError("invalid-interrupt", computed).at(this.#initialValue);
+      throw new AssemblerError("invalid-interrupt", computed).at(this.#initialValue);
     }
 
     this.#value = Byte.fromUnsigned(computed, 8);

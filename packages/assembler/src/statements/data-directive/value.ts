@@ -8,7 +8,7 @@ import type { NumberExpression } from "../../number-expression";
  * It can be:
  * - A string
  * - An unassigned value (just reserves space)
- * - A number expression (literal value, defined at compile time)
+ * - A number expression (literal value, defined at assemble time)
  *
  * ---
  * This class is: IMMUTABLE

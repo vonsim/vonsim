@@ -1,7 +1,7 @@
 import { MemoryAddress } from "@vonsim/common/address";
 import { forEachWithErrors } from "@vonsim/common/loops";
 
-import { CompilerError } from "./error";
+import { AssemblerError } from "./error";
 import type { Constant, Statement } from "./statements";
 
 type LabelsMap = Map<
@@ -55,21 +55,21 @@ export class GlobalStore {
    * Loads the label types from the given statements
    * @returns Errors that occurred while loading the label types
    */
-  loadStatements(statements: Statement[]): CompilerError<any>[] {
+  loadStatements(statements: Statement[]): AssemblerError<any>[] {
     if (this.#statementsLoaded) {
       throw new Error("Tried to load statements twice");
     }
 
     this.#statementsLoaded = true;
     this.labels.clear();
-    const errors: CompilerError<any>[] = [];
+    const errors: AssemblerError<any>[] = [];
 
     for (const statement of statements) {
       if (!("label" in statement)) continue;
       if (!statement.label) continue;
 
       if (this.labels.has(statement.label)) {
-        errors.push(new CompilerError("duplicated-label", statement.label).at(statement.position));
+        errors.push(new AssemblerError("duplicated-label", statement.label).at(statement.position));
         continue;
       }
 
@@ -94,7 +94,7 @@ export class GlobalStore {
     return errors;
   }
 
-  computeAddresses(statements: Statement[]): CompilerError<any>[] {
+  computeAddresses(statements: Statement[]): AssemblerError<any>[] {
     if (this.#computedAddresses) {
       throw new Error("Tried to compute addresses twice");
     }
@@ -117,19 +117,19 @@ export class GlobalStore {
         }
 
         if (pointer === null) {
-          throw new CompilerError("missing-org").at(statement);
+          throw new AssemblerError("missing-org").at(statement);
         }
 
         const length = statement.length;
 
         for (let i = 0; i < length; i++) {
           if (!MemoryAddress.inRange(pointer + i)) {
-            throw new CompilerError("instruction-out-of-range", pointer + i).at(statement);
+            throw new AssemblerError("instruction-out-of-range", pointer + i).at(statement);
           }
           const address = MemoryAddress.from(pointer + i);
 
           if (occupiedMemory.has(address.value)) {
-            throw new CompilerError("occupied-address", address).at(statement);
+            throw new AssemblerError("occupied-address", address).at(statement);
           }
 
           occupiedMemory.add(address.value);
@@ -146,7 +146,7 @@ export class GlobalStore {
         }
         pointer += length;
       },
-      CompilerError.from,
+      AssemblerError.from,
     );
 
     return errors;

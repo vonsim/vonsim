@@ -2,7 +2,7 @@ import { MemoryAddress } from "@vonsim/common/address";
 import type { ByteSize } from "@vonsim/common/byte";
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { ByteRegister, Register, WordRegister } from "../../../types";
@@ -133,7 +133,7 @@ export class UnaryInstruction extends InstructionStatement {
     if (this.#initialOperation) throw new Error("Instruction already validated");
 
     if (this.operands.length !== 1) {
-      throw new CompilerError("expects-one-operand").at(this);
+      throw new AssemblerError("expects-one-operand").at(this);
     }
 
     const out = this.operands[0];
@@ -145,7 +145,7 @@ export class UnaryInstruction extends InstructionStatement {
 
     if (out.isDirectAddress()) {
       if (out.size === "auto") {
-        throw new CompilerError("unknown-size").at(out);
+        throw new AssemblerError("unknown-size").at(out);
       }
 
       this.#initialOperation = { mode: "mem-direct", size: out.size, address: out.value };
@@ -154,7 +154,7 @@ export class UnaryInstruction extends InstructionStatement {
 
     if (out.isIndirectAddress()) {
       if (out.size === "auto") {
-        throw new CompilerError("unknown-size").at(out);
+        throw new AssemblerError("unknown-size").at(out);
       }
 
       this.#initialOperation = { mode: "mem-indirect", size: out.size };
@@ -181,7 +181,7 @@ export class UnaryInstruction extends InstructionStatement {
       }
     }
 
-    throw new CompilerError("destination-cannot-be-immediate").at(out);
+    throw new AssemblerError("destination-cannot-be-immediate").at(out);
   }
 
   evaluateExpressions(store: GlobalStore): void {
@@ -199,12 +199,12 @@ export class UnaryInstruction extends InstructionStatement {
       case "mem-direct": {
         const computed = op.address.evaluate(store);
         if (!MemoryAddress.inRange(computed)) {
-          throw new CompilerError("address-out-of-range", computed).at(op.address);
+          throw new AssemblerError("address-out-of-range", computed).at(op.address);
         }
 
         const address = MemoryAddress.from(computed);
         if (store.addressIsReserved(address)) {
-          throw new CompilerError("address-has-code", address).at(op.address);
+          throw new AssemblerError("address-has-code", address).at(op.address);
         }
 
         this.#operation = { mode: "mem-direct", size: op.size, address };

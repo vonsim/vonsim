@@ -3,7 +3,7 @@ import { AnyByte, Byte, ByteSize } from "@vonsim/common/byte";
 import { forEachWithErrors } from "@vonsim/common/loops";
 import { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { DataDirective as AllDataDirectives } from "../../../types";
@@ -34,7 +34,7 @@ type DataDirective = Exclude<AllDataDirectives, "EQU">;
  * Also, they can have labels, which can be used to reference them. These labels
  * can be can be used anywhere in the program.
  *
- * Apart from the unassigned bytes, all other values are evaluated at compile time.
+ * Apart from the unassigned bytes, all other values are evaluated at assemble time.
  *
  * When a data directive is created, generic NumberExpressions are assigned as its initial values.
  *
@@ -97,7 +97,7 @@ export class Data extends DataDirectiveStatement {
         this.#initialValues.push(unassigned);
       } else if (value.isString()) {
         if (this.directive !== "DB") {
-          throw new CompilerError("cannot-accept-strings", this.directive).at(value);
+          throw new AssemblerError("cannot-accept-strings", this.directive).at(value);
         }
 
         const str = value.value;
@@ -115,14 +115,14 @@ export class Data extends DataDirectiveStatement {
     }
 
     if (this.#initialValues.length === 0) {
-      throw new CompilerError("must-have-one-or-more-values", this.directive).at(this);
+      throw new AssemblerError("must-have-one-or-more-values", this.directive).at(this);
     }
   }
 
   /**
    * Evaluates the expressions in the data directive, giving numberic values.
    */
-  evaluateExpressions(store: GlobalStore): CompilerError<any>[] {
+  evaluateExpressions(store: GlobalStore): AssemblerError<any>[] {
     if (!this.#initialValues) throw new Error("Data directive not validated");
     if (this.#values) throw new Error("Data directive already evaluated");
 
@@ -136,13 +136,13 @@ export class Data extends DataDirectiveStatement {
         } else {
           const evaluated = value.evaluate(store);
           if (!Byte.fits(evaluated, this.size)) {
-            throw new CompilerError("value-out-of-range", evaluated, this.size).at(this);
+            throw new AssemblerError("value-out-of-range", evaluated, this.size).at(this);
           }
           const byte = Byte.fromNumber(evaluated, this.size) as AnyByte;
           this.#values!.push(byte);
         }
       },
-      CompilerError.from,
+      AssemblerError.from,
     );
 
     if (errors.length > 0) this.#values = null;

@@ -1,7 +1,7 @@
 import { MemoryAddress } from "@vonsim/common/address";
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
@@ -101,22 +101,22 @@ export class JumpInstruction extends InstructionStatement {
     if (this.#jumpTo) throw new Error("Instruction already validated");
 
     if (this.operands.length !== 1) {
-      throw new CompilerError("expects-one-operand").at(this);
+      throw new AssemblerError("expects-one-operand").at(this);
     }
 
     const operand = this.operands[0];
     if (!operand.isNumberExpression() || !operand.value.isLabel()) {
-      throw new CompilerError("expects-label").at(operand);
+      throw new AssemblerError("expects-label").at(operand);
     }
 
     const label = operand.value.value;
     const type = store.getLabelType(label);
 
     if (!type) {
-      throw new CompilerError("label-not-found", label).at(operand);
+      throw new AssemblerError("label-not-found", label).at(operand);
     }
     if (type !== "instruction") {
-      throw new CompilerError("label-should-be-an-instruction", label).at(operand);
+      throw new AssemblerError("label-should-be-an-instruction", label).at(operand);
     }
 
     this.#jumpTo = label;
@@ -128,7 +128,7 @@ export class JumpInstruction extends InstructionStatement {
 
     const addr = store.getLabelValue(this.#jumpTo)!;
     if (!MemoryAddress.inRange(addr)) {
-      throw new CompilerError("address-out-of-range", addr).at(this);
+      throw new AssemblerError("address-out-of-range", addr).at(this);
     }
 
     this.#address = MemoryAddress.from(addr);

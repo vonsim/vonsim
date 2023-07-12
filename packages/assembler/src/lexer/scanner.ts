@@ -1,6 +1,6 @@
 import { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../error";
+import { AssemblerError } from "../error";
 import { Keyword, KEYWORDS } from "../types";
 import { Token, TokenType } from "./tokens";
 
@@ -77,10 +77,10 @@ export class Scanner {
         case '"':
           while (this.peek() !== '"') {
             if (this.isAtEnd() || this.peek() === "\n") {
-              throw new CompilerError("lexer.unterminated-string").at(this.position);
+              throw new AssemblerError("lexer.unterminated-string").at(this.position);
             }
             if (this.peek().charCodeAt(0) > 255) {
-              throw new CompilerError("lexer.only-ascii").at(
+              throw new AssemblerError("lexer.only-ascii").at(
                 new Position(this.position.end, this.position.end + 1),
               );
             }
@@ -127,12 +127,12 @@ export class Scanner {
           if (text.at(-1) === "b" || text.at(-1) === "B") {
             // Should be a binary number.
             if (!/^[01]+b$/i.test(text)) {
-              throw new CompilerError("lexer.invalid-binary").at(this.position);
+              throw new AssemblerError("lexer.invalid-binary").at(this.position);
             }
           } else {
             // Should be a decimal number.
             if (!/^\d+$/.test(text)) {
-              throw new CompilerError("lexer.invalid-decimal").at(this.position);
+              throw new AssemblerError("lexer.invalid-decimal").at(this.position);
             }
           }
         }
@@ -161,7 +161,7 @@ export class Scanner {
         continue;
       }
 
-      throw new CompilerError("lexer.unexpected-character", c).at(this.position);
+      throw new AssemblerError("lexer.unexpected-character", c).at(this.position);
     }
 
     this.position = new Position(this.position.end);

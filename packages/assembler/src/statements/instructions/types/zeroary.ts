@@ -1,6 +1,6 @@
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
@@ -58,7 +58,7 @@ export class ZeroaryInstruction extends InstructionStatement {
     if (this.#validated) throw new Error("Instruction already validated");
 
     if (this.operands.length > 0) {
-      throw new CompilerError("expects-no-operands").at(this);
+      throw new AssemblerError("expects-no-operands").at(this);
     }
 
     this.#validated = true;

@@ -51,7 +51,7 @@ import type { ZeroaryInstruction } from "./types/zeroary";
  * If `label` is a constant, the instruction is a MOV reg<-imd (3 bytes).
  * However, if `label` points to a DB, the instruction is a MOV reg<-mem (direct) (4 bytes).
  *
- * With that in mind, the flow of "compiling" an instruction is:
+ * With that in mind, the flow of "assembling" an instruction is:
  * - Create the instruction with operands.
  * - Validate the instruction with `InstructionStatement#validate`, getting generic {@link NumberExpression}s.
  * - {@link GlobalStore} uses `InstructionStatement#length` to compute the address of the instruction.

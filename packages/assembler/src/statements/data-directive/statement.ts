@@ -29,7 +29,7 @@ import type { DataDirectiveValue } from "./value";
  *
  * Before that, we can only get generic {@link NumberExpression}s.
  *
- * With that in mind, the flow of "compiling" an data directive is:
+ * With that in mind, the flow of "assembling" an data directive is:
  * - Create the data directive with values.
  * - Validate it with `DataDirectiveStatement#validate`, getting generic {@link NumberExpression}s.
  * - {@link GlobalStore} computes the address of the data directive.

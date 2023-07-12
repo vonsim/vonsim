@@ -2,7 +2,7 @@ import { MemoryAddress } from "@vonsim/common/address";
 import { AnyByte, Byte, ByteSize } from "@vonsim/common/byte";
 import type { Position } from "@vonsim/common/position";
 
-import { CompilerError } from "../../../error";
+import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
 import type { ByteRegister, Register, WordRegister } from "../../../types";
@@ -196,7 +196,7 @@ export class BinaryInstruction extends InstructionStatement {
     if (this.#initialOperation) throw new Error("Instruction already validated");
 
     if (this.operands.length !== 2) {
-      throw new CompilerError("expects-two-operands").at(this);
+      throw new AssemblerError("expects-two-operands").at(this);
     }
 
     const [out, src] = this.operands;
@@ -209,7 +209,7 @@ export class BinaryInstruction extends InstructionStatement {
 
       if (src.isRegister()) {
         if (out.size !== src.size) {
-          throw new CompilerError("size-mismatch", src.size, out.size).at(this);
+          throw new AssemblerError("size-mismatch", src.size, out.size).at(this);
         }
 
         this.#initialOperation = {
@@ -223,7 +223,7 @@ export class BinaryInstruction extends InstructionStatement {
 
       if (src.isDirectAddress()) {
         if (src.size !== "auto" && src.size !== out.size) {
-          throw new CompilerError("size-mismatch", src.size, out.size).at(this);
+          throw new AssemblerError("size-mismatch", src.size, out.size).at(this);
         }
 
         this.#initialOperation = {
@@ -237,7 +237,7 @@ export class BinaryInstruction extends InstructionStatement {
 
       if (src.isIndirectAddress()) {
         if (src.size !== "auto" && src.size !== out.size) {
-          throw new CompilerError("size-mismatch", src.size, out.size).at(this);
+          throw new AssemblerError("size-mismatch", src.size, out.size).at(this);
         }
 
         this.#initialOperation = {
@@ -260,7 +260,7 @@ export class BinaryInstruction extends InstructionStatement {
 
           // It needs to check if the size of the data label is the same as the size of the register
           if (srcSize !== out.size) {
-            throw new CompilerError("size-mismatch", srcSize, out.size).at(this);
+            throw new AssemblerError("size-mismatch", srcSize, out.size).at(this);
           }
 
           this.#initialOperation = {
@@ -306,7 +306,7 @@ export class BinaryInstruction extends InstructionStatement {
           size = out.isDataDirectiveLabel(store) || "auto";
           if (size === "auto") {
             // If the size is auto, it means that the label doesn't point to a data directive.
-            throw new CompilerError("label-should-be-writable", out.value.value).at(out);
+            throw new AssemblerError("label-should-be-writable", out.value.value).at(out);
           }
           address = {
             mode: "direct",
@@ -315,13 +315,13 @@ export class BinaryInstruction extends InstructionStatement {
             address: NumberExpression.label(out.value.value, true, out.value.position),
           };
         } else {
-          throw new CompilerError("destination-cannot-be-immediate").at(out);
+          throw new AssemblerError("destination-cannot-be-immediate").at(out);
         }
       }
 
       if (src.isRegister()) {
         if (size !== "auto" && size !== src.size) {
-          throw new CompilerError("size-mismatch", size, src.size).at(this);
+          throw new AssemblerError("size-mismatch", size, src.size).at(this);
         }
 
         this.#initialOperation = {
@@ -336,11 +336,11 @@ export class BinaryInstruction extends InstructionStatement {
       if (src.isNumberExpression()) {
         if (src.isDataDirectiveLabel(store)) {
           // It's a data label, like `mov mem1, mem2`
-          throw new CompilerError("double-memory-access").at(this);
+          throw new AssemblerError("double-memory-access").at(this);
         }
 
         if (size === "auto") {
-          throw new CompilerError("unknown-size").at(out);
+          throw new AssemblerError("unknown-size").at(out);
         }
 
         this.#initialOperation = {
@@ -353,7 +353,7 @@ export class BinaryInstruction extends InstructionStatement {
       }
 
       // src is either direct or indirect address
-      throw new CompilerError("double-memory-access").at(this);
+      throw new AssemblerError("double-memory-access").at(this);
     }
   }
 
@@ -366,12 +366,12 @@ export class BinaryInstruction extends InstructionStatement {
     const evaluateAddress = (expr: NumberExpression): MemoryAddress => {
       const computed = expr.evaluate(store);
       if (!MemoryAddress.inRange(computed)) {
-        throw new CompilerError("address-out-of-range", computed).at(expr);
+        throw new AssemblerError("address-out-of-range", computed).at(expr);
       }
 
       const address = MemoryAddress.from(computed);
       if (store.addressIsReserved(address)) {
-        throw new CompilerError("address-has-code", address).at(expr);
+        throw new AssemblerError("address-has-code", address).at(expr);
       }
 
       return address;
@@ -399,7 +399,7 @@ export class BinaryInstruction extends InstructionStatement {
       case "reg<-imd": {
         const computed = src.evaluate(store);
         if (!Byte.fits(computed, size)) {
-          throw new CompilerError("value-out-of-range", computed, size).at(src);
+          throw new AssemblerError("value-out-of-range", computed, size).at(src);
         }
         const byte = Byte.fromNumber(computed, size) as AnyByte;
         this.#operation = { mode, size, out, src: byte } as Operation;
@@ -422,7 +422,7 @@ export class BinaryInstruction extends InstructionStatement {
       case "mem<-imd": {
         const computed = src.evaluate(store);
         if (!Byte.fits(computed, size)) {
-          throw new CompilerError("value-out-of-range", computed, size).at(src);
+          throw new AssemblerError("value-out-of-range", computed, size).at(src);
         }
         const byte = Byte.fromNumber(computed, size) as AnyByte;
 
