@@ -95,8 +95,10 @@ export class MOVInstruction extends Instruction<"MOV"> {
       case "reg<-reg": {
         // Yes, this is silly, but it ensures type safety.
         if (size === 8) {
+          computer.cpu.setRegister(out, computer.cpu.getRegister(src));
           yield { type: "cpu:register.copy", input: src, output: out };
         } else {
+          computer.cpu.setRegister(out, computer.cpu.getRegister(src));
           yield { type: "cpu:register.copy", input: src, output: out };
         }
         return true;
@@ -129,8 +131,10 @@ export class MOVInstruction extends Instruction<"MOV"> {
 
       case "reg<-imd": {
         if (size === 8) {
+          computer.cpu.setRegister(out, src);
           yield { type: "cpu:register.copy", input: "id.l", output: out };
         } else {
+          computer.cpu.setRegister(out, src);
           yield { type: "cpu:register.copy", input: "id", output: out };
         }
         return true;
