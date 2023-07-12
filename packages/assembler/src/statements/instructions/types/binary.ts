@@ -78,11 +78,14 @@ export class BinaryInstruction extends InstructionStatement {
    */
   get length(): number {
     if (!this.#initialOperation) throw new Error("Instruction not validated");
-    const { mode, size } = this.#initialOperation;
+    const { mode, size, out, src } = this.#initialOperation;
 
     // opcode + mode
     let length = 2;
-    if (mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd") {
+    if (
+      (mode === "reg<-mem" && src.mode === "direct") ||
+      ((mode === "mem<-reg" || mode === "mem<-imd") && out.mode === "direct")
+    ) {
       length += 2; // 2-byte address
     }
     if (mode === "reg<-imd" || mode === "mem<-imd") {
