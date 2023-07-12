@@ -1,5 +1,4 @@
 import { MemoryAddress } from "@vonsim/common/address";
-import { Byte } from "@vonsim/common/byte";
 import { useId, useMemo, useState } from "react";
 import { useMeasure } from "react-use";
 import { toast } from "sonner";
@@ -95,7 +94,7 @@ export function Memory({ className }: { className?: string }) {
                 >
                   <CellView
                     name={translate("cpu.memory.cell", offset + i + j * rows)}
-                    value={Byte.fromUnsigned(memory[i + j * rows], 8)}
+                    value={memory[i + j * rows]}
                   />
                 </Table.Cell>
               ))}

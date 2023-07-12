@@ -1,11 +1,14 @@
 import { MemoryAddress } from "@vonsim/common/address";
+import { Byte } from "@vonsim/common/byte";
 
 import { atom, store } from "@/lib/jotai";
 import { MBRAtom } from "@/simulator/components/bus";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish } from "@/simulator/state";
 
-export const memoryAtom = atom(new Uint8Array(MemoryAddress.MAX_ADDRESS + 1));
+export const memoryAtom = atom(
+  new Array<Byte<8>>(MemoryAddress.MAX_ADDRESS + 1).fill(Byte.zero(8)),
+);
 
 export function handleMemoryEvent(event: SimulatorEvent<"memory:">): void {
   switch (event.type) {
@@ -20,11 +23,11 @@ export function handleMemoryEvent(event: SimulatorEvent<"memory:">): void {
     case "memory:write": {
       if (MemoryAddress.inRange(event.address)) {
         const address = Number(event.address);
-        const value = Number(event.value);
-        store.set(memoryAtom, arr => {
-          arr.set([value], address);
-          return arr;
-        });
+        store.set(memoryAtom, arr => [
+          ...arr.slice(0, address),
+          event.value,
+          ...arr.slice(address + 1),
+        ]);
       }
       return;
     }
