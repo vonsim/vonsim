@@ -1,6 +1,6 @@
 import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
-import type { JsonValue } from "type-fest";
+import type { JsonObject } from "type-fest";
 
 import type { ComponentInit } from "../../../component";
 import type { EventGenerator } from "../../../events";
@@ -103,10 +103,10 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
     }
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return {
       DATA: this.#DATA.toJSON(),
       STATE: this.#STATE.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

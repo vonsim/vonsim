@@ -1,6 +1,6 @@
 import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
-import type { JsonValue } from "type-fest";
+import type { JsonObject } from "type-fest";
 
 import type { ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
@@ -70,10 +70,10 @@ export class Timer extends IOModule<TimerRegister> {
     }
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return {
       CONT: this.#CONT.toJSON(),
       COMP: this.#COMP.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

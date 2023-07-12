@@ -87,7 +87,7 @@ export abstract class IOInterface<
     return false;
   }
 
-  toJSON(): JsonObject {
+  toJSON() {
     return {
       clock: this.clock.toJSON(),
       console: this.console.toJSON(),
@@ -95,6 +95,6 @@ export abstract class IOInterface<
 
       pic: this.pic.toJSON(),
       timer: this.timer.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

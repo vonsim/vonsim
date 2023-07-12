@@ -1,6 +1,5 @@
 import { decimalToChar } from "@vonsim/common/ascii";
 import { Byte } from "@vonsim/common/byte";
-import type { JsonValue } from "type-fest";
 
 import { Component, ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
@@ -73,7 +72,7 @@ export class Console extends Component {
     yield { type: "console:write", char };
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return this.#screen;
   }
 }

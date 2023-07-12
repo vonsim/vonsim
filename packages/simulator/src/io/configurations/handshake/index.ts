@@ -53,11 +53,11 @@ export class Handshake extends IOInterface<"handshake"> {
     return yield* super.write(address, value);
   }
 
-  toJSON(): JsonObject {
+  toJSON() {
     return {
       ...super.toJSON(),
       printer: this.printer.toJSON(),
       handshake: this.handshake.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

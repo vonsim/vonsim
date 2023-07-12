@@ -104,7 +104,7 @@ export class Memory extends Component {
     return true;
   }
 
-  toJSON(): JsonValue {
-    return [...this.#buffer];
+  toJSON() {
+    return [...this.#buffer] satisfies JsonValue;
   }
 }

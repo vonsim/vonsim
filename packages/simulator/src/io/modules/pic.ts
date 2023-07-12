@@ -207,17 +207,12 @@ export class PIC extends IOModule<PICRegister> {
     return number;
   }
 
-  toJSON(): JsonObject {
-    const json: JsonObject = {
+  toJSON() {
+    return {
       IMR: this.#IMR.toJSON(),
       IRR: this.#IRR.toJSON(),
       ISR: this.#ISR.toJSON(),
-    };
-
-    for (let i = 0; i < PIC.LINES; i++) {
-      json[`INT${i}`] = this.#lines[i].toJSON();
-    }
-
-    return json;
+      lines: this.#lines.map(line => line.toJSON()),
+    } satisfies JsonObject;
   }
 }

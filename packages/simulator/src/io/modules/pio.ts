@@ -1,6 +1,6 @@
 import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
-import type { JsonValue } from "type-fest";
+import type { JsonObject } from "type-fest";
 
 import type { ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
@@ -103,12 +103,12 @@ export abstract class GenericPIO<
     else return this.CB.bit(index) ? "input" : "output";
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return {
       PA: this.PA.toJSON(),
       PB: this.PB.toJSON(),
       CA: this.CA.toJSON(),
       CB: this.CB.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

@@ -1,6 +1,6 @@
 import { decimalToChar } from "@vonsim/common/ascii";
 import type { Byte } from "@vonsim/common/byte";
-import type { JsonValue } from "type-fest";
+import type { JsonObject } from "type-fest";
 
 import { Component, ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
@@ -113,10 +113,10 @@ export abstract class GenericPrinter<
     }
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return {
       paper: this.#paper,
       buffer: [...this.#buffer.map(byte => decimalToChar(byte.unsigned))],
-    };
+    } satisfies JsonObject;
   }
 }

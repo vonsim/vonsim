@@ -53,11 +53,11 @@ export class PIOPrinter extends IOInterface<"pio-printer"> {
     return yield* super.write(address, value);
   }
 
-  toJSON(): JsonObject {
+  toJSON() {
     return {
       ...super.toJSON(),
       printer: this.printer.toJSON(),
       pio: this.pio.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

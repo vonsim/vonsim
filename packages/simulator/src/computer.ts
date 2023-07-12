@@ -1,5 +1,5 @@
 import type { Program } from "@vonsim/assembler";
-import type { JsonValue, Simplify } from "type-fest";
+import type { JsonObject, Simplify } from "type-fest";
 
 import { CPU } from "./cpu";
 import { Handshake, PIOPrinter, PIOSwitchesAndLeds } from "./io/configurations";
@@ -34,11 +34,11 @@ export class Computer<TDevices extends DevicesConfiguration = DevicesConfigurati
     else throw new Error("Invalid devices configuration");
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return {
       cpu: this.cpu.toJSON(),
       memory: this.memory.toJSON(),
       io: this.io.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

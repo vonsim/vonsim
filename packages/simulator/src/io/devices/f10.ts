@@ -1,5 +1,3 @@
-import type { JsonValue } from "type-fest";
-
 import { Component } from "../../component";
 import type { EventGenerator } from "../../events";
 
@@ -11,7 +9,7 @@ export class F10 extends Component {
     yield* this.computer.io.pic.interrupt(0);
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return null;
   }
 }

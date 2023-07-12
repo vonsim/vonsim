@@ -56,12 +56,12 @@ export class PIOSwitchesAndLeds extends IOInterface<"pio-switches-and-leds"> {
     return yield* super.write(address, value);
   }
 
-  toJSON(): JsonObject {
+  toJSON() {
     return {
       ...super.toJSON(),
       leds: this.leds.toJSON(),
       switches: this.switches.toJSON(),
       pio: this.pio.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

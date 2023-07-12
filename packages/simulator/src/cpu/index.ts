@@ -1,7 +1,7 @@
 import type { ByteRegister, Register, WordRegister } from "@vonsim/assembler";
 import { MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
 import { AnyByte, Byte } from "@vonsim/common/byte";
-import type { JsonValue } from "type-fest";
+import type { JsonObject } from "type-fest";
 
 import { Component, ComponentInit } from "../component";
 import { SimulatorError } from "../error";
@@ -384,7 +384,7 @@ export class CPU extends Component {
     return true;
   }
 
-  toJSON(): JsonValue {
+  toJSON() {
     return {
       AX: this.#registers.AX.toJSON(),
       BX: this.#registers.AX.toJSON(),
@@ -393,6 +393,6 @@ export class CPU extends Component {
       SP: this.#registers.AX.toJSON(),
       IP: this.#IP.toJSON(),
       FLAGS: this.FLAGS.toJSON(),
-    };
+    } satisfies JsonObject;
   }
 }

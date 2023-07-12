@@ -1,5 +1,3 @@
-import type { JsonValue } from "type-fest";
-
 import { Computer, ComputerOptions } from "./computer";
 import { SimulatorError } from "./error";
 import type { EventGenerator, SimulatorEvent } from "./events";
@@ -21,7 +19,7 @@ export class Simulator {
   /**
    * Returns a copy of the current state of the computer as a JSON object.
    */
-  getComputerState(): JsonValue {
+  getComputerState() {
     return this.#computer?.toJSON() || null;
   }
 

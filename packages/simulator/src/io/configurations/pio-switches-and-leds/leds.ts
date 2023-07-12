@@ -31,7 +31,7 @@ export class Leds extends Component<"pio-switches-and-leds"> {
     yield { type: "leds:update", state };
   }
 
-  toJSON(): JsonValue {
-    return this.#state.toJSON();
+  toJSON() {
+    return this.#state.toJSON() satisfies JsonValue;
   }
 }

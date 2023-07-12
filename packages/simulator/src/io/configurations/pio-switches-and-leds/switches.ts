@@ -36,7 +36,7 @@ export class Switches extends Component<"pio-switches-and-leds"> {
     yield* this.computer.io.pio.updatePort("A");
   }
 
-  toJSON(): JsonValue {
-    return this.#state.toJSON();
+  toJSON() {
+    return this.#state.toJSON() satisfies JsonValue;
   }
 }
