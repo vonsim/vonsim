@@ -13,9 +13,11 @@
 ## To-do list
 
 - [ ] Add ✨ animations ✨
-  - [ ] Rethink the simulator
+  - [x] Rethink the simulator
   - [ ] Add animated diagrams
   - [ ] [Support mobile](https://github.com/prc5/react-zoom-pan-pinch)
+- [ ] Add usage documentation (maybe with LaTeX or [Typst](https://typst.app/))
+- [ ] Add internal documentation (maybe with [TypeDoc](https://typedoc.org/) or [documentation.js](https://documentation.js.org/))
 - [ ] Add Printer w/CDMA
 - [ ] Dark mode everywhere
 - [ ] Perf measurements
