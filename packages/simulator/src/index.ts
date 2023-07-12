@@ -12,8 +12,20 @@ export class Simulator {
    * @param options.data Whether to leave all data (memory, registers, etc.) `unchanged`, `randomize` it or `clean` it.
    * @param options.devices Which devices to connect to the computer.
    */
-  loadProgram(options: ComputerOptions) {
-    this.#computer = new Computer(options);
+  loadProgram(options: Omit<ComputerOptions, "previous">) {
+    this.#computer = new Computer({
+      ...options,
+      previous:
+        this.#computer ||
+        // Default empty computer
+        new Computer({
+          program: { data: [], instructions: [] },
+          devices: "pio-switches-and-leds",
+          data: "clean",
+        }),
+    });
+    this.#cpuGenerator?.return();
+    this.#cpuGenerator = this.#computer.cpu.run();
   }
 
   /**
@@ -35,8 +47,7 @@ export class Simulator {
   advanceCPU(extra?: unknown): SimulatorEvent {
     if (!this.#computer) throw new SimulatorError("no-program");
 
-    this.#cpuGenerator ??= this.#computer.cpu.run();
-    const { value, done } = this.#cpuGenerator.next(extra);
+    const { value, done } = this.#cpuGenerator!.next(extra);
     if (done) throw new Error("Called advanceCPU on a finished CPU!");
 
     return value;

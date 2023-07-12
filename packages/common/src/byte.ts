@@ -187,6 +187,17 @@ export class Byte<TSize extends ByteSize> {
   }
 
   /**
+   * Returns the byte as a boolean array.
+   */
+  toArray(): boolean[] {
+    const array = new Array<boolean>(this.#size);
+    for (let i = 0; i < this.#size; i++) {
+      array[i] = this.bit(i);
+    }
+    return array;
+  }
+
+  /**
    * Returns the byte as a string.
    * @param [representation="int"] The representation to use.
    */

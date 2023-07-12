@@ -116,7 +116,7 @@ export abstract class GenericPrinter<
   toJSON() {
     return {
       paper: this.#paper,
-      buffer: [...this.#buffer.map(byte => decimalToChar(byte.unsigned))],
+      buffer: [...this.#buffer.map(byte => byte.unsigned)],
     } satisfies JsonObject;
   }
 }

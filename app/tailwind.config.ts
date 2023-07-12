@@ -1,10 +1,11 @@
+import headlessUI from "@headlessui/tailwindcss";
 import { addDynamicIconSelectors } from "@iconify/tailwind";
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
 
 const config = {
-  content: ["./index.html", "./src/ui/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       fontFamily: {
@@ -32,7 +33,7 @@ const config = {
     },
   },
   plugins: [
-    require("@headlessui/tailwindcss"),
+    headlessUI({}),
     addDynamicIconSelectors(),
     plugin(({ matchUtilities, theme }) => {
       matchUtilities(
