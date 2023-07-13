@@ -5,9 +5,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "tsc --noEmit && eslint --ignore-path .gitignore --ext .js,.esm,.cjs,.ts,.tsx .",
-    "bench": "vitest bench --run",
-    "test": "vitest --run --reporter verbose"
+    "lint": "tsc --noEmit && eslint --ignore-path .gitignore --ext .js,.esm,.cjs,.ts,.tsx ."
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.5.1",
