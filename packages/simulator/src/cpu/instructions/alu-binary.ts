@@ -120,7 +120,7 @@ export class ALUBinaryInstruction extends Instruction<
     } else if (mode === "reg<-imd" || mode === "mem<-imd") {
       // Move immediate value to right register
       yield* this.consumeInstruction(computer, "right.l");
-      yield* this.consumeInstruction(computer, "right.h");
+      if (size === 16) yield* this.consumeInstruction(computer, "right.h");
       right = src;
     } else {
       // Fetch right operand, which is the memory cell
