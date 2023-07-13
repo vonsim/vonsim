@@ -313,6 +313,7 @@ export class CPU extends Component {
     yield { type: "cpu:mbr.set", register: "id.l" };
     if (!(yield* this.computer.memory.write(SP, value.low))) return false; // Error writing memory
 
+    this.setRegister("SP", SP);
     return true;
   }
 
@@ -346,6 +347,7 @@ export class CPU extends Component {
     SP = SP.add(1);
     yield { type: "cpu:register.update", register: "SP", value: SP };
 
+    this.setRegister("SP", SP);
     return low.withHigh(high);
   }
 
