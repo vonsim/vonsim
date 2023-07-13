@@ -1,3 +1,5 @@
+import { displayCharacter } from "@vonsim/common/ascii";
+
 import { Card } from "@/components/common/Card";
 import { Table } from "@/components/common/Table";
 import { useTranslate } from "@/hooks/useTranslate";
@@ -24,7 +26,7 @@ export function Handshake({ className }: { className?: string }) {
         <Table.Body>
           <Table.Row>
             <Table.Cell title={translate("devices.ioRegister", "DATA", 0x40)}>
-              {DATA.toString("ascii")}
+              {displayCharacter(DATA.unsigned)}
             </Table.Cell>
             <Table.Cell title={translate("devices.ioRegister", "STATE", 0x41)}>
               {STATE.toString("bin")}
