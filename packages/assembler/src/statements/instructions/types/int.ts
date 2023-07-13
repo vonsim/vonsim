@@ -35,9 +35,7 @@ export class IntInstruction extends InstructionStatement {
    * Returns the length of the instruction in bytes.
    * @see /docs/especificaciones/codificacion.md
    */
-  get length(): number {
-    return 2;
-  }
+  readonly length = 2;
 
   /**
    * Returns the bytes of the instruction.

@@ -46,9 +46,7 @@ export class JumpInstruction extends InstructionStatement {
    * Returns the length of the instruction in bytes.
    * @see /docs/especificaciones/codificacion.md
    */
-  get length(): number {
-    return 3;
-  }
+  readonly length = 3;
 
   /**
    * Returns the bytes of the instruction.

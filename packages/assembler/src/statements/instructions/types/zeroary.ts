@@ -31,10 +31,7 @@ export class ZeroaryInstruction extends InstructionStatement {
    * Returns the length of the instruction in bytes.
    * @see /docs/especificaciones/codificacion.md
    */
-  get length(): number {
-    // These instructions are all 1 byte long.
-    return 1;
-  }
+  readonly length = 1;
 
   /**
    * Returns the bytes of the instruction.

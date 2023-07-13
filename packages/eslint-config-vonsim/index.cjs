@@ -16,6 +16,7 @@ module.exports = {
   rules: {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-anonymous-default-export": "warn",

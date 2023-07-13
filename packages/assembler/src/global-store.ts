@@ -45,7 +45,7 @@ type LabelsMap = Map<
  * and {@link Instruction} to evaluate their operands.
  */
 export class GlobalStore {
-  private readonly codeMemory: Set<number> = new Set();
+  private readonly codeMemory = new Set<number>();
   private readonly labels: LabelsMap = new Map();
 
   #statementsLoaded = false;

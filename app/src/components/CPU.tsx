@@ -146,17 +146,3 @@ function GPRegister({ name, atom }: { name: string; atom: PrimitiveAtom<Byte<16>
     </Table.Row>
   );
 }
-
-function useRegisters() {
-  return {
-    AL: useAtomValue(registers.AL),
-    AH: useAtomValue(registers.AH),
-    BL: useAtomValue(registers.BL),
-    BH: useAtomValue(registers.BH),
-    CL: useAtomValue(registers.CL),
-    CH: useAtomValue(registers.CH),
-    DL: useAtomValue(registers.DL),
-    DH: useAtomValue(registers.DH),
-    FLAGS: useAtomValue(registers.FLAGS),
-  };
-}
