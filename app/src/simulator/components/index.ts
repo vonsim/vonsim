@@ -1,3 +1,6 @@
+import { IOAddress, MemoryAddress } from "@vonsim/common/address";
+import { Byte } from "@vonsim/common/byte";
+
 import { handleChipSelectEvent } from "@/simulator/components/chip-select";
 import { handleClockEvent } from "@/simulator/components/clock";
 import { handleConsoleEvent } from "@/simulator/components/console";
@@ -13,10 +16,65 @@ import { handleSwitchesEvent } from "@/simulator/components/switches";
 import { handleTimerEvent } from "@/simulator/components/timer";
 import { SimulatorEvent } from "@/simulator/helpers";
 
-export function handleEvent(event: SimulatorEvent) {
-  const ns = event.type.split(":")[0];
+const debugColors = {
+  clock: "#65a30d",
+  console: "#65a30d",
+  cpu: "#dc2626",
+  cs: "#2563eb",
+  f10: "#65a30d",
+  handshake: "#2563eb",
+  leds: "#65a30d",
+  memory: "#f59e0b",
+  pic: "#2563eb",
+  pio: "#2563eb",
+  printer: "#65a30d",
+  switches: "#65a30d",
+  timer: "#2563eb",
+};
 
-  console.info(`[${event.type}]`, event);
+export function handleEvent(event: SimulatorEvent) {
+  const [ns, name] = event.type.split(":");
+
+  console.group(
+    `%c ${ns} %c ${name}`,
+    `background: ${debugColors[ns]}; color: #fff; font-weight: bold;`,
+    "background: unset; color: unset; font-weight: normal;",
+  );
+  for (const key in event) {
+    if (key !== "type" && Object.prototype.hasOwnProperty.call(event, key)) {
+      const element = event[key];
+      if (element instanceof Byte) {
+        console.log(
+          `${key}: %c${element.toString("hex")}h %c(Byte)`,
+          "color: #8b5cf6;",
+          "color: #737373;",
+        );
+      } else if (element instanceof MemoryAddress) {
+        console.log(
+          `${key}: %c${element.toString()} %c(MemoryAddress)`,
+          "color: #8b5cf6;",
+          "color: #737373;",
+        );
+      } else if (element instanceof IOAddress) {
+        console.log(
+          `${key}: %c${element.toString()} %c(IOAddress)`,
+          "color: #8b5cf6;",
+          "color: #737373;",
+        );
+      } else if (typeof element === "number") {
+        console.log(`${key}: %c${element} %c(number)`, "color: #8b5cf6;", "color: #737373;");
+      } else if (typeof element === "string") {
+        console.log(`${key}: %c"${element}" %c(string)`, "color: #f97316;", "color: #737373;");
+      } else if (typeof element === "boolean") {
+        console.log(`${key}: %c${element}`, "color: #06b6d4;");
+      } else if (element === null) {
+        console.log(`${key}: %cnull`, "color: #b91c1c;");
+      } else {
+        console.log(`${key}:`, element);
+      }
+    }
+  }
+  console.groupEnd();
 
   if (ns === "clock") return handleClockEvent(event as SimulatorEvent<"clock:">);
   if (ns === "console") return handleConsoleEvent(event as SimulatorEvent<"console:">);
