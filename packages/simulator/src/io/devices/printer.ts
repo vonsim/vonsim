@@ -79,7 +79,12 @@ export abstract class GenericPrinter<
       const char = yield* this.readData();
       this.#buffer.push(char);
       yield { type: "printer:buffer.add", char };
-      if (this.busy) yield* this.updateBusy(true);
+
+      // Just after reading a character, the printer
+      // sends a busy signal.
+      // Then, it lowers it only if the buffer is empty.
+      yield* this.updateBusy(true);
+      if (!this.busy) yield* this.updateBusy(false);
     }
   }
 

@@ -75,11 +75,23 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
       yield* this.computer.io.printer.setStrobe(true);
       yield* this.computer.io.printer.setStrobe(false);
     } else if (register === "STATE") {
-      value = value.clearBit(1);
       if (this.computer.io.printer.busy) value = value.setBit(0);
-      else value = this.#STATE.clearBit(0);
+      else value = value.clearBit(0);
       this.#STATE = value;
       yield { type: "handshake:register.update", register, value };
+
+      // If CPU sent state with bit 1 set, send strobe to printer
+      if (this.#STATE.bit(1)) {
+        yield* this.computer.io.printer.setStrobe(true);
+        yield* this.computer.io.printer.setStrobe(false);
+        this.#STATE = this.#STATE.clearBit(1);
+        yield { type: "handshake:register.update", register, value: this.#STATE };
+      }
+
+      // Update interrupt line
+      if (this.interrupts && !this.computer.io.printer.busy) {
+        yield* this.computer.io.pic.interrupt(2);
+      }
     } else {
       return register; // Exhaustive check
     }
@@ -97,10 +109,7 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
     else this.#STATE = this.#STATE.clearBit(0);
     yield { type: "handshake:register.update", register: "STATE", value: this.#STATE };
 
-    if (this.interrupts && !busy) {
-      yield { type: "handshake:interrupt" };
-      yield* this.computer.io.pic.interrupt(2);
-    }
+    if (this.interrupts && !busy) yield* this.computer.io.pic.interrupt(2);
   }
 
   toJSON() {
