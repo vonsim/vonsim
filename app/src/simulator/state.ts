@@ -148,9 +148,9 @@ export function dispatch(...args: Action) {
     }
 
     case "switch.toggle": {
-      if (!simulator.devices.switches) throw new Error("Invalid device call");
+      if (simulator.devices.switches.connected()) throw new Error("Invalid device call");
 
-      const generator = simulator.devices.switches.toggle(args[1]);
+      const generator = simulator.devices.switches.toggle(args[1])!;
       let event = generator.next();
       while (!event.done) {
         handleEvent(event.value);
@@ -204,8 +204,8 @@ export function dispatch(...args: Action) {
     }
 
     case "printer.clean": {
-      if (simulator.devices.printer) {
-        const generator = simulator.devices.printer.clear();
+      if (simulator.devices.printer.connected()) {
+        const generator = simulator.devices.printer.clear()!;
         let event = generator.next();
         while (!event.done) {
           handleEvent(event.value);
@@ -235,7 +235,7 @@ function resetSimulatorTimers() {
 }
 
 function nextTicks(): [device: "cpu" | "clock" | "printer", nextTick: number][] {
-  if (simulator.devices.printer) {
+  if (simulator.devices.printer.connected()) {
     return [
       ["cpu", cpuNextTick],
       ["clock", clockNextTick],
@@ -270,7 +270,7 @@ function runSimulator(ms: number) {
       }
       clockNextTick += 1000;
     } else if (nextTick[0] === "printer") {
-      const generator = simulator.devices.printer!.print();
+      const generator = simulator.devices.printer.print()!;
       let event = generator.next();
       while (!event.done) {
         handleEvent(event.value);

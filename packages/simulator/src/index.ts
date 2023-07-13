@@ -3,8 +3,12 @@ import { SimulatorError } from "./error";
 import type { EventGenerator, SimulatorEvent } from "./events";
 
 export class Simulator {
-  #computer: Computer | null = null;
-  #cpuGenerator: EventGenerator | null = null;
+  #computer: Computer = new Computer({
+    program: { data: [], instructions: [] },
+    devices: "pio-switches-and-leds",
+    data: "clean",
+  });
+  #cpuGenerator: EventGenerator = this.#computer.cpu.run();
 
   /**
    * Loads a program into the computer!
@@ -13,17 +17,7 @@ export class Simulator {
    * @param options.devices Which devices to connect to the computer.
    */
   loadProgram(options: Omit<ComputerOptions, "previous">) {
-    this.#computer = new Computer({
-      ...options,
-      previous:
-        this.#computer ||
-        // Default empty computer
-        new Computer({
-          program: { data: [], instructions: [] },
-          devices: "pio-switches-and-leds",
-          data: "clean",
-        }),
-    });
+    this.#computer = new Computer({ ...options, previous: this.#computer });
     this.#cpuGenerator?.return();
     this.#cpuGenerator = this.#computer.cpu.run();
   }
@@ -61,18 +55,27 @@ export class Simulator {
     if (!this.#computer) throw new Error("No computer loaded!");
 
     return {
-      clock: { tick: this.#computer.io.clock.tick },
-      console: { clear: this.#computer.io.console.clear },
-      f10: { press: this.#computer.io.f10.press },
-      printer:
-        "printer" in this.#computer.io
-          ? {
-              clear: this.#computer.io.printer.clear,
-              print: this.#computer.io.printer.print,
-            }
-          : null,
-      switches:
-        "switches" in this.#computer.io ? { toggle: this.#computer.io.switches.toggle } : null,
+      clock: { tick: () => this.#computer.io.clock.tick() },
+      console: { clear: () => this.#computer.io.console.clear() },
+      f10: { press: () => this.#computer.io.f10.press() },
+      printer: {
+        connected: () => "printer" in this.#computer.io,
+        clear: () => {
+          if ("printer" in this.#computer.io) return this.#computer.io.printer.clear();
+          else console.warn("No printer connected to the computer!");
+        },
+        print: () => {
+          if ("printer" in this.#computer.io) return this.#computer.io.printer.print();
+          else console.warn("No printer connected to the computer!");
+        },
+      },
+      switches: {
+        connected: () => "printer" in this.#computer.io,
+        toggle: (index: number) => {
+          if ("switches" in this.#computer.io) return this.#computer.io.switches.toggle(index);
+          else console.warn("No switches connected to the computer!");
+        },
+      },
     };
   }
 }
