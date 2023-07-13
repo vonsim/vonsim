@@ -8,6 +8,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/stylistic",
     "plugin:regexp/recommended",
     "prettier",
   ],
@@ -15,7 +16,6 @@ module.exports = {
   rules: {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-anonymous-default-export": "warn",
