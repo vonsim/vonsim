@@ -1,5 +1,6 @@
 {
   "name": "eslint-config-vonsim",
+  "license": "AGPL-3.0-only",
   "main": "index.cjs",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",

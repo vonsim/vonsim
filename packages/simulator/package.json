@@ -1,5 +1,6 @@
 {
   "name": "@vonsim/simulator",
+  "license": "AGPL-3.0-only",
   "exports": {
     ".": "./src/index.ts"
   },
