@@ -12,7 +12,7 @@ export default defineConfig({
     starlight({
       title: "VonSim",
       editLink: {
-        baseUrl: "https://github.com/withastro/starlight/edit/main/docs/",
+        baseUrl: "https://github.com/vonsim/vonsim/edit/main/docs/",
       },
       pagination: false,
       lastUpdated: true,
