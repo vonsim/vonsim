@@ -6,23 +6,14 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "dev": "cd app && pnpm run dev",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:dev": "cd app && pnpm run dev"
   },
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search"
-      ]
-    }
-  },
   "devDependencies": {
-    "turbo": "^1.10.7",
-    "vitepress": "1.0.0-alpha.74"
+    "prettier": "^3.0.0",
+    "turbo": "^1.10.7"
   }
 }
