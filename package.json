@@ -6,7 +6,7 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "dev": "cd app && pnpm run dev",
-    "docs:dev": "cd app && pnpm run dev"
+    "docs:dev": "cd docs && pnpm run dev"
   },
   "engines": {
     "node": ">=18.0.0",
