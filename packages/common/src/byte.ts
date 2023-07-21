@@ -7,6 +7,7 @@ export type AnyByte = Byte<8> | Byte<16>;
 /**
  * General purpose byte.
  * Bytes can either 8 bits or 16 bits.
+ * The value stored will ALWAYS be in range.
  *
  * ---
  * This class is: IMMUTABLE

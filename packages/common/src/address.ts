@@ -3,6 +3,7 @@ import { AnyByte, Byte } from "./byte";
 /**
  * Memory address.
  * It's saved as a 16-bit unsigned integer.
+ * The address saved will ALWAYS be in range.
  *
  * ---
  * This class is: IMMUTABLE
