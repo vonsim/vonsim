@@ -8,7 +8,14 @@ type ZeroaryInstructionName = "PUSHF" | "POPF" | "RET" | "IRET" | "CLI" | "STI" 
 
 /**
  * ZeroaryInstruction:
- * PUSHF, POPF, RET, IRET, CLI, STI, NOP, HLT
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/pushf/ | PUSHF}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/popf/ | POPF}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/ret/ | RET}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/iret/ | IRET}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/cli/ | CLI}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/sti/ | STI}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/nop/ | NOP}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/hlt/ | HLT}
  *
  * These instructions don't have operands.
  *
@@ -29,13 +36,13 @@ export class ZeroaryInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   readonly length = 1;
 
   /**
    * Returns the bytes of the instruction.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   toBytes(): Uint8Array {
     const opcodes: { [key in ZeroaryInstructionName]: number } = {

@@ -25,7 +25,10 @@ type Operation =
 
 /**
  * UnaryInstruction:
- * NEG, INC, DEC, NOT
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/neg/ | NEG}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/inc/ | INC}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/dec/ | DEC}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/not/ | NOT}
  *
  * These instructions need one operand from {@link InstructionStatement}:
  * - `out`: the destination operand
@@ -55,7 +58,7 @@ export class UnaryInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   get length(): number {
     if (!this.#initialOperation) throw new Error("Instruction not validated");
@@ -72,7 +75,7 @@ export class UnaryInstruction extends InstructionStatement {
 
   /**
    * Returns the bytes of the instruction.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   toBytes(): Uint8Array {
     const bytes: number[] = [];

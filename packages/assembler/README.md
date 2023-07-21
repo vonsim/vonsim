@@ -1,6 +1,6 @@
 # `@vonsim/assembler`
 
-This package contains the assembler: a tool that converts a program written in plain text to a list of instructions that can be executed by the simulator.
+This package contains the assembler: a tool that converts a program written in plain text to a list of instructions that can be executed by the simulator. You can read more about the assembly language [here](https://vonsim.github.io/docs/cpu/assembly/).
 
 ## Usage
 
@@ -53,4 +53,8 @@ Now, since the program may have labels that can be referenced anywhere, the pars
 3. it will compute the address of each label and statement;
 4. it will compute each memory address and immediate value used as an operand.
 
-More reasoning about that can be found inside [`src/statements/instructions/statement.ts`](./src/statements/instructions/statement.ts) and [`src/global-store.ts`](./src/global-store.ts).
+More reasoning about that can be found inside
+
+- [`src/statements/data-directive/statement.ts`](./src/statements/data-directive/statement.ts),
+- [`src/statements/instructions/statement.ts`](./src/statements/instructions/statement.ts),
+- and [`src/global-store.ts`](./src/global-store.ts).

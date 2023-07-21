@@ -11,7 +11,7 @@ type IntInstructionName = "INT";
 
 /**
  * IntInstruction:
- * INT
+ * {@link https://vonsim.github.io/docs/cpu/instructions/int/ | INT}
  *
  * This instruction needs one operand: an immediate value.
  *
@@ -33,13 +33,13 @@ export class IntInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   readonly length = 2;
 
   /**
    * Returns the bytes of the instruction.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   toBytes(): Uint8Array {
     return new Uint8Array([0b0001_1010, this.value.unsigned]);

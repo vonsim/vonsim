@@ -37,7 +37,15 @@ type Operation =
 
 /**
  * BinaryInstruction:
- * MOV, ADD, ADC, SUB, SBB, CMP, AND, OR, XOR
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/mov/ | MOV}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/add/ | ADD}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/adc/ | ADC}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/sub/ | SUB}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/sbb/ | SBB}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/cmp/ | CMP}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/and/ | AND}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/or/ | OR}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/xor/ | XOR}
  *
  * These instructions need two operands:
  * - `out`: the destination operand (left operand)
@@ -74,7 +82,7 @@ export class BinaryInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   get length(): number {
     if (!this.#initialOperation) throw new Error("Instruction not validated");
@@ -103,7 +111,7 @@ export class BinaryInstruction extends InstructionStatement {
 
   /**
    * Returns the bytes of the instruction.
-   * @see /docs/especificaciones/codificacion.md
+   * @see https://vonsim.github.io/docs/reference/codification/
    */
   toBytes(): Uint8Array {
     const { mode, size, out, src } = this.operation;
