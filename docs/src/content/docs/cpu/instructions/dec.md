@@ -24,11 +24,11 @@ _dest_ puede ser un registro o una dirección de memoria (ver [tipos de operando
 - Registro  
   `0100011w`, `00000rrr`
 - Memoria (directo)  
-  `0100011w`, `01000000`, _dir-low_, _dir-high_
+  `0100011w`, `11000000`, _dir-low_, _dir-high_
 - Memoria (indirecto)  
-  `0100011w`, `01001000`
+  `0100011w`, `11010000`
 - Memoria (indirecto con desplazamiento)  
-  `0100011w`, `01010000`, _desp-low_, _desp-high_
+  `0100011w`, `11100000`, _desp-low_, _desp-high_
 
 Donde `w` es el bit de tamaño de los operandos. `w=0` indica operandos de 8 bits y `w=1` operandos de 16 bits.
 

@@ -32,52 +32,35 @@ A lo largo de la codificación se usan las siguientes abreviaturas:
 - **xxx-low** se refiere a la parte menos significativa (LSB) de un word o a un byte.
 - **xxx-high** se refiere a la marte más significativa (MSB) de un word.
 
-<!--
-Nota: como regla general, el segundo byte cumple la siguiente característica:
-
-tt mmm rrr
-
-tt es 00 si la fuente es un registro
-      01 si la fuente es una celda de memoria
-      10 si la fuente es un valor inmediato
-
-mmm representa el modo en el que se expresa la dirección de memoria
-      000 si es directo
-      001 si es indirecto
-      010 si es indirecto con desplazamiento
-
-rrr representa el registro utilizado
--->
-
 ---
 
 | Instrucción |    Opcode    |
 | :---------: | :----------: |
-|    `MOV`    | `10 0000 dw` |
-|    `AND`    | `10 0001 dw` |
-|    `OR`     | `10 0010 dw` |
-|    `XOR`    | `10 0011 dw` |
-|    `ADD`    | `10 0100 dw` |
-|    `ADC`    | `10 0101 dw` |
-|    `SUB`    | `10 0110 dw` |
-|    `SBB`    | `10 0111 dw` |
-|    `CMP`    | `10 1000 dw` |
+|    `MOV`    | `100 0000 w` |
+|    `AND`    | `100 0001 w` |
+|    `OR`     | `100 0010 w` |
+|    `XOR`    | `100 0011 w` |
+|    `ADD`    | `100 0100 w` |
+|    `ADC`    | `100 0101 w` |
+|    `SUB`    | `100 0110 w` |
+|    `SBB`    | `100 0111 w` |
+|    `CMP`    | `100 1000 w` |
 
 Estas instrucciones reciben dos operandos y soportan varios modos de direccionamiento. Esta información está codificada en el bit `d` y el segundo byte de la instrucción según la siguiente tabla:
 
-| Destino                                | Fuente                                 | `d` | Segundo byte | Bytes siguientes                         |
-| :------------------------------------- | :------------------------------------- | :-: | :----------: | :--------------------------------------- |
-| Registro                               | Registro                               | `0` |  `00RRRrrr`  | —                                        |
-| Registro                               | Memoria (directo)                      | `0` |  `01000rrr`  | dir-low, dir-high                        |
-| Registro                               | Memoria (indirecto)                    | `0` |  `01001rrr`  | —                                        |
-| Registro                               | Memoria (indirecto con desplazamiento) | `0` |  `01010rrr`  | desp-low, desp-high                      |
-| Registro                               | Inmediato                              | `0` |  `10000rrr`  | dato-low, dato-high                      |
-| Memoria (directo)                      | Registro                               | `1` |  `00000rrr`  | dir-low, dir-high                        |
-| Memoria (indirecto)                    | Registro                               | `1` |  `00001rrr`  | —                                        |
-| Memoria (indirecto con desplazamiento) | Registro                               | `1` |  `00010rrr`  | desp-low, desp-high                      |
-| Memoria (directo)                      | Inmediato                              | `1` |  `10000000`  | dir-low, dir-high, dato-low, dato-high   |
-| Memoria (indirecto)                    | Inmediato                              | `1` |  `10001000`  | dato-low, dato-high                      |
-| Memoria (indirecto con desplazamiento) | Inmediato                              | `1` |  `10010000`  | desp-low, desp-high, dato-low, dato-high |
+| Destino                                | Fuente                                 | Segundo byte | Bytes siguientes                         |
+| :------------------------------------- | :------------------------------------- | :----------: | :--------------------------------------- |
+| Registro                               | Registro                               |  `00RRRrrr`  | —                                        |
+| Registro                               | Memoria (directo)                      |  `01000rrr`  | dir-low, dir-high                        |
+| Registro                               | Memoria (indirecto)                    |  `01010rrr`  | —                                        |
+| Registro                               | Memoria (indirecto con desplazamiento) |  `01100rrr`  | desp-low, desp-high                      |
+| Registro                               | Inmediato                              |  `01001rrr`  | dato-low, dato-high                      |
+| Memoria (directo)                      | Registro                               |  `11000rrr`  | dir-low, dir-high                        |
+| Memoria (indirecto)                    | Registro                               |  `11010rrr`  | —                                        |
+| Memoria (indirecto con desplazamiento) | Registro                               |  `11100rrr`  | desp-low, desp-high                      |
+| Memoria (directo)                      | Inmediato                              |  `11001000`  | dir-low, dir-high, dato-low, dato-high   |
+| Memoria (indirecto)                    | Inmediato                              |  `11011000`  | dato-low, dato-high                      |
+| Memoria (indirecto con desplazamiento) | Inmediato                              |  `11101000`  | desp-low, desp-high, dato-low, dato-high |
 
 Para las instrucciones con un registro como operando, `rrr` codifica este registro. En el caso registro a registro, `RRR` codifica el registro fuente y `rrr` el registro destino.
 
@@ -95,9 +78,9 @@ Estas instrucciones reciben un operando y soportan varios modos de direccionamie
 | Destino                                | Segundo byte | Bytes siguientes    |
 | :------------------------------------- | :----------: | :------------------ |
 | Registro                               |  `00000rrr`  | —                   |
-| Memoria (directo)                      |  `01000000`  | dir-low, dir-high   |
-| Memoria (indirecto)                    |  `01001000`  | —                   |
-| Memoria (indirecto con desplazamiento) |  `01010000`  | desp-low, desp-high |
+| Memoria (directo)                      |  `11000000`  | dir-low, dir-high   |
+| Memoria (indirecto)                    |  `11010000`  | —                   |
+| Memoria (indirecto con desplazamiento) |  `11100000`  | desp-low, desp-high |
 
 ---
 

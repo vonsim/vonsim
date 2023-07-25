@@ -27,23 +27,23 @@ Las combinaciones válidas de _dest_, _fuente_ son:
 - Memoria (directo) a registro  
   `1000000w`, `01000rrr`, _dir-low_, _dir-high_
 - Memoria (indirecto) a registro  
-  `1000000w`, `01001rrr`
+  `1000000w`, `01010rrr`
 - Memoria (indirecto con desplazamiento) a registro  
-  `1000000w`, `01010rrr`, _desp-low_, _desp-high_
+  `1000000w`, `01100rrr`, _desp-low_, _desp-high_
 - Inmediato a registro  
-  `1000000w`, `10000rrr`, _dato-low_, _dato-high_
+  `1000000w`, `01001rrr`, _dato-low_, _dato-high_
 - Registro a memoria (directo)  
-  `1000001w`, `00000rrr`, _dir-low_, _dir-high_
+  `1000000w`, `11000rrr`, _dir-low_, _dir-high_
 - Registro a memoria (indirecto)  
-  `1000001w`, `00001rrr`
+  `1000000w`, `11010rrr`
 - Registro a memoria (indirecto con desplazamiento)  
-  `1000001w`, `00010rrr`, _desp-low_, _desp-high_
+  `1000000w`, `11100rrr`, _desp-low_, _desp-high_
 - Inmediato a memoria (directo)  
-  `1000001w`, `10000000`, _dir-low_, _dir-high_, _dato-low_, _dato-high_
+  `1000000w`, `11001000`, _dir-low_, _dir-high_, _dato-low_, _dato-high_
 - Inmediato a memoria (indirecto)  
-  `1000001w`, `10001000`, _dato-low_, _dato-high_
+  `1000000w`, `11011000`, _dato-low_, _dato-high_
 - Inmediato a memoria (indirecto con desplazamiento)  
-  `1000001w`, `10010000`, _desp-low_, _desp-high_, _dato-low_, _dato-high_
+  `1000000w`, `11101000`, _desp-low_, _desp-high_, _dato-low_, _dato-high_
 
 Donde `w` es el bit de tamaño de los operandos. `w=0` indica operandos de 8 bits y `w=1` operandos de 16 bits. Cuando `w=0`, _dato-high_ es obviado (la longitud de la instrucción es de un byte menos).
 

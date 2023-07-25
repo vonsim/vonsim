@@ -118,15 +118,15 @@ export class BinaryInstruction extends InstructionStatement {
     const bytes: number[] = [];
 
     const opcodes: { [key in BinaryInstructionName]: number } = {
-      MOV: 0b10_0000_00,
-      AND: 0b10_0001_00,
-      OR: 0b10_0010_00,
-      XOR: 0b10_0011_00,
-      ADD: 0b10_0100_00,
-      ADC: 0b10_0101_00,
-      SUB: 0b10_0110_00,
-      SBB: 0b10_0111_00,
-      CMP: 0b10_1000_00,
+      MOV: 0b100_0000_0,
+      AND: 0b100_0001_0,
+      OR: 0b100_0010_0,
+      XOR: 0b100_0011_0,
+      ADD: 0b100_0100_0,
+      ADC: 0b100_0101_0,
+      SUB: 0b100_0110_0,
+      SBB: 0b100_0111_0,
+      CMP: 0b100_1000_0,
     };
     bytes[0] = opcodes[this.instruction];
 
@@ -134,7 +134,7 @@ export class BinaryInstruction extends InstructionStatement {
 
     switch (mode) {
       case "reg<-reg": {
-        bytes[1] = 0b11_000_000;
+        bytes[1] = 0b00_000_000; // 00RRRrrr
         bytes[1] |= registerToBits(src) << 3;
         bytes[1] |= registerToBits(out) << 0;
         break;
@@ -142,18 +142,18 @@ export class BinaryInstruction extends InstructionStatement {
 
       case "reg<-mem": {
         if (src.mode === "direct") {
-          bytes[1] = 0b01_000_000;
+          bytes[1] = 0b01000_000; // 01000rrr
           bytes.push(src.address.byte.low.unsigned);
           bytes.push(src.address.byte.high.unsigned);
         } else {
-          bytes[1] = 0b01_001_000;
+          bytes[1] = 0b01010_000; // 01010rrr
         }
         bytes[1] |= registerToBits(out) << 0;
         break;
       }
 
       case "reg<-imd": {
-        bytes[1] = 0b10_000_000;
+        bytes[1] = 0b01001_000; // 01001rrr
         bytes[1] |= registerToBits(out) << 0;
         bytes.push(src.low.unsigned);
         if (size === 16) bytes.push(src.high.unsigned);
@@ -161,26 +161,24 @@ export class BinaryInstruction extends InstructionStatement {
       }
 
       case "mem<-reg": {
-        bytes[0] = 0b10;
         if (out.mode === "direct") {
-          bytes[1] = 0b00_000_000;
+          bytes[1] = 0b11000_000; // 11000rrr
           bytes.push(out.address.byte.low.unsigned);
           bytes.push(out.address.byte.high.unsigned);
         } else {
-          bytes[1] = 0b00_001_000;
+          bytes[1] = 0b11010_000; // 11010rrr
         }
         bytes[1] |= registerToBits(src) << 0;
         break;
       }
 
       case "mem<-imd": {
-        bytes[0] = 0b10;
         if (out.mode === "direct") {
-          bytes[1] = 0b10_000_000;
+          bytes[1] = 0b11001000;
           bytes.push(out.address.byte.low.unsigned);
           bytes.push(out.address.byte.high.unsigned);
         } else {
-          bytes[1] = 0b10_001_000;
+          bytes[1] = 0b11011000;
         }
         bytes.push(src.low.unsigned);
         if (size === 16) bytes.push(src.high.unsigned);

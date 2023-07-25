@@ -92,13 +92,13 @@ export class UnaryInstruction extends InstructionStatement {
 
     switch (this.operation.mode) {
       case "reg": {
-        bytes[1] = 0b00_000_000;
+        bytes[1] = 0b00000_000; // 00000rrr
         bytes[1] |= registerToBits(this.operation.reg);
         break;
       }
 
       case "mem-direct": {
-        bytes[1] = 0b01_000_000;
+        bytes[1] = 0b11000000;
         const address = this.operation.address.byte;
         bytes.push(address.low.unsigned);
         bytes.push(address.high.unsigned);
@@ -106,7 +106,7 @@ export class UnaryInstruction extends InstructionStatement {
       }
 
       case "mem-indirect": {
-        bytes[1] = 0b01_001_000;
+        bytes[1] = 0b11010000;
         break;
       }
 
