@@ -4,11 +4,11 @@ title: Listado
 
 VonSim cuenta con los siguientes dispotiivos:
 
-- [Tecla F10](/io/devices/f10/)
-- [Reloj](/io/devices/clock/)
-- [Consola](/io/devices/console/)
-- [Teclas y luces](/io/devices/switches-and-leds/)
-- [Impresora Centronics](/io/devices/printer/)
+- [Tecla F10](/docs/io/devices/f10/)
+- [Reloj](/docs/io/devices/clock/)
+- [Consola](/docs/io/devices/console/)
+- [Teclas y luces](/docs/io/devices/switches-and-leds/)
+- [Impresora Centronics](/docs/io/devices/printer/)
 
 ---
 

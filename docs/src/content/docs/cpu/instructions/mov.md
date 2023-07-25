@@ -2,7 +2,7 @@
 title: MOV
 ---
 
-Esta instrucción copia el operando fuente en el operando destino. El operando fuente no se modifica. Los [_flags_](/cpu/#flags) no se modifican.
+Esta instrucción copia el operando fuente en el operando destino. El operando fuente no se modifica. Los [_flags_](/docs/cpu/#flags) no se modifican.
 
 ## Uso
 
@@ -18,7 +18,7 @@ Las combinaciones válidas de _dest_, _fuente_ son:
 - Dirección de memoria, registro
 - Dirección de memoria, inmediato
 
-(Ver [tipos de operandos](/cpu/assembly/#operandos))
+(Ver [tipos de operandos](/docs/cpu/assembly/#operandos))
 
 ## Codificación
 

@@ -2,7 +2,7 @@
 title: IN
 ---
 
-Esta instrucción obtiene un byte de la [memoria E/S](/io/modules/) y lo almacena en el operando destino. Los [_flags_](/cpu/#flags) no se modifican.
+Esta instrucción obtiene un byte de la [memoria E/S](/docs/io/modules/) y lo almacena en el operando destino. Los [_flags_](/docs/cpu/#flags) no se modifican.
 
 ## Uso
 
@@ -10,7 +10,7 @@ Esta instrucción obtiene un byte de la [memoria E/S](/io/modules/) y lo almacen
 IN dest, fuente
 ```
 
-_fuente_ refiere al puerto o dirección de la memoria E/S. Puede ser un valor inmediato de 8 bits (ver [tipos de operandos](/cpu/assembly/#operandos)) o el registro `DX`. En el caso de utilizar `DX`, se utilizará la palabra almacenada en el registro como dirección de memoria E/S.
+_fuente_ refiere al puerto o dirección de la memoria E/S. Puede ser un valor inmediato de 8 bits (ver [tipos de operandos](/docs/cpu/assembly/#operandos)) o el registro `DX`. En el caso de utilizar `DX`, se utilizará la palabra almacenada en el registro como dirección de memoria E/S.
 
 _dest_ puede ser `AL` o `AX`. Si es `AX`, primero se leerá del puerto especificado por _fuente_ y se almacenará en `AL`, y luego se leerá del puerto siguiente y se almacenará en `AH`.
 

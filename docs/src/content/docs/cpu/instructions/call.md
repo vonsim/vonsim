@@ -2,9 +2,9 @@
 title: CALL
 ---
 
-Esta instrucción inicializa una [subrutina](/cpu/#subrutinas). Los [_flags_](/cpu/#flags) no se modifican.
+Esta instrucción inicializa una [subrutina](/docs/cpu/#subrutinas). Los [_flags_](/docs/cpu/#flags) no se modifican.
 
-Primero, se apila la dirección de retorno (la dirección de la instrucción siguiente a `CALL`) en la [pila](/cpu/#pila). Luego, se salta a la dirección de la subrutina, es decir, copia la dirección de salto en `IP`.
+Primero, se apila la dirección de retorno (la dirección de la instrucción siguiente a `CALL`) en la [pila](/docs/cpu/#pila). Luego, se salta a la dirección de la subrutina, es decir, copia la dirección de salto en `IP`.
 
 ## Uso
 

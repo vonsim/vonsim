@@ -2,7 +2,7 @@
 title: JMP
 ---
 
-Esta instrucción salta incondicionalmente. Los [_flags_](/cpu/#flags) no se modifican.
+Esta instrucción salta incondicionalmente. Los [_flags_](/docs/cpu/#flags) no se modifican.
 
 Copiará la dirección de salto en `IP`.
 

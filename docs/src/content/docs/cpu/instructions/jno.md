@@ -2,7 +2,7 @@
 title: JNO
 ---
 
-Esta instrucción salta solo sí `OF=0`. Los [_flags_](/cpu/#flags) no se modifican.
+Esta instrucción salta solo sí `OF=0`. Los [_flags_](/docs/cpu/#flags) no se modifican.
 
 De saltar, copiará la dirección de salto en `IP`.
 

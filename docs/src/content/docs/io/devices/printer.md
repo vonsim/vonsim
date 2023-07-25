@@ -14,7 +14,7 @@ Cada vez que se envía un carácter, si el _buffer_ no está lleno, el flag _bus
 
 ## Imprimir con PIO
 
-Una opción es conectar la impresora al [PIO](/io/modules/pio/). La conexión queda así:
+Una opción es conectar la impresora al [PIO](/docs/io/modules/pio/). La conexión queda así:
 
 ```
 PA = ____ __SB
@@ -34,14 +34,14 @@ En resumen, para imprimir un carácter, hay que
 
 ## Imprimir con Handshake
 
-A diferencia del PIO, el [Handshake](/io/modules/handshake/) es un módulo diseñado específicamente para las impresoras Centronics.
+A diferencia del PIO, el [Handshake](/docs/io/modules/handshake/) es un módulo diseñado específicamente para las impresoras Centronics.
 
 Con el Handshake no hay que preocuparse por el _strobe_, ya que este automatiza el flanco ascendente. Así, para imprimir basta con
 
 1. verificar que el _buffer_ no esté lleno (flag _busy_),
 2. escribir el carácter en el registro de datos.
 
-Más información sobre el Handshake y sus funcionalidades [aquí](/io/modules/handshake).
+Más información sobre el Handshake y sus funcionalidades [aquí](/docs/io/modules/handshake).
 
 ## Caracteres especiales
 

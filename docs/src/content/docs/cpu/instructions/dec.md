@@ -4,7 +4,7 @@ title: DEC
 
 Esta instrucción resta uno al operando destino y almacena el resultado en el mismo operando.
 
-Los [_flags_](/cpu/#flags) se modifican de la siguiente manera:
+Los [_flags_](/docs/cpu/#flags) se modifican de la siguiente manera:
 
 - Si la resta no entra en el operando destino, entonces `CF=1`. De lo contrario, `CF=0`.
 - Si el resultado es cero, entonces `ZF=1`. De lo contrario, `ZF=0`.
@@ -17,7 +17,7 @@ Los [_flags_](/cpu/#flags) se modifican de la siguiente manera:
 DEC dest
 ```
 
-_dest_ puede ser un registro o una dirección de memoria (ver [tipos de operandos](/cpu/assembly/#operandos)).
+_dest_ puede ser un registro o una dirección de memoria (ver [tipos de operandos](/docs/cpu/assembly/#operandos)).
 
 ## Codificación
 

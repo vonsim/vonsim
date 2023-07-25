@@ -2,16 +2,16 @@
 title: ¿Qué es VonSim?
 ---
 
-VonSim es una herramienta destinada a la enseñanza y aprendizaje de arquitectura y organización de computadoras. Consta de un entorno para desarrollar programas en [lenguaje ensamblador](/cpu/assembly/) (_Assembly_ o _Assembler_) y de un simulador para los mismos.
+VonSim es una herramienta destinada a la enseñanza y aprendizaje de arquitectura y organización de computadoras. Consta de un entorno para desarrollar programas en [lenguaje ensamblador](/docs/cpu/assembly/) (_Assembly_ o _Assembler_) y de un simulador para los mismos.
 
-Está [basado](/cpu/) en el procesador 8088 de Intel, y cuenta con:
+Está [basado](/docs/cpu/) en el procesador 8088 de Intel, y cuenta con:
 
 - cuatro registros multipropósito de 16 bits;
 - una memoria de 32 kB;
 - un bus de direcciones de 16 bits y un bus de datos de 8 bits;
 - interrupciones por software (como lectura y escritura a la consola);
-- interrupciones por hardware con un [PIC](/io/modules/pic/);
-- múltiples [dispositivos](/io/devices/): reloj, teclas, leds y una impresora centronics.
+- interrupciones por hardware con un [PIC](/docs/io/modules/pic/);
+- múltiples [dispositivos](/docs/io/devices/): reloj, teclas, leds y una impresora centronics.
 
 Estos dispositivos están inspirados por sus análogos especificados por la iAPX 88 (o familia 8088) de Intel. Estos son un conjunto de dispositivos diseñados por Intel para su buen funcionamiento en conjunto con el procesador 8088. Más detalles pueden encontrarse en el [manual de usuario de iAPX 88 (1981)](http://www.bitsavers.org/components/intel/_dataBooks/1981_iAPX_86_88_Users_Manual.pdf).
 
@@ -44,12 +44,12 @@ entre otras de la [Facultad de Informática](https://info.unlp.edu.ar/) de la [U
 
 VonSim se basa en el trabajo previo de Rubén de Diego Martínez para la Universidad Politécnica de Madrid. El simulador original se llamaba MSX88 y fue desarrollado en 1988. Algunas referencias:
 
-- [Manual de Usuario del MSX88 (v3.0)](/msx88/Manual-MSX88.pdf)
-- [Set de instrucciones del MSX88](/msx88/set-instr-MSX88.PDF)
-- [Paper de presentación del MSX88](/msx88/msx88-original-paper.pdf)
-- [MSX88 v3.1 (con DOSBox)](/msx88/MSX88Portable.zip)
-- [MSX88 v4.0 (portado)](/msx88/msx88_2017.rar)
-- [Apunte sobre interrupciones](/msx88/apunte-interrupciones.pdf)
+- [Manual de Usuario del MSX88 (v3.0)](/docs/msx88/Manual-MSX88.pdf)
+- [Set de instrucciones del MSX88](/docs/msx88/set-instr-MSX88.PDF)
+- [Paper de presentación del MSX88](/docs/msx88/msx88-original-paper.pdf)
+- [MSX88 v3.1 (con DOSBox)](/docs/msx88/MSX88Portable.zip)
+- [MSX88 v4.0 (portado)](/docs/msx88/msx88_2017.rar)
+- [Apunte sobre interrupciones](/docs/msx88/apunte-interrupciones.pdf)
 
 ### Licencia
 

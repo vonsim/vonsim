@@ -2,7 +2,7 @@
 title: POP
 ---
 
-Esta instrucción desapila el elemento en el tope en la [pila](/cpu/#pila) y lo almacena en el operando destino. Los [_flags_](/cpu/#flags) no se modifican.
+Esta instrucción desapila el elemento en el tope en la [pila](/docs/cpu/#pila) y lo almacena en el operando destino. Los [_flags_](/docs/cpu/#flags) no se modifican.
 
 Esta instrucción primero lee el valor apuntado por `SP` y lo guarda en el operando destino, para luego incrementar el registro `SP` en 2.
 
@@ -12,7 +12,7 @@ Esta instrucción primero lee el valor apuntado por `SP` y lo guarda en el opera
 POP dest
 ```
 
-_dest_ solo puede ser un registro de 16 bits (ver [tipos de operandos](/cpu/assembly/#operandos)).
+_dest_ solo puede ser un registro de 16 bits (ver [tipos de operandos](/docs/cpu/assembly/#operandos)).
 
 ## Codificación
 

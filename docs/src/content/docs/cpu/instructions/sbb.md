@@ -4,7 +4,7 @@ title: SBB
 
 Esta instrucción le resta el operando fuente al operando destino y guarda el resultado en el operando destino. Si `CF=1`, entonces se resta `1` al resultado. El operando fuente no se modifica.
 
-Los [_flags_](/cpu/#flags) se modifican de la siguiente manera:
+Los [_flags_](/docs/cpu/#flags) se modifican de la siguiente manera:
 
 - Si la resta no entra en el operando destino, entonces `CF=1`. De lo contrario, `CF=0`.
 - Si el resultado es cero, entonces `ZF=1`. De lo contrario, `ZF=0`.
@@ -25,7 +25,7 @@ Las combinaciones válidas de _dest_, _fuente_ son:
 - Dirección de memoria, registro
 - Dirección de memoria, inmediato
 
-(Ver [tipos de operandos](/cpu/assembly/#operandos))
+(Ver [tipos de operandos](/docs/cpu/assembly/#operandos))
 
 ## Codificación
 

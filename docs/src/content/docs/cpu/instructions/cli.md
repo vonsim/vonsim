@@ -2,7 +2,7 @@
 title: CLI
 ---
 
-Esta instrucción inhabilita las [interrupciones](/cpu/#interrupciones) por hardware, cambiando la [_flag_](/cpu/#flags) `IF=0`.
+Esta instrucción inhabilita las [interrupciones](/docs/cpu/#interrupciones) por hardware, cambiando la [_flag_](/docs/cpu/#flags) `IF=0`.
 
 ## Uso
 

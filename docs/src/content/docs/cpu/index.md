@@ -28,7 +28,7 @@ Hay además algunos registros internos que sirven de intermediarios para realiza
 
 ## ALU
 
-La ALU (_Arithmetic Logic Unit_) permite realizar operaciones aritméticas y lógicas de 8 y 16 bits. Las operaciones disponibles son: [`ADD`](/cpu/instructions/add/), [`ADC`](/cpu/instructions/adc/), [`INC`](/cpu/instructions/inc/), [`SUB`](/cpu/instructions/sub/), [`SBB`](/cpu/instructions/sbb/), [`DEC`](/cpu/instructions/dec/), [`NEG`](/cpu/instructions/neg/), [`NOT`](/cpu/instructions/not/), [`AND`](/cpu/instructions/and/) y [`OR`](/cpu/instructions/or/). Todas estas operaciones modifican el registro `FLAGS`.
+La ALU (_Arithmetic Logic Unit_) permite realizar operaciones aritméticas y lógicas de 8 y 16 bits. Las operaciones disponibles son: [`ADD`](/docs/cpu/instructions/add/), [`ADC`](/docs/cpu/instructions/adc/), [`INC`](/docs/cpu/instructions/inc/), [`SUB`](/docs/cpu/instructions/sub/), [`SBB`](/docs/cpu/instructions/sbb/), [`DEC`](/docs/cpu/instructions/dec/), [`NEG`](/docs/cpu/instructions/neg/), [`NOT`](/docs/cpu/instructions/not/), [`AND`](/docs/cpu/instructions/and/) y [`OR`](/docs/cpu/instructions/or/). Todas estas operaciones modifican el registro `FLAGS`.
 
 ### Flags
 
@@ -50,7 +50,7 @@ El procesador implementa la pila como método de almacenamiento accesible por el
 
 ## Subrutinas
 
-El procesador también implementa subrutinas. Estas son pequeños fragmentos de código que pueden ser llamados desde cualquier parte del programa. Para ello, se utiliza la instrucción [`CALL`](/cpu/instructions/call/). Esta instrucción almacena el `IP` en la [pila](#pila), y luego realiza un salto a la dirección de la subrutina, modificando el `IP` para que este apunte a la primera instrucción de la subrutina. Para volver de la subrutina, se utiliza la instrucción [`RET`](/cpu/instructions/ret/), que desapila la dirección apilada previamente por `CALL` y restaura el `IP`, volviendo a el punto de ejecución posterior a la llamada a la subrutina.
+El procesador también implementa subrutinas. Estas son pequeños fragmentos de código que pueden ser llamados desde cualquier parte del programa. Para ello, se utiliza la instrucción [`CALL`](/docs/cpu/instructions/call/). Esta instrucción almacena el `IP` en la [pila](#pila), y luego realiza un salto a la dirección de la subrutina, modificando el `IP` para que este apunte a la primera instrucción de la subrutina. Para volver de la subrutina, se utiliza la instrucción [`RET`](/docs/cpu/instructions/ret/), que desapila la dirección apilada previamente por `CALL` y restaura el `IP`, volviendo a el punto de ejecución posterior a la llamada a la subrutina.
 
 Ejemplo de subrutina:
 
@@ -73,9 +73,9 @@ sum3: add ax, bx
 
 ## Interrupciones
 
-El procesador admite interrupciones por hardware y por software, que pueden ser emitidas por el [PIC](/io/modules/pic/) o por la instrucción [`INT`](/cpu/instructions/int/) respectivamente. Para ejecutar interrupciones por hardware, el proesador debe estar habilitado para recibir interrupciones. Esto es, `IF=1` (la _flag_ de interrupciones activada).
+El procesador admite interrupciones por hardware y por software, que pueden ser emitidas por el [PIC](/docs/io/modules/pic/) o por la instrucción [`INT`](/docs/cpu/instructions/int/) respectivamente. Para ejecutar interrupciones por hardware, el proesador debe estar habilitado para recibir interrupciones. Esto es, `IF=1` (la _flag_ de interrupciones activada).
 
-Ambas interrupciones deben propocionar un número de interrupción. En el caso de las interrupciones por software, esta es dada por el operando de la instrucción `INT` ([ver más](/cpu/instructions/int/)). En el caso de las interrupciones por hardware, esta es dada por el PIC ([ver cómo se obtiene](/io/modules/pic/#funcionamiento)). El número de interrupción debe ser un número entre `0` y `255`.
+Ambas interrupciones deben propocionar un número de interrupción. En el caso de las interrupciones por software, esta es dada por el operando de la instrucción `INT` ([ver más](/docs/cpu/instructions/int/)). En el caso de las interrupciones por hardware, esta es dada por el PIC ([ver cómo se obtiene](/docs/io/modules/pic/#funcionamiento)). El número de interrupción debe ser un número entre `0` y `255`.
 
 Una vez interrumpido, el procesador ejecutará la rutina de interrupción asociada a ese número de interrupción. La dirección de comienzo de esta rutina estará almacenada en el vector de interrupciones. Este vector ocupa las celdas `0000h` hasta `03FFh` de la memoria principal, y cada elemento del vector tiene 4 bytes de largo -- el primer elemento se encuentra en `0h`, el segundo en `4h`, el tercero en `8h`, y así. Cada elemento corresponde con la dirección de inicio de la rutina de interrupción.
 
@@ -88,16 +88,16 @@ Específicamente, el procesador:
 5. obtiene la dirección de la rutina de interrupción del vector de interrupciones,
 6. modifica el `IP` para que apunte a la dirección de la rutina de interrupción.
 
-Y así se comienza a ejecutar la rutina de interrupción. Estas tienen el mismo formato que una [subrutina](#subrutinas) salvo que terminan en [`IRET`](/cpu/instructions/iret/) en vez de [`RET`](/cpu/instructions/ret/).
+Y así se comienza a ejecutar la rutina de interrupción. Estas tienen el mismo formato que una [subrutina](#subrutinas) salvo que terminan en [`IRET`](/docs/cpu/instructions/iret/) en vez de [`RET`](/docs/cpu/instructions/ret/).
 
 ### Interrupciones reservadas
 
 Hay algunas interrupciones que están reservadas para el funcionamiento del sistema. Estas son:
 
-- `INT 0`: termina la ejecución del programa, equivalente a la instrucción [`HLT`](/cpu/instructions/hlt/);
+- `INT 0`: termina la ejecución del programa, equivalente a la instrucción [`HLT`](/docs/cpu/instructions/hlt/);
 - `INT 3`: incia el modo de depuración (_breakpoint_);
-- `INT 6`: lee un carácter de la [consola](/io/devices/console/);
-- `INT 7`: escribe una cadena de caracteres en la [consola](/io/devices/console/).
+- `INT 6`: lee un carácter de la [consola](/docs/io/devices/console/);
+- `INT 7`: escribe una cadena de caracteres en la [consola](/docs/io/devices/console/).
 
 Estas pueden ser llamadas por el usuario mediante la instrucción `INT` o por el PIC (si se configura para ello).
 

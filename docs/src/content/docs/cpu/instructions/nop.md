@@ -2,7 +2,7 @@
 title: NOP
 ---
 
-Esta instrucción no hace nada. Los [_flags_](/cpu/#flags) no se modifican.
+Esta instrucción no hace nada. Los [_flags_](/docs/cpu/#flags) no se modifican.
 
 ## Uso
 

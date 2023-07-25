@@ -2,7 +2,7 @@
 title: STI
 ---
 
-Esta instrucción habilita las [interrupciones](/cpu/#interrupciones) por hardware, cambiando la [_flag_](/cpu/#flags) `IF=1`.
+Esta instrucción habilita las [interrupciones](/docs/cpu/#interrupciones) por hardware, cambiando la [_flag_](/docs/cpu/#flags) `IF=1`.
 
 ## Uso
 
