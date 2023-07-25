@@ -41,7 +41,10 @@ abstract class DataDirectiveValue {
 export class StringDirectiveValue extends DataDirectiveValue {
   readonly type = "string";
 
-  constructor(readonly value: string, position: Position) {
+  constructor(
+    readonly value: string,
+    position: Position,
+  ) {
     super(position);
   }
 

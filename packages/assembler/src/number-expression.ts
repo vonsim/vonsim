@@ -74,7 +74,10 @@ export abstract class NumberExpression {
 class NumberLiteral extends NumberExpression {
   readonly type = "number-literal";
 
-  constructor(readonly value: number, position: Position) {
+  constructor(
+    readonly value: number,
+    position: Position,
+  ) {
     super(position);
   }
 
@@ -93,7 +96,11 @@ class NumberLiteral extends NumberExpression {
 class Label extends NumberExpression {
   readonly type = "label";
 
-  constructor(readonly value: string, readonly offset: boolean, position: Position) {
+  constructor(
+    readonly value: string,
+    readonly offset: boolean,
+    position: Position,
+  ) {
     super(position);
   }
 
@@ -127,7 +134,11 @@ class Label extends NumberExpression {
 class UnaryOperation extends NumberExpression {
   readonly type = "unary-operation";
 
-  constructor(readonly operator: "+" | "-", readonly right: NumberExpression, position: Position) {
+  constructor(
+    readonly operator: "+" | "-",
+    readonly right: NumberExpression,
+    position: Position,
+  ) {
     super(position);
   }
 
