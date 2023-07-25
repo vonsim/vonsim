@@ -75,8 +75,7 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
       yield* this.computer.io.printer.setStrobe(true);
       yield* this.computer.io.printer.setStrobe(false);
     } else if (register === "STATE") {
-      if (this.computer.io.printer.busy) value = value.setBit(0);
-      else value = value.clearBit(0);
+      value = value.withBit(0, this.computer.io.printer.busy);
       this.#STATE = value;
       yield { type: "handshake:register.update", register, value };
 
@@ -84,7 +83,7 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
       if (this.#STATE.bit(1)) {
         yield* this.computer.io.printer.setStrobe(true);
         yield* this.computer.io.printer.setStrobe(false);
-        this.#STATE = this.#STATE.clearBit(1);
+        this.#STATE = this.#STATE.withBit(1, false);
         yield { type: "handshake:register.update", register, value: this.#STATE };
       }
 
@@ -105,8 +104,7 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
    * @see /docs/como-usar/dispositivos/handshake.md
    */
   *updateBusy(busy: boolean): EventGenerator {
-    if (busy) this.#STATE = this.#STATE.setBit(0);
-    else this.#STATE = this.#STATE.clearBit(0);
+    this.#STATE = this.#STATE.withBit(0, busy);
     yield { type: "handshake:register.update", register: "STATE", value: this.#STATE };
 
     if (this.interrupts && !busy) yield* this.computer.io.pic.interrupt(2);

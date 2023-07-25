@@ -9,7 +9,7 @@ export function handleSwitchesEvent(event: SimulatorEvent<"switches:">): void {
   switch (event.type) {
     case "switches:toggle": {
       store.set(switchesAtom, switches =>
-        switches.bit(event.index) ? switches.clearBit(event.index) : switches.setBit(event.index),
+        switches.withBit(event.index, !switches.bit(event.index)),
       );
       return;
     }

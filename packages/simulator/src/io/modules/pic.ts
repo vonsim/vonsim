@@ -158,7 +158,7 @@ export class PIC extends IOModule<PICRegister> {
     // Interrupt already requested
     if (this.#IRR.bit(line)) return;
 
-    this.#IRR = this.#IRR.setBit(line);
+    this.#IRR = this.#IRR.withBit(line, true);
     yield { type: "pic:register.update", register: "IRR", value: this.#IRR };
     yield* this.#updateINTR();
   }
@@ -192,9 +192,9 @@ export class PIC extends IOModule<PICRegister> {
     }
 
     // Update ISR and IRR
-    this.#IRR = this.#IRR.clearBit(pending);
+    this.#IRR = this.#IRR.withBit(pending, false);
     yield { type: "pic:register.update", register: "IRR", value: this.#IRR };
-    this.#ISR = this.#ISR.setBit(pending);
+    this.#ISR = this.#ISR.withBit(pending, true);
     yield { type: "pic:register.update", register: "ISR", value: this.#ISR };
 
     yield { type: "cpu:inta.off" };

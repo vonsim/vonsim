@@ -29,8 +29,7 @@ export class Switches extends Component<"pio-switches-and-leds"> {
    * Toggles the switch at the given index. Called by the outside.
    */
   *toggle(index: number): EventGenerator {
-    if (this.#state.bit(index)) this.#state = this.#state.clearBit(index);
-    else this.#state = this.#state.setBit(index);
+    this.#state = this.#state.withBit(index, !this.#state.bit(index));
     yield { type: "switches:toggle", index };
 
     yield* this.computer.io.pio.updatePort("A");

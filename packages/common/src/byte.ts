@@ -107,6 +107,7 @@ export class Byte<TSize extends ByteSize> {
 
   /**
    * Gets the bit at the given index.
+   * @param index Which bit to set (0 = least significat bit).
    * @returns true if the bit is 1, false otherwise.
    */
   bit(index: number): boolean {
@@ -118,27 +119,18 @@ export class Byte<TSize extends ByteSize> {
   }
 
   /**
-   * Sets the bit at the given index set to 1. (Does not mutate it.)
+   * Returns the same byte but with the bit at the given index replaced.
+   * @param index Which bit to set (0 = least significat bit).
+   * @param value Wheather to set that bit to 1 (true) or 0 (false).
    * @returns A new byte.
    */
-  setBit(index: number): Byte<TSize> {
+  withBit(index: number, value: boolean): Byte<TSize> {
     if (!Number.isSafeInteger(index) || index < 0 || index >= this.#size) {
       throw new RangeError(`Index ${index} out of bounds for byte of size ${this.#size}`);
     }
 
-    return Byte.fromUnsigned(this.#value | (1 << index), this.#size);
-  }
-
-  /**
-   * Sets the bit at the given index set to 0. (Does not mutate it.)
-   * @returns A new byte.
-   */
-  clearBit(index: number): Byte<TSize> {
-    if (!Number.isSafeInteger(index) || index < 0 || index >= this.#size) {
-      throw new RangeError(`Index ${index} out of bounds for byte of size ${this.#size}`);
-    }
-
-    return Byte.fromUnsigned(this.#value & ~(1 << index), this.#size);
+    if (value) return Byte.fromUnsigned(this.#value | (1 << index), this.#size); // Set bit
+    else return Byte.fromUnsigned(this.#value & ~(1 << index), this.#size); // Clear bit
   }
 
   /**
