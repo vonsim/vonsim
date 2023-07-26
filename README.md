@@ -1,14 +1,40 @@
 <a href="https://vonsim.github.io/preview" target="_blank" rel="noopener">
-  <img src="./public/github_banner.png" alt="VonSim - A 8088-like Assembly Simulator" />
+  <img src="./assets/github_banner.png" alt="VonSim - A 8088-like Assembly Simulator" />
 </a>
 
 <div align="center">
   <br/>
   <h3><a href="https://vonsim.github.io/preview" target="_blank" rel="noopener"><strong>Try it now</strong></a></h3>
   <br/>
-  <img src="./public/demo.gif" alt="Demo" />
+  <img src="./assets/demo.gif" alt="Demo" />
   <br/>
 </div>
+
+## About this project
+
+VonSim was made entirely in [TypeScript](https://www.typescriptlang.org/), a superset of JavaScript that adds type-checking and auto-completion. Also, the project is divided in multiple packages, each one with its own `package.json` ([learn more](https://turbo.build/repo/docs/core-concepts/monorepos) about monorepos).
+
+To get started, you'll need [Node.js v18](https://nodejs.org/) and [pnpm v8](https://pnpm.io). Once you have them installed, you can run the following inside the repo:
+
+```bash
+$ pnpm install  # only the first time, install the dependencies
+$ pnpm dev      # start the dev server
+$ pnpm docs:dev # start the docs dev server
+```
+
+These are the packages inside the repo, all of them with their own `README.md` where you can learn more:
+
+- [`@vonsim/assembler`](./packages/assembler/): All the logic to assemble a program from plain text assembly.
+- [`@vonsim/simulator`](./packages/simulator/): All the logic run an assembled program.
+- [`@vonsim/app`](./app/): The web app itself. It has all the UI and uses the simulator to run the program.
+
+Also, there some support packages that are used by the packages above:
+
+- [`@vonsim/common`](./packages/common/): Some common utilities.
+- [`eslint-config-vonsim`](./packages/eslint-config-vonsim/): ESLint configuration for this project.
+- [`@vonsim/tsconfig`](./packages/tsconfig/): The TypeScript configuration for this project.
+
+Finally, the [documentation](https://vonsim.github.io/docs/) is inside [`@vonsim/docs`](./docs/).
 
 ## To-do list
 
@@ -32,14 +58,3 @@
   mov al, letras + 1 ; copies "b"
   mov al, letras + 2 ; copies "c"
   ```
-
-## Development setup
-
-You'll need [Node.js v18](https://nodejs.org/) and [pnpm v8](https://pnpm.io). Once you have them installed, you can run the following inside the repo:
-
-```bash
-$ pnpm install # only the first time, install the dependencies
-$ pnpm dev     # starts the development server
-```
-
-More info about this project in [CONTRIBUTING.md](CONTRIBUTING.md)
