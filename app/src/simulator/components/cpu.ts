@@ -1,7 +1,6 @@
 import { Byte } from "@vonsim/common/byte";
-import { Position } from "@vonsim/common/position";
 import type { SimulatorError } from "@vonsim/simulator";
-import type { ByteRegister, WordRegister } from "@vonsim/simulator/cpu";
+import type { ByteRegister, InstructionMetadata, WordRegister } from "@vonsim/simulator/cpu";
 
 import { highlightLine } from "@/editor/methods";
 import { atom, PrimitiveAtom, SetStateAction, store, WritableAtom } from "@/lib/jotai";
@@ -9,25 +8,13 @@ import { MARAtom, MBRAtom } from "@/simulator/components/bus";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish, startDebugger } from "@/simulator/state";
 
-type Metadata = {
-  name: string;
-  position: Position;
-  operands: string[];
-  willUse: Partial<{
-    ri: boolean;
-    id: boolean;
-    execute: boolean;
-    writeback: boolean;
-  }>;
-};
-
 type Cycle =
-  | { phase: "fetching"; metadata: Metadata }
-  | { phase: "decoding"; metadata: Metadata }
-  | { phase: "fething-operands"; metadata: Metadata }
-  | { phase: "executing"; metadata: Metadata }
-  | { phase: "writeback"; metadata: Metadata }
-  | { phase: "interrupt"; metadata: Metadata }
+  | { phase: "fetching"; metadata: InstructionMetadata }
+  | { phase: "decoding"; metadata: InstructionMetadata }
+  | { phase: "fething-operands"; metadata: InstructionMetadata }
+  | { phase: "executing"; metadata: InstructionMetadata }
+  | { phase: "writeback"; metadata: InstructionMetadata }
+  | { phase: "interrupt"; metadata: InstructionMetadata }
   | { phase: "stopped"; error?: SimulatorError<any> };
 
 const cycleAtom = atom<Cycle>({ phase: "stopped" });

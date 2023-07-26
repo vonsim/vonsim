@@ -1,4 +1,6 @@
+import type { Instruction as InstructionName } from "@vonsim/assembler";
 import type { Byte } from "@vonsim/common/byte";
+import type { Position } from "@vonsim/common/position";
 import type { ConditionalKeys } from "type-fest";
 
 export type Flag =
@@ -46,3 +48,18 @@ export type Register = ByteRegister | WordRegister;
  * The registers that has a connection to the Memory Address Register (MAR).
  */
 export type MARRegister = "IP" | "SP" | "ri";
+
+/**
+ * Metadata about an instruction emitted along with the `cpu:cycle.start` event.
+ */
+export type InstructionMetadata = {
+  name: InstructionName;
+  position: Position;
+  operands: string[];
+  willUse: Partial<{
+    ri: boolean;
+    id: boolean;
+    execute: boolean;
+    writeback: boolean;
+  }>;
+};

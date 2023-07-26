@@ -1,22 +1,11 @@
-import type { Instruction as InstructionName } from "@vonsim/assembler";
 import type { Byte, ByteSize } from "@vonsim/common/byte";
-import type { Position } from "@vonsim/common/position";
 
 import type { SimulatorError } from "../error";
-import type { ByteRegister, WordRegister } from "./types";
+import type { ByteRegister, InstructionMetadata, WordRegister } from "./types";
 
-export type InstructionMetadata = {
-  name: InstructionName;
-  position: Position;
-  operands: string[];
-  willUse: Partial<{
-    ri: boolean;
-    id: boolean;
-    execute: boolean;
-    writeback: boolean;
-  }>;
-};
-
+/**
+ * All events that can be emitted by the CPU.
+ */
 export type CPUMicroOperation =
   | { type: "cpu:cycle.start"; instruction: InstructionMetadata } // Start of a cycle
   | { type: "cpu:cycle.update"; phase: "decoded" } // Once there is enough information to know what an instruction will do (not the operands yet)
