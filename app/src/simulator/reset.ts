@@ -20,6 +20,12 @@ export function resetState(simulator: Simulator) {
   store.set(registers["DX"], Byte.fromUnsigned(state.cpu.DX, 16));
   store.set(registers["SP"], Byte.fromUnsigned(state.cpu.SP, 16));
   store.set(registers["IP"], Byte.fromUnsigned(state.cpu.IP, 16));
+  store.set(registers["IR"], Byte.fromUnsigned(state.cpu.IR, 8));
+  store.set(registers["ri"], Byte.fromUnsigned(state.cpu.ri, 16));
+  store.set(registers["id"], Byte.fromUnsigned(state.cpu.id, 16));
+  store.set(registers["left"], Byte.fromUnsigned(state.cpu.left, 16));
+  store.set(registers["right"], Byte.fromUnsigned(state.cpu.right, 16));
+  store.set(registers["result"], Byte.fromUnsigned(state.cpu.result, 16));
   store.set(registers["FLAGS"], Byte.fromUnsigned(state.cpu.FLAGS, 16));
   store.set(
     memoryAtom,

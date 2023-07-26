@@ -1,6 +1,7 @@
 import { Byte } from "@vonsim/common/byte";
 import { Position } from "@vonsim/common/position";
 import type { SimulatorError } from "@vonsim/simulator";
+import type { ByteRegister, WordRegister } from "@vonsim/simulator/cpu";
 
 import { highlightLine } from "@/editor/methods";
 import { atom, PrimitiveAtom, SetStateAction, store, WritableAtom } from "@/lib/jotai";
@@ -71,7 +72,10 @@ const highAtom = (
     },
   );
 
-export const registers = {
+type RegistersMap = Record<ByteRegister, WritableAtom<Byte<8>, [SetStateAction<Byte<8>>], void>> &
+  Record<WordRegister, WritableAtom<Byte<16>, [SetStateAction<Byte<16>>], void>>;
+
+export const registers: RegistersMap = {
   AX: AXAtom,
   AL: lowAtom(AXAtom),
   AH: highAtom(AXAtom),
@@ -88,6 +92,8 @@ export const registers = {
   "SP.l": lowAtom(SPAtom),
   "SP.h": highAtom(SPAtom),
   IP: IPAtom,
+  "IP.l": lowAtom(IPAtom),
+  "IP.h": highAtom(IPAtom),
   IR: IRAtom,
   ri: riAtom,
   "ri.l": lowAtom(riAtom),
@@ -105,6 +111,8 @@ export const registers = {
   "result.l": lowAtom(resultAtom),
   "result.h": highAtom(resultAtom),
   FLAGS: FLAGSAtom,
+  "FLAGS.l": lowAtom(FLAGSAtom),
+  "FLAGS.h": highAtom(FLAGSAtom),
 };
 
 export const flagsAtom = atom(get => {
@@ -123,7 +131,7 @@ export function handleCPUEvent(event: SimulatorEvent<"cpu:">): void {
     case "cpu:alu.execute": {
       store.set(aluOperationAtom, event.operation);
       store.set(FLAGSAtom, event.flags);
-      store.set(resultAtom, prev => (event.size === 8 ? prev.withLow(event.result) : event.result));
+      store.set(resultAtom, event.result);
       return;
     }
 
@@ -210,7 +218,7 @@ export function handleCPUEvent(event: SimulatorEvent<"cpu:">): void {
 
     case "cpu:register.copy": {
       // @ts-expect-error Registers types always match, see CPUMicroOperation
-      store.set(registers[event.output], store.get(registers[event.input]));
+      store.set(registers[event.dest], store.get(registers[event.src]));
       return;
     }
 
