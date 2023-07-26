@@ -25,6 +25,11 @@ type PickInstruction<T extends InstructionStatement["instruction"]> = Instructio
   instruction: T;
 };
 
+/**
+ * Converts an instruction statement from the assembler to an instruction type,
+ * adding necessary execution logic to the instruction.
+ * For convenience, similar instructions are grouped together.
+ */
 export function statementToInstruction(statement: InstructionStatement): InstructionType {
   switch (statement.instruction) {
     case "MOV":

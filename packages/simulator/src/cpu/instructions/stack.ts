@@ -2,6 +2,15 @@ import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
 
+/**
+ * Stack instructions:
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/push/ | PUSH}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/pop/ | POP}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/pushf/ | PUSHF}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/popf/ | POPF}
+ *
+ * @see {@link Instruction}
+ */
 export class StackInstruction extends Instruction<"PUSH" | "POP" | "PUSHF" | "POPF"> {
   *execute(computer: Computer): EventGenerator<boolean> {
     const register =
@@ -25,22 +34,15 @@ export class StackInstruction extends Instruction<"PUSH" | "POP" | "PUSHF" | "PO
     yield { type: "cpu:cycle.update", phase: "decoded" };
 
     if (this.name === "PUSH" || this.name === "PUSHF") {
-      const value = register === "FLAGS" ? computer.cpu.FLAGS : computer.cpu.getRegister(register);
-      yield { type: "cpu:register.copy", input: register, output: "id" };
-
+      yield* computer.cpu.copyWordRegister(register, "id");
       yield { type: "cpu:cycle.update", phase: "writeback" };
-
-      return yield* computer.cpu.pushToStack(value);
+      return yield* computer.cpu.pushToStack(); // Will return false if stack overflow
     } else {
-      const value = yield* computer.cpu.popFromStack();
-      if (!value) return false; // Stack underflow
+      if (!(yield* computer.cpu.popFromStack())) return false; // Stack underflow
 
       yield { type: "cpu:cycle.update", phase: "writeback" };
 
-      if (register === "FLAGS") computer.cpu.FLAGS = value;
-      else computer.cpu.setRegister(register, value);
-
-      yield { type: "cpu:register.copy", input: "id", output: register };
+      yield* computer.cpu.copyWordRegister("id", register);
       return true;
     }
   }

@@ -1,10 +1,15 @@
-import type { WordRegister } from "@vonsim/assembler";
+import type { Register as InputRegister } from "@vonsim/assembler";
 
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
-import type { Physical8bitsRegisters } from "../micro-ops";
+import type { ByteRegister } from "../types";
 
+/**
+ * {@link https://vonsim.github.io/docs/cpu/instructions/mov/ | OV} instruction.
+ *
+ * @see {@link Instruction}
+ */
 export class MOVInstruction extends Instruction<"MOV"> {
   get operation() {
     return this.statement.operation;
@@ -39,6 +44,30 @@ export class MOVInstruction extends Instruction<"MOV"> {
         const _exhaustiveCheck: never = mode;
         return _exhaustiveCheck;
       }
+    }
+  }
+
+  /**
+   * Given a register,
+   * - if it's a word register, returns a tuple with the low and high byte registers.
+   * - if it's a byte register, returns a tuple with the register and `null`.
+   */
+  #splitRegister(register: InputRegister): [low: ByteRegister, high: ByteRegister | null] {
+    switch (register) {
+      case "AX":
+        return ["AL", "AH"];
+      case "BX":
+        return ["BL", "BH"];
+      case "CX":
+        return ["CL", "CH"];
+      case "DX":
+        return ["DL", "DH"];
+      case "SP":
+        return ["SP.l", "SP.h"];
+
+      default:
+        // It's a byte register
+        return [register, null];
     }
   }
 
@@ -80,11 +109,11 @@ export class MOVInstruction extends Instruction<"MOV"> {
         yield* super.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
-        yield { type: "cpu:register.copy", input: "BX", output: "ri" };
+        yield* computer.cpu.copyWordRegister("BX", "ri");
       }
     }
     if (this.operation.mode === "reg<-imd" || this.operation.mode === "mem<-imd") {
-      // Fetch immediate value
+      // Fetch immediate value and store it in id
       yield* super.consumeInstruction(computer, "id.l");
       if (this.operation.size === 16) yield* super.consumeInstruction(computer, "id.h");
     }
@@ -93,121 +122,74 @@ export class MOVInstruction extends Instruction<"MOV"> {
 
     switch (mode) {
       case "reg<-reg": {
-        // Yes, this is silly, but it ensures type safety.
-        if (size === 8) {
-          computer.cpu.setRegister(out, computer.cpu.getRegister(src));
-          yield { type: "cpu:register.copy", input: src, output: out };
-        } else {
-          computer.cpu.setRegister(out, computer.cpu.getRegister(src));
-          yield { type: "cpu:register.copy", input: src, output: out };
-        }
+        // Copy register
+        if (size === 8) yield* computer.cpu.copyByteRegister(src, out);
+        else yield* computer.cpu.copyWordRegister(src, out);
+
         return true;
       }
 
       case "reg<-mem": {
-        yield { type: "cpu:mar.set", register: "ri" };
-        const lowAddress =
-          src.mode === "direct" ? src.address.byte : computer.cpu.getRegister("BX");
-        const lowValue = yield* computer.memory.read(lowAddress);
-        if (!lowValue) return false; // Error reading memory
-        yield { type: "cpu:mbr.get", register: "id.l" };
-        if (size === 8) {
-          computer.cpu.setRegister(out, lowValue);
-          yield { type: "cpu:register.copy", input: "id.l", output: out };
-          return true;
+        // Fetch low byte
+        yield* computer.cpu.setMAR("ri");
+        if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading from memory
+        yield* computer.cpu.getMBR("id.l");
+        if (size === 16) {
+          // Fetch high byte
+          yield* computer.cpu.updateWordRegister("ri", ri => ri.add(1));
+          yield* computer.cpu.setMAR("ri");
+          if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading from memory
+          yield* computer.cpu.getMBR("id.h");
+          // Write to register
+          yield* computer.cpu.copyWordRegister("id", out);
         } else {
-          const highAddress = lowAddress.add(1);
-          yield { type: "cpu:register.update", register: "ri", value: highAddress };
-          yield { type: "cpu:mar.set", register: "ri" };
-          const highValue = yield* computer.memory.read(highAddress);
-          if (!highValue) return false; // Error reading memory
-          yield { type: "cpu:mbr.get", register: "id.h" };
-          const value = lowValue.withHigh(highValue);
-          computer.cpu.setRegister(out, value);
-          yield { type: "cpu:register.copy", input: "id", output: out };
-          return true;
-        }
-      }
-
-      case "reg<-imd": {
-        if (size === 8) {
-          computer.cpu.setRegister(out, src);
-          yield { type: "cpu:register.copy", input: "id.l", output: out };
-        } else {
-          computer.cpu.setRegister(out, src);
-          yield { type: "cpu:register.copy", input: "id", output: out };
+          // Write to register
+          yield* computer.cpu.copyByteRegister("id.l", out);
         }
         return true;
       }
 
+      case "reg<-imd": {
+        // Write to register
+        if (size === 8) yield* computer.cpu.copyByteRegister("id.l", out);
+        else yield* computer.cpu.copyWordRegister("id", out);
+
+        return true;
+      }
+
       case "mem<-reg": {
-        if (size === 8) {
-          yield { type: "cpu:mar.set", register: "ri" };
-          yield { type: "cpu:mbr.set", register: src };
-          const address = out.mode === "direct" ? out.address : computer.cpu.getRegister("BX");
-          const value = computer.cpu.getRegister(src);
-          if (!(yield* computer.memory.write(address, value))) return false; // Error writing memory
-        } else {
-          const [low, high] = this.#splitRegister(src);
-          const value = computer.cpu.getRegister(src);
-          yield { type: "cpu:mar.set", register: "ri" };
-          yield { type: "cpu:mbr.set", register: low };
-          const lowAddress =
-            out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
-          if (!(yield* computer.memory.write(lowAddress, value.low))) return false; // Error writing memory
-          const highAddress = lowAddress.add(1);
-          yield { type: "cpu:register.update", register: "ri", value: highAddress };
-          yield { type: "cpu:mar.set", register: "ri" };
-          yield { type: "cpu:mbr.set", register: high };
-          if (!(yield* computer.memory.write(lowAddress, value.high))) return false; // Error writing memory
+        const [low, high] = this.#splitRegister(src);
+        // Write low byte
+        yield* computer.cpu.setMAR("ri");
+        yield* computer.cpu.setMBR(low);
+        if (!(yield* computer.cpu.useBus("mem-write"))) return false; // Error writing to memory
+        if (high) {
+          // Write high byte
+          yield* computer.cpu.updateWordRegister("ri", ri => ri.add(1));
+          yield* computer.cpu.setMAR("ri");
+          yield* computer.cpu.setMBR(high);
+          if (!(yield* computer.cpu.useBus("mem-write"))) return false; // Error writing to memory
         }
         return true;
       }
 
       case "mem<-imd": {
-        const lowAddress =
-          out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
-        yield { type: "cpu:mar.set", register: "ri" };
-        yield { type: "cpu:mbr.set", register: "id.l" };
-        if (!(yield* computer.memory.write(lowAddress, src.low))) return false; // Error writing memory
-        if (size === 8) return true;
-        const highAddress = lowAddress.add(1);
-        yield { type: "cpu:register.update", register: "ri", value: highAddress };
-        yield { type: "cpu:mar.set", register: "ri" };
-        yield { type: "cpu:mbr.set", register: "id.h" };
-        if (!(yield* computer.memory.write(highAddress, src.high))) return false; // Error writing memory
+        // Write low byte
+        yield* computer.cpu.setMAR("ri");
+        yield* computer.cpu.setMBR("id.l");
+        if (!(yield* computer.cpu.useBus("mem-write"))) return false; // Error writing to memory
+        if (size === 16) {
+          // Write high byte
+          yield* computer.cpu.updateWordRegister("ri", ri => ri.add(1));
+          yield* computer.cpu.setMAR("ri");
+          yield* computer.cpu.setMBR("id.h");
+          if (!(yield* computer.cpu.useBus("mem-write"))) return false; // Error writing to memory
+        }
         return true;
       }
 
       default: {
         const _exhaustiveCheck: never = mode;
-        return _exhaustiveCheck;
-      }
-    }
-  }
-
-  /**
-   * Split a 16-bit register into two 8-bit registers.
-   * @param register The register to split.
-   * @returns A tuple with the low and high parts of the register.
-   */
-  #splitRegister(
-    register: WordRegister,
-  ): [low: Physical8bitsRegisters, high: Physical8bitsRegisters] {
-    switch (register) {
-      case "AX":
-        return ["AL", "AH"];
-      case "BX":
-        return ["BL", "BH"];
-      case "CX":
-        return ["CL", "CH"];
-      case "DX":
-        return ["DL", "DH"];
-      case "SP":
-        return ["SP.l", "SP.h"];
-
-      default: {
-        const _exhaustiveCheck: never = register;
         return _exhaustiveCheck;
       }
     }

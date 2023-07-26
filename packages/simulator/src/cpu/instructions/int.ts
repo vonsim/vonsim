@@ -4,6 +4,11 @@ import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
 
+/**
+ * {@link https://vonsim.github.io/docs/cpu/instructions/int/ | INT} instruction.
+ *
+ * @see {@link Instruction}
+ */
 export class INTInstruction extends Instruction<"INT"> {
   get number() {
     return this.statement.value;
@@ -29,6 +34,8 @@ export class INTInstruction extends Instruction<"INT"> {
 
     yield { type: "cpu:cycle.update", phase: "execute" };
 
+    // Check for special interrupts
+    // https://vonsim.github.io/docs/cpu/#interrupciones-reservadas
     const number = this.number.unsigned;
     switch (number) {
       case 0: {
@@ -46,55 +53,95 @@ export class INTInstruction extends Instruction<"INT"> {
       case 6:
       case 7: {
         // Save machine state
-        yield { type: "cpu:register.copy", input: "FLAGS", output: "id" };
-        if (!(yield* computer.cpu.pushToStack(computer.cpu.FLAGS))) return false; // Stack overflow
-        computer.cpu.setFlag("IF", false);
-        yield { type: "cpu:register.update", register: "FLAGS", value: computer.cpu.FLAGS };
+        yield* computer.cpu.copyWordRegister("FLAGS", "id");
+        if (!(yield* computer.cpu.pushToStack())) return false; // Stack overflow
+        yield* computer.cpu.updateFLAGS({ IF: false });
+        yield* computer.cpu.copyWordRegister("IP", "id");
+        if (!(yield* computer.cpu.pushToStack())) return false; // Stack overflow
 
         yield { type: `cpu:int.${number}` };
 
         if (number === 6) {
           // INT 6 - Read character from console and store it in [BX]
-          const address = computer.cpu.getRegister("BX");
-          yield { type: "cpu:register.copy", input: "BX", output: "ri" };
+          yield* computer.cpu.copyWordRegister("BX", "ri");
 
           const char = yield* computer.io.console.read();
 
-          yield { type: "cpu:register.update", register: "id", value: char.withHigh(Byte.zero(8)) };
+          yield* computer.cpu.updateWordRegister("id", char.withHigh(Byte.zero(8)));
 
-          yield { type: "cpu:mar.set", register: "ri" };
-          yield { type: "cpu:mbr.set", register: "id.l" };
-          if (!computer.memory.write(address, char)) return false; // Error writing to memory
+          yield* computer.cpu.setMAR("ri");
+          yield* computer.cpu.setMBR("id.l");
+          if (!(yield* computer.cpu.useBus("mem-write"))) return false; // Error writing to memory
         } else {
           // INT 7 - Write string to console, starting from [BX] and of length AL
-          const start = computer.cpu.getRegister("BX");
-          yield { type: "cpu:register.copy", input: "BX", output: "ri" };
 
-          const length = computer.cpu.getRegister("AL").unsigned;
-          yield { type: "cpu:register.copy", input: "AL", output: "id.l" };
+          // Push AX and BX to stack
+          yield* computer.cpu.copyWordRegister("AX", "id");
+          if (!(yield* computer.cpu.pushToStack())) return false; // Stack overflow
+          yield* computer.cpu.copyWordRegister("BX", "id");
+          if (!(yield* computer.cpu.pushToStack())) return false; // Stack overflow
 
-          for (let i = 0; i < length; i++) {
-            yield { type: "cpu:mar.set", register: "ri" };
-            const char = yield* computer.memory.read(start.add(i));
-            if (!char) return false; // Error reading from memory
+          // CMP AL, 0 -- Check if length is 0
+          yield* computer.cpu.copyByteRegister("AL", "left.l");
+          yield* computer.cpu.updateByteRegister("right.l", Byte.zero(8));
+          const AL = computer.cpu.getRegister("AL");
+          yield* computer.cpu.aluExecute("SUB", AL, {
+            CF: false,
+            OF: false,
+            SF: AL.signed < 0,
+            ZF: AL.isZero(),
+          });
+
+          while (!computer.cpu.getRegister("AL").isZero()) {
+            // Read character from [BX]
+            yield* computer.cpu.copyWordRegister("BX", "ri");
+            yield* computer.cpu.setMAR("ri");
+            if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading from memory
+            yield* computer.cpu.getMBR("id.l");
+            // Write character to console
+            const char = computer.cpu.getRegister("id.l");
             yield* computer.io.console.write(char);
-            yield { type: "cpu:register.update", register: "ri", value: start.add(i + 1) };
-            yield {
-              type: "cpu:register.update",
-              register: "id.l",
-              value: Byte.fromUnsigned(length - i - 1, 8),
-            };
+            // INC BX
+            yield* computer.cpu.copyWordRegister("BX", "left");
+            yield* computer.cpu.updateWordRegister("right", Byte.fromUnsigned(1, 16));
+            const BX = computer.cpu.getRegister("BX").add(1); // Should always succeed, otherwise the memory would've thrown an error
+            yield* computer.cpu.aluExecute("ADD", BX, {
+              CF: false, // Never, since max value to add is 0x7FFF + 1 = 0x8000 (max memory address)
+              OF: BX.signed < 0, // Only happens when 0x7FFF + 1 (max memory address)
+              SF: BX.signed < 0,
+              ZF: false, // Never, since max value to add is 0x7FFF + 1 = 0x8000 (max memory address)
+            });
+            yield* computer.cpu.copyWordRegister("result", "BX");
+            // DEC AL
+            yield* computer.cpu.copyByteRegister("AL", "left.l");
+            yield* computer.cpu.updateByteRegister("right.l", Byte.fromUnsigned(1, 8));
+            const AL = computer.cpu.getRegister("AL").add(-1); // Should always succeed, because AL != 0
+            yield* computer.cpu.aluExecute("SUB", AL, {
+              CF: false, // Never, will stop before doing 0 - 1
+              OF: AL.signed === Byte.maxSignedValue(8), // True when 0x80 - 1
+              SF: AL.signed < 0,
+              ZF: AL.isZero(),
+            });
+            yield* computer.cpu.copyByteRegister("result.l", "AL");
           }
+
+          // Pop BX and AX from stack
+          if (!(yield* computer.cpu.popFromStack())) return false; // Stack underflow
+          yield* computer.cpu.copyWordRegister("id", "BX");
+          if (!(yield* computer.cpu.popFromStack())) return false; // Stack underflow
+          yield* computer.cpu.copyWordRegister("id", "AX");
         }
 
         // Retrieve machine state
-        const FLAGS = yield* computer.cpu.popFromStack();
-        if (!FLAGS) return false; // Stack underflow
-        computer.cpu.FLAGS = FLAGS;
-        yield { type: "cpu:register.copy", input: "id", output: "FLAGS" };
+        if (!(yield* computer.cpu.popFromStack())) return false; // Stack underflow
+        yield* computer.cpu.copyWordRegister("id", "IP");
+        if (!(yield* computer.cpu.popFromStack())) return false; // Stack underflow
+        yield* computer.cpu.copyWordRegister("id", "FLAGS");
         return true;
       }
 
+      // It's not a special interrupt, so we
+      // start the normal interrupt routine
       default: {
         yield* computer.cpu.startInterrupt(this.number);
         return true;

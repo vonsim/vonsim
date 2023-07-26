@@ -3,7 +3,21 @@ import { AnyByte, Byte } from "@vonsim/common/byte";
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
+import type { PartialFlags } from "../types";
 
+/**
+ * ALU binary instructions:
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/add/ | ADD}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/adc/ | ADC}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/sub/ | SUB}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/sbb/ | SBB}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/cmp/ | CMP}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/and/ | AND}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/or/ | OR}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/xor/ | XOR}
+ *
+ * @see {@link Instruction}
+ */
 export class ALUBinaryInstruction extends Instruction<
   "AND" | "OR" | "XOR" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP"
 > {
@@ -68,16 +82,10 @@ export class ALUBinaryInstruction extends Instruction<
 
     yield { type: "cpu:cycle.update", phase: "decoded" };
 
-    let left: AnyByte;
     if (mode === "reg<-reg" || mode === "reg<-mem" || mode === "reg<-imd") {
       // Move out operand to left register
-      if (size === 8) {
-        left = computer.cpu.getRegister(out);
-        yield { type: "cpu:register.copy", input: out, output: "left.l" };
-      } else {
-        left = computer.cpu.getRegister(out);
-        yield { type: "cpu:register.copy", input: out, output: "left" };
-      }
+      if (size === 8) yield* computer.cpu.copyByteRegister(out, "left.l");
+      else yield* computer.cpu.copyWordRegister(out, "left");
     } else {
       // Fetch left operand, which is the memory cell
       if (out.mode === "direct") {
@@ -86,42 +94,29 @@ export class ALUBinaryInstruction extends Instruction<
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
-        yield { type: "cpu:register.copy", input: "BX", output: "ri" };
+        yield* computer.cpu.copyWordRegister("BX", "ri");
       }
 
-      const lowAddress = out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
-      yield { type: "cpu:mar.set", register: "ri" };
-      const lowValue = yield* computer.memory.read(lowAddress);
-      if (!lowValue) return false; // Error reading memory
-      yield { type: "cpu:mbr.get", register: "left.l" };
+      // Read value from memory
+      yield* computer.cpu.setMAR("ri");
+      if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading memory
+      yield* computer.cpu.getMBR("left.l");
       if (size === 16) {
-        const highAddress = lowAddress.add(1);
-        yield { type: "cpu:register.update", register: "ri", value: highAddress };
-        yield { type: "cpu:mar.set", register: "ri" };
-        const highValue = yield* computer.memory.read(lowAddress);
-        if (!highValue) return false; // Error reading memory
-        yield { type: "cpu:mbr.get", register: "left.h" };
-        left = lowValue.withHigh(highValue);
-      } else {
-        left = lowValue;
+        yield* computer.cpu.updateWordRegister("ri", ri => ri.add(1));
+        yield* computer.cpu.setMAR("ri");
+        if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading memory
+        yield* computer.cpu.getMBR("left.h");
       }
     }
 
-    let right: AnyByte;
     if (mode === "reg<-reg" || mode === "mem<-reg") {
       // Move src operand to right register
-      if (size === 8) {
-        right = computer.cpu.getRegister(src);
-        yield { type: "cpu:register.copy", input: src, output: "right.l" };
-      } else {
-        right = computer.cpu.getRegister(src);
-        yield { type: "cpu:register.copy", input: src, output: "right" };
-      }
+      if (size === 8) yield* computer.cpu.copyByteRegister(src, "right.l");
+      else yield* computer.cpu.copyWordRegister(src, "right");
     } else if (mode === "reg<-imd" || mode === "mem<-imd") {
       // Move immediate value to right register
       yield* this.consumeInstruction(computer, "right.l");
       if (size === 16) yield* this.consumeInstruction(computer, "right.h");
-      right = src;
     } else {
       // Fetch right operand, which is the memory cell
       if (src.mode === "direct") {
@@ -130,30 +125,29 @@ export class ALUBinaryInstruction extends Instruction<
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
-        yield { type: "cpu:register.copy", input: "BX", output: "ri" };
+        yield* computer.cpu.copyWordRegister("BX", "ri");
       }
 
-      const lowAddress = src.mode === "direct" ? src.address.byte : computer.cpu.getRegister("BX");
-      yield { type: "cpu:mar.set", register: "ri" };
-      const lowValue = yield* computer.memory.read(lowAddress);
-      if (!lowValue) return false; // Error reading memory
-      yield { type: "cpu:mbr.get", register: "right.l" };
+      // Read value from memory
+      yield* computer.cpu.setMAR("ri");
+      if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading memory
+      yield* computer.cpu.getMBR("right.l");
       if (size === 16) {
-        const highAddress = lowAddress.add(1);
-        yield { type: "cpu:register.update", register: "ri", value: highAddress };
-        yield { type: "cpu:mar.set", register: "ri" };
-        const highValue = yield* computer.memory.read(lowAddress);
-        if (!highValue) return false; // Error reading memory
-        yield { type: "cpu:mbr.get", register: "right.h" };
-        right = lowValue.withHigh(highValue);
-      } else {
-        right = lowValue;
+        yield* computer.cpu.updateWordRegister("ri", ri => ri.add(1));
+        yield* computer.cpu.setMAR("ri");
+        if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading memory
+        yield* computer.cpu.getMBR("right.h");
       }
     }
 
     yield { type: "cpu:cycle.update", phase: "execute" };
 
+    const left = size === 8 ? computer.cpu.getRegister("left.l") : computer.cpu.getRegister("left");
+    const right =
+      size === 8 ? computer.cpu.getRegister("right.l") : computer.cpu.getRegister("right");
     let result: AnyByte;
+    const flags: PartialFlags = {};
+
     switch (this.name) {
       case "AND":
       case "OR":
@@ -168,8 +162,8 @@ export class ALUBinaryInstruction extends Instruction<
             : left.signed ^ right.signed;
 
         result = Byte.fromSigned(signed, size) as AnyByte;
-        computer.cpu.setFlag("CF", false);
-        computer.cpu.setFlag("OF", false);
+        flags.CF = false;
+        flags.OF = false;
         break;
       }
 
@@ -179,21 +173,19 @@ export class ALUBinaryInstruction extends Instruction<
         const unsigned = left.unsigned + right.unsigned + carry;
 
         if (unsigned > Byte.maxValue(size)) {
-          computer.cpu.setFlag("CF", true);
+          flags.CF = true;
           result = Byte.fromUnsigned(unsigned - Byte.maxValue(size) - 1, size) as AnyByte;
         } else {
-          computer.cpu.setFlag("CF", false);
+          flags.CF = false;
           result = Byte.fromUnsigned(unsigned, size) as AnyByte;
         }
 
         // When adding, the overflow flag is set if
         // - the sum of two positive numbers is negative, or
         // - the sum of two negative numbers is positive.
-        computer.cpu.setFlag(
-          "OF",
+        flags.OF =
           (left.signed >= 0 && right.signed >= 0 && result.signed < 0) ||
-            (left.signed < 0 && right.signed < 0 && result.signed >= 0),
-        );
+          (left.signed < 0 && right.signed < 0 && result.signed >= 0);
         break;
       }
 
@@ -204,46 +196,27 @@ export class ALUBinaryInstruction extends Instruction<
         const unsigned = left.unsigned - right.unsigned - borrow;
 
         if (unsigned < 0) {
-          computer.cpu.setFlag("CF", true);
+          flags.CF = true;
           result = Byte.fromUnsigned(unsigned + Byte.maxValue(size) + 1, size) as AnyByte;
         } else {
-          computer.cpu.setFlag("CF", false);
+          flags.CF = false;
           result = Byte.fromUnsigned(unsigned, size) as AnyByte;
         }
 
         // When subtracting, the overflow flag is set if
         // - a positive number minus a negative number is negative, or
         // - a negative number minus a positive number is positive.
-        computer.cpu.setFlag(
-          "OF",
+        flags.OF =
           (left.signed >= 0 && right.signed < 0 && result.signed < 0) ||
-            (left.signed < 0 && right.signed >= 0 && result.signed >= 0),
-        );
+          (left.signed < 0 && right.signed >= 0 && result.signed >= 0);
         break;
       }
     }
 
-    computer.cpu.setFlag("ZF", result.unsigned === 0);
-    computer.cpu.setFlag("SF", result.signed < 0);
+    flags.ZF = result.isZero();
+    flags.SF = result.signed < 0;
 
-    // This if is kind of unnecessary, but TypeScript likes it
-    if (size === 8) {
-      yield {
-        type: "cpu:alu.execute",
-        operation: this.name === "CMP" ? "SUB" : this.name,
-        size,
-        result: result as Byte<8>,
-        flags: computer.cpu.FLAGS,
-      };
-    } else {
-      yield {
-        type: "cpu:alu.execute",
-        operation: this.name === "CMP" ? "SUB" : this.name,
-        size,
-        result: result as Byte<16>,
-        flags: computer.cpu.FLAGS,
-      };
-    }
+    yield* computer.cpu.aluExecute(this.name === "CMP" ? "SUB" : this.name, result, flags);
 
     if (this.name === "CMP") return true; // No writeback
 
@@ -251,28 +224,21 @@ export class ALUBinaryInstruction extends Instruction<
 
     if (mode === "reg<-reg" || mode === "reg<-mem" || mode === "reg<-imd") {
       // Move result to out operand
-      if (size === 8) {
-        computer.cpu.setRegister(out, result as Byte<8>);
-        yield { type: "cpu:register.copy", input: "result.l", output: out };
-      } else {
-        computer.cpu.setRegister(out, result as Byte<16>);
-        yield { type: "cpu:register.copy", input: "result", output: out };
-      }
+      if (size === 8) yield* computer.cpu.copyByteRegister("result.l", out);
+      else yield* computer.cpu.copyWordRegister("result", out);
     } else {
-      const lowAddress = out.mode === "direct" ? out.address.byte : computer.cpu.getRegister("BX");
+      // If size is 16, we first write the high byte, for convienience
       if (size === 16) {
-        yield { type: "cpu:register.update", register: "ri", value: lowAddress };
+        yield* computer.cpu.setMAR("ri");
+        yield* computer.cpu.setMBR("result.h");
+        if (!(yield* computer.cpu.useBus("mem-write"))) return false; // Error writing memory
+        yield* computer.cpu.updateWordRegister("ri", ri => ri.add(-1));
       }
-      yield { type: "cpu:mar.set", register: "ri" };
-      yield { type: "cpu:mbr.set", register: "result.l" };
-      if (!(yield* computer.memory.write(lowAddress, result.low))) return false; // Error writing memory
-      if (size === 16) {
-        const highAddress = lowAddress.add(1);
-        yield { type: "cpu:register.update", register: "ri", value: highAddress };
-        yield { type: "cpu:mar.set", register: "ri" };
-        yield { type: "cpu:mbr.set", register: "result.h" };
-        if (!(yield* computer.memory.write(lowAddress, result.high))) return false; // Error writing memory
-      }
+
+      // Write low byte
+      yield* computer.cpu.setMAR("ri");
+      yield* computer.cpu.setMBR("result.l");
+      if (!(yield* computer.cpu.useBus("mem-write"))) return false; // Error writing memory
     }
 
     return true;

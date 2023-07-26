@@ -1,65 +1,91 @@
-import type { ByteRegister, Register, WordRegister } from "@vonsim/assembler";
-import { MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
+import { MemoryAddress } from "@vonsim/common/address";
 import { AnyByte, Byte } from "@vonsim/common/byte";
-import type { JsonObject } from "type-fest";
+import type { Split } from "type-fest";
 
 import { Component, ComponentInit } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 import { InstructionType, statementToInstruction } from "./instructions";
+import type {
+  ByteRegister,
+  Flag,
+  MARRegister,
+  PartialFlags,
+  Register,
+  RegistersMap,
+  WordRegister,
+} from "./types";
 
-type Flag =
-  | "CF" // Carry Flag
-  | "ZF" // Zero Flag
-  | "SF" // Sign Flag
-  | "IF" // Interrupt Flag
-  | "OF"; // Overflow Flag
-
+/**
+ * The CPU.
+ * @see {@link https://vonsim.github.io/docs/cpu/}
+ *
+ * It has internal registers, a memory address buffer (MAR) and a
+ * memory buffer register (MBR).
+ *
+ * It also stores the instructions of the program. This is done to avoid
+ * having to read the program from memory every time an instruction is executed,
+ * which would be very inefficient.
+ *
+ * The function that executes the instructions is {@link CPU.run}.
+ */
 export class CPU extends Component {
   #instructions: Map<number, InstructionType>;
-
-  #registers: Record<WordRegister, Byte<16>>;
-  #flags: Record<Flag, boolean>;
-  #IP: MemoryAddress;
+  #registers: RegistersMap;
+  #MAR: Byte<16>;
+  #MBR: Byte<8>;
 
   constructor(options: ComponentInit) {
     super(options);
 
-    const SP = Byte.fromUnsigned(MemoryAddress.MAX_ADDRESS + 1, 16);
-    const IF = true;
-
     if (options.data === "unchanged") {
       this.#registers = options.previous.cpu.#registers;
-      this.#registers.SP = SP;
-      this.#flags = options.previous.cpu.#flags;
-      this.#flags.IF = true;
+      this.#MAR = options.previous.cpu.#MAR;
+      this.#MBR = options.previous.cpu.#MBR;
     } else if (options.data === "randomize") {
       this.#registers = {
         AX: Byte.random(16),
         BX: Byte.random(16),
         CX: Byte.random(16),
         DX: Byte.random(16),
-        SP,
+        SP: Byte.random(16),
+        IP: Byte.random(16),
+        IR: Byte.random(8),
+        ri: Byte.random(16),
+        id: Byte.random(16),
+        left: Byte.random(16),
+        right: Byte.random(16),
+        result: Byte.random(16),
+        FLAGS: Byte.random(16),
       };
-      this.#flags = {
-        CF: Math.random() > 0.5,
-        ZF: Math.random() > 0.5,
-        SF: Math.random() > 0.5,
-        IF,
-        OF: Math.random() > 0.5,
-      };
+      this.#MAR = Byte.random(16);
+      this.#MBR = Byte.random(8);
     } else {
       this.#registers = {
         AX: Byte.zero(16),
         BX: Byte.zero(16),
         CX: Byte.zero(16),
         DX: Byte.zero(16),
-        SP,
+        SP: Byte.zero(16),
+        IP: Byte.zero(16),
+        IR: Byte.zero(8),
+        ri: Byte.zero(16),
+        id: Byte.zero(16),
+        left: Byte.zero(16),
+        right: Byte.zero(16),
+        result: Byte.zero(16),
+        FLAGS: Byte.zero(16),
       };
-      this.#flags = { CF: false, ZF: true, SF: false, IF, OF: false };
+      this.#MAR = Byte.zero(16);
+      this.#MBR = Byte.zero(8);
     }
 
-    this.#IP = MemoryAddress.from(0x2000);
+    // Stack pointer starts at the "bottom" of the memory
+    this.#registers.SP = Byte.fromUnsigned(MemoryAddress.MAX_ADDRESS + 1, 16);
+    // The initial address of the program is 0x2000
+    this.#registers.IP = Byte.fromUnsigned(0x2000, 16);
+    // Interrupts always enabled at the start
+    this.#setFlag("IF", true);
 
     this.#instructions = new Map();
     for (const statement of options.program.instructions) {
@@ -71,27 +97,123 @@ export class CPU extends Component {
   /**
    * CPU runner.
    * Executes one instruction at a time, yielding the micro-operations that it will execute.
+   *
+   * ---
+   * Called by the Computer.
    */
   *run(): EventGenerator {
+    // Infinite loop until computer halts
     while (true) {
-      const instruction = this.#instructions.get(this.#IP.value);
+      // Gets the instruction at the current IP from `this.#instructions`
+      const instruction = this.#instructions.get(this.#registers.IP.unsigned);
       if (!instruction) {
-        yield { type: "cpu:error", error: new SimulatorError("no-instruction", this.#IP) };
+        yield {
+          type: "cpu:error",
+          error: new SimulatorError("no-instruction", this.#registers.IP),
+        };
         return;
       }
+
+      // Execute the instruction, and checks if the instruction returned `false` (halt)
       const continueExecuting = yield* instruction.execute(this.computer);
       if (!continueExecuting) return;
 
       // Check for interrupts
       if (this.getFlag("IF") && this.computer.io.pic.isINTRActive()) {
+        // Start interrupt phase
         yield { type: "cpu:cycle.interrupt" };
         const intn = yield* this.computer.io.pic.handleINTR();
-        yield { type: "cpu:mbr.get", register: "ri.l" };
-        yield { type: "cpu:register.update", register: "ri.h", value: Byte.zero(8) };
+        yield* this.getMBR("ri.l");
+        yield* this.updateByteRegister("ri.h", Byte.zero(8));
         yield* this.startInterrupt(intn);
       }
 
+      // End cycle and repeat
       yield { type: "cpu:cycle.end" };
+    }
+  }
+
+  /**
+   * Starts an interrupt routine.
+   * The interrupt number should have been previously written to the ri register.
+   *
+   * This function will push the FLAGS and IP registers to the stack, and set the IF flag to false.
+   * Then, will get the interrupt routine address from the interrupt vector table, and set the IP register to that address.
+   *
+   * @see {@link https://vonsim.github.io/docs/cpu/#interrupciones}
+   *
+   * @param number The interrupt number (0-255).
+   *
+   * ---
+   * Called by the CPU ({@link CPU.run}).
+   */
+  *startInterrupt(number: Byte<8>): EventGenerator<boolean> {
+    // Save machine state
+    yield* this.copyWordRegister("FLAGS", "id");
+    if (!(yield* this.pushToStack())) return false; // Stack overflow
+    yield* this.updateFLAGS({ IF: false });
+    yield* this.copyWordRegister("IP", "id");
+    if (!(yield* this.pushToStack())) return false; // Stack overflow
+
+    // Get interrupt routine address low
+    let vector = Byte.fromUnsigned(number.unsigned * 4, 16);
+    yield* this.updateWordRegister("ri", vector);
+    yield* this.setMAR("ri");
+    if (!(yield* this.useBus("mem-read"))) return false; // Error reading memory
+    yield* this.getMBR("id.l");
+
+    // Get interrupt routine address high
+    vector = vector.add(1);
+    yield* this.updateWordRegister("ri", vector);
+    yield* this.setMAR("ri");
+    if (!(yield* this.useBus("mem-read"))) return false; // Error reading memory
+    yield* this.getMBR("id.h");
+
+    // Update IP
+    yield* this.copyWordRegister("id", "IP");
+    return true;
+  }
+
+  toJSON() {
+    return Object.entries(this.#registers).reduce(
+      (acc, [reg, value]) => ({ ...acc, [reg]: value.toJSON() }),
+      {} as { [key in keyof RegistersMap]: number },
+    );
+  }
+
+  // #=========================================================================#
+  // # Register methods                                                        #
+  // #=========================================================================#
+
+  /**
+   * Given a register name, returns the physical register and the part of the register
+   * specified (low, high or none).
+   * @internal
+   * @param register
+   * @returns a tuple with the register name and the part of the register (low, high or none).
+   */
+  #parseRegister(register: Register): [reg: keyof RegistersMap, part: "low" | "high" | null] {
+    switch (register) {
+      case "AL":
+        return ["AX", "low"];
+      case "AH":
+        return ["AX", "high"];
+      case "BL":
+        return ["BX", "low"];
+      case "BH":
+        return ["BX", "high"];
+      case "CL":
+        return ["CX", "low"];
+      case "CH":
+        return ["CX", "high"];
+      case "DL":
+        return ["DX", "low"];
+      case "DH":
+        return ["DX", "high"];
+      default: {
+        const [reg, part] = register.split(".") as Split<typeof register, ".">;
+        return [reg, part === "l" ? "low" : part === "h" ? "high" : null];
+      }
     }
   }
 
@@ -103,194 +225,308 @@ export class CPU extends Component {
   getRegister(register: ByteRegister): Byte<8>;
   getRegister(register: WordRegister): Byte<16>;
   getRegister(register: Register): AnyByte {
-    switch (register) {
-      case "AL":
-        return this.#registers.AX.low;
-      case "AH":
-        return this.#registers.AX.high;
-      case "BL":
-        return this.#registers.BX.low;
-      case "BH":
-        return this.#registers.BX.high;
-      case "CL":
-        return this.#registers.CX.low;
-      case "CH":
-        return this.#registers.CX.high;
-      case "DL":
-        return this.#registers.DX.low;
-      case "DH":
-        return this.#registers.DX.high;
-      default:
-        return this.#registers[register];
-    }
+    const [reg, part] = this.#parseRegister(register);
+    if (part === "low") return this.#registers[reg].low;
+    else if (part === "high") return this.#registers[reg].high;
+    else return this.#registers[reg];
   }
 
   /**
    * Sets the value of the specified register.
    * If the value size is different from the register size, an error is thrown.
+   * @internal
    * @param register Either a full register or a partial register (like AL for the low part of AX).
    * @param value The value to set.
    */
-  setRegister(register: ByteRegister, value: Byte<8>): void;
-  setRegister(register: WordRegister, value: Byte<16>): void;
-  setRegister(register: Register, value: AnyByte): void {
-    switch (register) {
-      case "AL": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.AX = this.#registers.AX.withLow(value);
-        return;
+  #setRegister(register: ByteRegister, value: Byte<8>): void;
+  #setRegister(register: WordRegister, value: Byte<16>): void;
+  #setRegister(register: Register, value: AnyByte): void {
+    const [reg, part] = this.#parseRegister(register);
+    if (part === null) {
+      if (this.#registers[reg].size !== value.size) {
+        throw new TypeError(
+          `Cannot set register ${register} with value ${value} of different size`,
+        );
       }
-
-      case "AH": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.AX = this.#registers.AX.withHigh(value);
-        return;
+      (this.#registers[reg] as AnyByte) = value;
+    } else {
+      if (!value.is8bits()) {
+        throw new TypeError(
+          `Cannot set register ${register} with value ${value} of different size`,
+        );
       }
-
-      case "BL": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.BX = this.#registers.BX.withLow(value);
-        return;
-      }
-
-      case "BH": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.BX = this.#registers.BX.withHigh(value);
-        return;
-      }
-
-      case "CL": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.CX = this.#registers.CX.withLow(value);
-        return;
-      }
-
-      case "CH": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.CX = this.#registers.CX.withHigh(value);
-        return;
-      }
-
-      case "DL": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.DX = this.#registers.DX.withLow(value);
-        return;
-      }
-
-      case "DH": {
-        if (value.size !== 8) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers.DX = this.#registers.DX.withHigh(value);
-        return;
-      }
-
-      default: {
-        if (value.size !== 16) {
-          throw new TypeError(
-            `Cannot set register ${register} with value ${value} of different size`,
-          );
-        }
-        this.#registers[register] = value;
-        return;
-      }
+      if (part === "low") (this.#registers[reg] as AnyByte) = this.#registers[reg].withLow(value);
+      else (this.#registers[reg] as AnyByte) = this.#registers[reg].withHigh(value);
     }
   }
 
   /**
-   * Returns the value of the instruction pointer.
+   * Copies the value of a byte register to another byte register.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
    */
-  getIP(): MemoryAddress {
-    return this.#IP;
+  *copyByteRegister(src: ByteRegister, dest: ByteRegister): EventGenerator {
+    const value = this.getRegister(src);
+    this.#setRegister(dest, value);
+    yield { type: "cpu:register.copy", size: 8, src, dest };
   }
 
   /**
-   * Updates the value of the instruction pointer.
-   * @param address The new value of the instruction pointer.
+   * Copies the value of a word register to another word register.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
    */
-  setIP(address: MemoryAddressLike): MemoryAddress {
-    return (this.#IP = MemoryAddress.from(address));
+  *copyWordRegister(src: WordRegister, dest: WordRegister): EventGenerator {
+    const value = this.getRegister(src);
+    this.#setRegister(dest, value);
+    yield { type: "cpu:register.copy", size: 16, src, dest };
   }
+
+  /**
+   * Updates the value of a byte register.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
+   */
+  *updateByteRegister(
+    register: ByteRegister,
+    value: Byte<8> | ((prev: Byte<8>) => Byte<8>),
+  ): EventGenerator {
+    value = typeof value === "function" ? value(this.getRegister(register)) : value;
+    this.#setRegister(register, value);
+    yield { type: "cpu:register.update", size: 8, register, value };
+  }
+
+  /**
+   * Updates the value of a word register.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
+   */
+  *updateWordRegister(
+    register: WordRegister,
+    value: Byte<16> | ((prev: Byte<16>) => Byte<16>),
+  ): EventGenerator {
+    value = typeof value === "function" ? value(this.getRegister(register)) : value;
+    this.#setRegister(register, value);
+    yield { type: "cpu:register.update", size: 16, register, value };
+  }
+
+  // #=========================================================================#
+  // # Flags methods                                                           #
+  // #=========================================================================#
 
   /**
    * Returns the value of the specified flag.
-   * @see /docs/especificaciones/codificacion.md
+   * @see {@link https://vonsim.github.io/docs/cpu/#flags}
    */
   getFlag(flag: Flag): boolean {
-    return this.#flags[flag];
+    switch (flag) {
+      case "CF":
+        return this.#registers.FLAGS.bit(0);
+      case "ZF":
+        return this.#registers.FLAGS.bit(6);
+      case "SF":
+        return this.#registers.FLAGS.bit(7);
+      case "IF":
+        return this.#registers.FLAGS.bit(9);
+      case "OF":
+        return this.#registers.FLAGS.bit(11);
+      default:
+        throw new TypeError(`Invalid flag ${flag}`);
+    }
   }
 
   /**
    * Sets the value of the specified flag.
-   * @see /docs/especificaciones/codificacion.md
+   * @internal
+   * @see {@link https://vonsim.github.io/docs/cpu/#flags}
    */
-  setFlag(flag: Flag, value: boolean): void {
-    this.#flags[flag] = value;
+  #setFlag(flag: Flag, value: boolean): void {
+    switch (flag) {
+      case "CF":
+        this.#registers.FLAGS = this.#registers.FLAGS.withBit(0, value);
+        return;
+      case "ZF":
+        this.#registers.FLAGS = this.#registers.FLAGS.withBit(6, value);
+        return;
+      case "SF":
+        this.#registers.FLAGS = this.#registers.FLAGS.withBit(7, value);
+        return;
+      case "IF":
+        this.#registers.FLAGS = this.#registers.FLAGS.withBit(9, value);
+        return;
+      case "OF":
+        this.#registers.FLAGS = this.#registers.FLAGS.withBit(11, value);
+        return;
+      default:
+        throw new TypeError(`Invalid flag ${flag}`);
+    }
   }
 
   /**
-   * Gets the FLAGS register.
-   * @see /docs/especificaciones/codificacion.md
+   * Updates the FLAGS register.
+   * @param flags The flags to update. If a flag is not specified, it will not be updated.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
    */
-  get FLAGS(): Byte<16> {
-    let byte = 0;
-    if (this.#flags.CF) byte |= 1;
-    if (this.#flags.ZF) byte |= 1 << 6;
-    if (this.#flags.SF) byte |= 1 << 7;
-    if (this.#flags.IF) byte |= 1 << 9;
-    if (this.#flags.OF) byte |= 1 << 11;
-    return Byte.fromUnsigned(byte, 16);
+  *updateFLAGS(flags: PartialFlags): EventGenerator {
+    if (typeof flags.CF === "boolean") this.#setFlag("CF", flags.CF);
+    if (typeof flags.ZF === "boolean") this.#setFlag("ZF", flags.ZF);
+    if (typeof flags.SF === "boolean") this.#setFlag("SF", flags.SF);
+    if (typeof flags.IF === "boolean") this.#setFlag("IF", flags.IF);
+    if (typeof flags.OF === "boolean") this.#setFlag("OF", flags.OF);
+    yield {
+      type: "cpu:register.update",
+      size: 16,
+      register: "FLAGS",
+      value: this.#registers.FLAGS,
+    };
   }
 
   /**
-   * Sets the flags from the FLAGS register.
-   * @see /docs/especificaciones/codificacion.md
+   * Updates the FLAGS register.
+   * @param flags The flags to update. If a flag is not specified, it will not be updated.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
    */
-  set FLAGS(reg: Byte<16>) {
-    this.#flags.CF = reg.bit(0);
-    this.#flags.ZF = reg.bit(6);
-    this.#flags.SF = reg.bit(7);
-    this.#flags.IF = reg.bit(9);
-    this.#flags.OF = reg.bit(11);
+  *aluExecute(operation: string, result: AnyByte, flags: PartialFlags): EventGenerator {
+    this.#registers.result = result.is8bits() ? this.#registers.result.withLow(result) : result;
+    if (typeof flags.CF === "boolean") this.#setFlag("CF", flags.CF);
+    if (typeof flags.ZF === "boolean") this.#setFlag("ZF", flags.ZF);
+    if (typeof flags.SF === "boolean") this.#setFlag("SF", flags.SF);
+    if (typeof flags.IF === "boolean") this.#setFlag("IF", flags.IF);
+    if (typeof flags.OF === "boolean") this.#setFlag("OF", flags.OF);
+    yield {
+      type: "cpu:alu.execute",
+      operation,
+      size: result.size,
+      result: this.#registers.result,
+      flags: this.#registers.FLAGS,
+    };
   }
+
+  // #=========================================================================#
+  // # Bus methods                                                             #
+  // #=========================================================================#
+
+  /**
+   * Sets the value of the MAR.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
+   */
+  *setMAR(register: MARRegister): EventGenerator {
+    const value = this.getRegister(register);
+    this.#MAR = value;
+    yield { type: "cpu:mar.set", register };
+  }
+
+  /**
+   * Copies the value of the MBR to another register.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
+   */
+  *getMBR(register: ByteRegister): EventGenerator {
+    this.#setRegister(register, this.#MBR);
+    yield { type: "cpu:mbr.get", register };
+  }
+
+  /**
+   * Sets the value of the MBR.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
+   */
+  *setMBR(register: ByteRegister): EventGenerator {
+    const value = this.getRegister(register);
+    this.#MBR = value;
+    yield { type: "cpu:mbr.set", register };
+  }
+
+  /**
+   * Uses the bus. Analogous to set the control lines of the bus.
+   *
+   * @param mode
+   * - `mem-read`:  Read from memory.
+   *                The address should have been previously written to the MAR register.
+   *                The value will be written to the MBR register.
+   * - `mem-write`: Write to memory.
+   *                The address should have been previously written to the MAR register.
+   *                The value will be read from the MBR register.
+   * - `io-read`:   Read from I/O memory.
+   *                The address should have been previously written to the low part of the MAR register.
+   *                The value will be written to the MBR register.
+   * - `io-write`:  Read from memory.
+   *                The address should have been previously written to the low part of the MAR register.
+   *                The value will be written to the MBR register.
+   * - `intr-read`: Read the interrupt number from the PIC.
+   *                The value will be written to the MBR register.
+   *
+   * @returns Whether the operation was successful.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}) and the CPU.
+   */
+  *useBus(mode: `${"mem" | "io"}-${"read" | "write"}` | "intr-read"): EventGenerator<boolean> {
+    switch (mode) {
+      case "mem-read": {
+        const value = yield* this.computer.memory.read(this.#MAR);
+        if (!value) return false; // Error reading from memory
+        this.#MBR = value;
+        return true;
+      }
+
+      case "mem-write": {
+        const success = yield* this.computer.memory.write(this.#MAR, this.#MBR);
+        return success;
+      }
+
+      case "io-read": {
+        const value = yield* this.computer.io.read(this.#MAR.low);
+        if (!value) return false; // Error reading from i/o
+        this.#MBR = value;
+        return true;
+      }
+
+      case "io-write": {
+        const success = yield* this.computer.io.write(this.#MAR.low, this.#MBR);
+        return success;
+      }
+
+      case "intr-read": {
+        const intn = yield* this.computer.io.pic.handleINTR();
+        this.#MBR = intn;
+        return true;
+      }
+
+      default: {
+        const _exhaustiveCheck: never = mode;
+        return _exhaustiveCheck;
+      }
+    }
+  }
+
+  // #=========================================================================#
+  // # Stack methods                                                           #
+  // #=========================================================================#
 
   /**
    * Pushes a value to the stack, and updates the SP register.
    * This value should have been previously written to the id register.
+   * @see {@link https://vonsim.github.io/docs/cpu/#pila}
    * @param value The value to push to the stack.
    * @returns Whether the operation was successful.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}).
    */
-  *pushToStack(value: Byte<16>): EventGenerator<boolean> {
+  *pushToStack(): EventGenerator<boolean> {
     let SP = this.getRegister("SP");
 
     if (!MemoryAddress.inRange(SP.unsigned - 1)) {
@@ -298,103 +534,56 @@ export class CPU extends Component {
       return false;
     }
     SP = SP.add(-1);
-    yield { type: "cpu:register.update", register: "SP", value: SP };
-    yield { type: "cpu:mar.set", register: "SP" };
-    yield { type: "cpu:mbr.set", register: "id.h" };
-    if (!(yield* this.computer.memory.write(SP, value.high))) return false; // Error writing memory
+    yield* this.updateWordRegister("SP", SP);
+    yield* this.setMAR("SP");
+    yield* this.setMBR("id.h");
+    if (!(yield* this.useBus("mem-write"))) return false; // Error writing to memory
 
     if (!MemoryAddress.inRange(SP.unsigned - 1)) {
       yield { type: "cpu:error", error: new SimulatorError("stack-overflow") };
       return false;
     }
     SP = SP.add(-1);
-    yield { type: "cpu:register.update", register: "SP", value: SP };
-    yield { type: "cpu:mar.set", register: "SP" };
-    yield { type: "cpu:mbr.set", register: "id.l" };
-    if (!(yield* this.computer.memory.write(SP, value.low))) return false; // Error writing memory
+    yield* this.updateWordRegister("SP", SP);
+    yield* this.setMAR("SP");
+    yield* this.setMBR("id.l");
+    if (!(yield* this.useBus("mem-write"))) return false; // Error writing to memory
 
-    this.setRegister("SP", SP);
     return true;
   }
 
   /**
    * Pops a value from the stack, and updates the SP register.
    * This value will be written to the id register.
-   * @returns The value popped from the stack (16 bits), or `null` if the operation was unsuccessful.
+   * @see {@link https://vonsim.github.io/docs/cpu/#pila}
+   * @returns Whether the operation was successful.
+   *
+   * ---
+   * Called by the instructions ({@link InstructionType.execute}).
    */
-  *popFromStack(): EventGenerator<Byte<16> | null> {
+  *popFromStack(): EventGenerator<boolean> {
     let SP = this.getRegister("SP");
 
     if (!MemoryAddress.inRange(SP)) {
       yield { type: "cpu:error", error: new SimulatorError("stack-underflow") };
-      return null;
+      return false;
     }
-    yield { type: "cpu:mar.set", register: "SP" };
-    const low = yield* this.computer.memory.read(SP);
-    if (!low) return null; // Error reading memory
-    yield { type: "cpu:mbr.get", register: "id.l" };
+    yield* this.setMAR("SP");
+    if (!(yield* this.useBus("mem-read"))) return false; // Error reading memory
+    yield* this.getMBR("id.l");
     SP = SP.add(1);
-    yield { type: "cpu:register.update", register: "SP", value: SP };
+    yield* this.updateWordRegister("SP", SP);
 
     if (!MemoryAddress.inRange(SP)) {
       yield { type: "cpu:error", error: new SimulatorError("stack-underflow") };
-      return null;
+      return true;
     }
-    yield { type: "cpu:mar.set", register: "SP" };
-    const high = yield* this.computer.memory.read(SP);
-    if (!high) return null; // Error reading memory
-    yield { type: "cpu:mbr.get", register: "id.h" };
+    yield* this.setMAR("SP");
+    if (!(yield* this.useBus("mem-read"))) return false; // Error reading memory
+    yield* this.getMBR("id.h");
     SP = SP.add(1);
-    yield { type: "cpu:register.update", register: "SP", value: SP };
-
-    this.setRegister("SP", SP);
-    return low.withHigh(high);
-  }
-
-  /**
-   * Starts an interrupt routine.
-   * The interrupt number should have been previously written to the ri register.
-   *
-   * This function will push the FLAGS and IP registers to the stack, and set the IF flag to false.
-   * Then, will get the interrupt routine address from the interrupt vector table, and set the IP register to that address.
-   *
-   * @param number The interrupt number (0-255).
-   */
-  *startInterrupt(number: Byte<8>): EventGenerator<boolean> {
-    yield { type: "cpu:register.copy", input: "FLAGS", output: "id" };
-    if (!(yield* this.pushToStack(this.FLAGS))) return false; // Stack overflow
-    this.setFlag("IF", false);
-    yield { type: "cpu:register.update", register: "FLAGS", value: this.FLAGS };
-    yield { type: "cpu:register.copy", input: "IP", output: "id" };
-    if (!(yield* this.pushToStack(this.#IP.byte))) return false; // Stack overflow
-
-    let vector = MemoryAddress.from(number.unsigned * 4);
-    yield { type: "cpu:register.update", register: "ri", value: vector.byte };
-    yield { type: "cpu:mar.set", register: "ri" };
-
-    const low = yield* this.computer.memory.read(vector);
-    if (!low) return false; // Error reading memory
-    yield { type: "cpu:mbr.get", register: "id.l" };
-    vector = MemoryAddress.from(vector.value + 1);
-    const high = yield* this.computer.memory.read(vector);
-    if (!high) return false; // Error reading memory
-    yield { type: "cpu:mbr.get", register: "id.h" };
-
-    this.setIP(low.withHigh(high));
-    yield { type: "cpu:register.update", register: "IP", value: this.#IP.byte };
+    yield* this.updateWordRegister("SP", SP);
 
     return true;
-  }
-
-  toJSON() {
-    return {
-      AX: this.#registers.AX.toJSON(),
-      BX: this.#registers.BX.toJSON(),
-      CX: this.#registers.CX.toJSON(),
-      DX: this.#registers.DX.toJSON(),
-      SP: this.#registers.SP.toJSON(),
-      IP: this.#IP.toJSON(),
-      FLAGS: this.FLAGS.toJSON(),
-    } satisfies JsonObject;
   }
 }

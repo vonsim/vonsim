@@ -5,7 +5,7 @@ import type { Position } from "@vonsim/common/position";
 import type { Computer } from "../computer";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
-import type { Physical8bitsRegisters } from "./micro-ops";
+import type { ByteRegister } from "./types";
 
 /**
  * Represents an instruction that can be executed by the CPU.
@@ -47,20 +47,17 @@ export abstract class Instruction<TInstruction extends InstructionName> {
    * @param computer The computer that will execute the instruction.
    * @param dest Which register to store the byte in.
    */
-  protected *consumeInstruction(computer: Computer, dest: Physical8bitsRegisters): EventGenerator {
-    let IP = computer.cpu.getIP();
-    yield { type: "cpu:mar.set", register: "IP" };
-
-    const byte = yield* computer.memory.read(IP);
+  protected *consumeInstruction(computer: Computer, dest: ByteRegister): EventGenerator {
+    yield* computer.cpu.setMAR("IP");
+    const byte = yield* computer.cpu.useBus("mem-read");
     if (!byte) {
+      const address = computer.cpu.getRegister("IP").toString("hex");
       throw new SimulatorError(
         "unexpected-error",
-        `Could not read instruction byte at address ${IP.value}`,
+        `Could not read instruction byte at address ${address}h`,
       );
     }
-
-    IP = computer.cpu.setIP(IP.value + 1);
-    yield { type: "cpu:register.update", register: "IP", value: IP.byte };
-    yield { type: "cpu:mbr.get", register: dest };
+    yield* computer.cpu.updateWordRegister("IP", IP => IP.add(1));
+    yield* computer.cpu.getMBR(dest);
   }
 }

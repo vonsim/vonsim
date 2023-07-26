@@ -5,6 +5,13 @@ import { SimulatorError } from "../../error";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
 
+/**
+ * I/O instructions:
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/in/ | IN}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/out/ | OUT}
+ *
+ * @see {@link Instruction}
+ */
 export class IOInstruction extends Instruction<"IN" | "OUT"> {
   get operation() {
     return this.statement.operation;
@@ -39,10 +46,10 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
     yield { type: "cpu:cycle.update", phase: "decoded" };
 
     if (this.operation.port === "fixed") {
-      yield { type: "cpu:register.update", register: "ri", value: Byte.zero(16) };
+      yield* computer.cpu.updateWordRegister("ri", Byte.zero(16));
       yield* super.consumeInstruction(computer, "ri.l");
     } else {
-      yield { type: "cpu:register.copy", input: "DX", output: "ri" };
+      yield* computer.cpu.copyWordRegister("DX", "ri");
       if (!computer.cpu.getRegister("DX").high.isZero()) {
         yield {
           type: "cpu:error",
@@ -54,36 +61,41 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
 
     yield { type: "cpu:cycle.update", phase: "writeback" };
 
-    let port =
-      this.operation.port === "variable"
-        ? computer.cpu.getRegister("DX").low
-        : this.operation.address.byte;
-
     if (this.name === "IN") {
-      yield { type: "cpu:mar.set", register: "ri" };
-      const low = yield* computer.io.read(port);
-      if (!low) return false; // Error reading IO
-      computer.cpu.setRegister("AL", low);
-      yield { type: "cpu:mbr.get", register: "AL" };
+      yield* computer.cpu.setMAR("ri");
+      if (!(yield* computer.cpu.useBus("io-read"))) return false; // Error reading from I/O
+      yield* computer.cpu.getMBR("AL");
       if (this.operation.size === 16) {
-        port = port.add(1);
-        yield { type: "cpu:register.update", register: "ri.l", value: port };
-        yield { type: "cpu:mar.set", register: "ri" };
-        const high = yield* computer.io.read(port);
-        if (!high) return false; // Error reading IO
-        computer.cpu.setRegister("AH", high);
-        yield { type: "cpu:mbr.get", register: "AH" };
+        yield* computer.cpu.updateWordRegister("ri", ri => ri.add(1));
+        yield* computer.cpu.setMAR("ri");
+        if (!computer.cpu.getRegister("ri.h").isZero()) {
+          // User tried to read from ports 255 and 256
+          yield {
+            type: "cpu:error",
+            error: new SimulatorError("io-memory-not-implemented", computer.cpu.getRegister("ri")),
+          };
+          return false;
+        }
+        if (!(yield* computer.cpu.useBus("io-read"))) return false; // Error reading from I/O
+        yield* computer.cpu.getMBR("AH");
       }
     } else {
-      yield { type: "cpu:mar.set", register: "ri" };
-      yield { type: "cpu:mbr.set", register: "AL" };
-      if (!(yield* computer.io.write(port, computer.cpu.getRegister("AL")))) return false; // Error reading IO
+      yield* computer.cpu.setMAR("ri");
+      yield* computer.cpu.setMBR("AL");
+      if (!(yield* computer.cpu.useBus("io-write"))) return false; // Error writing to I/O
       if (this.operation.size === 16) {
-        port = port.add(1);
-        yield { type: "cpu:register.update", register: "ri.l", value: port };
-        yield { type: "cpu:mar.set", register: "ri" };
-        yield { type: "cpu:mbr.set", register: "AH" };
-        if (!(yield* computer.io.write(port, computer.cpu.getRegister("AH")))) return false; // Error reading IO
+        yield* computer.cpu.updateWordRegister("ri", ri => ri.add(1));
+        yield* computer.cpu.setMAR("ri");
+        yield* computer.cpu.setMBR("AH");
+        if (!computer.cpu.getRegister("ri.h").isZero()) {
+          // User tried to write to ports 255 and 256
+          yield {
+            type: "cpu:error",
+            error: new SimulatorError("io-memory-not-implemented", computer.cpu.getRegister("ri")),
+          };
+          return false;
+        }
+        if (!(yield* computer.cpu.useBus("io-write"))) return false; // Error writing to I/O
       }
     }
 

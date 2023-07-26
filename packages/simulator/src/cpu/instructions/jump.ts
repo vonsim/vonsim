@@ -2,6 +2,21 @@ import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
 
+/**
+ * Jump instructions:
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jc/ | JC}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jnc/ | JNC}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jz/ | JZ}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jnz/ | JNZ}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/js/ | JS}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jns/ | JNS}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jo/ | JO}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jno/ | JNO}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/jmp/ | JMP}
+ * - {@link https://vonsim.github.io/docs/cpu/instructions/call/ | CALL}
+ *
+ * @see {@link Instruction}
+ */
 export class JumpInstruction extends Instruction<
   "JC" | "JNC" | "JZ" | "JNZ" | "JS" | "JNS" | "JO" | "JNO" | "JMP" | "CALL"
 > {
@@ -16,14 +31,20 @@ export class JumpInstruction extends Instruction<
         name: this.name,
         position: this.position,
         operands: [this.jumpTo.toString()],
-        willUse: { id: this.name === "CALL", ri: true, writeback: true },
+        willUse: { id: this.name === "CALL", ri: true, execute: true },
       },
     };
 
-    // All these intructions are 3 bytes long.
+    // Read opcode.
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
     yield { type: "cpu:cycle.update", phase: "decoded" };
+
+    // Consume jump address
+    yield* super.consumeInstruction(computer, "ri.l");
+    yield* super.consumeInstruction(computer, "ri.h");
+
+    yield { type: "cpu:cycle.update", phase: "execute" };
 
     let jump: boolean;
     switch (this.name) {
@@ -61,27 +82,14 @@ export class JumpInstruction extends Instruction<
       }
     }
 
-    if (!jump) {
-      yield { type: "cpu:cycle.update", phase: "writeback" };
-      const IP = computer.cpu.getIP().byte.add(2);
-      computer.cpu.setIP(IP);
-      yield { type: "cpu:register.update", register: "IP", value: IP };
-      return true;
+    if (jump) {
+      if (this.name === "CALL") {
+        yield* computer.cpu.copyWordRegister("IP", "id");
+        if (!(yield* computer.cpu.pushToStack())) return false; // Stack overflow
+      }
+
+      yield* computer.cpu.copyWordRegister("ri", "IP");
     }
-
-    // Consume jump address
-    yield* super.consumeInstruction(computer, "ri.l");
-    yield* super.consumeInstruction(computer, "ri.h");
-    yield { type: "cpu:cycle.update", phase: "writeback" };
-
-    if (this.name === "CALL") {
-      const IP = computer.cpu.getIP().byte;
-      yield { type: "cpu:register.copy", input: "IP", output: "id" };
-      yield* computer.cpu.pushToStack(IP);
-    }
-
-    computer.cpu.setIP(this.jumpTo);
-    yield { type: "cpu:register.update", register: "IP", value: this.jumpTo.byte };
 
     return true;
   }
