@@ -15,6 +15,23 @@ export type ChipSelectEvent =
   | { type: "cs:selected"; chip: "handshake" | "pic" | "pio" | "timer" }
   | { type: "cs:error"; error: SimulatorError<"io-memory-not-implemented"> };
 
+/**
+ * An IO interface is a set of devices and modules that can be used by the CPU to
+ * interact with the outside world.
+ *
+ * In this abstract class, some common devices and modules are implemented, but an
+ * interface can be extended to add more. These are:
+ * - Devices:
+ *   - {@link Clock}
+ *   - {@link Console}
+ *   - {@link F10}
+ * - Modules:
+ *   - {@link PIC}
+ *   - {@link Timer}
+ *
+ * ---
+ * These classes are: IMMUTABLE
+ */
 export abstract class IOInterface<
   TDevices extends DevicesConfiguration,
 > extends Component<TDevices> {
@@ -44,6 +61,9 @@ export abstract class IOInterface<
    * Reads a byte from IO memory at the specified address.
    * @param address The address to read the byte from.
    * @returns The byte at the specified address (always 8-bit) or null if there was an error.
+   *
+   * ---
+   * Called by the CPU.
    */
   *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
     const pic = this.pic.chipSelect(address);
@@ -67,6 +87,9 @@ export abstract class IOInterface<
    * @param address The address to write the byte to.
    * @param value The byte to write.
    * @returns Whether the operation succedeed or not (boolean).
+   *
+   * ---
+   * Called by the CPU.
    */
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     const pic = this.pic.chipSelect(address);

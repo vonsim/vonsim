@@ -8,6 +8,16 @@ import { IOInterface } from "../../interface";
 import { Handshake as HandshakeModule } from "./handshake";
 import { Printer } from "./printer";
 
+/**
+ * `handshake` interface.
+ *
+ * Along with the common devices and modules, this interface also has:
+ * - {@link Printer}
+ * - {@link HandshakeModule | Handshake}
+ *
+ * ---
+ * This class is: IMMUTABLE
+ */
 export class Handshake extends IOInterface<"handshake"> {
   // Devices
   readonly printer: Printer;
@@ -21,11 +31,6 @@ export class Handshake extends IOInterface<"handshake"> {
     this.handshake = new HandshakeModule(options);
   }
 
-  /**
-   * Reads a byte from IO memory at the specified address.
-   * @param address The address to read the byte from.
-   * @returns The byte at the specified address (always 8-bit) or null if there was an error.
-   */
   *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
     const handshake = this.handshake.chipSelect(address);
     if (handshake) {
@@ -36,12 +41,6 @@ export class Handshake extends IOInterface<"handshake"> {
     return yield* super.read(address);
   }
 
-  /**
-   * Writes a byte to IO memory at the specified address.
-   * @param address The address to write the byte to.
-   * @param value The byte to write.
-   * @returns Whether the operation succedeed or not (boolean).
-   */
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     const handshake = this.handshake.chipSelect(address);
     if (handshake) {

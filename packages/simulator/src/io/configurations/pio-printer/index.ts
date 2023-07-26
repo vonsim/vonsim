@@ -8,6 +8,16 @@ import { IOInterface } from "../../interface";
 import { PIO } from "./pio";
 import { Printer } from "./printer";
 
+/**
+ * `pio-printer` interface.
+ *
+ * Along with the common devices and modules, this interface also has:
+ * - {@link Printer}
+ * - {@link PIO | PIO (for the printer)}
+ *
+ * ---
+ * This class is: IMMUTABLE
+ */
 export class PIOPrinter extends IOInterface<"pio-printer"> {
   // Devices
   readonly printer: Printer;

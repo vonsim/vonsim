@@ -3,7 +3,36 @@ import { Byte } from "@vonsim/common/byte";
 import type { EventGenerator } from "../../../events";
 import { GenericPIO, PIOPort } from "../../modules/pio";
 
+/**
+ * PIO (for the printer).
+ *
+ * @see
+ * - {@link GenericPIO}.
+ * - {@link https://vonsim.github.io/docs/io/devices/printer/#imprimir-con-pio}.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class PIO extends GenericPIO<"pio-printer"> {
+  /**
+   * Returns the data as output in the B port.
+   * @returns The data as output in the B port.
+   *
+   * ---
+   * Called by the printer after the strobe signal is sent.
+   */
+  readData(): Byte<8> {
+    // Since 0 = output
+    // PB & ~CB
+    // => the value of the byte in each position where the CB is 0 (output)
+    // => 0 where the CB is 1 (input)
+    // So, the value of PB will be that result, since the bits of the byte
+    // transmitted shall be only the ones set by the PIO, where the CB is 0 (output).
+
+    const out = this.PB.unsigned & ~this.CB.unsigned;
+    return Byte.fromUnsigned(out, 8);
+  }
+
   *updatePort(port: PIOPort): EventGenerator {
     if (port === "B") return;
     // Handle port A
@@ -40,22 +69,5 @@ export class PIO extends GenericPIO<"pio-printer"> {
         yield* this.computer.io.printer.setStrobe(this.PA.bit(1));
       }
     }
-  }
-
-  /**
-   * Returns the data as output in the B port.
-   * Called by the printer when wanting to read a character.
-   * @returns The data as output in the B port.
-   */
-  readData(): Byte<8> {
-    // Since 0 = output
-    // PB & ~CB
-    // => the value of the byte in each position where the CB is 0 (output)
-    // => 0 where the CB is 1 (input)
-    // So, the value of PB will be that result, since the bits of the byte
-    // transmitted shall be only the ones set by the PIO, where the CB is 0 (output).
-
-    const out = this.PB.unsigned & ~this.CB.unsigned;
-    return Byte.fromUnsigned(out, 8);
   }
 }

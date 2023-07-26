@@ -6,6 +6,18 @@ import type { EventGenerator } from "../../events";
 
 export type ConsoleEvent = { type: "console:read" } | { type: "console:write"; char: Byte<8> };
 
+/**
+ * The console is a device that prints characters to a screen
+ * and reads characters from a keyboard.
+ *
+ * The only way to interact with the console is through the CPU
+ * with `INT 6` and `INT 7` instructions.
+ *
+ * @see {@link https://vonsim.github.io/docs/io/devices/console/}.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class Console extends Component {
   #screen: string;
 
@@ -23,7 +35,10 @@ export class Console extends Component {
   }
 
   /**
-   * Clears the screen. Called by the outside.
+   * Clears the screen.
+   *
+   * ---
+   * Called by the outside.
    */
   clear(): EventGenerator {
     // Writes a form feed character, clearing the screen
@@ -31,9 +46,12 @@ export class Console extends Component {
   }
 
   /**
-   * Reads a character from the keyboard (outside). Called by the CPU.
+   * Reads a character from the keyboard (outside).
    * @returns The character read as a Byte<8>.
-   * @see /docs/como-usar/dispositivos/consola.md
+   * @see {@link https://vonsim.github.io/docs/io/devices/console/}.
+   *
+   * ---
+   * Called by the CPU.
    */
   *read(): EventGenerator<Byte<8>> {
     // This event must be followed by a generator.next(Byte<8>)
@@ -47,8 +65,11 @@ export class Console extends Component {
   }
 
   /**
-   * Write a character to the screen. Called by the CPU.
-   * @see /docs/como-usar/dispositivos/consola.md
+   * Write a character to the screen.
+   * @see {@link https://vonsim.github.io/docs/io/devices/console/}.
+   *
+   * ---
+   * Called by the CPU.
    */
   *write(char: Byte<8>): EventGenerator {
     switch (char.unsigned) {

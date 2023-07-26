@@ -9,6 +9,17 @@ import { Leds } from "./leds";
 import { PIO } from "./pio";
 import { Switches } from "./switches";
 
+/**
+ * `pio-switches-and-leds` interface.
+ *
+ * Along with the common devices and modules, this interface also has:
+ * - {@link Leds}
+ * - {@link Switches}
+ * - {@link PIO | PIO (for the switches and leds)}
+ *
+ * ---
+ * This class is: IMMUTABLE
+ */
 export class PIOSwitchesAndLeds extends IOInterface<"pio-switches-and-leds"> {
   // Devices
   readonly leds: Leds;
@@ -24,11 +35,6 @@ export class PIOSwitchesAndLeds extends IOInterface<"pio-switches-and-leds"> {
     this.pio = new PIO(options);
   }
 
-  /**
-   * Reads a byte from IO memory at the specified address.
-   * @param address The address to read the byte from.
-   * @returns The byte at the specified address (always 8-bit) or null if there was an error.
-   */
   *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
     const pio = this.pio.chipSelect(address);
     if (pio) {
@@ -39,12 +45,6 @@ export class PIOSwitchesAndLeds extends IOInterface<"pio-switches-and-leds"> {
     return yield* super.read(address);
   }
 
-  /**
-   * Writes a byte to IO memory at the specified address.
-   * @param address The address to write the byte to.
-   * @param value The byte to write.
-   * @returns Whether the operation succedeed or not (boolean).
-   */
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     const pio = this.pio.chipSelect(address);
     if (pio) {

@@ -6,6 +6,14 @@ import type { EventGenerator } from "../../../events";
 
 export type LedsEvent = { type: "leds:update"; state: Byte<8> };
 
+/**
+ * Led lights. These are only modified by the PIO, not the user.
+ *
+ * @see {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class Leds extends Component<"pio-switches-and-leds"> {
   #state: Byte<8>;
 
@@ -25,7 +33,10 @@ export class Leds extends Component<"pio-switches-and-leds"> {
   }
 
   /**
-   * Updates the state of the Leds. Called by the PIO.
+   * Updates the state of the Leds.
+   *
+   * ---
+   * Called by the PIO.
    */
   *update(state: Byte<8>): EventGenerator {
     yield { type: "leds:update", state };

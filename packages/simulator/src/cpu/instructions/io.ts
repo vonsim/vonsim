@@ -11,6 +11,9 @@ import { Instruction } from "../instruction";
  * - {@link https://vonsim.github.io/docs/cpu/instructions/out/ | OUT}
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class IOInstruction extends Instruction<"IN" | "OUT"> {
   get operation() {

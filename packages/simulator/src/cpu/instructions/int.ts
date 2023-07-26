@@ -8,6 +8,9 @@ import { Instruction } from "../instruction";
  * {@link https://vonsim.github.io/docs/cpu/instructions/int/ | INT} instruction.
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class INTInstruction extends Instruction<"INT"> {
   get number() {

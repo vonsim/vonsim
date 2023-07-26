@@ -9,6 +9,9 @@ import type { ByteRegister } from "../types";
  * {@link https://vonsim.github.io/docs/cpu/instructions/mov/ | OV} instruction.
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class MOVInstruction extends Instruction<"MOV"> {
   get operation() {

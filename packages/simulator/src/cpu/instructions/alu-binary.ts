@@ -17,6 +17,9 @@ import type { PartialFlags } from "../types";
  * - {@link https://vonsim.github.io/docs/cpu/instructions/xor/ | XOR}
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class ALUBinaryInstruction extends Instruction<
   "AND" | "OR" | "XOR" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP"

@@ -3,6 +3,16 @@ import { Byte } from "@vonsim/common/byte";
 import type { EventGenerator } from "../../../events";
 import { GenericPIO, PIOPort } from "../../modules/pio";
 
+/**
+ * PIO (for the switches and leds).
+ *
+ * @see
+ * - {@link GenericPIO}.
+ * - {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class PIO extends GenericPIO<"pio-switches-and-leds"> {
   *updatePort(port: PIOPort): EventGenerator {
     if (port === "A") {

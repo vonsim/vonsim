@@ -18,6 +18,17 @@ export type MemoryOperation =
       error: SimulatorError<"address-has-instruction"> | SimulatorError<"address-out-of-range">;
     };
 
+/**
+ * Memory.
+ * @see {@link https://vonsim.github.io/docs/}
+ *
+ * It has the memory itself ({@link Memory.#buffer}) and a set of reserved memory addresses.
+ * These reserved addresses are the ones that are used by the instructions, and they are
+ * stored to prevent the user from writing to them.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class Memory extends Component {
   static readonly SIZE = MemoryAddress.MAX_ADDRESS + 1;
 
@@ -34,6 +45,7 @@ export class Memory extends Component {
       this.#buffer = new Uint8Array(Memory.SIZE);
     }
 
+    // Load data directives into memory
     for (const directive of options.program.data) {
       let offset = directive.start.value;
       for (const value of directive.getValues()) {
@@ -42,6 +54,7 @@ export class Memory extends Component {
       }
     }
 
+    // Load instructions into memory
     this.#reservedMemory = new Set();
     for (const instruction of options.program.instructions) {
       this.#buffer.set(instruction.toBytes(), instruction.start.value);
@@ -55,6 +68,9 @@ export class Memory extends Component {
    * Reads a byte from memory at the specified address.
    * @param address The address to read the byte from.
    * @returns The byte at the specified address (always 8-bit) or null if there was an error.
+   *
+   * ---
+   * Called by the CPU.
    */
   *read(address: MemoryAddressLike): EventGenerator<Byte<8> | null> {
     address = Number(address);
@@ -78,6 +94,9 @@ export class Memory extends Component {
    * @param address The address to write the byte to.
    * @param value The byte to write.
    * @returns Whether the operation succedeed or not (boolean).
+   *
+   * ---
+   * Called by the CPU.
    */
   *write(address: MemoryAddressLike, value: Byte<8>): EventGenerator<boolean> {
     address = Number(address);

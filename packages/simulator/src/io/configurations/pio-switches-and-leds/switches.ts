@@ -6,6 +6,14 @@ import type { EventGenerator } from "../../../events";
 
 export type SwitchesEvent = { type: "switches:toggle"; index: number };
 
+/**
+ * Switches. These are only modified by the user, not the PIO.
+ *
+ * @see {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class Switches extends Component<"pio-switches-and-leds"> {
   #state: Byte<8>;
 
@@ -26,7 +34,10 @@ export class Switches extends Component<"pio-switches-and-leds"> {
   }
 
   /**
-   * Toggles the switch at the given index. Called by the outside.
+   * Toggles the switch at the given index.
+   *
+   * ---
+   * Called by the outside when the user clicks on a switch.
    */
   *toggle(index: number): EventGenerator {
     this.#state = this.#state.withBit(index, !this.#state.bit(index));

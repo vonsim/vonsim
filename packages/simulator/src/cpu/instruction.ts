@@ -17,6 +17,9 @@ import type { ByteRegister } from "./types";
  * that the CPU will execute.
  *
  * This abstract class also contains some helper methods for each implementation.
+ *
+ * ---
+ * These classes are: IMMUTABLE
  */
 export abstract class Instruction<TInstruction extends InstructionName> {
   constructor(protected readonly statement: InstructionStatement & { instruction: TInstruction }) {}

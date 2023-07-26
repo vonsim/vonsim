@@ -20,22 +20,19 @@ export type PICOperation =
   | { type: "pic:int.send"; number: Byte<8> };
 
 /**
- * Programmable Interrupt Controller.
- * Based on the Intel 8259A.
- * @see https://wiki.osdev.org/8259_PIC
+ * The Programmable Interrupt Controller (PIC) is a module that handles interrupts.
  *
- * The PIC has 8 interrupt lines, numbered 0 to 7. Each line can be connected to a device.
+ * Reserved addresses:
+ * - 20h: EOI
+ * - 21h: IMR
+ * - 22h: IRR
+ * - 23h: ISR
+ * - 24h to 2Bh: INT0 to INT7
  *
- * When a device wants to send an interrupt, it sets its corresponding line to 1.
- * The PIC will then check if the line is not masked (IMR) and if the ISR is zero.
- * If so, it will turn on the INTR line, which will be read by the CPU.
+ * @see {@link https://vonsim.github.io/docs/io/modules/pic/}.
  *
- * When the CPU reads the INTR line, it will respond with an INTA signal.
- * The PIC then will set the ISR to the highest priority interrupt.
- * Then, the CPU will send another INTA signal, and the PIC will send the interrupt number.
- * Once the CPU has handled the interrupt, it will send an EOI signal to the PIC.
- * Then, the PIC will turn off the INTR line. If there are more interrupts pending,
- * the INTR line will be turned on again.
+ * ---
+ * This class is: MUTABLE
  */
 export class PIC extends IOModule<PICRegister> {
   static readonly LINES = 8 satisfies ByteSize;
@@ -147,8 +144,11 @@ export class PIC extends IOModule<PICRegister> {
   }
 
   /**
-   * Sends an interrupt to the PIC. Called by any device that wants to send an interrupt.
+   * Sends an interrupt to the PIC.
    * @param line Which line the device is connected to.
+   *
+   * ---
+   * Called by any device that wants to send an interrupt.
    */
   *interrupt(line: InterruptLine): EventGenerator {
     if (line < 0 || line >= PIC.LINES) {
@@ -164,18 +164,24 @@ export class PIC extends IOModule<PICRegister> {
   }
 
   /**
-   * Checks if the INTR line is active. Called by the CPU.
+   * Checks if the INTR line is active.
    * @returns Whether the INTR line is active.
+   *
+   * ---
+   * Called by the CPU.
    */
   isINTRActive(): boolean {
     return !this.#ISR.isZero() || this.#getPending() !== null;
   }
 
   /**
-   * Handles requested interrupt. Called by the CPU.
+   * Handles requested interrupt.
    * This method handles the INTR / INTA handshake,
    * starting from (and including) the first INTA signal.
    * @returns The interrupt number (8-bits).
+   *
+   * ---
+   * Called by the CPU.
    */
   *handleINTR(): EventGenerator<Byte<8>> {
     yield { type: "cpu:inta.on" };

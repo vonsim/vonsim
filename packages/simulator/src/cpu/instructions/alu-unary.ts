@@ -13,6 +13,9 @@ import type { PartialFlags } from "../types";
  * - {@link https://vonsim.github.io/docs/cpu/instructions/dec/ | DEC}
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DEC"> {
   get operation() {

@@ -10,6 +10,9 @@ import { Instruction } from "../instruction";
  * - {@link https://vonsim.github.io/docs/cpu/instructions/popf/ | POPF}
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class StackInstruction extends Instruction<"PUSH" | "POP" | "PUSHF" | "POPF"> {
   *execute(computer: Computer): EventGenerator<boolean> {

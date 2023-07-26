@@ -8,6 +8,9 @@ import { Instruction } from "../instruction";
  * - {@link https://vonsim.github.io/docs/cpu/instructions/iret/ | IRET}
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class ReturnInstruction extends Instruction<"RET" | "IRET"> {
   *execute(computer: Computer): EventGenerator<boolean> {

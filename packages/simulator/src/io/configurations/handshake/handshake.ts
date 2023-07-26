@@ -16,6 +16,24 @@ export type HandshakeOperation =
   | { type: "handshake:register.update"; register: HandshakeRegister; value: Byte<8> }
   | { type: "handshake:interrupt" };
 
+/**
+ * The handshake is a module that allows the CPU to communicate with the printer.
+ * It's specifically designed to work with the printer.
+ *
+ * It sends the strobe signal automatically when the printer is ready and
+ * can send an interrupt to the CPU when the printer is free.
+ *
+ * Reserved addresses:
+ * - 40h: DATA
+ * - 41h: STATE
+ *
+ * Interrupt line: INT2
+ *
+ * @see {@link https://vonsim.github.io/docs/io/modules/handshake/}.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
   #DATA: Byte<8>;
   #STATE: Byte<8>;
@@ -34,7 +52,7 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
 
   /**
    * @returns Whether the interrupt is enabled or not (boolean).
-   * @see /docs/como-usar/dispositivos/handshake.md
+   * @see {@link https://vonsim.github.io/docs/io/modules/handshake/}.
    */
   get interrupts(): boolean {
     return this.#STATE.bit(7);
@@ -99,9 +117,12 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
   }
 
   /**
-   * Updates the value of the busy flag. Called by the printer.
+   * Updates the value of the busy flag.
    * If interrups are enabled, then an interrupt will be fired.
-   * @see /docs/como-usar/dispositivos/handshake.md
+   * @see {@link https://vonsim.github.io/docs/io/modules/handshake/}.
+   *
+   * ---
+   * Called by the printer when the buffer changes to/from full.
    */
   *updateBusy(busy: boolean): EventGenerator {
     this.#STATE = this.#STATE.withBit(0, busy);

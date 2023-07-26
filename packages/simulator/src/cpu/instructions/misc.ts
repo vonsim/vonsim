@@ -10,6 +10,9 @@ import { Instruction } from "../instruction";
  * - {@link https://vonsim.github.io/docs/cpu/instructions/hlt/ | HLT}
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class MiscInstruction extends Instruction<"CLI" | "STI" | "NOP" | "HLT"> {
   *execute(computer: Computer): EventGenerator<boolean> {

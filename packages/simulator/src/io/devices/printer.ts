@@ -16,6 +16,20 @@ export type PrinterEvent =
   | { type: "printer:paper.replace" }
   | { type: "printer:paper.print"; char: string };
 
+/**
+ * The printer is a device that prints characters to a paper at
+ * a constant rate. It has a buffer of 5 characters, and it can only
+ * print one at a time. When the buffer is full, the printer
+ * sends a busy signal to the module connected to it.
+ *
+ * This class is abstract because it can be connected to different modules,
+ * but they are share some common functionality.
+ *
+ * @see {@link https://vonsim.github.io/docs/io/devices/printer/}.
+ *
+ * ---
+ * These classes are: MUTABLE
+ */
 export abstract class GenericPrinter<
   TDevices extends "pio-printer" | "handshake",
 > extends Component<TDevices> {
@@ -40,16 +54,22 @@ export abstract class GenericPrinter<
   }
 
   /**
-   * Reads a character from the data bus. Called by the printer
+   * Reads a character from the data bus.
    * after a rising edge of the strobe.
    * @returns The character read from the data bus.
+   *
+   * ---
+   * Called by {@link GenericPrinter.setStrobe}.
    */
   abstract readData(): EventGenerator<Byte<8>>;
 
   /**
-   * Updates the value of the busy flag. Called by the printer
+   * Updates the value of the busy flag.
    * when the buffer changes to/from full.
    * @param busy Whether the buffer just became full or not.
+   *
+   * ---
+   * Called by {@link GenericPrinter.setStrobe} and {@link GenericPrinter.print}.
    */
   abstract updateBusy(busy: boolean): EventGenerator;
 
@@ -63,8 +83,10 @@ export abstract class GenericPrinter<
   /**
    * Updates the value of the strobe, and if it generates
    * a rising edge, reads a character from the data bus.
-   * Called by an IO module.
    * @param strobe The new value of the strobe.
+   *
+   * ---
+   * Called by the module connected to the printer.
    */
   *setStrobe(strobe: boolean): EventGenerator {
     const lastStrobe = this.#lastStrobe;
@@ -89,7 +111,10 @@ export abstract class GenericPrinter<
   }
 
   /**
-   * Replaces the paper. Called by the outside.
+   * Replaces the paper.
+   *
+   * ---
+   * Called by the outside when the user wants to clear the paper.
    */
   *clear(): EventGenerator {
     this.#paper = "";
@@ -97,8 +122,11 @@ export abstract class GenericPrinter<
   }
 
   /**
-   * Prints a character from the buffer. Called by the outside.
-   * @see /docs/como-usar/dispositivos/impresora.md
+   * Prints a character from the buffer.
+   * @see {@link https://vonsim.github.io/docs/io/devices/printer/}.
+   *
+   * ---
+   * Called by the outside when the printer should print a character.
    */
   *print(): EventGenerator {
     if (this.#buffer.length === 0) return;

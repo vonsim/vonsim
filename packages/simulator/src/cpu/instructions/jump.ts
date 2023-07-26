@@ -16,6 +16,9 @@ import { Instruction } from "../instruction";
  * - {@link https://vonsim.github.io/docs/cpu/instructions/call/ | CALL}
  *
  * @see {@link Instruction}
+ *
+ * ---
+ * This class is: IMMUTABLE
  */
 export class JumpInstruction extends Instruction<
   "JC" | "JNC" | "JZ" | "JNZ" | "JS" | "JNS" | "JO" | "JNO" | "JMP" | "CALL"

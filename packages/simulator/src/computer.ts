@@ -17,8 +17,22 @@ export type DevicesMap = {
 };
 
 export type DevicesConfiguration = Simplify<keyof DevicesMap>;
-export type Devicess = DevicesMap[DevicesConfiguration];
 
+/**
+ * The computer is the main class of the simulator.
+ * It behaves like a real computer, with a CPU, memory and I/O.
+ *
+ * It can be initialized with a program and one of multiple devices configurations,
+ * represented as a IOInterface. Those cannot be changed after initialization. Those are:
+ * - `pio-switches-and-leds`: {@link PIOSwitchesAndLeds}
+ * - `pio-printer`: {@link PIOPrinter}
+ * - `handshake`: {@link Handshake}
+ *
+ * All the devices are exposed as properties of the computer so other devices can interact with them.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class Computer<TDevices extends DevicesConfiguration = DevicesConfiguration> {
   readonly cpu: CPU;
   readonly memory: Memory;

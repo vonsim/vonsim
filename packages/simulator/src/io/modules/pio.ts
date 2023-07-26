@@ -16,6 +16,24 @@ export type PIOOperation =
   | { type: "pio:write.ok" }
   | { type: "pio:register.update"; register: PIORegister; value: Byte<8> };
 
+/**
+ * The Programmed Input/Output (PIO) is a module that provides a standard
+ * interface for devices to communicate with the computer.
+ *
+ * Reserved addresses:
+ * - 30h: PA
+ * - 31h: PB
+ * - 32h: CA
+ * - 33h: CB
+ *
+ * This class is abstract because it can be connected to different devices,
+ * but they are share some common functionality.
+ *
+ * @see {@link https://vonsim.github.io/docs/io/modules/pio/}.
+ *
+ * ---
+ * These classes are: MUTABLE
+ */
 export abstract class GenericPIO<
   TDevices extends "pio-switches-and-leds" | "pio-printer",
 > extends IOModule<PIORegister, TDevices> {
@@ -86,8 +104,10 @@ export abstract class GenericPIO<
 
   /**
    * Updates the state of the port, according to the device connected to it
-   * and the state of the PIO. Called by the device connected to the port and
-   * this.write().
+   * and the state of the PIO.
+   *
+   * ---
+   * Called by the device connected to the port and {@link GenericPIO.write}.
    */
   abstract updatePort(port: PIOPort): EventGenerator;
 
@@ -95,7 +115,10 @@ export abstract class GenericPIO<
    * @param port The port to check.
    * @param index Which line to check (0-7).
    * @returns Whether the line is input or output.
-   * @see /docs/como-usar/dispositivos/pio.md
+   * @see {@link https://vonsim.github.io/docs/io/modules/pio/}.
+   *
+   * ---
+   * Called by {@link GenericPIO.updatePort}.
    */
   line(port: PIOPort, index: number): "input" | "output" {
     // 0 = output, 1 = input

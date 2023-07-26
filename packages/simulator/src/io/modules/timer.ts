@@ -16,6 +16,21 @@ export type TimerOperation =
   | { type: "timer:register.update"; register: TimerRegister; value: Byte<8> }
   | { type: "timer:interrupt" };
 
+/**
+ * The timer is a module connected to a clock that interrupts the CPU
+ * when a certain amount of time has passed.
+ *
+ * Reserved addresses:
+ * - 10h: CONT
+ * - 11h: COMP
+ *
+ * Interrupt line: INT1
+ *
+ * @see {@link https://vonsim.github.io/docs/io/modules/timer/}.
+ *
+ * ---
+ * This class is: MUTABLE
+ */
 export class Timer extends IOModule<TimerRegister> {
   #CONT: Byte<8>;
   #COMP: Byte<8>;
@@ -57,7 +72,10 @@ export class Timer extends IOModule<TimerRegister> {
   }
 
   /**
-   * Ticks the timer. Called by the clock.
+   * Ticks the timer.
+   *
+   * ---
+   * Called by the clock.
    */
   *tick(): EventGenerator {
     const value = this.#CONT.unsigned === Byte.maxValue(8) ? Byte.zero(8) : this.#CONT.add(1);

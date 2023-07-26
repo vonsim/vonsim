@@ -28,6 +28,9 @@ import type {
  * which would be very inefficient.
  *
  * The function that executes the instructions is {@link CPU.run}.
+ *
+ * ---
+ * This class is: MUTABLE
  */
 export class CPU extends Component {
   #instructions: Map<number, InstructionType>;
