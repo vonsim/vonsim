@@ -29,5 +29,5 @@ In a similar fashion, there are other way to trigger events. There are the ones 
 
 The main difference with these functions exposes is that they return a generator. This generator can be used to iterate over the events (like `advanceCPU`), and when the sequence ends (which it always will, beacuse the scope of the actions performed by this actions is limited), the generator should be descarted. Another one should be created to trigger the next event.
 
-> **Warning**
+> [!IMPORTANT]\
 > Since it's a very interconnected package, all methods should have a note (in JSDoc) about what they do and from where it will be called. This will help to understand the flow of the program.
