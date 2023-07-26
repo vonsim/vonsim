@@ -17,7 +17,7 @@ import type { DataDirectiveValue } from "../value";
  * They can only have a single value. It can't be a string nor unassigned. Also, it needs a label.
  *
  * When a constant is created, a generic NumberExpression is assigned as its initial value.
- * Once all constants have been created and mapped to their labels (@see {@link GlobalStore}),
+ * Once all constants have been created and mapped to their labels (see {@link GlobalStore}),
  * we can start evaluating the constants and get their actual values.
  *
  * Each time the assembler encounters a constant, it will evaluate it.
@@ -26,7 +26,7 @@ import type { DataDirectiveValue } from "../value";
  * - The constant has not been evaluated yet (status = "not-processed"): evaluates the constant and returns the value
  * - The constant is currently being evaluated (status = "processing"): throw an error
  *
- * Since constants can reference other constants (see @see {@link NumberExpression}), we need to prevent circular references.
+ * Since constants can reference other constants (see {@link NumberExpression}), we need to prevent circular references.
  * This is why we need to keep track of the status of each constant.
  *
  * ---

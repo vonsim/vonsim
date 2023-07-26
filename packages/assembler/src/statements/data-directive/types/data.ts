@@ -39,7 +39,7 @@ type DataDirective = Exclude<AllDataDirectives, "EQU">;
  * When a data directive is created, generic NumberExpressions are assigned as its initial values.
  *
  * Since these expressions can reference other labels or constants, we need to wait until all
- * labels and constants have been created and mapped to their labels (@see {@link GlobalStore}).
+ * labels and constants have been created and mapped to their labels (see {@link GlobalStore}).
  * Then, we can start evaluating and get the actual values.
  *
  * ---
