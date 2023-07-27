@@ -1,6 +1,7 @@
 {
   "name": "vonsim",
   "license": "AGPL-3.0-only",
+  "type": "module",
   "scripts": {
     "format": "prettier -w .",
     "test": "turbo run test",

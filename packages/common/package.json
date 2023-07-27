@@ -1,6 +1,7 @@
 {
   "name": "@vonsim/common",
   "license": "AGPL-3.0-only",
+  "type": "module",
   "exports": {
     "./address": "./src/address.ts",
     "./ascii": "./src/ascii.ts",

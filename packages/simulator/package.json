@@ -1,6 +1,7 @@
 {
   "name": "@vonsim/simulator",
   "license": "AGPL-3.0-only",
+  "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./cpu": "./src/cpu/types.ts"
