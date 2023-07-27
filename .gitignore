@@ -4,7 +4,9 @@ logs
 pnpm-debug.log*
 
 node_modules
-.turbo
+.turbo/
+.astro/
+dist/
 
 # Editor directories and files
 .vscode/*

@@ -4,6 +4,5 @@ logs
 pnpm-debug.log*
 
 node_modules
-dist
 *.local
 .turbo
