@@ -98,5 +98,7 @@ export class Simulator {
   }
 }
 
-export type { ComputerOptions, SimulatorEvent };
+type ComputerState = ReturnType<Simulator["getComputerState"]>;
+
+export type { ComputerOptions, ComputerState, SimulatorEvent };
 export { SimulatorError };
