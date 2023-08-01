@@ -1,6 +1,5 @@
 import { MemoryAddress } from "@vonsim/common/address";
 import { AnyByte, Byte } from "@vonsim/common/byte";
-import type { Split } from "type-fest";
 
 import { Component, ComponentInit } from "../component";
 import { SimulatorError } from "../error";
@@ -11,10 +10,12 @@ import type {
   Flag,
   MARRegister,
   PartialFlags,
+  PhysicalRegister,
   Register,
   RegistersMap,
   WordRegister,
 } from "./types";
+import { parseRegister } from "./utils";
 
 /**
  * The CPU.
@@ -178,47 +179,21 @@ export class CPU extends Component {
   }
 
   toJSON() {
-    return Object.entries(this.#registers).reduce(
+    const registers = Object.entries(this.#registers).reduce(
       (acc, [reg, value]) => ({ ...acc, [reg]: value.toJSON() }),
-      {} as { [key in keyof RegistersMap]: number },
+      {} as { [key in PhysicalRegister]: number },
     );
+
+    return {
+      ...registers,
+      MAR: this.#MAR.toJSON(),
+      MBR: this.#MBR.toJSON(),
+    };
   }
 
   // #=========================================================================#
   // # Register methods                                                        #
   // #=========================================================================#
-
-  /**
-   * Given a register name, returns the physical register and the part of the register
-   * specified (low, high or none).
-   * @internal
-   * @param register
-   * @returns a tuple with the register name and the part of the register (low, high or none).
-   */
-  #parseRegister(register: Register): [reg: keyof RegistersMap, part: "low" | "high" | null] {
-    switch (register) {
-      case "AL":
-        return ["AX", "low"];
-      case "AH":
-        return ["AX", "high"];
-      case "BL":
-        return ["BX", "low"];
-      case "BH":
-        return ["BX", "high"];
-      case "CL":
-        return ["CX", "low"];
-      case "CH":
-        return ["CX", "high"];
-      case "DL":
-        return ["DX", "low"];
-      case "DH":
-        return ["DX", "high"];
-      default: {
-        const [reg, part] = register.split(".") as Split<typeof register, ".">;
-        return [reg, part === "l" ? "low" : part === "h" ? "high" : null];
-      }
-    }
-  }
 
   /**
    * Gets the value of the specified register.
@@ -228,7 +203,7 @@ export class CPU extends Component {
   getRegister(register: ByteRegister): Byte<8>;
   getRegister(register: WordRegister): Byte<16>;
   getRegister(register: Register): AnyByte {
-    const [reg, part] = this.#parseRegister(register);
+    const [reg, part] = parseRegister(register);
     if (part === "low") return this.#registers[reg].low;
     else if (part === "high") return this.#registers[reg].high;
     else return this.#registers[reg];
@@ -244,7 +219,7 @@ export class CPU extends Component {
   #setRegister(register: ByteRegister, value: Byte<8>): void;
   #setRegister(register: WordRegister, value: Byte<16>): void;
   #setRegister(register: Register, value: AnyByte): void {
-    const [reg, part] = this.#parseRegister(register);
+    const [reg, part] = parseRegister(register);
     if (part === null) {
       if (this.#registers[reg].size !== value.size) {
         throw new TypeError(

@@ -30,6 +30,7 @@ export type RegistersMap = {
   result: Byte<16>; // Result of ALU
   FLAGS: Byte<16>; // Flags register
 };
+export type PhysicalRegister = keyof RegistersMap;
 
 /**
  * Partial registers, like AL, AH, BL, BH, etc,

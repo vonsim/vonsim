@@ -1,9 +1,7 @@
-import type { Register as InputRegister } from "@vonsim/assembler";
-
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
-import type { ByteRegister } from "../types";
+import { splitRegister } from "../utils";
 
 /**
  * {@link https://vonsim.github.io/docs/cpu/instructions/mov/ | OV} instruction.
@@ -47,30 +45,6 @@ export class MOVInstruction extends Instruction<"MOV"> {
         const _exhaustiveCheck: never = mode;
         return _exhaustiveCheck;
       }
-    }
-  }
-
-  /**
-   * Given a register,
-   * - if it's a word register, returns a tuple with the low and high byte registers.
-   * - if it's a byte register, returns a tuple with the register and `null`.
-   */
-  #splitRegister(register: InputRegister): [low: ByteRegister, high: ByteRegister | null] {
-    switch (register) {
-      case "AX":
-        return ["AL", "AH"];
-      case "BX":
-        return ["BL", "BH"];
-      case "CX":
-        return ["CL", "CH"];
-      case "DX":
-        return ["DL", "DH"];
-      case "SP":
-        return ["SP.l", "SP.h"];
-
-      default:
-        // It's a byte register
-        return [register, null];
     }
   }
 
@@ -161,7 +135,7 @@ export class MOVInstruction extends Instruction<"MOV"> {
       }
 
       case "mem<-reg": {
-        const [low, high] = this.#splitRegister(src);
+        const [low, high] = splitRegister(src);
         // Write low byte
         yield* computer.cpu.setMAR("ri");
         yield* computer.cpu.setMBR(low);
