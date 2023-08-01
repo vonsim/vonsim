@@ -1,15 +1,25 @@
 import { assemble } from "@vonsim/assembler";
 import { Byte } from "@vonsim/common/byte";
-import { Simulator, type SimulatorError } from "@vonsim/simulator";
+import { ComputerState, Simulator, type SimulatorError } from "@vonsim/simulator";
+import { atom } from "jotai";
 import { toast } from "sonner";
 
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
-import { atom, store } from "@/lib/jotai";
+import { store } from "@/lib/jotai";
 import { getDataOnLoad, getDevices, getLanguage, getSpeeds } from "@/lib/settings";
-import { handleEvent } from "@/simulator/components";
+import { useAnimationRefs } from "@/simulator/computer/animations";
+import { resetCPUState } from "@/simulator/computer/cpu/state";
+import { DATAAtom, STATEAtom } from "@/simulator/computer/unfinished/handshake";
+import { ledsAtom } from "@/simulator/computer/unfinished/leds";
+import { memoryAtom } from "@/simulator/computer/unfinished/memory";
+import { IMRAtom, IRRAtom, ISRAtom, linesAtom } from "@/simulator/computer/unfinished/pic";
+import { CAAtom, CBAtom, PAAtom, PBAtom } from "@/simulator/computer/unfinished/pio";
+import { bufferAtom, paperAtom } from "@/simulator/computer/unfinished/printer";
+import { switchesAtom } from "@/simulator/computer/unfinished/switches";
+import { COMPAtom, CONTAtom } from "@/simulator/computer/unfinished/timer";
+import { handleEvent } from "@/simulator/handle-event";
 import { notifyError } from "@/simulator/helpers";
-import { resetState } from "@/simulator/reset";
 
 export const simulator = new Simulator();
 
@@ -38,6 +48,47 @@ function assembleError() {
   toast.error(translate(getLanguage(), "messages.assemble-error"));
 }
 
+function resetState(state: ComputerState) {
+  resetCPUState(state);
+  store.set(
+    memoryAtom,
+    state.memory.map(byte => Byte.fromUnsigned(byte, 8)),
+  );
+  store.set(IMRAtom, Byte.fromUnsigned(state.io.pic.IMR, 8));
+  store.set(IRRAtom, Byte.fromUnsigned(state.io.pic.IRR, 8));
+  store.set(ISRAtom, Byte.fromUnsigned(state.io.pic.ISR, 8));
+  store.set(
+    linesAtom,
+    state.io.pic.lines.map(line => Byte.fromUnsigned(line, 8)),
+  );
+  store.set(CONTAtom, Byte.fromUnsigned(state.io.timer.CONT, 8));
+  store.set(COMPAtom, Byte.fromUnsigned(state.io.timer.COMP, 8));
+
+  if ("handshake" in state.io) {
+    store.set(DATAAtom, Byte.fromUnsigned(state.io.handshake.DATA, 8));
+    store.set(STATEAtom, Byte.fromUnsigned(state.io.handshake.STATE, 8));
+  }
+  if ("leds" in state.io) {
+    store.set(ledsAtom, Byte.fromUnsigned(state.io.leds, 8));
+  }
+  if ("pio" in state.io) {
+    store.set(PAAtom, Byte.fromUnsigned(state.io.pio.PA, 8));
+    store.set(PBAtom, Byte.fromUnsigned(state.io.pio.PB, 8));
+    store.set(CAAtom, Byte.fromUnsigned(state.io.pio.CA, 8));
+    store.set(CBAtom, Byte.fromUnsigned(state.io.pio.CB, 8));
+  }
+  if ("printer" in state.io) {
+    store.set(
+      bufferAtom,
+      state.io.printer.buffer.map(char => Byte.fromUnsigned(char, 8)),
+    );
+    store.set(paperAtom, state.io.printer.paper);
+  }
+  if ("switches" in state.io) {
+    store.set(switchesAtom, Byte.fromUnsigned(state.io.switches, 8));
+  }
+}
+
 type Action =
   | [action: "run"]
   | [action: "step"]
@@ -48,7 +99,7 @@ type Action =
   | [action: "console.clean"]
   | [action: "printer.clean"];
 
-export function dispatch(...args: Action) {
+export async function dispatch(...args: Action) {
   const action = args[0];
   const state = getState();
 
@@ -84,7 +135,7 @@ export function dispatch(...args: Action) {
           devices: getDevices(),
         });
         resetSimulatorTimers();
-        resetState(simulator);
+        resetState(simulator.getComputerState());
 
         // Highlight the ORG 2000h line
         const initial = result.instructions.find(i => i.start.value === 0x2000);
@@ -220,7 +271,7 @@ export function dispatch(...args: Action) {
   }
 }
 
-// Legacy runner, will be removed in the future
+// DEBUG: Legacy runner, will be removed in the future
 
 let currentTime = 0;
 let cpuNextTick = 0;
@@ -288,4 +339,53 @@ function runSimulator(ms: number) {
   }
 
   currentTime += ms;
+}
+
+// DEBUG: Remove later
+export function useNewStart() {
+  const refs = useAnimationRefs();
+
+  return async () => {
+    const state = getState();
+    if (state.type !== "stopped" && state.type !== "paused") {
+      assembleError();
+      return;
+    }
+
+    if (state.type === "stopped") {
+      if (!window.codemirror) return;
+
+      const code = window.codemirror.state.doc.toString();
+      const result = assemble(code);
+
+      if (!result.success) {
+        assembleError();
+        return;
+      }
+
+      setReadOnly(true);
+
+      // Reset the simulator
+      simulator.loadProgram({
+        program: result,
+        data: getDataOnLoad(),
+        devices: getDevices(),
+      });
+      resetSimulatorTimers();
+      resetState(simulator.getComputerState());
+
+      // Highlight the ORG 2000h line
+      const initial = result.instructions.find(i => i.start.value === 0x2000);
+      if (initial) highlightLine(initial.position.start);
+    }
+
+    store.set(simulatorStateAtom, { type: "running" });
+
+    let event = simulator.advanceCPU();
+    while (true) {
+      await handleEvent(event, refs);
+      if (getState().type !== "running" && getState().type !== "paused") return;
+      event = simulator.advanceCPU();
+    }
+  };
 }

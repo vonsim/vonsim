@@ -7,7 +7,7 @@ import { Card } from "@/components/common/Card";
 import { CellView } from "@/components/common/CellView";
 import { Table } from "@/components/common/Table";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtomValue } from "@/lib/jotai";
+import { useAtomValue } from "jotai";
 import { cn } from "@/lib/utils";
 import { memoryAtom } from "@/simulator/components/memory";
 

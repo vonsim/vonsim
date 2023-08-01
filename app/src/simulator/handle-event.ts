@@ -1,20 +1,22 @@
 import { IOAddress, MemoryAddress } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 
-import { handleChipSelectEvent } from "@/simulator/components/chip-select";
-import { handleClockEvent } from "@/simulator/components/clock";
-import { handleConsoleEvent } from "@/simulator/components/console";
-import { handleCPUEvent } from "@/simulator/components/cpu";
-import { handleF10Event } from "@/simulator/components/f10";
-import { handleHandshakeEvent } from "@/simulator/components/handshake";
-import { handleLedsEvent } from "@/simulator/components/leds";
-import { handleMemoryEvent } from "@/simulator/components/memory";
-import { handlePICEvent } from "@/simulator/components/pic";
-import { handlePIOEvent } from "@/simulator/components/pio";
-import { handlePrinterEvent } from "@/simulator/components/printer";
-import { handleSwitchesEvent } from "@/simulator/components/switches";
-import { handleTimerEvent } from "@/simulator/components/timer";
-import { SimulatorEvent } from "@/simulator/helpers";
+import type { AnimationRefs } from "@/simulator/computer/animations";
+
+import { handleCPUEvent } from "./computer/cpu/events";
+import { handleChipSelectEvent } from "./computer/unfinished/chip-select";
+import { handleClockEvent } from "./computer/unfinished/clock";
+import { handleConsoleEvent } from "./computer/unfinished/console";
+import { handleF10Event } from "./computer/unfinished/f10";
+import { handleHandshakeEvent } from "./computer/unfinished/handshake";
+import { handleLedsEvent } from "./computer/unfinished/leds";
+import { handleMemoryEvent } from "./computer/unfinished/memory";
+import { handlePICEvent } from "./computer/unfinished/pic";
+import { handlePIOEvent } from "./computer/unfinished/pio";
+import { handlePrinterEvent } from "./computer/unfinished/printer";
+import { handleSwitchesEvent } from "./computer/unfinished/switches";
+import { handleTimerEvent } from "./computer/unfinished/timer";
+import type { SimulatorEvent } from "./helpers";
 
 const debugColors = {
   clock: "#65a30d",
@@ -32,7 +34,7 @@ const debugColors = {
   timer: "#2563eb",
 };
 
-export function handleEvent(event: SimulatorEvent) {
+export async function handleEvent(event: SimulatorEvent, refs: AnimationRefs) {
   const [ns, name] = event.type.split(":");
 
   console.group(
@@ -78,7 +80,7 @@ export function handleEvent(event: SimulatorEvent) {
 
   if (ns === "clock") return handleClockEvent(event as SimulatorEvent<"clock:">);
   if (ns === "console") return handleConsoleEvent(event as SimulatorEvent<"console:">);
-  if (ns === "cpu") return handleCPUEvent(event as SimulatorEvent<"cpu:">);
+  if (ns === "cpu") return await handleCPUEvent(event as SimulatorEvent<"cpu:">, refs);
   if (ns === "cs") return handleChipSelectEvent(event as SimulatorEvent<"cs:">);
   if (ns === "f10") return handleF10Event(event as SimulatorEvent<"f10:">);
   if (ns === "handshake") return handleHandshakeEvent(event as SimulatorEvent<"handshake:">);

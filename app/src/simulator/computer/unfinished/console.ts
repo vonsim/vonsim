@@ -1,4 +1,6 @@
-import { atom, store } from "@/lib/jotai";
+import { atom } from "jotai";
+
+import { store } from "@/lib/jotai";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { simulator, simulatorStateAtom } from "@/simulator/state";
 

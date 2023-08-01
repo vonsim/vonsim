@@ -1,8 +1,9 @@
+import { useAtom, useAtomValue } from "jotai";
+
 import { Card } from "@/components/common/Card";
 import { FrequencyPicker } from "@/components/common/FrequencyPicker";
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtom, useAtomValue } from "@/lib/jotai";
 import { speedsAtom } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 import { bufferAtom, paperAtom } from "@/simulator/components/printer";

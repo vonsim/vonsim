@@ -1,8 +1,9 @@
 import { MemoryAddress } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
+import { atom } from "jotai";
 
-import { atom, store } from "@/lib/jotai";
-import { MBRAtom } from "@/simulator/components/bus";
+import { store } from "@/lib/jotai";
+import { MBRAtom } from "@/simulator/computer/cpu/state";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish } from "@/simulator/state";
 

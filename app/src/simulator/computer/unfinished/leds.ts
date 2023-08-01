@@ -1,6 +1,7 @@
 import { Byte } from "@vonsim/common/byte";
+import { atom } from "jotai";
 
-import { atom, store } from "@/lib/jotai";
+import { store } from "@/lib/jotai";
 import type { SimulatorEvent } from "@/simulator/helpers";
 
 export const ledsAtom = atom(Byte.zero(8));

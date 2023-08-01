@@ -1,9 +1,9 @@
 import { displayCharacter } from "@vonsim/common/ascii";
+import { useAtomValue } from "jotai";
 
 import { Card } from "@/components/common/Card";
 import { Table } from "@/components/common/Table";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtomValue } from "@/lib/jotai";
 import { DATAAtom, STATEAtom } from "@/simulator/components/handshake";
 
 export function Handshake({ className }: { className?: string }) {

@@ -9,7 +9,3 @@ export const store = createStore();
 export function JotaiProvider(props: React.PropsWithChildren) {
   return <Provider store={store}>{props.children}</Provider>;
 }
-
-export type { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
-export { atom, useAtom, useAtomValue } from "jotai";
-export { atomWithStorage } from "jotai/utils";

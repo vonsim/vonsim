@@ -1,4 +1,5 @@
-import { useAtomValue } from "@/lib/jotai";
+import { useAtomValue } from "jotai";
+
 import { dispatch, simulatorStateAtom } from "@/simulator/state";
 
 export function useSimulator() {

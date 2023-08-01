@@ -4,9 +4,11 @@ import { useEvent } from "react-use";
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
 import { cn } from "@/lib/utils";
+import { useNewStart } from "@/simulator/state";
 
 export function Controls() {
   const translate = useTranslate();
+  const start = useNewStart();
 
   const [status, dispatch] = useSimulator();
 
@@ -63,6 +65,8 @@ export function Controls() {
           </Button>
         </>
       )}
+
+      <button onClick={start}>test</button>
     </div>
   );
 }
@@ -76,7 +80,7 @@ function Button({
     <button
       {...props}
       className="
-        flex h-full items-center justify-center border-b border-sky-400 p-2 transition hover:bg-slate-500/30
+        flex h-full items-center justify-center border-b border-lime-500 p-2 transition hover:bg-slate-500/30
         disabled:border-slate-500 disabled:text-slate-500 disabled:hover:bg-transparent
       "
     >

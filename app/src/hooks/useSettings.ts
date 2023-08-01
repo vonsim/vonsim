@@ -1,4 +1,5 @@
-import { useAtomValue } from "@/lib/jotai";
+import { useAtomValue } from "jotai";
+
 import { dataOnLoadAtom, dataRepresentationAtom, devicesAtom, languageAtom } from "@/lib/settings";
 
 export const useLanguage = () => useAtomValue(languageAtom);

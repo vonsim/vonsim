@@ -1,9 +1,9 @@
+import { useAtomValue } from "jotai";
 import { useBoolean } from "react-use";
 
 import { Card } from "@/components/common/Card";
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtomValue } from "@/lib/jotai";
 import { consoleAtom } from "@/simulator/components/console";
 
 import styles from "./Console.module.css";

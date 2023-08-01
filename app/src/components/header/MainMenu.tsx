@@ -1,7 +1,8 @@
+import { useAtom } from "jotai";
+
 import { Menu } from "@/components/common/Menu";
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtom } from "@/lib/jotai";
 import { dataOnLoadAtom, dataRepresentationAtom, devicesAtom, languageAtom } from "@/lib/settings";
 
 export function MainMenu() {

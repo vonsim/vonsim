@@ -1,6 +1,7 @@
+import "./styles.css";
+
 import { history } from "@codemirror/commands";
 import { indentOnInput } from "@codemirror/language";
-import { lintGutter } from "@codemirror/lint";
 import { EditorSelection, EditorState } from "@codemirror/state";
 import {
   drawSelection,
@@ -14,10 +15,9 @@ import {
   showPanel,
 } from "@codemirror/view";
 import { vscodeKeymap } from "@replit/codemirror-vscode-keymap";
+import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
-
-import { cn } from "@/lib/utils";
 
 import { lintSummaryPanel } from "./lint";
 import { lineHighlightField, readOnly } from "./methods";
@@ -80,7 +80,6 @@ export function Editor({ className }: { className?: string }) {
             },
           ]),
           VonSim(),
-          lintGutter(),
           showPanel.of(lintSummaryPanel),
         ],
       }),
@@ -111,5 +110,5 @@ export function Editor({ className }: { className?: string }) {
     },
   );
 
-  return <div ref={ref} className={cn("h-full overflow-auto font-mono", className)} />;
+  return <div ref={ref} className={clsx("overflow-auto font-mono", className)} />;
 }

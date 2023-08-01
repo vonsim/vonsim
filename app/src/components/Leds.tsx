@@ -1,6 +1,7 @@
+import { useAtomValue } from "jotai";
+
 import { Card } from "@/components/common/Card";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtomValue } from "@/lib/jotai";
 import { cn } from "@/lib/utils";
 import { ledsAtom } from "@/simulator/components/leds";
 

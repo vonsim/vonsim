@@ -28,7 +28,7 @@ export function Header() {
   );
 
   return (
-    <header className="border-b border-slate-500/30 bg-slate-800 text-sm text-white">
+    <header className="text-sm text-white">
       <div className="flex items-center lg:h-full">
         <div className="flex select-none items-center justify-center px-4 py-2">
           <span
@@ -39,7 +39,7 @@ export function Header() {
             {...easterEggEvents}
           />
           <h1 className="text-xl font-bold">
-            Von<span className="text-sky-400">Sim</span>
+            Von<span className="text-lime-500">Sim</span>
           </h1>
         </div>
 

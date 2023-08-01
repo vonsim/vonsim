@@ -1,22 +1,31 @@
 @font-face {
-  font-family: "Inter var";
+  font-family: "Chivo";
   font-style: normal;
   font-weight: 100 900;
-  src: url("/fonts/Inter-roman.var.woff2?v=3.19") format("woff2");
+  src: url("/fonts/chivo/Chivo[wght].ttf") format("ttf-variations");
   font-named-instance: "Regular";
 }
 
 @font-face {
-  font-family: "Inter var";
+  font-family: "Chivo";
   font-style: italic;
   font-weight: 100 900;
-  src: url("/fonts/Inter-italic.var.woff2?v=3.19") format("woff2");
+  src: url("/fonts/chivo/Chivo-Italic[wght].ttf") format("ttf-variations");
   font-named-instance: "Italic";
 }
 
 @font-face {
-  font-family: "Fira Code VF";
+  font-family: "JetBrains Mono";
   font-style: normal;
-  font-weight: 300 700;
-  src: url("/fonts/FiraCode-VF.woff2?v=6.2") format("woff2-variations");
+  font-weight: 100 800;
+  src: url("/fonts/jetbrains-mono/JetBrainsMono[wght].woff2") format("woff2-variations");
+  font-named-instance: "Regular";
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: italic;
+  font-weight: 100 800;
+  src: url("/fonts/jetbrains-mono/JetBrainsMono-Italic[wght].woff2") format("woff2-variations");
+  font-named-instance: "Italic";
 }

@@ -1,9 +1,9 @@
 import { Switch } from "@headlessui/react";
+import { useAtomValue } from "jotai";
 
 import { Card } from "@/components/common/Card";
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtomValue } from "@/lib/jotai";
 import { cn } from "@/lib/utils";
 import { switchesAtom } from "@/simulator/components/switches";
 

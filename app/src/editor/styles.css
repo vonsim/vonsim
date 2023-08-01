@@ -1,0 +1,64 @@
+.cm-editor {
+  @apply h-full w-full bg-stone-800 text-white;
+
+  .cm-scroller {
+    @apply overflow-auto font-mono text-sm scrollbar-stone-700;
+  }
+
+  .cm-activeLine {
+    @apply bg-stone-700/50;
+  }
+
+  .cm-content {
+    @apply caret-white;
+  }
+
+  &.cm-focused {
+    @apply !outline-none;
+  }
+
+  &.cm-focused .cm-cursor {
+    @apply border-l-stone-50;
+  }
+
+  &.cm-focused .cm-selectionBackground,
+  ::selection {
+    @apply bg-stone-700;
+  }
+
+  &:not(.cm-focused) .cm-selectionBackground {
+    @apply bg-stone-700/50;
+  }
+
+  .cm-gutters {
+    @apply border-none bg-stone-800;
+  }
+
+  .cm-gutterElement {
+    @apply text-stone-400 !px-2 font-thin;
+  }
+
+  .cm-activeLineGutter {
+    @apply border-none bg-stone-500/50 text-stone-200 font-normal;
+  }
+
+  .cm-tooltip {
+    @apply border border-stone-600 bg-stone-800 text-sm text-stone-50;
+  }
+
+  .cm-diagnostic-error {
+    @apply border-l-4 border-red-500;
+  }
+
+  .cm-lintRange-error {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="3"><path d="m0 2.5 l2 -1.5 l1 0 l2 1.5 l1 0" stroke="%23ef4444" fill="none" stroke-width=".7"/></svg>');
+  }
+
+  .cm-lintPoint-error:after {
+    @apply border-b-red-500;
+  }
+
+  .cm-panels {
+    @apply border-none;
+  }
+}

@@ -9,13 +9,8 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Inter var"', ...defaultTheme.fontFamily.sans],
-        mono: [
-          ['"Fira Code VF"', ...defaultTheme.fontFamily.mono],
-          {
-            fontFeatureSettings: '"cv11"',
-          },
-        ],
+        sans: ["Chivo", ...defaultTheme.fontFamily.sans],
+        mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
       },
 
       colors: {

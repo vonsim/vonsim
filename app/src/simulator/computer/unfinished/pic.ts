@@ -1,7 +1,8 @@
 import { Byte } from "@vonsim/common/byte";
+import { atom } from "jotai";
 
-import { atom, store } from "@/lib/jotai";
-import { MBRAtom } from "@/simulator/components/bus";
+import { store } from "@/lib/jotai";
+import { MBRAtom } from "@/simulator/computer/cpu/state";
 import type { SimulatorEvent } from "@/simulator/helpers";
 
 export const IMRAtom = atom(Byte.fromUnsigned(0xff, 8));

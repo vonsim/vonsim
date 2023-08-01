@@ -1,7 +1,8 @@
 import type { Language } from "@vonsim/common/i18n";
 import type { ComputerOptions } from "@vonsim/simulator";
+import { atomWithStorage } from "jotai/utils";
 
-import { atomWithStorage, store } from "@/lib/jotai";
+import { store } from "@/lib/jotai";
 
 function getDefaultLanguage(): Language {
   const langs: Language[] = ["en", "es"];

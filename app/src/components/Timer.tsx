@@ -1,7 +1,8 @@
+import { useAtomValue } from "jotai";
+
 import { Card } from "@/components/common/Card";
 import { Table } from "@/components/common/Table";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtomValue } from "@/lib/jotai";
 import { COMPAtom, CONTAtom } from "@/simulator/components/timer";
 
 export function Timer({ className }: { className?: string }) {
