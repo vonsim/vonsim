@@ -3,9 +3,9 @@ import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
-import { useAnimationRefs } from "@/simulator/computer/animations";
+import { colors } from "@/lib/tailwind";
+import { animationRefs } from "@/simulator/computer/references";
 
-import { highlightedPathAtom } from "./bus";
 import { registerAtoms } from "./state";
 
 export function CPU({ className }: { className?: string }) {
@@ -47,15 +47,10 @@ export function CPU({ className }: { className?: string }) {
 }
 
 function Bus() {
-  const path = useAtomValue(highlightedPathAtom);
-
-  const refs = useAnimationRefs();
-  const { strokeDashoffset } = useSpring({
-    ref: refs.cpu.highlightPath,
-    from: { strokeDashoffset: 1 },
-    to: { strokeDashoffset: 0 },
-    immediate: false,
-    config: { duration: 1500, easing: easings.easeInOutSine },
+  const { strokeDashoffset, opacity, path } = useSpring({
+    ref: animationRefs.cpu.highlightPath,
+    from: { strokeDashoffset: 1, opacity: 1, path: "" },
+    config: { easing: easings.easeInOutSine },
   });
 
   return (
@@ -105,6 +100,7 @@ function Bus() {
         pathLength={1}
         strokeDasharray={1}
         strokeDashoffset={strokeDashoffset}
+        style={{ opacity }}
       />
     </svg>
   );
@@ -123,13 +119,10 @@ function Reg({
   const low = reg.low;
   const high = reg.is16bits() ? reg.high : null;
 
-  const refs = useAnimationRefs();
   const style = useSpring({
-    ref: refs.cpu[name],
-    from: { backgroundColor: "rgb(41 37 36)" }, // theme(colors.stone.800)
-    to: { backgroundColor: "rgb(132 204 22)" }, // theme(colors.lime.500)
-    immediate: false,
-    config: { duration: 250, easing: easings.easeOutQuart },
+    ref: animationRefs.cpu[name],
+    from: { backgroundColor: colors.stone[800] },
+    config: { easing: easings.easeOutQuart },
   });
 
   return (
@@ -160,13 +153,11 @@ function ALU() {
   const IF = FLAGS.bit(9);
   const OF = FLAGS.bit(11);
 
-  const refs = useAnimationRefs();
   const style = useSpring({
-    ref: refs.cpu.FLAGS,
+    ref: animationRefs.cpu.FLAGS,
     from: { backgroundColor: "rgb(41 37 36)" }, // theme(colors.stone.800)
     to: { backgroundColor: "rgb(132 204 22)" }, // theme(colors.lime.500)
-    immediate: false,
-    config: { duration: 250, easing: easings.easeOutQuart },
+    config: { easing: easings.easeOutQuart },
   });
 
   return (

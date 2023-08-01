@@ -1,18 +1,23 @@
+import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import { parseRegister } from "@vonsim/simulator/cpu/utils";
 
 import { highlightLine } from "@/editor/methods";
 import { store } from "@/lib/jotai";
-import type { AnimationRefs } from "@/simulator/computer/animations";
-import { highlightAddressPath, highlightDataPath } from "@/simulator/computer/cpu/bus";
+import { getSpeeds } from "@/lib/settings";
+import { colors } from "@/lib/tailwind";
+import {
+  AddressRegister,
+  DataRegister,
+  generateAddressPath,
+  generateDataPath,
+} from "@/simulator/computer/cpu/bus";
+import { animationRefs } from "@/simulator/computer/references";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish, startDebugger } from "@/simulator/state";
 
 import { aluOperationAtom, cycleAtom, MARAtom, MBRAtom, registerAtoms } from "./state";
 
-export async function handleCPUEvent(
-  event: SimulatorEvent<"cpu:">,
-  refs: AnimationRefs,
-): Promise<void> {
+export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<void> {
   switch (event.type) {
     case "cpu:alu.execute": {
       store.set(aluOperationAtom, event.operation);
@@ -88,60 +93,48 @@ export async function handleCPUEvent(
       return;
 
     case "cpu:mar.set": {
-      highlightAddressPath(event.register);
-      await Promise.all(refs.cpu.highlightPath.start());
-      await Promise.all(refs.cpu.MAR.start());
+      await drawAddressPath(event.register);
+      await activateRegister("MAR");
       store.set(MARAtom, store.get(registerAtoms[event.register]));
-      await Promise.all(refs.cpu.MAR.start({ reverse: true }));
-      await Promise.all(refs.cpu.highlightPath.start({ reverse: true, config: { duration: 0 } }));
+      await Promise.all([deactivateRegister("MAR"), resetPath()]);
       return;
     }
 
     case "cpu:mbr.get": {
       const [reg] = parseRegister(event.register);
-      highlightDataPath("MBR", reg);
-      await Promise.all(refs.cpu.highlightPath.start());
-      await Promise.all(refs.cpu[reg].start());
+      await drawDataPath("MBR", reg);
+      await activateRegister(reg);
       store.set(registerAtoms[event.register], store.get(MBRAtom));
-      await Promise.all(refs.cpu[reg].start({ reverse: true }));
-      await Promise.all(refs.cpu.highlightPath.start({ reverse: true, config: { duration: 0 } }));
+      await Promise.all([deactivateRegister(reg), resetPath()]);
       return;
     }
 
     case "cpu:mbr.set": {
       const [reg] = parseRegister(event.register);
-      highlightDataPath(reg, "MBR");
-      await Promise.all(refs.cpu.highlightPath.start());
-      await Promise.all(refs.cpu.MBR.start());
+      await drawDataPath(reg, "MBR");
+      await activateRegister("MBR");
       store.set(MBRAtom, store.get(registerAtoms[event.register]));
-      await Promise.all(refs.cpu.MBR.start({ reverse: true }));
-      await Promise.all(refs.cpu.highlightPath.start({ reverse: true, config: { duration: 0 } }));
+      await Promise.all([deactivateRegister("MBR"), resetPath()]);
       return;
     }
 
     case "cpu:register.copy": {
       const [src] = parseRegister(event.src);
       const [dest] = parseRegister(event.dest);
-      if (src !== dest) {
-        highlightDataPath(src, dest);
-        await Promise.all(refs.cpu.highlightPath.start());
-      }
-      await Promise.all(refs.cpu[dest].start());
+      if (src !== dest) await drawDataPath(src, dest);
+      await activateRegister(dest);
       // @ts-expect-error Registers types always match, see CPUMicroOperation
       store.set(registerAtoms[event.dest], store.get(registerAtoms[event.src]));
-      await Promise.all(refs.cpu[dest].start({ reverse: true }));
-      if (src !== dest) {
-        await Promise.all(refs.cpu.highlightPath.start({ reverse: true, config: { duration: 0 } }));
-      }
+      await Promise.all([deactivateRegister(dest), src !== dest && resetPath()]);
       return;
     }
 
     case "cpu:register.update": {
       const [reg] = parseRegister(event.register);
-      await Promise.all(refs.cpu[reg].start());
+      await activateRegister(reg);
       // @ts-expect-error The value type and the register type always match, see CPUMicroOperation
       store.set(registerAtoms[event.register], event.value);
-      await Promise.all(refs.cpu[reg].start({ reverse: true }));
+      await deactivateRegister(reg);
       return;
     }
 
@@ -150,4 +143,58 @@ export async function handleCPUEvent(
       return _exhaustiveCheck;
     }
   }
+}
+
+async function drawAddressPath(from: AddressRegister) {
+  const path = generateAddressPath(from);
+  animationRefs.cpu.highlightPath.set({ strokeDashoffset: 1, opacity: 1, path });
+  const duration = getSpeeds().executionUnit * 5;
+  await Promise.all(
+    animationRefs.cpu.highlightPath.start({
+      to: { strokeDashoffset: 0 },
+      config: { duration },
+    }),
+  );
+}
+
+async function drawDataPath(from: DataRegister, to: DataRegister) {
+  const path = generateDataPath(from, to);
+  animationRefs.cpu.highlightPath.set({ strokeDashoffset: 1, opacity: 1, path });
+  const duration = getSpeeds().executionUnit * 5;
+  await Promise.all(
+    animationRefs.cpu.highlightPath.start({
+      strokeDashoffset: 0,
+      config: { duration },
+    }),
+  );
+}
+
+async function resetPath() {
+  const duration = getSpeeds().executionUnit * 1;
+  await Promise.all(
+    animationRefs.cpu.highlightPath.start({
+      opacity: 0,
+      config: { duration },
+    }),
+  );
+}
+
+async function activateRegister(reg: PhysicalRegister | "MAR" | "MBR") {
+  const duration = getSpeeds().executionUnit * 1;
+  await Promise.all(
+    animationRefs.cpu[reg].start({
+      backgroundColor: colors.lime[500],
+      config: { duration },
+    }),
+  );
+}
+
+async function deactivateRegister(reg: PhysicalRegister | "MAR" | "MBR") {
+  const duration = getSpeeds().executionUnit * 1;
+  await Promise.all(
+    animationRefs.cpu[reg].start({
+      backgroundColor: colors.stone[800],
+      config: { duration },
+    }),
+  );
 }

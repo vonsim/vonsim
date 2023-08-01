@@ -8,7 +8,6 @@ import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
 import { getDataOnLoad, getDevices, getLanguage, getSpeeds } from "@/lib/settings";
-import { useAnimationRefs } from "@/simulator/computer/animations";
 import { resetCPUState } from "@/simulator/computer/cpu/state";
 import { DATAAtom, STATEAtom } from "@/simulator/computer/unfinished/handshake";
 import { ledsAtom } from "@/simulator/computer/unfinished/leds";
@@ -343,8 +342,6 @@ function runSimulator(ms: number) {
 
 // DEBUG: Remove later
 export function useNewStart() {
-  const refs = useAnimationRefs();
-
   return async () => {
     const state = getState();
     if (state.type !== "stopped" && state.type !== "paused") {
@@ -383,7 +380,7 @@ export function useNewStart() {
 
     let event = simulator.advanceCPU();
     while (true) {
-      await handleEvent(event, refs);
+      await handleEvent(event);
       if (getState().type !== "running" && getState().type !== "paused") return;
       event = simulator.advanceCPU();
     }

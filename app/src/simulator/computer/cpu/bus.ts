@@ -14,20 +14,12 @@
  * very small "address bus". This is because of how they are represented
  * visually in the diagram, but they are similar.
  *
- * After calling the function, it sets the `highlightedPathAtom`, which
- * alters a path that can be animated.
- *
  * @see {@link https://graphology.github.io/}
  */
 
 import type { MARRegister, PhysicalRegister } from "@vonsim/simulator/cpu";
 import { UndirectedGraph } from "graphology";
 import { bidirectional } from "graphology-shortest-path/unweighted";
-import { atom } from "jotai";
-
-import { store } from "@/lib/jotai";
-
-export const highlightedPathAtom = atom("");
 
 type Node = { position: [x: number, y: number] };
 
@@ -103,15 +95,15 @@ dataBus.addUndirectedEdge("left join", "right join");
 dataBus.addUndirectedEdge("right join", "operands mbr join");
 dataBus.addUndirectedEdge("operands mbr join", "IR mbr join");
 
-type NodeKey = PhysicalRegister | "MBR";
+export type DataRegister = PhysicalRegister | "MBR";
 
 /**
  * Given two registers, returns the shortest path between them.
- * These registers must belong to {@link NodeKey}.
- * Modifies the `highlightedPathAtom` atom.
+ * These registers must belong to {@link DataRegister}.
+ * @returns The path as a SVG path.
  * @throws If there is no path between the two registers.
  */
-export function highlightDataPath(from: NodeKey, to: NodeKey) {
+export function generateDataPath(from: DataRegister, to: DataRegister): string {
   const path = bidirectional(dataBus, from, to);
   if (!path) throw new Error(`No path from ${from} to ${to}`);
 
@@ -123,7 +115,7 @@ export function highlightDataPath(from: NodeKey, to: NodeKey) {
     d += ` L ${x} ${y}`;
   }
 
-  store.set(highlightedPathAtom, d);
+  return d;
 }
 
 // ============================================================================
@@ -149,13 +141,15 @@ addressBus.addUndirectedEdge("IP join", "SP join");
 addressBus.addUndirectedEdge("ri join", "SP join");
 addressBus.addUndirectedEdge("SP join", "MAR");
 
+export type { MARRegister as AddressRegister };
+
 /**
  * Given an {@link MARRegister}, returns the shortest path between it
  * and the MAR register.
- * Modifies the `highlightedPathAtom` atom.
+ * @returns The path as a SVG path.
  * @throws If there is the register isn't valid.
  */
-export function highlightAddressPath(from: MARRegister) {
+export function generateAddressPath(from: MARRegister): string {
   const path = bidirectional(addressBus, from, "MAR");
   if (!path) throw new Error(`Invalid register ${from}`);
 
@@ -167,5 +161,5 @@ export function highlightAddressPath(from: MARRegister) {
     d += ` L ${x} ${y}`;
   }
 
-  store.set(highlightedPathAtom, d);
+  return d;
 }

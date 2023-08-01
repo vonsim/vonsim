@@ -1,8 +1,6 @@
 import { IOAddress, MemoryAddress } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 
-import type { AnimationRefs } from "@/simulator/computer/animations";
-
 import { handleCPUEvent } from "./computer/cpu/events";
 import { handleChipSelectEvent } from "./computer/unfinished/chip-select";
 import { handleClockEvent } from "./computer/unfinished/clock";
@@ -34,7 +32,7 @@ const debugColors = {
   timer: "#2563eb",
 };
 
-export async function handleEvent(event: SimulatorEvent, refs: AnimationRefs) {
+export async function handleEvent(event: SimulatorEvent) {
   const [ns, name] = event.type.split(":");
 
   console.group(
@@ -80,7 +78,7 @@ export async function handleEvent(event: SimulatorEvent, refs: AnimationRefs) {
 
   if (ns === "clock") return handleClockEvent(event as SimulatorEvent<"clock:">);
   if (ns === "console") return handleConsoleEvent(event as SimulatorEvent<"console:">);
-  if (ns === "cpu") return await handleCPUEvent(event as SimulatorEvent<"cpu:">, refs);
+  if (ns === "cpu") return await handleCPUEvent(event as SimulatorEvent<"cpu:">);
   if (ns === "cs") return handleChipSelectEvent(event as SimulatorEvent<"cs:">);
   if (ns === "f10") return handleF10Event(event as SimulatorEvent<"f10:">);
   if (ns === "handshake") return handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
