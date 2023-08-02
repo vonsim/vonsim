@@ -8,8 +8,8 @@ import { animationRefs } from "@/simulator/computer/references";
 
 import { ALU } from "./ALU";
 import { Bus } from "./Bus";
-import { Decoder } from "./Decoder";
-import { registerAtoms } from "./state";
+import { Control } from "./Control";
+import { cycleAtom, registerAtoms } from "./state";
 
 export function CPU({ className }: { className?: string }) {
   return (
@@ -37,7 +37,7 @@ export function CPU({ className }: { className?: string }) {
 
         <Reg name="IR" className="left-[171px] top-[270px]" />
 
-        <Decoder />
+        <Control />
 
         <Reg name="IP" emphasis className="left-[450px] top-[292px]" />
         <Reg name="SP" emphasis className="left-[450px] top-[332px]" />
@@ -58,6 +58,7 @@ function Reg({
   emphasis?: boolean;
   className?: string;
 }) {
+  const cycle = useAtomValue(cycleAtom);
   const reg = useAtomValue(registerAtoms[name]);
   const low = reg.low;
   const high = reg.is16bits() ? reg.high : null;
@@ -67,11 +68,17 @@ function Reg({
     from: { backgroundColor: colors.stone[800] },
   });
 
+  // This fade is here instead of, for example, <CPU /> because updating the <CPU /> component
+  // causes the whole tree to re-render, which causes the animation to reset.
+  const fade =
+    (name === "id" || name === "ri") && "metadata" in cycle && !cycle.metadata.willUse[name];
+
   return (
     <animated.div
       className={clsx(
-        "absolute flex w-min items-center rounded-md border bg-stone-800 px-2 py-1 font-mono leading-none",
+        "absolute flex w-min items-center rounded-md border bg-stone-800 px-2 py-1 font-mono leading-none transition-opacity",
         emphasis ? "border-lime-500 text-lg" : "border-stone-600 text-base",
+        fade && "opacity-40",
         className,
       )}
       style={style}

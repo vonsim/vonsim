@@ -112,18 +112,39 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
         return {
           ...prev,
           phase:
-            event.phase === "decoded"
-              ? "decoding"
-              : event.phase === "execute"
+            event.phase === "execute"
               ? "executing"
-              : "writeback",
+              : event.phase === "writeback"
+              ? "writeback"
+              : event.next === "fetch-operands"
+              ? "fetching-operands"
+              : event.next === "execute"
+              ? "executing"
+              : event.next === "writeback"
+              ? "writeback"
+              : prev.phase,
         };
       });
       return;
     }
 
-    case "cpu:decode":
+    case "cpu:decode": {
+      await anim(
+        "cpu.decoderPath",
+        { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+        { duration: 3, easing: "easeInOutSine" },
+      );
+      await anim(
+        "cpu.decoderProgress",
+        { from: { progress: 0, opacity: 1 }, to: { progress: 1 } },
+        { duration: 3, easing: "easeInOutSine" },
+      );
+      await Promise.all([
+        anim("cpu.decoderProgress", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
+        anim("cpu.decoderPath", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
+      ]);
       return;
+    }
 
     case "cpu:error": {
       store.set(cycleAtom, { phase: "stopped", error: event.error });

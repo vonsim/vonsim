@@ -98,8 +98,7 @@ export const registerAtoms: RegistersMap = {
 
 export type Cycle =
   | { phase: "fetching"; metadata: InstructionMetadata }
-  | { phase: "decoding"; metadata: InstructionMetadata }
-  | { phase: "fething-operands"; metadata: InstructionMetadata }
+  | { phase: "fetching-operands"; metadata: InstructionMetadata }
   | { phase: "executing"; metadata: InstructionMetadata }
   | { phase: "writeback"; metadata: InstructionMetadata }
   | { phase: "interrupt"; metadata: InstructionMetadata }

@@ -14,6 +14,8 @@ export const animationRefs = {
     aluResults: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
     aluCog: SpringRef<{ rot: number }>(),
     aluOperation: SpringRef<{ backgroundColor: string }>(),
+    decoderPath: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
+    decoderProgress: SpringRef<{ progress: number; opacity: number }>(),
     AX: SpringRef<{ backgroundColor: string }>(),
     BX: SpringRef<{ backgroundColor: string }>(),
     CX: SpringRef<{ backgroundColor: string }>(),
