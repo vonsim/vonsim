@@ -3,26 +3,89 @@ import { parseRegister } from "@vonsim/simulator/cpu/utils";
 
 import { highlightLine } from "@/editor/methods";
 import { store } from "@/lib/jotai";
-import { getSpeeds } from "@/lib/settings";
 import { colors } from "@/lib/tailwind";
-import {
-  AddressRegister,
-  DataRegister,
-  generateAddressPath,
-  generateDataPath,
-} from "@/simulator/computer/cpu/bus";
-import { animationRefs } from "@/simulator/computer/references";
+import { anim } from "@/simulator/computer/references";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish, startDebugger } from "@/simulator/state";
 
+import { AddressRegister, DataRegister, generateAddressPath, generateDataPath } from "./Bus";
 import { aluOperationAtom, cycleAtom, MARAtom, MBRAtom, registerAtoms } from "./state";
+
+const drawAddressPath = (from: AddressRegister) => {
+  const path = generateAddressPath(from);
+  return anim(
+    "cpu.highlightPath",
+    { from: { strokeDashoffset: 1, opacity: 1, path }, to: { strokeDashoffset: 0 } },
+    { duration: 5, easing: "easeInOutSine" },
+  );
+};
+
+const drawDataPath = (from: DataRegister, to: DataRegister) => {
+  const path = generateDataPath(from, to);
+  return anim(
+    "cpu.highlightPath",
+    { from: { strokeDashoffset: 1, opacity: 1, path }, to: { strokeDashoffset: 0 } },
+    { duration: 5, easing: "easeInOutSine" },
+  );
+};
+
+const resetPath = () =>
+  anim("cpu.highlightPath", { opacity: 0 }, { duration: 1, easing: "easeInSine" });
+
+const activateRegister = (reg: PhysicalRegister | "MAR" | "MBR") =>
+  anim(
+    `cpu.${reg}`,
+    { backgroundColor: colors.lime[500] },
+    { duration: 1, easing: "easeOutQuart" },
+  );
+
+const deactivateRegister = (reg: PhysicalRegister | "MAR" | "MBR") =>
+  anim(
+    `cpu.${reg}`,
+    { backgroundColor: colors.stone[800] },
+    { duration: 1, easing: "easeOutQuart" },
+  );
 
 export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<void> {
   switch (event.type) {
     case "cpu:alu.execute": {
+      const pathsDrawConfig = { duration: 3, easing: "easeInOutSine" } as const;
+      const pathsResetConfig = { duration: 1, easing: "easeInSine" } as const;
+
+      await anim(
+        "cpu.aluOperands",
+        { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+        pathsDrawConfig,
+      );
       store.set(aluOperationAtom, event.operation);
+      await Promise.all([
+        anim(
+          "cpu.aluOperation",
+          { backgroundColor: colors.lime[500] },
+          { duration: 1, easing: "easeOutQuart" },
+        ),
+        anim("cpu.aluCog", { rot: 6 }, { duration: 10, easing: "easeInOutCubic" }),
+      ]);
+      await Promise.all([
+        anim(
+          "cpu.aluOperation",
+          { backgroundColor: colors.stone[800] },
+          { duration: 1, easing: "easeOutQuart" },
+        ),
+        anim(
+          "cpu.aluResults",
+          { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+          pathsDrawConfig,
+        ),
+      ]);
+      await Promise.all([activateRegister("result"), activateRegister("FLAGS")]);
       store.set(registerAtoms.FLAGS, event.flags);
       store.set(registerAtoms.result, event.result);
+      await Promise.all([deactivateRegister("result"), deactivateRegister("FLAGS")]);
+      await Promise.all([
+        anim("cpu.aluOperands", { opacity: 0 }, pathsResetConfig),
+        anim("cpu.aluResults", { opacity: 0 }, pathsResetConfig),
+      ]);
       return;
     }
 
@@ -143,58 +206,4 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       return _exhaustiveCheck;
     }
   }
-}
-
-async function drawAddressPath(from: AddressRegister) {
-  const path = generateAddressPath(from);
-  animationRefs.cpu.highlightPath.set({ strokeDashoffset: 1, opacity: 1, path });
-  const duration = getSpeeds().executionUnit * 5;
-  await Promise.all(
-    animationRefs.cpu.highlightPath.start({
-      to: { strokeDashoffset: 0 },
-      config: { duration },
-    }),
-  );
-}
-
-async function drawDataPath(from: DataRegister, to: DataRegister) {
-  const path = generateDataPath(from, to);
-  animationRefs.cpu.highlightPath.set({ strokeDashoffset: 1, opacity: 1, path });
-  const duration = getSpeeds().executionUnit * 5;
-  await Promise.all(
-    animationRefs.cpu.highlightPath.start({
-      strokeDashoffset: 0,
-      config: { duration },
-    }),
-  );
-}
-
-async function resetPath() {
-  const duration = getSpeeds().executionUnit * 1;
-  await Promise.all(
-    animationRefs.cpu.highlightPath.start({
-      opacity: 0,
-      config: { duration },
-    }),
-  );
-}
-
-async function activateRegister(reg: PhysicalRegister | "MAR" | "MBR") {
-  const duration = getSpeeds().executionUnit * 1;
-  await Promise.all(
-    animationRefs.cpu[reg].start({
-      backgroundColor: colors.lime[500],
-      config: { duration },
-    }),
-  );
-}
-
-async function deactivateRegister(reg: PhysicalRegister | "MAR" | "MBR") {
-  const duration = getSpeeds().executionUnit * 1;
-  await Promise.all(
-    animationRefs.cpu[reg].start({
-      backgroundColor: colors.stone[800],
-      config: { duration },
-    }),
-  );
 }

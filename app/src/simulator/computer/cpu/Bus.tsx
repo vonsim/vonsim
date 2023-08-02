@@ -17,9 +17,12 @@
  * @see {@link https://graphology.github.io/}
  */
 
+import { animated, useSpring } from "@react-spring/web";
 import type { MARRegister, PhysicalRegister } from "@vonsim/simulator/cpu";
 import { UndirectedGraph } from "graphology";
 import { bidirectional } from "graphology-shortest-path/unweighted";
+
+import { animationRefs } from "@/simulator/computer/references";
 
 type Node = { position: [x: number, y: number] };
 
@@ -162,4 +165,66 @@ export function generateAddressPath(from: MARRegister): string {
   }
 
   return d;
+}
+
+/**
+ * Bus component, to be used inside <CPU />
+ */
+export function Bus() {
+  const { strokeDashoffset, opacity, path } = useSpring({
+    ref: animationRefs.cpu.highlightPath,
+    from: { strokeDashoffset: 1, opacity: 1, path: "" },
+  });
+
+  return (
+    <svg viewBox="0 0 650 500" className="absolute inset-0">
+      <path
+        className="stroke-bus fill-none stroke-stone-700"
+        strokeLinejoin="round"
+        d={[
+          // ALU registers
+          "M 60 85 H 30", // left
+          "V 250 H 610", // Long path to MBR, here to get nice joins
+          "M 60 145 H 30", // right
+          "M 370 130 V 250", // result
+          "M 250 225 V 250", // flags
+          // Internal ALU
+          "M 173 85 H 220", // left
+          "M 182 145 H 220", // right
+          "M 272 115 h 28", // result
+          "M 250 145 v 46", // flags
+          // Decoder
+          "M 205 250 V 272", // IP
+          "M 205 300 V 320", // IP->decoder
+          // Address registers
+          "M 451 388 H 421", // ri
+          "V 250", // Long path to MBR, here to get nice joins
+          "M 451 349 H 421", // SP
+          "M 451 309 H 421", // IP
+          // MAR bus
+          "M 551 309 H 575 V 349", // IP
+          "M 551 349 H 575", // SP
+          "M 544 388 H 575 V 349", // ri
+          "M 551 349 H 598", // Connection to MAR
+          // Data registers
+          "M 522 45 H 492", // AX
+          "V 250", // Long path to MBR, here to get nice joins
+          "M 522 85 H 492", // BX
+          "M 522 125 H 492", // CX
+          "M 522 165 H 492", // DX
+          "M 522 205 H 492", // id
+        ].join(" ")}
+      />
+
+      <animated.path
+        d={path}
+        className="stroke-bus fill-none stroke-lime-500"
+        strokeLinejoin="round"
+        pathLength={1}
+        strokeDasharray={1}
+        strokeDashoffset={strokeDashoffset}
+        style={{ opacity }}
+      />
+    </svg>
+  );
 }
