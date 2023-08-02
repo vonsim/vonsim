@@ -1,8 +1,10 @@
 import type { Language } from "@vonsim/common/i18n";
 import type { ComputerOptions } from "@vonsim/simulator";
-import { atomWithStorage } from "jotai/utils";
+import { atomWithStorage, createJSONStorage } from "jotai/utils";
 
 import { store } from "@/lib/jotai";
+
+const atomStorage = createJSONStorage<any>(() => window.localStorage);
 
 /**
  * @returns The preferred language based on the browser's language.
@@ -19,13 +21,23 @@ function getDefaultLanguage(): Language {
 /**
  * Stores the selected language.
  */
-export const languageAtom = atomWithStorage<Language>("language", getDefaultLanguage());
+export const languageAtom = atomWithStorage<Language>(
+  "language",
+  getDefaultLanguage(),
+  atomStorage,
+  { unstable_getOnInit: true },
+);
 export const getLanguage = () => store.get(languageAtom);
 
 /**
  * Stores the value of {@link ComputerOptions.data}.
  */
-export const dataOnLoadAtom = atomWithStorage<ComputerOptions["data"]>("data-on-load", "randomize");
+export const dataOnLoadAtom = atomWithStorage<ComputerOptions["data"]>(
+  "data-on-load",
+  "randomize",
+  atomStorage,
+  { unstable_getOnInit: true },
+);
 export const getDataOnLoad = () => store.get(dataOnLoadAtom);
 
 /**
@@ -34,6 +46,8 @@ export const getDataOnLoad = () => store.get(dataOnLoadAtom);
 export const devicesAtom = atomWithStorage<ComputerOptions["devices"]>(
   "devices",
   "pio-switches-and-leds",
+  atomStorage,
+  { unstable_getOnInit: true },
 );
 export const getDevices = () => store.get(devicesAtom);
 
@@ -44,6 +58,8 @@ export type DataRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
 export const dataRepresentationAtom = atomWithStorage<DataRepresentation>(
   "data-representation",
   "bin",
+  atomStorage,
+  { unstable_getOnInit: true },
 );
 export const getDataRepresentation = () => store.get(dataRepresentationAtom);
 
@@ -65,8 +81,13 @@ export type Speeds = {
   printer: number;
 };
 
-export const speedsAtom = atomWithStorage<Speeds>("speeds", {
-  executionUnit: 150,
-  printer: 1000,
-});
+export const speedsAtom = atomWithStorage<Speeds>(
+  "speeds",
+  {
+    executionUnit: 150,
+    printer: 1000,
+  },
+  atomStorage,
+  { unstable_getOnInit: true },
+);
 export const getSpeeds = () => store.get(speedsAtom);
