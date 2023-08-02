@@ -40,13 +40,13 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
         name: this.name,
         position: this.position,
         operands: this.#formatOperands(),
-        willUse: { ri: true, writeback: true },
+        willUse: { ri: true },
       },
     };
 
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "fetch-operands" };
 
     if (this.operation.port === "fixed") {
       yield* computer.cpu.updateWordRegister("ri", Byte.zero(16));

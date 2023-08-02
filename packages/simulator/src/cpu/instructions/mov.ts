@@ -60,7 +60,6 @@ export class MOVInstruction extends Instruction<"MOV"> {
         willUse: {
           ri: mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd",
           id: mode === "reg<-mem" || mode === "reg<-imd" || mode === "mem<-imd",
-          writeback: true,
         },
       },
     };
@@ -71,7 +70,7 @@ export class MOVInstruction extends Instruction<"MOV"> {
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
 
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "fetch-operands" };
 
     if (
       this.operation.mode === "reg<-mem" ||

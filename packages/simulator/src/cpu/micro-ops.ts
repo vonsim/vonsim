@@ -7,10 +7,11 @@ import type { ByteRegister, InstructionMetadata, WordRegister } from "./types";
  * All events that can be emitted by the CPU.
  */
 export type CPUMicroOperation =
-  | { type: "cpu:cycle.start"; instruction: InstructionMetadata } // Start of a cycle
-  | { type: "cpu:cycle.update"; phase: "decoded" } // Once there is enough information to know what an instruction will do (not the operands yet)
-  | { type: "cpu:cycle.update"; phase: "execute" } // Once the operands are known
-  | { type: "cpu:cycle.update"; phase: "writeback" } // Once the instruction has been executed and the result is ready to be written back
+  | { type: "cpu:cycle.start"; instruction: InstructionMetadata } // Start of a cycle, implicit phase "fetch and decode"
+  // Once there is enough information to know what an instruction will do.
+  | { type: "cpu:cycle.update"; phase: "decoded"; next: "fetch-operands" | "execute" | "writeback" }
+  | { type: "cpu:cycle.update"; phase: "execute" } // Start "execute" phase. Not necesary when "next" is "execute"
+  | { type: "cpu:cycle.update"; phase: "writeback" } // Start "writeback" phase. Not necesary when "next" is "writeback"
   | { type: "cpu:cycle.interrupt" }
   | { type: "cpu:cycle.end" } // End of a cycle
   | {

@@ -27,24 +27,20 @@ export class StackInstruction extends Instruction<"PUSH" | "POP" | "PUSHF" | "PO
         name: this.name,
         position: this.position,
         operands: register !== "FLAGS" ? [register] : [],
-        willUse: { id: true, writeback: true },
+        willUse: { id: true },
       },
     };
 
     // All these intructions are one byte long.
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "execute" };
 
     if (this.name === "PUSH" || this.name === "PUSHF") {
       yield* computer.cpu.copyWordRegister(register, "id");
-      yield { type: "cpu:cycle.update", phase: "writeback" };
       return yield* computer.cpu.pushToStack(); // Will return false if stack overflow
     } else {
       if (!(yield* computer.cpu.popFromStack())) return false; // Stack underflow
-
-      yield { type: "cpu:cycle.update", phase: "writeback" };
-
       yield* computer.cpu.copyWordRegister("id", register);
       return true;
     }

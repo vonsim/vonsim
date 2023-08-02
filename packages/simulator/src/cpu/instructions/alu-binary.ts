@@ -69,11 +69,7 @@ export class ALUBinaryInstruction extends Instruction<
         name: this.name,
         position: this.position,
         operands: this.#formatOperands(),
-        willUse: {
-          ri: mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd",
-          execute: true,
-          writeback: this.name !== "CMP",
-        },
+        willUse: { ri: mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd" },
       },
     };
 
@@ -83,7 +79,7 @@ export class ALUBinaryInstruction extends Instruction<
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
 
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "fetch-operands" };
 
     if (mode === "reg<-reg" || mode === "reg<-mem" || mode === "reg<-imd") {
       // Move out operand to left register

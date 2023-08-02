@@ -20,18 +20,16 @@ export class ReturnInstruction extends Instruction<"RET" | "IRET"> {
         name: this.name,
         position: this.position,
         operands: [],
-        willUse: { id: true, writeback: true },
+        willUse: { id: true },
       },
     };
 
     // All these intructions are one byte long.
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "execute" };
 
     if (!(yield* computer.cpu.popFromStack())) return false; // Stack underflow
-
-    yield { type: "cpu:cycle.update", phase: "writeback" };
 
     yield* computer.cpu.copyWordRegister("id", "IP");
 

@@ -24,13 +24,13 @@ export class INTInstruction extends Instruction<"INT"> {
         name: this.name,
         position: this.position,
         operands: [this.number.toString("uint")],
-        willUse: { id: true, execute: true },
+        willUse: { id: true },
       },
     };
 
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "fetch-operands" };
 
     // Consume interrupt number
     yield* super.consumeInstruction(computer, "ri.l");

@@ -57,10 +57,5 @@ export type InstructionMetadata = {
   name: InstructionName;
   position: Position;
   operands: string[];
-  willUse: Partial<{
-    ri: boolean;
-    id: boolean;
-    execute: boolean;
-    writeback: boolean;
-  }>;
+  willUse: Partial<{ ri: boolean; id: boolean }>;
 };

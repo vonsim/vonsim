@@ -51,8 +51,6 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
         operands: this.#formatOperands(),
         willUse: {
           ri: this.operation.mode === "mem-direct" || this.operation.mode === "mem-indirect",
-          execute: true,
-          writeback: true,
         },
       },
     };
@@ -63,7 +61,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
 
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "fetch-operands" };
 
     if (this.operation.mode === "reg") {
       // Move operand to left register

@@ -22,21 +22,21 @@ export class MiscInstruction extends Instruction<"CLI" | "STI" | "NOP" | "HLT"> 
         name: this.name,
         position: this.position,
         operands: [],
-        willUse: { execute: this.name === "CLI" || this.name === "STI" },
+        willUse: {},
       },
     };
 
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
-    yield { type: "cpu:cycle.update", phase: "decoded" };
 
     if (this.name === "CLI") {
-      yield { type: "cpu:cycle.update", phase: "execute" };
+      yield { type: "cpu:cycle.update", phase: "decoded", next: "execute" };
       yield* computer.cpu.updateFLAGS({ IF: false });
     } else if (this.name === "STI") {
-      yield { type: "cpu:cycle.update", phase: "execute" };
+      yield { type: "cpu:cycle.update", phase: "decoded", next: "execute" };
       yield* computer.cpu.updateFLAGS({ IF: true });
     } else if (this.name === "HLT") {
+      yield { type: "cpu:cycle.update", phase: "decoded", next: "execute" };
       yield { type: "cpu:halt" };
       return false;
     }

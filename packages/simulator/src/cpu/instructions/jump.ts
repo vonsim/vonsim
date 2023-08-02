@@ -34,14 +34,14 @@ export class JumpInstruction extends Instruction<
         name: this.name,
         position: this.position,
         operands: [this.jumpTo.toString()],
-        willUse: { id: this.name === "CALL", ri: true, execute: true },
+        willUse: { id: this.name === "CALL", ri: true },
       },
     };
 
     // Read opcode.
     yield* super.consumeInstruction(computer, "IR");
     yield { type: "cpu:decode" };
-    yield { type: "cpu:cycle.update", phase: "decoded" };
+    yield { type: "cpu:cycle.update", phase: "decoded", next: "fetch-operands" };
 
     // Consume jump address
     yield* super.consumeInstruction(computer, "ri.l");
