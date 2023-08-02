@@ -1,14 +1,15 @@
+import { useAtom } from "jotai";
 import { useCallback } from "react";
 import { useEvent } from "react-use";
 
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
-import { cn } from "@/lib/utils";
-import { useNewStart } from "@/simulator/state";
+import { speedsAtom } from "@/lib/settings";
+import { newStart } from "@/simulator/state";
 
 export function Controls() {
   const translate = useTranslate();
-  const start = useNewStart();
+  const [speeds, setSpeeds] = useAtom(speedsAtom);
 
   const [status, dispatch] = useSimulator();
 
@@ -29,62 +30,27 @@ export function Controls() {
   useEvent("keydown", onKeyDown, undefined, [dispatch]);
 
   return (
-    <div className="flex h-12 items-center justify-center gap-4 lg:h-full lg:justify-start">
-      {status.type === "stopped" ? (
-        <>
-          <Button onClick={() => dispatch("run")} title="F5" icon="icon-[carbon--play]">
-            {translate("runner.action.start")}
-          </Button>
+    <div className="flex items-center justify-center gap-4 lg:h-full lg:justify-start">
+      <button
+        className="flex w-min items-center gap-1 rounded-md bg-lime-800 p-2 text-lime-50 transition-colors hover:enabled:bg-lime-600 hover:enabled:text-white disabled:opacity-40"
+        disabled={status.type !== "stopped"}
+        onClick={newStart}
+      >
+        <span className="icon-[lucide--play] block h-5 w-5" />
+        <span className="whitespace-nowrap font-semibold tracking-wide">
+          {translate("runner.action.start")}
+        </span>
+      </button>
 
-          <Button onClick={() => dispatch("step")} title="F11" icon="icon-[carbon--debug]">
-            {translate("runner.action.debug")}
-          </Button>
-        </>
-      ) : (
-        <>
-          <Button
-            onClick={() => dispatch("run")}
-            title="F5"
-            icon="icon-[carbon--skip-forward]"
-            disabled={status.type !== "paused"}
-          >
-            {translate("runner.action.run-until-halt")}
-          </Button>
-
-          <Button
-            onClick={() => dispatch("step")}
-            title="F11"
-            icon="icon-[carbon--play]"
-            disabled={status.type !== "paused"}
-          >
-            {translate("runner.action.step")}
-          </Button>
-
-          <Button onClick={() => dispatch("stop")} title="Shift+F5" icon="icon-[carbon--stop-sign]">
-            {translate("runner.action.stop")}
-          </Button>
-        </>
-      )}
-
-      <button onClick={start}>test</button>
+      <input
+        type="range"
+        className="rotate-180"
+        min={5}
+        max={300}
+        step={5}
+        value={speeds.executionUnit}
+        onChange={e => setSpeeds({ ...speeds, executionUnit: e.currentTarget.valueAsNumber })}
+      />
     </div>
-  );
-}
-
-function Button({
-  icon,
-  children,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { icon: string }) {
-  return (
-    <button
-      {...props}
-      className="
-        flex h-full items-center justify-center border-b border-lime-500 p-2 transition hover:bg-slate-500/30
-        disabled:border-slate-500 disabled:text-slate-500 disabled:hover:bg-transparent
-      "
-    >
-      <span className={cn("mr-1 block h-5 w-5", icon)} /> {children}
-    </button>
   );
 }

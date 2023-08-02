@@ -341,48 +341,46 @@ function runSimulator(ms: number) {
 }
 
 // DEBUG: Remove later
-export function useNewStart() {
-  return async () => {
-    const state = getState();
-    if (state.type !== "stopped" && state.type !== "paused") {
+export async function newStart() {
+  const state = getState();
+  if (state.type !== "stopped" && state.type !== "paused") {
+    assembleError();
+    return;
+  }
+
+  if (state.type === "stopped") {
+    if (!window.codemirror) return;
+
+    const code = window.codemirror.state.doc.toString();
+    const result = assemble(code);
+
+    if (!result.success) {
       assembleError();
       return;
     }
 
-    if (state.type === "stopped") {
-      if (!window.codemirror) return;
+    setReadOnly(true);
 
-      const code = window.codemirror.state.doc.toString();
-      const result = assemble(code);
+    // Reset the simulator
+    simulator.loadProgram({
+      program: result,
+      data: getDataOnLoad(),
+      devices: getDevices(),
+    });
+    resetSimulatorTimers();
+    resetState(simulator.getComputerState());
 
-      if (!result.success) {
-        assembleError();
-        return;
-      }
+    // Highlight the ORG 2000h line
+    const initial = result.instructions.find(i => i.start.value === 0x2000);
+    if (initial) highlightLine(initial.position.start);
+  }
 
-      setReadOnly(true);
+  store.set(simulatorStateAtom, { type: "running" });
 
-      // Reset the simulator
-      simulator.loadProgram({
-        program: result,
-        data: getDataOnLoad(),
-        devices: getDevices(),
-      });
-      resetSimulatorTimers();
-      resetState(simulator.getComputerState());
-
-      // Highlight the ORG 2000h line
-      const initial = result.instructions.find(i => i.start.value === 0x2000);
-      if (initial) highlightLine(initial.position.start);
-    }
-
-    store.set(simulatorStateAtom, { type: "running" });
-
-    let event = simulator.advanceCPU();
-    while (true) {
-      await handleEvent(event);
-      if (getState().type !== "running" && getState().type !== "paused") return;
-      event = simulator.advanceCPU();
-    }
-  };
+  let event = simulator.advanceCPU();
+  while (true) {
+    await handleEvent(event);
+    if (getState().type !== "running" && getState().type !== "paused") return;
+    event = simulator.advanceCPU();
+  }
 }
