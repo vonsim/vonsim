@@ -4,7 +4,16 @@
     "ecmaFeatures": { "jsx": true }
   },
   "settings": {
-    "react": { "version": "detect" }
+    "react": { "version": "detect" },
+    // https://github.com/francoismassart/eslint-plugin-tailwindcss#optional-shared-settings
+    "tailwindcss": {
+      "callees": ["clsx"],
+      "config": "./tailwind.config.ts",
+      "whitelist": [
+        // Support for iconify icons
+        "icon-.+"
+      ]
+    }
   },
   "extends": [
     "vonsim",
