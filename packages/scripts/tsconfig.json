@@ -1,0 +1,7 @@
+{
+  "extends": "@vonsim/tsconfig/node.json",
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "include": ["src"]
+}

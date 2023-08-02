@@ -7,7 +7,8 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "dev": "pnpm --dir app run dev",
-    "docs:dev": "pnpm --dir docs run dev"
+    "docs:dev": "pnpm --dir docs run dev",
+    "build": "pnpm --dir packages/scripts run build"
   },
   "engines": {
     "node": ">=18.0.0",

@@ -18,8 +18,9 @@ To get started, you'll need [Node.js v18](https://nodejs.org/) and [pnpm v8](htt
 
 ```bash
 $ pnpm install  # only the first time, install the dependencies
-$ pnpm dev      # start the dev server
+$ pnpm dev      # start the app dev server
 $ pnpm docs:dev # start the docs dev server
+$ pnpm build    # build for production
 ```
 
 These are the packages inside the repo, all of them with their own `README.md` where you can learn more:
@@ -32,6 +33,7 @@ Also, there some support packages that are used by the packages above:
 
 - [`@vonsim/common`](./packages/common/): Some common utilities.
 - [`eslint-config-vonsim`](./packages/eslint-config-vonsim/): ESLint configuration for this project.
+- [`@vonsim/scripts`](./packages/scripts/): Scripts for development and building.
 - [`@vonsim/tsconfig`](./packages/tsconfig/): The TypeScript configuration for this project.
 
 Finally, the [documentation](https://vonsim.github.io/docs/) is inside [`@vonsim/docs`](./docs/).

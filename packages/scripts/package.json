@@ -1,0 +1,19 @@
+{
+  "name": "@vonsim/scripts",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "build": "node src/build.js",
+    "lint": "tsc --noEmit && eslint --ignore-path .gitignore ."
+  },
+  "dependencies": {
+    "execa": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18",
+    "@vonsim/tsconfig": "workspace:^",
+    "eslint": "^8.46.0",
+    "eslint-config-vonsim": "workspace:^",
+    "typescript": "~5.1.6"
+  }
+}
