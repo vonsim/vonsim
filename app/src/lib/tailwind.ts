@@ -12,8 +12,8 @@ export const colors = {
   amber: {
     500: "#f59e0b",
   },
-  lime: {
-    500: "#84cc16",
+  mantis: {
+    500: "#61a146",
   },
   sky: {
     300: "#7dd3fc",

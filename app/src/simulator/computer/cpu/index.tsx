@@ -19,7 +19,7 @@ export function CPU({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-lime-700 px-2 py-1 text-3xl font-bold text-white">
+      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl font-bold text-white">
         CPU
       </span>
 
@@ -80,7 +80,7 @@ function Reg({
     <animated.div
       className={clsx(
         "absolute flex w-min items-center rounded-md border bg-stone-800 px-2 py-1 font-mono leading-none transition-opacity",
-        emphasis ? "border-lime-500 text-lg" : "border-stone-600 text-base",
+        emphasis ? "border-mantis-400 text-lg" : "border-stone-600 text-base",
         fade && "opacity-40",
         className,
       )}

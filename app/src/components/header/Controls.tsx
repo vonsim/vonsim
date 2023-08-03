@@ -32,7 +32,7 @@ export function Controls() {
   return (
     <div className="flex items-center justify-center gap-4 lg:h-full lg:justify-start">
       <button
-        className="flex w-min items-center gap-1 rounded-md bg-lime-800 p-2 text-lime-50 transition-colors hover:enabled:bg-lime-600 hover:enabled:text-white disabled:opacity-40"
+        className="flex w-min items-center gap-1 rounded-md bg-mantis-500 p-2 text-mantis-50 transition-colors hover:enabled:bg-mantis-600 hover:enabled:text-white disabled:opacity-40"
         disabled={status.type !== "stopped"}
         onClick={newStart}
       >

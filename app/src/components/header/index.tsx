@@ -39,7 +39,7 @@ export function Header() {
             {...easterEggEvents}
           />
           <h1 className="text-xl font-bold">
-            Von<span className="text-lime-500">Sim</span>
+            Von<span className="text-mantis-400">Sim</span>
           </h1>
         </div>
 

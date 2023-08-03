@@ -13,7 +13,7 @@ export function Memory({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-lime-700 px-2 py-1 text-3xl font-bold text-white">
+      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl font-bold text-white">
         Memory
       </span>
 

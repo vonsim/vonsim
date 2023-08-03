@@ -11,7 +11,7 @@ export async function populateDataBus(data: Byte<8>) {
   await anim("bus.data", { stroke: colors.amber[500] }, { duration: 5, easing: "easeOutSine" });
   await anim(
     "cpu.MBR",
-    { backgroundColor: colors.lime[500] },
+    { backgroundColor: colors.mantis[500] },
     { duration: 1, easing: "easeOutQuart" },
   );
   store.set(MBRAtom, data);

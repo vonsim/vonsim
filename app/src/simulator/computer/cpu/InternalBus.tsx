@@ -179,7 +179,7 @@ export function InternalBus() {
   return (
     <svg viewBox="0 0 650 500" className="absolute inset-0">
       <path
-        className="stroke-bus fill-none stroke-stone-700"
+        className="fill-none stroke-stone-700 stroke-bus"
         strokeLinejoin="round"
         d={[
           // ALU registers
@@ -228,7 +228,7 @@ export function InternalBus() {
 
       <animated.path
         d={path}
-        className="stroke-bus fill-none stroke-lime-500"
+        className="fill-none stroke-mantis-400 stroke-bus"
         strokeLinejoin="round"
         pathLength={1}
         strokeDasharray={1}

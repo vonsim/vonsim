@@ -50,7 +50,7 @@ export function ALU() {
     <>
       <svg viewBox="0 0 650 500" className="absolute inset-0">
         <animated.path
-          className="stroke-bus fill-none stroke-lime-500"
+          className="fill-none stroke-mantis-400 stroke-bus"
           strokeLinejoin="round"
           d="M 173 85 H 220"
           pathLength={1}
@@ -58,7 +58,7 @@ export function ALU() {
           style={operandsStyle}
         />
         <animated.path
-          className="stroke-bus fill-none stroke-lime-500"
+          className="fill-none stroke-mantis-400 stroke-bus"
           strokeLinejoin="round"
           d="M 182 145 H 220"
           pathLength={1}
@@ -66,7 +66,7 @@ export function ALU() {
           style={operandsStyle}
         />
         <animated.path
-          className="stroke-bus fill-none stroke-lime-500"
+          className="fill-none stroke-mantis-400 stroke-bus"
           strokeLinejoin="round"
           d="M 272 115 h 28"
           pathLength={1}
@@ -74,7 +74,7 @@ export function ALU() {
           style={resultsStyle}
         />
         <animated.path
-          className="stroke-bus fill-none stroke-lime-500"
+          className="fill-none stroke-mantis-400 stroke-bus"
           strokeLinejoin="round"
           d="M 250 145 v 46"
           pathLength={1}
@@ -106,22 +106,22 @@ export function ALU() {
 
       {/* Flags */}
       <animated.div
-        className="absolute left-[165px] top-[190px] flex w-min items-center gap-1 rounded-md border border-lime-500 bg-stone-800 px-2 py-1 font-mono leading-none"
+        className="absolute left-[165px] top-[190px] flex w-min items-center gap-1 rounded-md border border-mantis-400 bg-stone-800 px-2 py-1 font-mono leading-none"
         style={flagsStyle}
       >
-        <span className={clsx("rounded p-1 font-light", CF ? "bg-lime-500" : "bg-stone-900")}>
+        <span className={clsx("rounded p-1 font-light", CF ? "bg-mantis-400" : "bg-stone-900")}>
           CF
         </span>
-        <span className={clsx("rounded p-1 font-light", ZF ? "bg-lime-500" : "bg-stone-900")}>
+        <span className={clsx("rounded p-1 font-light", ZF ? "bg-mantis-400" : "bg-stone-900")}>
           ZF
         </span>
-        <span className={clsx("rounded p-1 font-light", SF ? "bg-lime-500" : "bg-stone-900")}>
+        <span className={clsx("rounded p-1 font-light", SF ? "bg-mantis-400" : "bg-stone-900")}>
           SF
         </span>
-        <span className={clsx("rounded p-1 font-light", IF ? "bg-lime-500" : "bg-stone-900")}>
+        <span className={clsx("rounded p-1 font-light", IF ? "bg-mantis-400" : "bg-stone-900")}>
           IF
         </span>
-        <span className={clsx("rounded p-1 font-light", OF ? "bg-lime-500" : "bg-stone-900")}>
+        <span className={clsx("rounded p-1 font-light", OF ? "bg-mantis-400" : "bg-stone-900")}>
           OF
         </span>
       </animated.div>

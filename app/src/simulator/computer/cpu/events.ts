@@ -40,7 +40,7 @@ const resetPath = () =>
 const activateRegister = (reg: PhysicalRegister | "MAR" | "MBR") =>
   anim(
     `cpu.${reg}`,
-    { backgroundColor: colors.lime[500] },
+    { backgroundColor: colors.mantis[500] },
     { duration: 1, easing: "easeOutQuart" },
   );
 
@@ -66,7 +66,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await Promise.all([
         anim(
           "cpu.aluOperation",
-          { backgroundColor: colors.lime[500] },
+          { backgroundColor: colors.mantis[500] },
           { duration: 1, easing: "easeOutQuart" },
         ),
         anim("cpu.aluCog", { rot: 6 }, { duration: 10, easing: "easeInOutCubic" }),

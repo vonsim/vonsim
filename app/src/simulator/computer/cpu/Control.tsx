@@ -65,7 +65,7 @@ export function Control() {
     <>
       <svg viewBox="0 0 650 500" className="absolute inset-0">
         <animated.path
-          className="stroke-bus fill-none stroke-lime-500"
+          className="fill-none stroke-mantis-400 stroke-bus"
           strokeLinejoin="round"
           d="M 205 300 V 320"
           pathLength={1}
@@ -109,7 +109,7 @@ export function Control() {
       </svg>
 
       <div className="absolute bottom-[172px] left-[30px] flex w-full items-start">
-        <span className="block w-min whitespace-nowrap rounded-t-lg border border-b-0 border-stone-600 bg-lime-700 px-2 pb-3 pt-1 text-xs font-semibold tracking-wide text-white">
+        <span className="block w-min whitespace-nowrap rounded-t-lg border border-b-0 border-stone-600 bg-mantis-500 px-2 pb-3 pt-1 text-xs font-semibold tracking-wide text-white">
           Unidad de control
         </span>
       </div>
@@ -119,7 +119,7 @@ export function Control() {
           <span className="text-sm leading-none">Decodificador</span>
           <div className="my-1 h-1 w-full overflow-hidden rounded-full bg-stone-600">
             <animated.div
-              className="h-full bg-lime-500"
+              className="h-full bg-mantis-400"
               style={{
                 width: decoderProgressStyle.progress.to(t => `${t * 100}%`),
                 opacity: decoderProgressStyle.opacity,
@@ -156,7 +156,7 @@ export function Control() {
               <span className="font-bold italic text-stone-400">???</span>
             ) : (
               <>
-                <span className="font-bold text-lime-500">{cycle.metadata.name}</span>
+                <span className="font-bold text-mantis-400">{cycle.metadata.name}</span>
                 <span className="text-white">{operandsText}</span>
               </>
             )}

@@ -94,7 +94,7 @@ const vonsimHighlighter = syntaxHighlighting(
     { tag: vonsimTags.comment, class: "text-stone-400 italic" },
     { tag: vonsimTags["data-directive"], class: "text-rose-400" },
     // { tag: vonsimTags.identifier, class: "" },
-    { tag: vonsimTags.instruction, class: "text-lime-300" },
+    { tag: vonsimTags.instruction, class: "text-mantis-400" },
     // { tag: vonsimTags.label, class: "" },
     { tag: vonsimTags.number, class: "text-amber-500 font-semibold" },
     { tag: vonsimTags.operator, class: "text-rose-400" },
