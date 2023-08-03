@@ -34,7 +34,7 @@ export class Handshake extends IOInterface<"handshake"> {
   *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
     const handshake = this.handshake.chipSelect(address);
     if (handshake) {
-      yield { type: "cs:selected", chip: "handshake" };
+      yield { type: "bus:io.selected", chip: "handshake" };
       return yield* this.handshake.read(handshake);
     }
 
@@ -44,7 +44,7 @@ export class Handshake extends IOInterface<"handshake"> {
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     const handshake = this.handshake.chipSelect(address);
     if (handshake) {
-      yield { type: "cs:selected", chip: "handshake" };
+      yield { type: "bus:io.selected", chip: "handshake" };
       yield* this.handshake.write(handshake, value);
       return true;
     }

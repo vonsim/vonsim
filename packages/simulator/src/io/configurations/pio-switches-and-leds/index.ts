@@ -38,7 +38,7 @@ export class PIOSwitchesAndLeds extends IOInterface<"pio-switches-and-leds"> {
   *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
     const pio = this.pio.chipSelect(address);
     if (pio) {
-      yield { type: "cs:selected", chip: "pio" };
+      yield { type: "bus:io.selected", chip: "pio" };
       return yield* this.pio.read(pio);
     }
 
@@ -48,7 +48,7 @@ export class PIOSwitchesAndLeds extends IOInterface<"pio-switches-and-leds"> {
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     const pio = this.pio.chipSelect(address);
     if (pio) {
-      yield { type: "cs:selected", chip: "pio" };
+      yield { type: "bus:io.selected", chip: "pio" };
       yield* this.pio.write(pio, value);
       return true;
     }

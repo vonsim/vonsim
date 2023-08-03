@@ -168,9 +168,9 @@ export function generateAddressPath(from: MARRegister): string {
 }
 
 /**
- * Bus component, to be used inside <CPU />
+ * InternalBus component, to be used inside <CPU />
  */
-export function Bus() {
+export function InternalBus() {
   const { path, ...style } = useSpring({
     ref: animationRefs.cpu.highlightPath,
     from: { strokeDashoffset: 1, opacity: 1, path: "" },

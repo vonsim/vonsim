@@ -39,7 +39,7 @@ export class PIOPrinter extends IOInterface<"pio-printer"> {
   *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
     const pio = this.pio.chipSelect(address);
     if (pio) {
-      yield { type: "cs:selected", chip: "pio" };
+      yield { type: "bus:io.selected", chip: "pio" };
       return yield* this.pio.read(pio);
     }
 
@@ -55,7 +55,7 @@ export class PIOPrinter extends IOInterface<"pio-printer"> {
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     const pio = this.pio.chipSelect(address);
     if (pio) {
-      yield { type: "cs:selected", chip: "pio" };
+      yield { type: "bus:io.selected", chip: "pio" };
       yield* this.pio.write(pio, value);
       return true;
     }

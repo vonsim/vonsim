@@ -454,32 +454,45 @@ export class CPU extends Component {
   *useBus(mode: `${"mem" | "io"}-${"read" | "write"}` | "intr-read"): EventGenerator<boolean> {
     switch (mode) {
       case "mem-read": {
+        yield { type: "cpu:rd.on" };
         const value = yield* this.computer.memory.read(this.#MAR);
         if (!value) return false; // Error reading from memory
         this.#MBR = value;
+        yield { type: "bus:reset" };
         return true;
       }
 
       case "mem-write": {
+        yield { type: "cpu:wr.on" };
         const success = yield* this.computer.memory.write(this.#MAR, this.#MBR);
-        return success;
+        if (!success) return false; // Error writing to memory
+        yield { type: "bus:reset" };
+        return true;
       }
 
       case "io-read": {
+        yield { type: "cpu:iom.on" };
+        yield { type: "cpu:rd.on" };
         const value = yield* this.computer.io.read(this.#MAR.low);
         if (!value) return false; // Error reading from i/o
         this.#MBR = value;
+        yield { type: "bus:reset" };
         return true;
       }
 
       case "io-write": {
+        yield { type: "cpu:iom.on" };
+        yield { type: "cpu:wr.on" };
         const success = yield* this.computer.io.write(this.#MAR.low, this.#MBR);
-        return success;
+        if (!success) return false; // Error writing to i/o
+        yield { type: "bus:reset" };
+        return true;
       }
 
       case "intr-read": {
         const intn = yield* this.computer.io.pic.handleINTR();
         this.#MBR = intn;
+        yield { type: "bus:reset" };
         return true;
       }
 

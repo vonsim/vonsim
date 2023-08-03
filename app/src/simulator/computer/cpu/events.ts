@@ -8,7 +8,12 @@ import { anim } from "@/simulator/computer/references";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish, startDebugger } from "@/simulator/state";
 
-import { AddressRegister, DataRegister, generateAddressPath, generateDataPath } from "./Bus";
+import {
+  AddressRegister,
+  DataRegister,
+  generateAddressPath,
+  generateDataPath,
+} from "./InternalBus";
 import { aluOperationAtom, cycleAtom, MARAtom, MBRAtom, registerAtoms } from "./state";
 
 const drawAddressPath = (from: AddressRegister) => {
@@ -176,11 +181,27 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
     case "cpu:inta.on":
       return;
 
+    case "cpu:rd.on":
+    case "cpu:wr.on":
+    case "cpu:iom.on": {
+      const line = event.type === "cpu:rd.on" ? "rd" : event.type === "cpu:wr.on" ? "wr" : "iom";
+      await anim(
+        `cpu.${line}`,
+        { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+        { duration: 30, easing: "easeInOutSine" },
+      );
+      return;
+    }
+
     case "cpu:mar.set": {
       await drawAddressPath(event.register);
       await activateRegister("MAR");
       store.set(MARAtom, store.get(registerAtoms[event.register]));
-      await anim("bus.mar", { stroke: colors.sky[300] }, { duration: 5, easing: "easeOutSine" });
+      await anim(
+        "bus.address",
+        { stroke: colors.sky[300] },
+        { duration: 5, easing: "easeOutSine" },
+      );
       await Promise.all([deactivateRegister("MAR"), resetPath()]);
       return;
     }
@@ -199,7 +220,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await drawDataPath(reg, "MBR");
       await activateRegister("MBR");
       store.set(MBRAtom, store.get(registerAtoms[event.register]));
-      await anim("bus.mbr", { stroke: colors.amber[500] }, { duration: 5, easing: "easeOutSine" });
+      await anim("bus.data", { stroke: colors.amber[500] }, { duration: 5, easing: "easeOutSine" });
       await Promise.all([deactivateRegister("MBR"), resetPath()]);
       return;
     }

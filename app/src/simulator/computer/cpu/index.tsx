@@ -7,8 +7,8 @@ import { colors } from "@/lib/tailwind";
 import { animationRefs } from "@/simulator/computer/references";
 
 import { ALU } from "./ALU";
-import { Bus } from "./Bus";
 import { Control } from "./Control";
+import { InternalBus } from "./InternalBus";
 import { cycleAtom, registerAtoms } from "./state";
 
 export function CPU({ className }: { className?: string }) {
@@ -23,7 +23,7 @@ export function CPU({ className }: { className?: string }) {
         CPU
       </span>
 
-      <Bus />
+      <InternalBus />
 
       <Reg name="left" className="left-[60px] top-[70px]" />
       <Reg name="right" className="left-[60px] top-[130px]" />

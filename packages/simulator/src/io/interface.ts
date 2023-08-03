@@ -11,10 +11,6 @@ import { F10 } from "./devices/f10";
 import { PIC } from "./modules/pic";
 import { Timer } from "./modules/timer";
 
-export type ChipSelectEvent =
-  | { type: "cs:selected"; chip: "handshake" | "pic" | "pio" | "timer" }
-  | { type: "cs:error"; error: SimulatorError<"io-memory-not-implemented"> };
-
 /**
  * An IO interface is a set of devices and modules that can be used by the CPU to
  * interact with the outside world.
@@ -68,17 +64,17 @@ export abstract class IOInterface<
   *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
     const pic = this.pic.chipSelect(address);
     if (pic) {
-      yield { type: "cs:selected", chip: "pic" };
+      yield { type: "bus:io.selected", chip: "pic" };
       return yield* this.pic.read(pic);
     }
 
     const timer = this.timer.chipSelect(address);
     if (timer) {
-      yield { type: "cs:selected", chip: "timer" };
+      yield { type: "bus:io.selected", chip: "timer" };
       return yield* this.timer.read(timer);
     }
 
-    yield { type: "cs:error", error: new SimulatorError("io-memory-not-implemented", address) };
+    yield { type: "bus:io.error", error: new SimulatorError("io-memory-not-implemented", address) };
     return null;
   }
 
@@ -94,19 +90,19 @@ export abstract class IOInterface<
   *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
     const pic = this.pic.chipSelect(address);
     if (pic) {
-      yield { type: "cs:selected", chip: "pic" };
+      yield { type: "bus:io.selected", chip: "pic" };
       yield* this.pic.write(pic, value);
       return true;
     }
 
     const timer = this.timer.chipSelect(address);
     if (timer) {
-      yield { type: "cs:selected", chip: "timer" };
+      yield { type: "bus:io.selected", chip: "timer" };
       yield* this.timer.write(timer, value);
       return true;
     }
 
-    yield { type: "cs:error", error: new SimulatorError("io-memory-not-implemented", address) };
+    yield { type: "bus:io.error", error: new SimulatorError("io-memory-not-implemented", address) };
     return false;
   }
 

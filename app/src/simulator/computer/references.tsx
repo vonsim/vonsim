@@ -9,8 +9,8 @@ import { getSpeeds } from "@/lib/settings";
  */
 export const animationRefs = {
   bus: {
-    mar: SpringRef<{ stroke: string }>(),
-    mbr: SpringRef<{ stroke: string }>(),
+    address: SpringRef<{ stroke: string }>(),
+    data: SpringRef<{ stroke: string }>(),
   },
   cpu: {
     highlightPath: SpringRef<{ strokeDashoffset: number; opacity: number; path: string }>(),
