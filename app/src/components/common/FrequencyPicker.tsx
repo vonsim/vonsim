@@ -29,10 +29,10 @@ export function FrequencyPicker({
       <Menu placement="right-start" flip offset={4}>
         <Menu.Button
           className="
-            border-accent focus-visible:ring-accent enabled:hover:bg-accent disabled:border-accent/50 cursor-pointer rounded-lg border px-2
-            py-1 text-sm transition 
-            focus:outline-none focus-visible:ring-2
-            enabled:hover:text-white disabled:cursor-default
+            cursor-pointer rounded-lg border border-accent px-2 py-1 text-sm transition
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-accent 
+            enabled:hover:bg-accent enabled:hover:text-white
+            disabled:cursor-default disabled:border-accent/50
           "
           disabled={!stopped}
         >

@@ -24,7 +24,7 @@ export default function App() {
     <div className="flex h-screen w-screen flex-col bg-stone-900 text-white">
       <Header />
 
-      <main className="grid grow grid-cols-2 grid-rows-1 gap-2 overflow-auto p-2">
+      <main className="grid grow grid-cols-[minmax(0,1fr),minmax(0,2fr)] grid-rows-1 gap-2 overflow-auto p-2">
         <section className="w-full overflow-hidden rounded-lg border border-stone-600 bg-stone-800">
           <Editor className="h-full w-full" />
         </section>

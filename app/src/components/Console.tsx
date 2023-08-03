@@ -39,7 +39,7 @@ export function Console({ className }: { className?: string }) {
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck={false}
-          className="scrollbar-white h-36 w-full resize-none overflow-y-auto bg-transparent p-1 align-bottom caret-transparent focus:outline-none"
+          className="h-36 w-full resize-none overflow-y-auto bg-transparent p-1 align-bottom caret-transparent scrollbar-white focus:outline-none"
           value={value}
           onInput={ev => {
             ev.preventDefault();

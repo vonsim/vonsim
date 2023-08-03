@@ -1,11 +1,11 @@
 import type { Byte } from "@vonsim/common/byte";
+import { PrimitiveAtom, useAtom, useAtomValue } from "jotai";
 
 import { Card } from "@/components/common/Card";
 import { CellView } from "@/components/common/CellView";
 import { FrequencyPicker } from "@/components/common/FrequencyPicker";
 import { Table } from "@/components/common/Table";
 import { useTranslate } from "@/hooks/useTranslate";
-import { PrimitiveAtom, useAtom, useAtomValue } from "jotai";
 import { speedsAtom } from "@/lib/settings";
 import { MARAtom, MBRAtom } from "@/simulator/components/bus";
 import { aluOperationAtom, flagsAtom, registers } from "@/simulator/components/cpu";

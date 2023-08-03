@@ -1,4 +1,5 @@
 import { MemoryAddress } from "@vonsim/common/address";
+import { useAtomValue } from "jotai";
 import { useId, useMemo, useState } from "react";
 import { useMeasure } from "react-use";
 import { toast } from "sonner";
@@ -7,7 +8,6 @@ import { Card } from "@/components/common/Card";
 import { CellView } from "@/components/common/CellView";
 import { Table } from "@/components/common/Table";
 import { useTranslate } from "@/hooks/useTranslate";
-import { useAtomValue } from "jotai";
 import { cn } from "@/lib/utils";
 import { memoryAtom } from "@/simulator/components/memory";
 

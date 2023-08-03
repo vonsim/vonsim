@@ -38,6 +38,17 @@ Also, there some support packages that are used by the packages above:
 
 Finally, the [documentation](https://vonsim.github.io/docs/) is inside [`@vonsim/docs`](./docs/).
 
+### Notes for developers
+
+When using [Visual Studio Code](https://code.visualstudio.com/), you can use the [recommended extensions](./.vscode/extensions.json) to get the best experience. Some extensions might have trouble finding the `tailwind.config.ts` file for auto-completion and linting. This can be solved by creating a `.vscode/settings.json` file with the following content:
+
+```json
+{
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "tailwindCSS.experimental.configFile": "./app/tailwind.config.ts"
+}
+```
+
 ## To-do list
 
 - [ ] Add ✨ animations ✨

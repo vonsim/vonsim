@@ -8,11 +8,7 @@
     // https://github.com/francoismassart/eslint-plugin-tailwindcss#optional-shared-settings
     "tailwindcss": {
       "callees": ["clsx"],
-      "config": "./tailwind.config.ts",
-      "whitelist": [
-        // Support for iconify icons
-        "icon-.+"
-      ]
+      "config": "./tailwind.config.ts"
     }
   },
   "extends": [
