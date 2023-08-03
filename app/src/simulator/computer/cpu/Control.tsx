@@ -111,8 +111,7 @@ export function Control() {
           d="M 205 300 V 320"
           pathLength={1}
           strokeDasharray={1}
-          strokeDashoffset={decoderPathStyle.strokeDashoffset}
-          style={{ opacity: decoderPathStyle.opacity }}
+          style={decoderPathStyle}
         />
       </svg>
     </>

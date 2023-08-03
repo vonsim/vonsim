@@ -26,12 +26,12 @@ export function ALU() {
     from: { backgroundColor: colors.stone[800] },
   });
 
-  const operandsProps = useSpring({
+  const operandsStyle = useSpring({
     ref: animationRefs.cpu.aluOperands,
     from: { strokeDashoffset: 1, opacity: 1 },
   });
 
-  const operationProps = useSpring({
+  const operationStyle = useSpring({
     ref: animationRefs.cpu.aluOperation,
     from: { backgroundColor: colors.stone[800] },
   });
@@ -41,7 +41,7 @@ export function ALU() {
     from: { rot: 0 },
   });
 
-  const resultsProps = useSpring({
+  const resultsStyle = useSpring({
     ref: animationRefs.cpu.aluResults,
     from: { strokeDashoffset: 1, opacity: 1 },
   });
@@ -55,8 +55,7 @@ export function ALU() {
           d="M 173 85 H 220"
           pathLength={1}
           strokeDasharray={1}
-          strokeDashoffset={operandsProps.strokeDashoffset}
-          style={{ opacity: operandsProps.opacity }}
+          style={operandsStyle}
         />
         <animated.path
           className="stroke-bus fill-none stroke-lime-500"
@@ -64,8 +63,7 @@ export function ALU() {
           d="M 182 145 H 220"
           pathLength={1}
           strokeDasharray={1}
-          strokeDashoffset={operandsProps.strokeDashoffset}
-          style={{ opacity: operandsProps.opacity }}
+          style={operandsStyle}
         />
         <animated.path
           className="stroke-bus fill-none stroke-lime-500"
@@ -73,8 +71,7 @@ export function ALU() {
           d="M 272 115 h 28"
           pathLength={1}
           strokeDasharray={1}
-          strokeDashoffset={resultsProps.strokeDashoffset}
-          style={{ opacity: resultsProps.opacity }}
+          style={resultsStyle}
         />
         <animated.path
           className="stroke-bus fill-none stroke-lime-500"
@@ -82,8 +79,7 @@ export function ALU() {
           d="M 250 145 v 46"
           pathLength={1}
           strokeDasharray={1}
-          strokeDashoffset={resultsProps.strokeDashoffset}
-          style={{ opacity: resultsProps.opacity }}
+          style={resultsStyle}
         />
 
         {/* ALU */}
@@ -103,7 +99,7 @@ export function ALU() {
 
       <animated.span
         className="absolute left-[260px] top-[50px] flex w-min items-center rounded-md border border-stone-600 px-2 py-1 font-mono leading-none"
-        style={operationProps}
+        style={operationStyle}
       >
         {operation}
       </animated.span>

@@ -171,7 +171,7 @@ export function generateAddressPath(from: MARRegister): string {
  * Bus component, to be used inside <CPU />
  */
 export function Bus() {
-  const { strokeDashoffset, opacity, path } = useSpring({
+  const { path, ...style } = useSpring({
     ref: animationRefs.cpu.highlightPath,
     from: { strokeDashoffset: 1, opacity: 1, path: "" },
   });
@@ -222,8 +222,7 @@ export function Bus() {
         strokeLinejoin="round"
         pathLength={1}
         strokeDasharray={1}
-        strokeDashoffset={strokeDashoffset}
-        style={{ opacity }}
+        style={style}
       />
     </svg>
   );

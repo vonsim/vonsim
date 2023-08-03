@@ -13,38 +13,41 @@ import { cycleAtom, registerAtoms } from "./state";
 
 export function CPU({ className }: { className?: string }) {
   return (
-    <div className={className}>
-      <div className="relative h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900">
-        <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-lime-700 px-2 py-1 text-3xl font-bold text-white">
-          CPU
-        </span>
+    <div
+      className={clsx(
+        "absolute h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900",
+        className,
+      )}
+    >
+      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-lime-700 px-2 py-1 text-3xl font-bold text-white">
+        CPU
+      </span>
 
-        <Bus />
+      <Bus />
 
-        <Reg name="left" className="left-[60px] top-[70px]" />
-        <Reg name="right" className="left-[60px] top-[130px]" />
-        <Reg name="result" className="left-[300px] top-[100px]" />
+      <Reg name="left" className="left-[60px] top-[70px]" />
+      <Reg name="right" className="left-[60px] top-[130px]" />
+      <Reg name="result" className="left-[300px] top-[100px]" />
 
-        <ALU />
+      <ALU />
 
-        <Reg name="AX" emphasis className="left-[520px] top-[30px]" />
-        <Reg name="BX" emphasis className="left-[520px] top-[70px]" />
-        <Reg name="CX" emphasis className="left-[520px] top-[110px]" />
-        <Reg name="DX" emphasis className="left-[520px] top-[150px]" />
-        <Reg name="id" className="left-[520px] top-[190px]" />
+      <Reg name="AX" emphasis className="left-[520px] top-[30px]" />
+      <Reg name="BX" emphasis className="left-[520px] top-[70px]" />
+      <Reg name="CX" emphasis className="left-[520px] top-[110px]" />
+      <Reg name="DX" emphasis className="left-[520px] top-[150px]" />
+      <Reg name="id" className="left-[520px] top-[190px]" />
 
-        <Reg name="MBR" className="right-[-38px] top-[233px]" />
+      <Reg name="MBR" className="right-[-38px] top-[233px]" />
 
-        <Reg name="IR" className="left-[171px] top-[270px]" />
+      <Reg name="IR" className="left-[171px] top-[270px]" />
 
-        <Control />
+      <Control />
 
-        <Reg name="IP" emphasis className="left-[450px] top-[292px]" />
-        <Reg name="SP" emphasis className="left-[450px] top-[332px]" />
-        <Reg name="ri" className="left-[450px] top-[372px]" />
+      <Reg name="IP" emphasis className="left-[450px] top-[292px]" />
+      <Reg name="SP" emphasis className="left-[450px] top-[332px]" />
+      <Reg name="ri" className="left-[450px] top-[372px]" />
 
-        <Reg name="MAR" className="right-[-51px] top-[333px]" />
-      </div>
+      <Reg name="MAR" className="right-[-51px] top-[333px]" />
     </div>
   );
 }
