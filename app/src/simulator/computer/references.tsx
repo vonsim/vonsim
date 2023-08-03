@@ -8,6 +8,10 @@ import { getSpeeds } from "@/lib/settings";
  * @see {@link https://react-spring.dev/docs/advanced/spring-ref}
  */
 export const animationRefs = {
+  bus: {
+    mar: SpringRef<{ stroke: string }>(),
+    mbr: SpringRef<{ stroke: string }>(),
+  },
   cpu: {
     highlightPath: SpringRef<{ strokeDashoffset: number; opacity: number; path: string }>(),
     aluOperands: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
@@ -16,6 +20,9 @@ export const animationRefs = {
     aluOperation: SpringRef<{ backgroundColor: string }>(),
     decoderPath: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
     decoderProgress: SpringRef<{ progress: number; opacity: number }>(),
+    rd: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
+    wr: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
+    iom: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
     AX: SpringRef<{ backgroundColor: string }>(),
     BX: SpringRef<{ backgroundColor: string }>(),
     CX: SpringRef<{ backgroundColor: string }>(),

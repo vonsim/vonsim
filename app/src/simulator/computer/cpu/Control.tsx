@@ -46,8 +46,68 @@ export function Control() {
     from: { progress: 0, opacity: 1 },
   });
 
+  const rdStyle = useSpring({
+    ref: animationRefs.cpu.rd,
+    from: { strokeDashoffset: 1, opacity: 1 },
+  });
+
+  const wrStyle = useSpring({
+    ref: animationRefs.cpu.wr,
+    from: { strokeDashoffset: 1, opacity: 1 },
+  });
+
+  const iomStyle = useSpring({
+    ref: animationRefs.cpu.iom,
+    from: { strokeDashoffset: 1, opacity: 1 },
+  });
+
   return (
     <>
+      <svg viewBox="0 0 650 500" className="absolute inset-0">
+        <animated.path
+          className="stroke-bus fill-none stroke-lime-500"
+          strokeLinejoin="round"
+          d="M 205 300 V 320"
+          pathLength={1}
+          strokeDasharray={1}
+          style={decoderPathStyle}
+        />
+
+        <text className="fill-stone-400 font-mono text-xs font-bold tracking-wider" x={384} y={415}>
+          rd
+        </text>
+        <animated.path
+          className="fill-none stroke-red-500 stroke-[4px]"
+          d="M 380 420 H 650"
+          strokeLinejoin="round"
+          pathLength={1}
+          strokeDasharray={1}
+          style={rdStyle}
+        />
+        <text className="fill-stone-400 font-mono text-xs font-bold tracking-wider" x={384} y={435}>
+          wr
+        </text>
+        <animated.path
+          className="fill-none stroke-red-500 stroke-[4px]"
+          d="M 380 440 H 650"
+          strokeLinejoin="round"
+          pathLength={1}
+          strokeDasharray={1}
+          style={wrStyle}
+        />
+        <text className="fill-stone-400 font-mono text-xs font-bold tracking-wider" x={384} y={455}>
+          io/m
+        </text>
+        <animated.path
+          className="fill-none stroke-red-500 stroke-[4px]"
+          d="M 380 460 H 650"
+          strokeLinejoin="round"
+          pathLength={1}
+          strokeDasharray={1}
+          style={iomStyle}
+        />
+      </svg>
+
       <div className="absolute bottom-[172px] left-[30px] flex w-full items-start">
         <span className="block w-min whitespace-nowrap rounded-t-lg border border-b-0 border-stone-600 bg-lime-700 px-2 pb-3 pt-1 text-xs font-semibold tracking-wide text-white">
           Unidad de control
@@ -103,17 +163,6 @@ export function Control() {
           </p>
         </div>
       </div>
-
-      <svg viewBox="0 0 650 500" className="absolute inset-0">
-        <animated.path
-          className="stroke-bus fill-none stroke-lime-500"
-          strokeLinejoin="round"
-          d="M 205 300 V 320"
-          pathLength={1}
-          strokeDasharray={1}
-          style={decoderPathStyle}
-        />
-      </svg>
     </>
   );
 }

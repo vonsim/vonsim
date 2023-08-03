@@ -216,6 +216,16 @@ export function Bus() {
         ].join(" ")}
       />
 
+      <path
+        className="fill-none stroke-stone-700 stroke-[4px]"
+        strokeLinejoin="round"
+        d={[
+          "M 380 420 H 650", // rd
+          "M 380 440 H 650", // wr
+          "M 380 460 H 650", // io/m
+        ].join(" ")}
+      />
+
       <animated.path
         d={path}
         className="stroke-bus fill-none stroke-lime-500"

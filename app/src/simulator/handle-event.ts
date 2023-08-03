@@ -1,14 +1,14 @@
 import { IOAddress, MemoryAddress } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 
+import { handleChipSelectEvent } from "./computer/bus/events";
 import { handleCPUEvent } from "./computer/cpu/events";
-import { handleChipSelectEvent } from "./computer/unfinished/chip-select";
+import { handleMemoryEvent } from "./computer/memory/events";
 import { handleClockEvent } from "./computer/unfinished/clock";
 import { handleConsoleEvent } from "./computer/unfinished/console";
 import { handleF10Event } from "./computer/unfinished/f10";
 import { handleHandshakeEvent } from "./computer/unfinished/handshake";
 import { handleLedsEvent } from "./computer/unfinished/leds";
-import { handleMemoryEvent } from "./computer/unfinished/memory";
 import { handlePICEvent } from "./computer/unfinished/pic";
 import { handlePIOEvent } from "./computer/unfinished/pio";
 import { handlePrinterEvent } from "./computer/unfinished/printer";
@@ -83,7 +83,7 @@ export async function handleEvent(event: SimulatorEvent) {
   if (ns === "f10") return handleF10Event(event as SimulatorEvent<"f10:">);
   if (ns === "handshake") return handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
   if (ns === "leds") return handleLedsEvent(event as SimulatorEvent<"leds:">);
-  if (ns === "memory") return handleMemoryEvent(event as SimulatorEvent<"memory:">);
+  if (ns === "memory") return await handleMemoryEvent(event as SimulatorEvent<"memory:">);
   if (ns === "pic") return handlePICEvent(event as SimulatorEvent<"pic:">);
   if (ns === "pio") return handlePIOEvent(event as SimulatorEvent<"pio:">);
   if (ns === "printer") return handlePrinterEvent(event as SimulatorEvent<"printer:">);

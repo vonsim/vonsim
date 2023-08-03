@@ -180,6 +180,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await drawAddressPath(event.register);
       await activateRegister("MAR");
       store.set(MARAtom, store.get(registerAtoms[event.register]));
+      await anim("bus.mar", { stroke: colors.sky[300] }, { duration: 5, easing: "easeOutSine" });
       await Promise.all([deactivateRegister("MAR"), resetPath()]);
       return;
     }
@@ -198,6 +199,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await drawDataPath(reg, "MBR");
       await activateRegister("MBR");
       store.set(MBRAtom, store.get(registerAtoms[event.register]));
+      await anim("bus.mbr", { stroke: colors.amber[500] }, { duration: 5, easing: "easeOutSine" });
       await Promise.all([deactivateRegister("MBR"), resetPath()]);
       return;
     }
