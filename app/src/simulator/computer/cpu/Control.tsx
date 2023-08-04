@@ -37,28 +37,13 @@ export function Control() {
   });
 
   const decoderPathStyle = useSpring({
-    ref: animationRefs.cpu.decoderPath,
+    ref: animationRefs.cpu.decoder.path,
     from: { strokeDashoffset: 1, opacity: 1 },
   });
 
   const decoderProgressStyle = useSpring({
-    ref: animationRefs.cpu.decoderProgress,
+    ref: animationRefs.cpu.decoder.progress,
     from: { progress: 0, opacity: 1 },
-  });
-
-  const rdStyle = useSpring({
-    ref: animationRefs.cpu.rd,
-    from: { strokeDashoffset: 1, opacity: 1 },
-  });
-
-  const wrStyle = useSpring({
-    ref: animationRefs.cpu.wr,
-    from: { strokeDashoffset: 1, opacity: 1 },
-  });
-
-  const iomStyle = useSpring({
-    ref: animationRefs.cpu.iom,
-    from: { strokeDashoffset: 1, opacity: 1 },
   });
 
   return (
@@ -71,40 +56,6 @@ export function Control() {
           pathLength={1}
           strokeDasharray={1}
           style={decoderPathStyle}
-        />
-
-        <text className="fill-stone-400 font-mono text-xs font-bold tracking-wider" x={384} y={415}>
-          rd
-        </text>
-        <animated.path
-          className="fill-none stroke-red-500 stroke-[4px]"
-          d="M 380 420 H 650"
-          strokeLinejoin="round"
-          pathLength={1}
-          strokeDasharray={1}
-          style={rdStyle}
-        />
-        <text className="fill-stone-400 font-mono text-xs font-bold tracking-wider" x={384} y={435}>
-          wr
-        </text>
-        <animated.path
-          className="fill-none stroke-red-500 stroke-[4px]"
-          d="M 380 440 H 650"
-          strokeLinejoin="round"
-          pathLength={1}
-          strokeDasharray={1}
-          style={wrStyle}
-        />
-        <text className="fill-stone-400 font-mono text-xs font-bold tracking-wider" x={384} y={455}>
-          io/m
-        </text>
-        <animated.path
-          className="fill-none stroke-red-500 stroke-[4px]"
-          d="M 380 460 H 650"
-          strokeLinejoin="round"
-          pathLength={1}
-          strokeDasharray={1}
-          style={iomStyle}
         />
       </svg>
 

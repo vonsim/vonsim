@@ -27,22 +27,22 @@ export function ALU() {
   });
 
   const operandsStyle = useSpring({
-    ref: animationRefs.cpu.aluOperands,
+    ref: animationRefs.cpu.alu.operands,
     from: { strokeDashoffset: 1, opacity: 1 },
   });
 
   const operationStyle = useSpring({
-    ref: animationRefs.cpu.aluOperation,
+    ref: animationRefs.cpu.alu.operation,
     from: { backgroundColor: colors.stone[800] },
   });
 
   const cogProps = useSpring({
-    ref: animationRefs.cpu.aluCog,
+    ref: animationRefs.cpu.alu.cog,
     from: { rot: 0 },
   });
 
   const resultsStyle = useSpring({
-    ref: animationRefs.cpu.aluResults,
+    ref: animationRefs.cpu.alu.results,
     from: { strokeDashoffset: 1, opacity: 1 },
   });
 

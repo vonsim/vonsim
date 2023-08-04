@@ -8,10 +8,10 @@ import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish } from "@/simulator/state";
 
 export async function populateDataBus(data: Byte<8>) {
-  await anim("bus.data", { stroke: colors.amber[500] }, { duration: 5, easing: "easeOutSine" });
+  await anim("bus.data", { stroke: colors.mantis[400] }, { duration: 5, easing: "easeOutSine" });
   await anim(
     "cpu.MBR",
-    { backgroundColor: colors.mantis[500] },
+    { backgroundColor: colors.mantis[400] },
     { duration: 1, easing: "easeOutQuart" },
   );
   store.set(MBRAtom, data);
@@ -37,9 +37,9 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
       await Promise.all([
         anim("bus.address", { stroke: colors.stone[700] }, config),
         anim("bus.data", { stroke: colors.stone[700] }, config),
-        anim("cpu.rd", { opacity: 0 }, config),
-        anim("cpu.wr", { opacity: 0 }, config),
-        anim("cpu.iom", { opacity: 0 }, config),
+        anim("cpu.internalBus.rd", { opacity: 0 }, config),
+        anim("cpu.internalBus.wr", { opacity: 0 }, config),
+        anim("cpu.internalBus.iom", { opacity: 0 }, config),
       ]);
       return;
     }

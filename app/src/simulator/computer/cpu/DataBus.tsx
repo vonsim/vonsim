@@ -10,15 +10,11 @@
  * I've used graphology because seems to be the most popular graph library
  * for JS, and it's well documented.
  *
- * Also, there are two internal buses in the CPU: the big "data bus" and
- * very small "address bus". This is because of how they are represented
- * visually in the diagram, but they are similar.
- *
  * @see {@link https://graphology.github.io/}
  */
 
 import { animated, useSpring } from "@react-spring/web";
-import type { MARRegister, PhysicalRegister } from "@vonsim/simulator/cpu";
+import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import { UndirectedGraph } from "graphology";
 import { bidirectional } from "graphology-shortest-path/unweighted";
 
@@ -121,58 +117,12 @@ export function generateDataPath(from: DataRegister, to: DataRegister): string {
   return d;
 }
 
-// ============================================================================
-
-const addressBus = new UndirectedGraph<Node>({ allowSelfLoops: false });
-
-// These are the endpoints of the bus
-addressBus.addNode("MAR", { position: [598, 349] });
-addressBus.addNode("IP", { position: [551, 309] });
-addressBus.addNode("SP", { position: [551, 349] });
-addressBus.addNode("ri", { position: [544, 388] });
-
-// These are the intermediate nodes
-addressBus.addNode("IP join", { position: [575, 309] });
-addressBus.addNode("SP join", { position: [575, 349] });
-addressBus.addNode("ri join", { position: [575, 388] });
-
-// These are the lines
-addressBus.addUndirectedEdge("IP", "IP join");
-addressBus.addUndirectedEdge("SP", "SP join");
-addressBus.addUndirectedEdge("ri", "ri join");
-addressBus.addUndirectedEdge("IP join", "SP join");
-addressBus.addUndirectedEdge("ri join", "SP join");
-addressBus.addUndirectedEdge("SP join", "MAR");
-
-export type { MARRegister as AddressRegister };
-
 /**
- * Given an {@link MARRegister}, returns the shortest path between it
- * and the MAR register.
- * @returns The path as a SVG path.
- * @throws If there is the register isn't valid.
+ * DataBus component, to be used inside <CPU />
  */
-export function generateAddressPath(from: MARRegister): string {
-  const path = bidirectional(addressBus, from, "MAR");
-  if (!path) throw new Error(`Invalid register ${from}`);
-
-  const start = addressBus.getNodeAttribute(path[0], "position");
-  let d = `M ${start[0]} ${start[1]}`;
-
-  for (let i = 1; i < path.length; i++) {
-    const [x, y] = addressBus.getNodeAttribute(path[i], "position");
-    d += ` L ${x} ${y}`;
-  }
-
-  return d;
-}
-
-/**
- * InternalBus component, to be used inside <CPU />
- */
-export function InternalBus() {
+export function DataBus() {
   const { path, ...style } = useSpring({
-    ref: animationRefs.cpu.highlightPath,
+    ref: animationRefs.cpu.internalBus.data,
     from: { strokeDashoffset: 1, opacity: 1, path: "" },
   });
 
@@ -201,11 +151,6 @@ export function InternalBus() {
           "V 250", // Long path to MBR, here to get nice joins
           "M 451 349 H 421", // SP
           "M 451 309 H 421", // IP
-          // MAR bus
-          "M 551 309 H 575 V 349", // IP
-          "M 551 349 H 575", // SP
-          "M 544 388 H 575 V 349", // ri
-          "M 551 349 H 598", // Connection to MAR
           // Data registers
           "M 522 45 H 492", // AX
           "V 250", // Long path to MBR, here to get nice joins
@@ -213,16 +158,6 @@ export function InternalBus() {
           "M 522 125 H 492", // CX
           "M 522 165 H 492", // DX
           "M 522 205 H 492", // id
-        ].join(" ")}
-      />
-
-      <path
-        className="fill-none stroke-stone-700 stroke-[4px]"
-        strokeLinejoin="round"
-        d={[
-          "M 380 420 H 650", // rd
-          "M 380 440 H 650", // wr
-          "M 380 460 H 650", // io/m
         ].join(" ")}
       />
 

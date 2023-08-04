@@ -9,14 +9,11 @@
  */
 
 export const colors = {
-  amber: {
-    500: "#f59e0b",
+  blue: {
+    500: "#3b82f6",
   },
   mantis: {
-    500: "#61a146",
-  },
-  sky: {
-    300: "#7dd3fc",
+    400: "#82bd69",
   },
   stone: {
     600: "#57534e",

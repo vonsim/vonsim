@@ -6,9 +6,11 @@ import { useAtomValue } from "jotai";
 import { colors } from "@/lib/tailwind";
 import { animationRefs } from "@/simulator/computer/references";
 
+import { AddressBus } from "./AddressBus";
 import { ALU } from "./ALU";
 import { Control } from "./Control";
-import { InternalBus } from "./InternalBus";
+import { ControlBus } from "./ControlBus";
+import { DataBus } from "./DataBus";
 import { cycleAtom, registerAtoms } from "./state";
 
 export function CPU({ className }: { className?: string }) {
@@ -23,7 +25,9 @@ export function CPU({ className }: { className?: string }) {
         CPU
       </span>
 
-      <InternalBus />
+      <AddressBus />
+      <ControlBus />
+      <DataBus />
 
       <Reg name="left" className="left-[60px] top-[70px]" />
       <Reg name="right" className="left-[60px] top-[130px]" />

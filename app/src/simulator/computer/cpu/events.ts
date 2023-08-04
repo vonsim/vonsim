@@ -4,47 +4,34 @@ import { parseRegister } from "@vonsim/simulator/cpu/utils";
 import { highlightLine } from "@/editor/methods";
 import { store } from "@/lib/jotai";
 import { colors } from "@/lib/tailwind";
+import { generateAddressPath } from "@/simulator/computer/cpu/AddressBus";
 import { anim } from "@/simulator/computer/references";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish, startDebugger } from "@/simulator/state";
 
-import {
-  AddressRegister,
-  DataRegister,
-  generateAddressPath,
-  generateDataPath,
-} from "./InternalBus";
+import { DataRegister, generateDataPath } from "./DataBus";
 import { aluOperationAtom, cycleAtom, MARAtom, MBRAtom, registerAtoms } from "./state";
-
-const drawAddressPath = (from: AddressRegister) => {
-  const path = generateAddressPath(from);
-  return anim(
-    "cpu.highlightPath",
-    { from: { strokeDashoffset: 1, opacity: 1, path }, to: { strokeDashoffset: 0 } },
-    { duration: 5, easing: "easeInOutSine" },
-  );
-};
 
 const drawDataPath = (from: DataRegister, to: DataRegister) => {
   const path = generateDataPath(from, to);
   return anim(
-    "cpu.highlightPath",
+    "cpu.internalBus.data",
     { from: { strokeDashoffset: 1, opacity: 1, path }, to: { strokeDashoffset: 0 } },
     { duration: 5, easing: "easeInOutSine" },
   );
 };
 
-const resetPath = () =>
-  anim("cpu.highlightPath", { opacity: 0 }, { duration: 1, easing: "easeInSine" });
+const resetDataPath = () =>
+  anim("cpu.internalBus.data", { opacity: 0 }, { duration: 1, easing: "easeInSine" });
 
-const activateRegister = (reg: PhysicalRegister | "MAR" | "MBR") =>
+const activateRegister = (reg: PhysicalRegister | "MBR") =>
   anim(
     `cpu.${reg}`,
-    { backgroundColor: colors.mantis[500] },
+    { backgroundColor: colors.mantis[400] },
     { duration: 1, easing: "easeOutQuart" },
   );
 
-const deactivateRegister = (reg: PhysicalRegister | "MAR" | "MBR") =>
+const deactivateRegister = (reg: PhysicalRegister | "MBR") =>
   anim(
     `cpu.${reg}`,
     { backgroundColor: colors.stone[800] },
@@ -58,27 +45,27 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       const pathsResetConfig = { duration: 1, easing: "easeInSine" } as const;
 
       await anim(
-        "cpu.aluOperands",
+        "cpu.alu.operands",
         { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
         pathsDrawConfig,
       );
       store.set(aluOperationAtom, event.operation);
       await Promise.all([
         anim(
-          "cpu.aluOperation",
-          { backgroundColor: colors.mantis[500] },
+          "cpu.alu.operation",
+          { backgroundColor: colors.mantis[400] },
           { duration: 1, easing: "easeOutQuart" },
         ),
-        anim("cpu.aluCog", { rot: 6 }, { duration: 10, easing: "easeInOutCubic" }),
+        anim("cpu.alu.cog", { rot: 6 }, { duration: 10, easing: "easeInOutCubic" }),
       ]);
       await Promise.all([
         anim(
-          "cpu.aluOperation",
+          "cpu.alu.operation",
           { backgroundColor: colors.stone[800] },
           { duration: 1, easing: "easeOutQuart" },
         ),
         anim(
-          "cpu.aluResults",
+          "cpu.alu.results",
           { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
           pathsDrawConfig,
         ),
@@ -88,8 +75,8 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       store.set(registerAtoms.result, event.result);
       await Promise.all([deactivateRegister("result"), deactivateRegister("FLAGS")]);
       await Promise.all([
-        anim("cpu.aluOperands", { opacity: 0 }, pathsResetConfig),
-        anim("cpu.aluResults", { opacity: 0 }, pathsResetConfig),
+        anim("cpu.alu.operands", { opacity: 0 }, pathsResetConfig),
+        anim("cpu.alu.results", { opacity: 0 }, pathsResetConfig),
       ]);
       return;
     }
@@ -135,18 +122,18 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
 
     case "cpu:decode": {
       await anim(
-        "cpu.decoderPath",
+        "cpu.decoder.path",
         { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
         { duration: 3, easing: "easeInOutSine" },
       );
       await anim(
-        "cpu.decoderProgress",
+        "cpu.decoder.progress",
         { from: { progress: 0, opacity: 1 }, to: { progress: 1 } },
         { duration: 3, easing: "easeInOutSine" },
       );
       await Promise.all([
-        anim("cpu.decoderProgress", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
-        anim("cpu.decoderPath", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
+        anim("cpu.decoder.progress", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
+        anim("cpu.decoder.path", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
       ]);
       return;
     }
@@ -186,23 +173,39 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
     case "cpu:iom.on": {
       const line = event.type === "cpu:rd.on" ? "rd" : event.type === "cpu:wr.on" ? "wr" : "iom";
       await anim(
-        `cpu.${line}`,
-        { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+        `cpu.internalBus.${line}`,
+        { from: { width: 0, opacity: 1 }, to: { width: 1 } },
         { duration: 30, easing: "easeInOutSine" },
       );
       return;
     }
 
     case "cpu:mar.set": {
-      await drawAddressPath(event.register);
-      await activateRegister("MAR");
+      const path = generateAddressPath(event.register);
+      await anim(
+        "cpu.internalBus.address",
+        { from: { strokeDashoffset: 1, opacity: 1, path }, to: { strokeDashoffset: 0 } },
+        { duration: 5, easing: "easeInOutSine" },
+      );
+      await anim(
+        "cpu.MAR",
+        { backgroundColor: colors.blue[500] },
+        { duration: 1, easing: "easeOutQuart" },
+      );
       store.set(MARAtom, store.get(registerAtoms[event.register]));
       await anim(
         "bus.address",
-        { stroke: colors.sky[300] },
+        { stroke: colors.blue[500] },
         { duration: 5, easing: "easeOutSine" },
       );
-      await Promise.all([deactivateRegister("MAR"), resetPath()]);
+      await Promise.all([
+        anim(
+          "cpu.MAR",
+          { backgroundColor: colors.stone[800] },
+          { duration: 1, easing: "easeOutQuart" },
+        ),
+        anim("cpu.internalBus.address", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
+      ]);
       return;
     }
 
@@ -211,7 +214,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await drawDataPath("MBR", reg);
       await activateRegister(reg);
       store.set(registerAtoms[event.register], store.get(MBRAtom));
-      await Promise.all([deactivateRegister(reg), resetPath()]);
+      await Promise.all([deactivateRegister(reg), resetDataPath()]);
       return;
     }
 
@@ -220,8 +223,12 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await drawDataPath(reg, "MBR");
       await activateRegister("MBR");
       store.set(MBRAtom, store.get(registerAtoms[event.register]));
-      await anim("bus.data", { stroke: colors.amber[500] }, { duration: 5, easing: "easeOutSine" });
-      await Promise.all([deactivateRegister("MBR"), resetPath()]);
+      await anim(
+        "bus.data",
+        { stroke: colors.mantis[400] },
+        { duration: 5, easing: "easeOutSine" },
+      );
+      await Promise.all([deactivateRegister("MBR"), resetDataPath()]);
       return;
     }
 
@@ -232,7 +239,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await activateRegister(dest);
       // @ts-expect-error Registers types always match, see CPUMicroOperation
       store.set(registerAtoms[event.dest], store.get(registerAtoms[event.src]));
-      await Promise.all([deactivateRegister(dest), src !== dest && resetPath()]);
+      await Promise.all([deactivateRegister(dest), src !== dest && resetDataPath()]);
       return;
     }
 
