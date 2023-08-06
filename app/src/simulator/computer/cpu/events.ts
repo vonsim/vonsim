@@ -5,7 +5,7 @@ import { highlightLine } from "@/editor/methods";
 import { store } from "@/lib/jotai";
 import { colors } from "@/lib/tailwind";
 import { generateAddressPath } from "@/simulator/computer/cpu/AddressBus";
-import { anim } from "@/simulator/computer/references";
+import { anim } from "@/simulator/computer/shared/references";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish, startDebugger } from "@/simulator/state";
 
@@ -95,6 +95,20 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
     case "cpu:cycle.start": {
       highlightLine(event.instruction.position.start);
       store.set(cycleAtom, { phase: "fetching", metadata: event.instruction });
+      console.log(
+        await Promise.all([
+          anim(
+            "cpu.id",
+            { opacity: event.instruction.willUse.id ? 1 : 0.4 },
+            { duration: 0.5, easing: "easeInOutQuad" },
+          ),
+          anim(
+            "cpu.ri",
+            { opacity: event.instruction.willUse.ri ? 1 : 0.4 },
+            { duration: 0.5, easing: "easeInOutQuad" },
+          ),
+        ]),
+      );
       return;
     }
 

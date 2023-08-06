@@ -1,7 +1,7 @@
 import { animated, useSpring } from "@react-spring/web";
 import type { MARRegister } from "@vonsim/simulator/cpu";
 
-import { animationRefs } from "@/simulator/computer/references";
+import { animationRefs } from "@/simulator/computer/shared/references";
 
 export type { MARRegister as AddressRegister };
 

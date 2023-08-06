@@ -3,7 +3,7 @@ import type { Byte } from "@vonsim/common/byte";
 import { store } from "@/lib/jotai";
 import { colors } from "@/lib/tailwind";
 import { MBRAtom } from "@/simulator/computer/cpu/state";
-import { anim } from "@/simulator/computer/references";
+import { anim } from "@/simulator/computer/shared/references";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish } from "@/simulator/state";
 

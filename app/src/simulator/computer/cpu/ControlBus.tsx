@@ -1,6 +1,6 @@
 import { animated, useSpring } from "@react-spring/web";
 
-import { animationRefs } from "@/simulator/computer/references";
+import { animationRefs } from "@/simulator/computer/shared/references";
 
 /**
  * ControlBus component, to be used inside <CPU />

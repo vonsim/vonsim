@@ -18,7 +18,7 @@ import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import { UndirectedGraph } from "graphology";
 import { bidirectional } from "graphology-shortest-path/unweighted";
 
-import { animationRefs } from "@/simulator/computer/references";
+import { animationRefs } from "@/simulator/computer/shared/references";
 
 type Node = { position: [x: number, y: number] };
 

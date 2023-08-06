@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { useSpeeds } from "@/hooks/useSettings";
-import { animationRefs } from "@/simulator/computer/references";
+import { animationRefs } from "@/simulator/computer/shared/references";
 
 import { cycleAtom } from "./state";
 

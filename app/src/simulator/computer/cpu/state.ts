@@ -1,9 +1,10 @@
-import { Byte, ByteSize } from "@vonsim/common/byte";
+import { Byte } from "@vonsim/common/byte";
 import type { ComputerState, SimulatorError } from "@vonsim/simulator";
 import type { ByteRegister, InstructionMetadata, WordRegister } from "@vonsim/simulator/cpu";
 import { atom, PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
 import { store } from "@/lib/jotai";
+import type { ByteAtom } from "@/simulator/computer/shared/types";
 
 const AXAtom = atom(Byte.zero(16)); // Accumulator
 const BXAtom = atom(Byte.zero(16)); // Base
@@ -44,12 +45,6 @@ const highAtom = (
       set(primitive, value.withHigh(high));
     },
   );
-
-export type ByteAtom<TSize extends ByteSize> = WritableAtom<
-  Byte<TSize>,
-  [SetStateAction<Byte<TSize>>],
-  void
->;
 
 type RegistersMap = Record<ByteRegister | "MBR", ByteAtom<8>> &
   Record<WordRegister | "MAR", ByteAtom<16>>;

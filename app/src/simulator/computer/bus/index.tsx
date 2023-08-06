@@ -2,7 +2,7 @@ import { animated, useSpring } from "@react-spring/web";
 import clsx from "clsx";
 
 import { colors } from "@/lib/tailwind";
-import { animationRefs } from "@/simulator/computer/references";
+import { animationRefs } from "@/simulator/computer/shared/references";
 
 export function SystemBus({ className }: { className?: string }) {
   const addressStyle = useSpring({

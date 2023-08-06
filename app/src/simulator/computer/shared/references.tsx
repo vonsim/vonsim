@@ -2,6 +2,7 @@ import { ControllerUpdate, easings, SpringRef } from "@react-spring/web";
 import dlv from "dlv";
 
 import { getSpeeds } from "@/lib/settings";
+import type { RegisterRef } from "@/simulator/computer/shared/Register";
 
 /**
  * Spring references
@@ -30,21 +31,21 @@ export const animationRefs = {
       path: SpringRef<{ strokeDashoffset: number; opacity: number }>(),
       progress: SpringRef<{ progress: number; opacity: number }>(),
     },
-    AX: SpringRef<{ backgroundColor: string }>(),
-    BX: SpringRef<{ backgroundColor: string }>(),
-    CX: SpringRef<{ backgroundColor: string }>(),
-    DX: SpringRef<{ backgroundColor: string }>(),
-    SP: SpringRef<{ backgroundColor: string }>(),
-    IP: SpringRef<{ backgroundColor: string }>(),
-    IR: SpringRef<{ backgroundColor: string }>(),
-    ri: SpringRef<{ backgroundColor: string }>(),
-    id: SpringRef<{ backgroundColor: string }>(),
-    left: SpringRef<{ backgroundColor: string }>(),
-    right: SpringRef<{ backgroundColor: string }>(),
-    result: SpringRef<{ backgroundColor: string }>(),
-    FLAGS: SpringRef<{ backgroundColor: string }>(),
-    MAR: SpringRef<{ backgroundColor: string }>(),
-    MBR: SpringRef<{ backgroundColor: string }>(),
+    AX: SpringRef<RegisterRef>(),
+    BX: SpringRef<RegisterRef>(),
+    CX: SpringRef<RegisterRef>(),
+    DX: SpringRef<RegisterRef>(),
+    SP: SpringRef<RegisterRef>(),
+    IP: SpringRef<RegisterRef>(),
+    IR: SpringRef<RegisterRef>(),
+    ri: SpringRef<RegisterRef>(),
+    id: SpringRef<RegisterRef>(),
+    left: SpringRef<RegisterRef>(),
+    right: SpringRef<RegisterRef>(),
+    result: SpringRef<RegisterRef>(),
+    FLAGS: SpringRef<RegisterRef>(),
+    MAR: SpringRef<RegisterRef>(),
+    MBR: SpringRef<RegisterRef>(),
   },
 } as const;
 

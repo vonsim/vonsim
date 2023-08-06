@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
 import { colors } from "@/lib/tailwind";
-import { animationRefs } from "@/simulator/computer/references";
+import { animationRefs } from "@/simulator/computer/shared/references";
 
 import { aluOperationAtom, registerAtoms } from "./state";
 

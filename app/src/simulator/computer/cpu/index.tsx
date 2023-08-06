@@ -1,17 +1,15 @@
-import { animated, useSpring } from "@react-spring/web";
 import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import clsx from "clsx";
-import { useAtomValue } from "jotai";
 
-import { colors } from "@/lib/tailwind";
-import { animationRefs } from "@/simulator/computer/references";
+import { animationRefs } from "@/simulator/computer/shared/references";
+import { Register } from "@/simulator/computer/shared/Register";
 
 import { AddressBus } from "./AddressBus";
 import { ALU } from "./ALU";
 import { Control } from "./Control";
 import { ControlBus } from "./ControlBus";
 import { DataBus } from "./DataBus";
-import { cycleAtom, registerAtoms } from "./state";
+import { registerAtoms } from "./state";
 
 export function CPU({ className }: { className?: string }) {
   return (
@@ -58,43 +56,20 @@ export function CPU({ className }: { className?: string }) {
 
 function Reg({
   name,
-  emphasis = false,
+  emphasis,
   className,
 }: {
   name: PhysicalRegister | "MAR" | "MBR";
   emphasis?: boolean;
   className?: string;
 }) {
-  const cycle = useAtomValue(cycleAtom);
-  const reg = useAtomValue(registerAtoms[name]);
-  const low = reg.low;
-  const high = reg.is16bits() ? reg.high : null;
-
-  const style = useSpring({
-    ref: animationRefs.cpu[name],
-    from: { backgroundColor: colors.stone[800] },
-  });
-
-  // This fade is here instead of, for example, <CPU /> because updating the <CPU /> component
-  // causes the whole tree to re-render, which causes the animation to reset.
-  const fade =
-    (name === "id" || name === "ri") && "metadata" in cycle && !cycle.metadata.willUse[name];
-
   return (
-    <animated.div
-      className={clsx(
-        "absolute flex w-min items-center rounded-md border bg-stone-800 px-2 py-1 font-mono leading-none transition-opacity",
-        emphasis ? "border-mantis-400 text-lg" : "border-stone-600 text-base",
-        fade && "opacity-40",
-        className,
-      )}
-      style={style}
-    >
-      <span className="mr-2 font-bold">{name}</span>
-      {high && (
-        <span className="mr-0.5 rounded bg-stone-900 p-0.5 font-light">{high.toString("hex")}</span>
-      )}
-      <span className="rounded bg-stone-900 p-0.5 font-light">{low.toString("hex")}</span>
-    </animated.div>
+    <Register
+      name={name}
+      valueAtom={registerAtoms[name]}
+      springRef={animationRefs.cpu[name]}
+      emphasis={emphasis}
+      className={clsx("absolute", className)}
+    />
   );
 }
