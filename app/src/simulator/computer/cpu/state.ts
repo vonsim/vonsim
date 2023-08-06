@@ -108,21 +108,21 @@ export const cycleAtom = atom<Cycle>({ phase: "stopped" });
 
 export const aluOperationAtom = atom("ADD");
 
-export function resetCPUState(cumputer: ComputerState) {
-  store.set(registerAtoms.AX, Byte.fromUnsigned(cumputer.cpu.AX, 16));
-  store.set(registerAtoms.BX, Byte.fromUnsigned(cumputer.cpu.BX, 16));
-  store.set(registerAtoms.CX, Byte.fromUnsigned(cumputer.cpu.CX, 16));
-  store.set(registerAtoms.DX, Byte.fromUnsigned(cumputer.cpu.DX, 16));
-  store.set(registerAtoms.SP, Byte.fromUnsigned(cumputer.cpu.SP, 16));
-  store.set(registerAtoms.IP, Byte.fromUnsigned(cumputer.cpu.IP, 16));
-  store.set(registerAtoms.IR, Byte.fromUnsigned(cumputer.cpu.IR, 8));
-  store.set(registerAtoms.ri, Byte.fromUnsigned(cumputer.cpu.ri, 16));
-  store.set(registerAtoms.id, Byte.fromUnsigned(cumputer.cpu.id, 16));
-  store.set(registerAtoms.left, Byte.fromUnsigned(cumputer.cpu.left, 16));
-  store.set(registerAtoms.right, Byte.fromUnsigned(cumputer.cpu.right, 16));
-  store.set(registerAtoms.result, Byte.fromUnsigned(cumputer.cpu.result, 16));
-  store.set(registerAtoms.FLAGS, Byte.fromUnsigned(cumputer.cpu.FLAGS, 16));
-  store.set(registerAtoms.MAR, Byte.fromUnsigned(cumputer.cpu.MAR, 16));
-  store.set(registerAtoms.MBR, Byte.fromUnsigned(cumputer.cpu.MBR, 8));
+export function resetCPUState(computer: ComputerState) {
+  store.set(registerAtoms.AX, Byte.fromUnsigned(computer.cpu.AX, 16));
+  store.set(registerAtoms.BX, Byte.fromUnsigned(computer.cpu.BX, 16));
+  store.set(registerAtoms.CX, Byte.fromUnsigned(computer.cpu.CX, 16));
+  store.set(registerAtoms.DX, Byte.fromUnsigned(computer.cpu.DX, 16));
+  store.set(registerAtoms.SP, Byte.fromUnsigned(computer.cpu.SP, 16));
+  store.set(registerAtoms.IP, Byte.fromUnsigned(computer.cpu.IP, 16));
+  store.set(registerAtoms.IR, Byte.fromUnsigned(computer.cpu.IR, 8));
+  store.set(registerAtoms.ri, Byte.fromUnsigned(computer.cpu.ri, 16));
+  store.set(registerAtoms.id, Byte.fromUnsigned(computer.cpu.id, 16));
+  store.set(registerAtoms.left, Byte.fromUnsigned(computer.cpu.left, 16));
+  store.set(registerAtoms.right, Byte.fromUnsigned(computer.cpu.right, 16));
+  store.set(registerAtoms.result, Byte.fromUnsigned(computer.cpu.result, 16));
+  store.set(registerAtoms.FLAGS, Byte.fromUnsigned(computer.cpu.FLAGS, 16));
+  store.set(registerAtoms.MAR, Byte.fromUnsigned(computer.cpu.MAR, 16));
+  store.set(registerAtoms.MBR, Byte.fromUnsigned(computer.cpu.MBR, 8));
   store.set(cycleAtom, { phase: "stopped" });
 }

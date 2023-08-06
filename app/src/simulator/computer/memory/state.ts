@@ -28,9 +28,9 @@ export const memoryShownAtom = atom<MemoryShown>(get => {
   return result;
 });
 
-export function resetMemoryState(cumputer: ComputerState) {
+export function resetMemoryState(computer: ComputerState) {
   store.set(
     memoryAtom,
-    cumputer.memory.map(byte => Byte.fromUnsigned(byte, 8)),
+    computer.memory.map(byte => Byte.fromUnsigned(byte, 8)),
   );
 }
