@@ -9,7 +9,7 @@ import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
 import { getDataOnLoad, getDevices, getLanguage, getSpeeds } from "@/lib/settings";
 import { resetCPUState } from "@/simulator/computer/cpu/state";
-import { memoryAtom } from "@/simulator/computer/memory/state";
+import { resetMemoryState } from "@/simulator/computer/memory/state";
 import { DATAAtom, STATEAtom } from "@/simulator/computer/unfinished/handshake";
 import { ledsAtom } from "@/simulator/computer/unfinished/leds";
 import { IMRAtom, IRRAtom, ISRAtom, linesAtom } from "@/simulator/computer/unfinished/pic";
@@ -49,10 +49,7 @@ function assembleError() {
 
 function resetState(state: ComputerState) {
   resetCPUState(state);
-  store.set(
-    memoryAtom,
-    state.memory.map(byte => Byte.fromUnsigned(byte, 8)),
-  );
+  resetMemoryState(state);
   store.set(IMRAtom, Byte.fromUnsigned(state.io.pic.IMR, 8));
   store.set(IRRAtom, Byte.fromUnsigned(state.io.pic.IRR, 8));
   store.set(ISRAtom, Byte.fromUnsigned(state.io.pic.ISR, 8));
