@@ -178,10 +178,18 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
     }
 
     case "cpu:rd.on":
-    case "cpu:wr.on":
+    case "cpu:wr.on": {
+      const line = event.type === "cpu:rd.on" ? "rd" : "wr";
+      await anim(
+        `bus.${line}`,
+        { stroke: colors.red[500] },
+        { duration: 5, easing: "easeOutSine" },
+      );
+      return;
+    }
+
     case "cpu:iom.on": {
-      const line = event.type === "cpu:rd.on" ? "rd" : event.type === "cpu:wr.on" ? "wr" : "iom";
-      await turnLineOn(line, 30);
+      await turnLineOn("iom", 15);
       return;
     }
 

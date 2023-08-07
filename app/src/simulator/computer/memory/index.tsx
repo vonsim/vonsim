@@ -9,7 +9,7 @@ export function Memory({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "absolute h-[400px] w-[150px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
+        "absolute z-10 h-[400px] w-[150px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
         className,
       )}
     >

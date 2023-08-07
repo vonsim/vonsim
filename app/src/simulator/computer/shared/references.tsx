@@ -13,9 +13,11 @@ export const animationRefs = {
   bus: {
     address: SpringRef<{ stroke: string }>(),
     data: SpringRef<{ stroke: string }>(),
-    rd: SpringRef<ControlLine>(),
-    wr: SpringRef<ControlLine>(),
+    rd: SpringRef<{ stroke: string }>(),
+    wr: SpringRef<{ stroke: string }>(),
     iom: SpringRef<ControlLine>(),
+    mem: SpringRef<{ stroke: string }>(),
+    pic: SpringRef<ControlLine>(),
     intr: SpringRef<ControlLine>(),
     inta: SpringRef<ControlLine>(),
     int0: SpringRef<ControlLine>(),

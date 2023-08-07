@@ -15,6 +15,9 @@ export const colors = {
   mantis: {
     400: "#82bd69",
   },
+  red: {
+    500: "#ef4444",
+  },
   stone: {
     600: "#57534e",
     700: "#44403c",

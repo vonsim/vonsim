@@ -9,7 +9,7 @@ export function PIC({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "absolute flex h-[200px] w-[450px] flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
+        "absolute z-10 flex h-[200px] w-[450px] flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
         className,
       )}
     >

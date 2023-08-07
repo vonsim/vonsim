@@ -18,15 +18,16 @@ export function ComputerContainer() {
   return (
     <TransformWrapper minScale={0.5} centerOnInit>
       <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
-        <div className="relative h-[1000px] w-[1000px] border border-red-500">
+        <div className="relative h-[1100px] w-[1500px] border border-red-500">
           <SystemBus className="left-0 top-0" />
-          <CPU className="left-0 top-0" />
-          <Memory className="left-[800px] top-[50px]" />
 
-          <PIC className="left-0 top-[600px]" />
+          <CPU className="left-0 top-0" />
+          <Memory className="left-[800px] top-0" />
+
+          <PIC className="left-0 top-[700px]" />
           <Timer className="left-[800px] top-[50px]" />
 
-          <F10 className="left-[50px] top-[850px]" />
+          <F10 className="left-[50px] top-[950px]" />
         </div>
       </TransformComponent>
     </TransformWrapper>

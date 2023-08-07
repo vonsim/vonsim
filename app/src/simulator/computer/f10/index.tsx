@@ -23,7 +23,7 @@ export function F10({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "absolute flex h-min w-48 flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
+        "absolute z-10 flex h-min w-48 flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
         className,
       )}
     >
