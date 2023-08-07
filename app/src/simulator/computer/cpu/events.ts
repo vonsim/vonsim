@@ -80,26 +80,29 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
         if (prev.phase === "stopped") return prev;
         return { ...prev, phase: "interrupt" };
       });
+      // Interrupts handler uses id and ri
+      await Promise.all([
+        anim("cpu.id", { opacity: 1 }, { duration: 0.5, easing: "easeInOutQuad" }),
+        anim("cpu.ri", { opacity: 1 }, { duration: 0.5, easing: "easeInOutQuad" }),
+      ]);
       return;
     }
 
     case "cpu:cycle.start": {
       highlightLine(event.instruction.position.start);
       store.set(cycleAtom, { phase: "fetching", metadata: event.instruction });
-      console.log(
-        await Promise.all([
-          anim(
-            "cpu.id",
-            { opacity: event.instruction.willUse.id ? 1 : 0.4 },
-            { duration: 0.5, easing: "easeInOutQuad" },
-          ),
-          anim(
-            "cpu.ri",
-            { opacity: event.instruction.willUse.ri ? 1 : 0.4 },
-            { duration: 0.5, easing: "easeInOutQuad" },
-          ),
-        ]),
-      );
+      await Promise.all([
+        anim(
+          "cpu.id",
+          { opacity: event.instruction.willUse.id ? 1 : 0.4 },
+          { duration: 0.5, easing: "easeInOutQuad" },
+        ),
+        anim(
+          "cpu.ri",
+          { opacity: event.instruction.willUse.ri ? 1 : 0.4 },
+          { duration: 0.5, easing: "easeInOutQuad" },
+        ),
+      ]);
       return;
     }
 
