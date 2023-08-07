@@ -14,7 +14,7 @@ export type PICOperation =
   | { type: "pic:read.ok"; value: Byte<8> }
   | { type: "pic:write"; register: PICRegister; value: Byte<8> }
   | { type: "pic:write.ok" }
-  | { type: "pic:register.update"; register: Omit<PICRegister, "EOI">; value: Byte<8> }
+  | { type: "pic:register.update"; register: Exclude<PICRegister, "EOI">; value: Byte<8> }
   | { type: "pic:intr.on" }
   | { type: "pic:intr.off" }
   | { type: "pic:int.send"; number: Byte<8> };

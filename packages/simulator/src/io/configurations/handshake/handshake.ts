@@ -14,7 +14,8 @@ export type HandshakeOperation =
   | { type: "handshake:write"; register: HandshakeRegister; value: Byte<8> }
   | { type: "handshake:write.ok" }
   | { type: "handshake:register.update"; register: HandshakeRegister; value: Byte<8> }
-  | { type: "handshake:interrupt" };
+  | { type: "handshake:int.on" }
+  | { type: "handshake:int.off" };
 
 /**
  * The handshake is a module that allows the CPU to communicate with the printer.
@@ -103,11 +104,14 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
         yield* this.computer.io.printer.setStrobe(false);
         this.#STATE = this.#STATE.withBit(1, false);
         yield { type: "handshake:register.update", register, value: this.#STATE };
-      }
-
-      // Update interrupt line
-      if (this.interrupts && !this.computer.io.printer.busy) {
-        yield* this.computer.io.pic.interrupt(2);
+      } else {
+        // In any other case, check if printer is ready
+        if (this.interrupts && !this.computer.io.printer.busy) {
+          yield { type: "handshake:int.on" };
+          yield* this.computer.io.pic.interrupt(2);
+        } else {
+          yield { type: "handshake:int.off" };
+        }
       }
     } else {
       return register; // Exhaustive check
@@ -128,7 +132,12 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
     this.#STATE = this.#STATE.withBit(0, busy);
     yield { type: "handshake:register.update", register: "STATE", value: this.#STATE };
 
-    if (this.interrupts && !busy) yield* this.computer.io.pic.interrupt(2);
+    if (this.interrupts && !busy) {
+      yield { type: "handshake:int.on" };
+      yield* this.computer.io.pic.interrupt(2);
+    } else {
+      yield { type: "handshake:int.off" };
+    }
   }
 
   toJSON() {

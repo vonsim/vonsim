@@ -7,7 +7,6 @@ import { Register } from "@/simulator/computer/shared/Register";
 import { AddressBus } from "./AddressBus";
 import { ALU } from "./ALU";
 import { Control } from "./Control";
-import { ControlBus } from "./ControlBus";
 import { DataBus } from "./DataBus";
 import { registerAtoms } from "./state";
 
@@ -15,7 +14,7 @@ export function CPU({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "absolute h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900",
+        "absolute z-10 h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
         className,
       )}
     >
@@ -24,7 +23,6 @@ export function CPU({ className }: { className?: string }) {
       </span>
 
       <AddressBus />
-      <ControlBus />
       <DataBus />
 
       <Reg name="left" className="left-[60px] top-[70px]" />

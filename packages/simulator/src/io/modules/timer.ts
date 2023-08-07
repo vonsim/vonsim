@@ -14,7 +14,8 @@ export type TimerOperation =
   | { type: "timer:write"; register: TimerRegister; value: Byte<8> }
   | { type: "timer:write.ok" }
   | { type: "timer:register.update"; register: TimerRegister; value: Byte<8> }
-  | { type: "timer:interrupt" };
+  | { type: "timer:int.on" }
+  | { type: "timer:int.off" };
 
 /**
  * The timer is a module connected to a clock that interrupts the CPU
@@ -83,8 +84,10 @@ export class Timer extends IOModule<TimerRegister> {
     this.#CONT = value;
     yield { type: "timer:register.update", register: "CONT", value };
     if (this.#COMP.equals(value)) {
-      yield { type: "timer:interrupt" };
+      yield { type: "timer:int.on" };
       yield* this.computer.io.pic.interrupt(1);
+    } else {
+      yield { type: "timer:int.off" };
     }
   }
 

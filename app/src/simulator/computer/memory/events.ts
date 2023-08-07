@@ -1,7 +1,7 @@
 import { MemoryAddress } from "@vonsim/common/address";
 
 import { store } from "@/lib/jotai";
-import { populateDataBus } from "@/simulator/computer/bus/events";
+import { populateDataBus } from "@/simulator/computer/shared/animate";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish } from "@/simulator/state";
 

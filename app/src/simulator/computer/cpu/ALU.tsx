@@ -23,7 +23,7 @@ export function ALU() {
 
   const flagsStyle = useSpring({
     ref: animationRefs.cpu.FLAGS,
-    from: { backgroundColor: colors.stone[800] },
+    from: { backgroundColor: colors.stone[800], opacity: 1 },
   });
 
   const operandsStyle = useSpring({

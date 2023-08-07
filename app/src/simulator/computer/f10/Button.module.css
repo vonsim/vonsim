@@ -1,0 +1,69 @@
+/* Based on https://www.joshwcomeau.com/animation/3d-button/#mobile-enhancements-8 */
+.pushable {
+  @apply relative m-2 cursor-pointer border-none bg-transparent p-0 outline-offset-4;
+  transition: filter 250ms;
+
+  &:hover {
+    &:not(:disabled) {
+      filter: brightness(110%);
+    }
+
+    &:not(:focus-visible) {
+      @apply outline-none;
+    }
+
+    .front {
+      transform: translateY(-6px);
+      transition: transform 250ms theme(transitionTimingFunction.realistic-bounce);
+    }
+
+    .shadow {
+      transform: translateY(4px);
+      transition: transform 250ms theme(transitionTimingFunction.realistic-bounce);
+    }
+  }
+
+  &:active,
+  &:disabled {
+    .front {
+      transform: translateY(-2px);
+      transition: transform 34ms;
+    }
+
+    .shadow {
+      transform: translateY(1px);
+      transition: transform 34ms;
+    }
+  }
+
+  &:disabled {
+    @apply cursor-default;
+    filter: brightness(80%);
+  }
+}
+
+.shadow {
+  @apply absolute inset-0 rounded-xl bg-black/25;
+  will-change: transform;
+  transform: translateY(2px);
+  transition: transform 600ms theme(transitionTimingFunction.realistic);
+}
+
+.edge {
+  @apply absolute inset-0 rounded-xl;
+  background: linear-gradient(
+    to left,
+    theme(colors.red.900) 0%,
+    theme(colors.red.800) 8%,
+    theme(colors.red.800) 92%,
+    theme(colors.red.900) 100%
+  );
+}
+
+.front {
+  @apply relative block rounded-xl bg-red-600 px-10 py-3;
+  @apply text-lg font-medium text-white;
+  will-change: transform;
+  transform: translateY(-4px);
+  transition: transform 600ms theme(transitionTimingFunction.realistic);
+}

@@ -20,6 +20,7 @@ export type ConsoleEvent = { type: "console:read" } | { type: "console:write"; c
  */
 export class Console extends Component {
   #screen: string;
+  #lastCharRead: Byte<8> | null = null;
 
   constructor(options: ComponentInit) {
     super(options);
@@ -54,14 +55,29 @@ export class Console extends Component {
    * Called by the CPU.
    */
   *read(): EventGenerator<Byte<8>> {
-    // This event must be followed by a generator.next(Byte<8>)
-    const char = yield { type: "console:read" };
+    yield { type: "console:read" };
 
-    if (!(char instanceof Byte) || !char.is8bits()) {
+    // Between the yield and the next line, the outside will call `setLastCharRead`
+
+    const char = this.#lastCharRead;
+    if (!char) {
       throw new Error("INT 6 was not given a valid 8-bit character!");
     }
 
+    this.#lastCharRead = null;
     return char;
+  }
+
+  /**
+   * Saves a character from the keyboard (outside).
+   * @returns The character read as a Byte<8>.
+   * @see {@link https://vonsim.github.io/docs/io/devices/console/}.
+   *
+   * ---
+   * Called by the outside.
+   */
+  setLastCharRead(char: Byte<8>) {
+    this.#lastCharRead = char;
   }
 
   /**

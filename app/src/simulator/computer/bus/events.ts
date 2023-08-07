@@ -1,26 +1,7 @@
-import type { Byte } from "@vonsim/common/byte";
-
-import { store } from "@/lib/jotai";
 import { colors } from "@/lib/tailwind";
-import { MBRAtom } from "@/simulator/computer/cpu/state";
-import { anim } from "@/simulator/computer/shared/references";
+import { anim, turnLineOff } from "@/simulator/computer/shared/animate";
 import type { SimulatorEvent } from "@/simulator/helpers";
 import { finish } from "@/simulator/state";
-
-export async function populateDataBus(data: Byte<8>) {
-  await anim("bus.data", { stroke: colors.mantis[400] }, { duration: 5, easing: "easeOutSine" });
-  await anim(
-    "cpu.MBR",
-    { backgroundColor: colors.mantis[400] },
-    { duration: 1, easing: "easeOutQuart" },
-  );
-  store.set(MBRAtom, data);
-  await anim(
-    "cpu.MBR",
-    { backgroundColor: colors.stone[800] },
-    { duration: 1, easing: "easeOutQuart" },
-  );
-}
 
 export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<void> {
   switch (event.type) {
@@ -33,13 +14,12 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
     }
 
     case "bus:reset": {
-      const config = { duration: 1, easing: "easeInSine" } as const;
       await Promise.all([
-        anim("bus.address", { stroke: colors.stone[700] }, config),
-        anim("bus.data", { stroke: colors.stone[700] }, config),
-        anim("cpu.internalBus.rd", { opacity: 0 }, config),
-        anim("cpu.internalBus.wr", { opacity: 0 }, config),
-        anim("cpu.internalBus.iom", { opacity: 0 }, config),
+        anim("bus.address", { stroke: colors.stone[700] }, { duration: 1, easing: "easeInSine" }),
+        anim("bus.data", { stroke: colors.stone[700] }, { duration: 1, easing: "easeInSine" }),
+        turnLineOff("rd"),
+        turnLineOff("wr"),
+        turnLineOff("iom"),
       ]);
       return;
     }

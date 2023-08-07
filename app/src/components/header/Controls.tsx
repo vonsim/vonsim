@@ -5,7 +5,6 @@ import { useEvent } from "react-use";
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
 import { speedsAtom } from "@/lib/settings";
-import { newStart } from "@/simulator/state";
 
 export function Controls() {
   const translate = useTranslate();
@@ -17,11 +16,11 @@ export function Controls() {
     (ev: KeyboardEvent) => {
       if (ev.key === "F5") {
         ev.preventDefault();
-        if (ev.shiftKey) dispatch("stop");
-        else dispatch("run");
+        if (ev.shiftKey) dispatch("cpu.stop");
+        else dispatch("cpu.run");
       } else if (ev.key === "F11") {
         ev.preventDefault();
-        dispatch("step");
+        dispatch("cpu.step");
       }
     },
     [dispatch],
@@ -33,8 +32,8 @@ export function Controls() {
     <div className="flex items-center justify-center gap-4 lg:h-full lg:justify-start">
       <button
         className="flex w-min items-center gap-1 rounded-md bg-mantis-500 p-2 text-mantis-50 transition-colors hover:enabled:bg-mantis-600 hover:enabled:text-white disabled:opacity-40"
-        disabled={status.type !== "stopped"}
-        onClick={newStart}
+        disabled={status.type === "running"}
+        onClick={() => dispatch("cpu.run")}
       >
         <span className="icon-[lucide--play] block h-5 w-5" />
         <span className="whitespace-nowrap font-semibold tracking-wide">

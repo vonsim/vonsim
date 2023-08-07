@@ -16,6 +16,7 @@ export const english = {
 
   messages: {
     "assemble-error": "Assemble error. Fix the errors and try again.",
+    "invalid-action": "Invalid action.",
   },
 
   cpu: {

@@ -1,34 +1,39 @@
-import { Byte } from "@vonsim/common/byte";
-import { atom } from "jotai";
-
 import { store } from "@/lib/jotai";
-import { MBRAtom } from "@/simulator/computer/cpu/state";
+import {
+  activateRegister,
+  deactivateRegister,
+  populateDataBus,
+  turnLineOff,
+  turnLineOn,
+} from "@/simulator/computer/shared/animate";
 import type { SimulatorEvent } from "@/simulator/helpers";
 
-export const CONTAtom = atom(Byte.zero(8));
-export const COMPAtom = atom(Byte.zero(8));
+import { COMPAtom, CONTAtom } from "./state";
 
-export function handleTimerEvent(event: SimulatorEvent<"timer:">): void {
+export async function handleTimerEvent(event: SimulatorEvent<"timer:">): Promise<void> {
   switch (event.type) {
     case "timer:read":
       return;
 
     case "timer:read.ok": {
-      store.set(MBRAtom, event.value);
+      await populateDataBus(event.value);
       return;
     }
 
     case "timer:write":
+      return;
+
     case "timer:register.update": {
+      await activateRegister(`timer.${event.register}`);
       switch (event.register) {
         case "CONT": {
           store.set(CONTAtom, event.value);
-          return;
+          break;
         }
 
         case "COMP": {
           store.set(COMPAtom, event.value);
-          return;
+          break;
         }
 
         default: {
@@ -36,13 +41,22 @@ export function handleTimerEvent(event: SimulatorEvent<"timer:">): void {
           return _exhaustiveCheck;
         }
       }
+      await deactivateRegister(`timer.${event.register}`);
+      return;
     }
 
     case "timer:write.ok":
       return;
 
-    case "timer:interrupt":
+    case "timer:int.off": {
+      await turnLineOff("int1");
       return;
+    }
+
+    case "timer:int.on": {
+      await turnLineOn("int1", 10);
+      return;
+    }
 
     default: {
       const _exhaustiveCheck: never = event;

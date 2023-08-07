@@ -3,17 +3,17 @@ import { Byte } from "@vonsim/common/byte";
 
 import { handleBusEvent } from "./computer/bus/events";
 import { handleCPUEvent } from "./computer/cpu/events";
+import { handleF10Event } from "./computer/f10/events";
 import { handleMemoryEvent } from "./computer/memory/events";
+import { handlePICEvent } from "./computer/pic/events";
+import { handleTimerEvent } from "./computer/timer/events";
 import { handleClockEvent } from "./computer/unfinished/clock";
 import { handleConsoleEvent } from "./computer/unfinished/console";
-import { handleF10Event } from "./computer/unfinished/f10";
 import { handleHandshakeEvent } from "./computer/unfinished/handshake";
 import { handleLedsEvent } from "./computer/unfinished/leds";
-import { handlePICEvent } from "./computer/unfinished/pic";
 import { handlePIOEvent } from "./computer/unfinished/pio";
 import { handlePrinterEvent } from "./computer/unfinished/printer";
 import { handleSwitchesEvent } from "./computer/unfinished/switches";
-import { handleTimerEvent } from "./computer/unfinished/timer";
 import type { SimulatorEvent } from "./helpers";
 
 const debugColors = {
@@ -80,15 +80,15 @@ export async function handleEvent(event: SimulatorEvent) {
   if (ns === "clock") return handleClockEvent(event as SimulatorEvent<"clock:">);
   if (ns === "console") return handleConsoleEvent(event as SimulatorEvent<"console:">);
   if (ns === "cpu") return await handleCPUEvent(event as SimulatorEvent<"cpu:">);
-  if (ns === "f10") return handleF10Event(event as SimulatorEvent<"f10:">);
+  if (ns === "f10") return await handleF10Event(event as SimulatorEvent<"f10:">);
   if (ns === "handshake") return handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
   if (ns === "leds") return handleLedsEvent(event as SimulatorEvent<"leds:">);
   if (ns === "memory") return await handleMemoryEvent(event as SimulatorEvent<"memory:">);
-  if (ns === "pic") return handlePICEvent(event as SimulatorEvent<"pic:">);
+  if (ns === "pic") return await handlePICEvent(event as SimulatorEvent<"pic:">);
   if (ns === "pio") return handlePIOEvent(event as SimulatorEvent<"pio:">);
   if (ns === "printer") return handlePrinterEvent(event as SimulatorEvent<"printer:">);
   if (ns === "switches") return handleSwitchesEvent(event as SimulatorEvent<"switches:">);
-  if (ns === "timer") return handleTimerEvent(event as SimulatorEvent<"timer:">);
+  if (ns === "timer") return await handleTimerEvent(event as SimulatorEvent<"timer:">);
 
   throw new Error(`Unknown event type: ${event.type}`);
 }

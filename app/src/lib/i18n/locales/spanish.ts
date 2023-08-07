@@ -17,6 +17,7 @@ export const spanish: Locale = {
 
   messages: {
     "assemble-error": "Error de ensamblado. Solucione los errores y vuelva a intentar.",
+    "invalid-action": "Acción inválida.",
   },
 
   cpu: {

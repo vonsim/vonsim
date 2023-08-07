@@ -1,46 +1,44 @@
-import { Byte } from "@vonsim/common/byte";
-import { atom } from "jotai";
-
 import { store } from "@/lib/jotai";
-import { MBRAtom } from "@/simulator/computer/cpu/state";
+import {
+  activateRegister,
+  deactivateRegister,
+  populateDataBus,
+  turnLineOff,
+  turnLineOn,
+} from "@/simulator/computer/shared/animate";
 import type { SimulatorEvent } from "@/simulator/helpers";
 
-export const IMRAtom = atom(Byte.fromUnsigned(0xff, 8));
-export const IRRAtom = atom(Byte.fromUnsigned(0x00, 8));
-export const ISRAtom = atom(Byte.fromUnsigned(0x00, 8));
-export const linesAtom = atom(new Array<Byte<8>>(8).fill(Byte.zero(8)));
+import { IMRAtom, IRRAtom, ISRAtom, linesAtoms } from "./state";
 
-export function handlePICEvent(event: SimulatorEvent<"pic:">): void {
+export async function handlePICEvent(event: SimulatorEvent<"pic:">): Promise<void> {
   switch (event.type) {
     case "pic:read":
       return;
 
     case "pic:read.ok": {
-      store.set(MBRAtom, event.value);
+      await populateDataBus(event.value);
       return;
     }
 
     case "pic:write":
-    case "pic:register.update": {
-      switch (event.register) {
-        case "EOI": {
-          // Do nothing!
-          return;
-        }
+      return;
 
+    case "pic:register.update": {
+      await activateRegister(`pic.${event.register}`);
+      switch (event.register) {
         case "IMR": {
           store.set(IMRAtom, event.value);
-          return;
+          break;
         }
 
         case "IRR": {
           store.set(IRRAtom, event.value);
-          return;
+          break;
         }
 
         case "ISR": {
           store.set(ISRAtom, event.value);
-          return;
+          break;
         }
 
         case "INT0":
@@ -52,28 +50,34 @@ export function handlePICEvent(event: SimulatorEvent<"pic:">): void {
         case "INT6":
         case "INT7": {
           const n = Number(event.register.slice(3));
-          store.set(linesAtom, lines => [...lines.slice(0, n), event.value, ...lines.slice(n + 1)]);
-          return;
+          store.set(linesAtoms[n], event.value);
+          break;
         }
 
         default: {
-          const _exhaustiveCheck: never = event.register;
+          const _exhaustiveCheck: never = event;
           return _exhaustiveCheck;
         }
       }
+      await deactivateRegister(`pic.${event.register}`);
+      return;
     }
 
     case "pic:write.ok":
       return;
 
-    case "pic:intr.off":
+    case "pic:intr.off": {
+      await turnLineOff("intr");
       return;
+    }
 
-    case "pic:intr.on":
+    case "pic:intr.on": {
+      await turnLineOn("intr", 10);
       return;
+    }
 
     case "pic:int.send": {
-      store.set(MBRAtom, event.number);
+      await populateDataBus(event.number);
       return;
     }
 
