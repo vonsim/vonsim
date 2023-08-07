@@ -2,6 +2,7 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 import { SystemBus } from "@/simulator/computer/bus";
 
+import { Clock } from "./clock";
 import { CPU } from "./cpu";
 import { F10 } from "./f10";
 import { Memory } from "./memory";
@@ -25,8 +26,9 @@ export function ComputerContainer() {
           <Memory className="left-[800px] top-0" />
 
           <PIC className="left-0 top-[700px]" />
-          <Timer className="left-[800px] top-[50px]" />
+          <Timer className="left-[500px] top-[875px]" />
 
+          <Clock className="left-[520px] top-[930px]" />
           <F10 className="left-[50px] top-[950px]" />
         </div>
       </TransformComponent>

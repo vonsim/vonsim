@@ -75,6 +75,13 @@ export type Speeds = {
 
   /**
    * This property stores how many execution units (see above) takes for
+   * the clock to tick. Should be a positive integer.
+   * Usually is a large number.
+   */
+  clock: number;
+
+  /**
+   * This property stores how many execution units (see above) takes for
    * the printer to print a character. Should be a positive integer.
    * Usually is a large number.
    */
@@ -85,6 +92,7 @@ export const speedsAtom = atomWithStorage<Speeds>(
   "speeds",
   {
     executionUnit: 150,
+    clock: 30,
     printer: 1000,
   },
   atomStorage,

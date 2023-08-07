@@ -11,6 +11,7 @@ import { getDataOnLoad, getDevices, getLanguage, getSpeeds } from "@/lib/setting
 import { resetCPUState } from "@/simulator/computer/cpu/state";
 import { resetMemoryState } from "@/simulator/computer/memory/state";
 import { resetPICState } from "@/simulator/computer/pic/state";
+import { anim, resumeAllAnimations, stopAllAnimations } from "@/simulator/computer/shared/animate";
 import { resetTimerState } from "@/simulator/computer/timer/state";
 import { DATAAtom, STATEAtom } from "@/simulator/computer/unfinished/handshake";
 import { ledsAtom } from "@/simulator/computer/unfinished/leds";
@@ -36,6 +37,7 @@ export function finish(error?: SimulatorError<any>) {
   highlightLine(null);
   setReadOnly(false);
   store.set(simulatorStateAtom, { type: "stopped", error });
+  stopAllAnimations();
 }
 
 export function startDebugger() {
@@ -84,7 +86,6 @@ function resetState(state: ComputerState) {
 
 type Action =
   | [action: "cpu.run"]
-  | [action: "cpu.pause"]
   | [action: "cpu.stop"]
   | [action: "f10.press"]
   | [action: "switch.toggle", index: number]
@@ -117,19 +118,32 @@ export async function dispatch(...args: Action) {
           devices: getDevices(),
         });
         resetState(simulator.getComputerState());
+
+        store.set(simulatorStateAtom, { type: "running", until: "infinity" });
+
+        startThread(simulator.startCPU());
+        startClock();
+      } else {
+        store.set(simulatorStateAtom, {
+          type: "running",
+          until: "infinity",
+          waitingForInput: false,
+        });
+
+        resumeAllAnimations();
       }
-
-      store.set(simulatorStateAtom, { type: "running", until: "infinity" });
-
-      startThread(simulator.startCPU());
 
       return;
     }
 
-    case "cpu.pause":
-    case "cpu.stop":
-      // TODO: Implement
+    // case "cpu.pause": {
+
+    // }
+
+    case "cpu.stop": {
+      finish();
       return;
+    }
 
     case "f10.press": {
       if (state.type !== "running") return invalidAction();
@@ -203,6 +217,23 @@ async function startThread(generator: EventGenerator): Promise<void> {
       await handleEvent(event.value);
     }
     generator.return();
+  } catch (error) {
+    const err = SimulatorError.from(error);
+    finish(err);
+  }
+}
+
+async function startClock(): Promise<void> {
+  try {
+    while (getState().type === "running") {
+      const duration = getSpeeds().clock;
+      await anim(
+        "clock",
+        { from: { angle: 0 }, to: { angle: 360 } },
+        { duration, easing: "linear" },
+      );
+      startThread(simulator.devices.clock.tick());
+    }
   } catch (error) {
     const err = SimulatorError.from(error);
     finish(err);

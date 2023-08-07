@@ -2,12 +2,12 @@ import { IOAddress, MemoryAddress } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 
 import { handleBusEvent } from "./computer/bus/events";
+import { handleClockEvent } from "./computer/clock/events";
 import { handleCPUEvent } from "./computer/cpu/events";
 import { handleF10Event } from "./computer/f10/events";
 import { handleMemoryEvent } from "./computer/memory/events";
 import { handlePICEvent } from "./computer/pic/events";
 import { handleTimerEvent } from "./computer/timer/events";
-import { handleClockEvent } from "./computer/unfinished/clock";
 import { handleConsoleEvent } from "./computer/unfinished/console";
 import { handleHandshakeEvent } from "./computer/unfinished/handshake";
 import { handleLedsEvent } from "./computer/unfinished/leds";
@@ -77,7 +77,7 @@ export async function handleEvent(event: SimulatorEvent) {
   console.groupEnd();
 
   if (ns === "bus") return await handleBusEvent(event as SimulatorEvent<"bus:">);
-  if (ns === "clock") return handleClockEvent(event as SimulatorEvent<"clock:">);
+  if (ns === "clock") return await handleClockEvent(event as SimulatorEvent<"clock:">);
   if (ns === "console") return handleConsoleEvent(event as SimulatorEvent<"console:">);
   if (ns === "cpu") return await handleCPUEvent(event as SimulatorEvent<"cpu:">);
   if (ns === "f10") return await handleF10Event(event as SimulatorEvent<"f10:">);

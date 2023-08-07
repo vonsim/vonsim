@@ -17,13 +17,12 @@ export async function handleConsoleEvent(event: SimulatorEvent<"console:">): Pro
 
       // Wait until state.waitingForInput = false
       await new Promise<void>(resolve => {
-        const interval = setInterval(() => {
+        store.sub(simulatorStateAtom, () => {
           const state = store.get(simulatorStateAtom);
           if (state.type !== "running" || !state.waitingForInput) {
-            clearInterval(interval);
             resolve();
           }
-        }, 100);
+        });
       });
       return;
     }

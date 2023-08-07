@@ -18,12 +18,14 @@ export const animationRefs = {
     iom: SpringRef<ControlLine>(),
     mem: SpringRef<{ stroke: string }>(),
     pic: SpringRef<ControlLine>(),
+    timer: SpringRef<ControlLine>(),
     intr: SpringRef<ControlLine>(),
     inta: SpringRef<ControlLine>(),
     int0: SpringRef<ControlLine>(),
     int1: SpringRef<ControlLine>(),
     int2: SpringRef<ControlLine>(),
   },
+  clock: SpringRef<{ angle: number }>(),
   cpu: {
     internalBus: {
       address: SpringRef<{ strokeDashoffset: number; opacity: number; path: string }>(),

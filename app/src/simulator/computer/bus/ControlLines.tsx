@@ -26,12 +26,14 @@ export function ControlLines({ className }: { className?: string }) {
     "M 380 420 H 820 V 400", // CPU -> Memory
     "M 820 420 V 805", // Down
     "M 450 805 H 999", // Big horizontal line
+    "M 583 805 V 875", // Timer
   ].join(" ");
 
   const wrPath = [
     "M 380 440 H 840 V 400", // CPU -> Memory
     "M 840 440 V 815", // Down
     "M 450 815 H 999", // Big horizontal line
+    "M 573 815 V 875", // Timer
   ].join(" ");
 
   const memPath = "M 750 545 H 860 V 400";
@@ -88,6 +90,11 @@ export function ControlLines({ className }: { className?: string }) {
       </LineText>
       <ControlLine springRef={animationRefs.bus.pic} d="M 521 595 V 730 H 450" />
 
+      <LineText x={545} y={585}>
+        timer
+      </LineText>
+      <ControlLine springRef={animationRefs.bus.pic} d="M 563 595 V 875" />
+
       <LineText x={75} y={490}>
         intr
       </LineText>
@@ -100,6 +107,7 @@ export function ControlLines({ className }: { className?: string }) {
 
       {/* Interrupt lines */}
       <ControlLine springRef={animationRefs.bus.int0} d="M 145 950 V 900" />
+      <ControlLine springRef={animationRefs.bus.int1} d="M 500 955 H 400 V 900" />
     </svg>
   );
 }

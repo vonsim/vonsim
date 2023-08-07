@@ -43,6 +43,11 @@ type PathValue<T, P extends Path<T>> = T extends any
   : never;
 
 /**
+ * Save all the running animations in a set to be able to cancel them.
+ */
+const runningAnimations = new Set<Path<Refs>>();
+
+/**
  * Simple utility to animate a spring.
  * @see {@link https://react-spring.dev/docs/concepts/imperative-api}
  *
@@ -66,7 +71,21 @@ export async function anim<
   const ref = dlv(animationRefs, key) as SpringRef<State>;
   if (!ref) throw new Error(`No animation ref found for key ${key}`);
 
-  return await Promise.all(
+  // If the animation is already running, wait for it to finish
+  if (runningAnimations.has(key)) {
+    await new Promise<void>(resolve => {
+      const interval = setInterval(() => {
+        if (!runningAnimations.has(key)) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 5);
+    });
+  }
+
+  runningAnimations.add(key);
+
+  const result = await Promise.all(
     ref.start({
       ...params,
       config: {
@@ -75,7 +94,28 @@ export async function anim<
       },
     }),
   );
+
+  runningAnimations.delete(key);
+  return result;
 }
+
+/**
+ * Pause all running animations.
+ */
+export const pauseAllAnimations = () =>
+  runningAnimations.forEach(key => (dlv(animationRefs, key) as SpringRef<any>).pause());
+
+/**
+ * Resume all running animations.
+ */
+export const resumeAllAnimations = () =>
+  runningAnimations.forEach(key => (dlv(animationRefs, key) as SpringRef<any>).resume());
+
+/**
+ * Stop all running animations.
+ */
+export const stopAllAnimations = () =>
+  runningAnimations.forEach(key => (dlv(animationRefs, key) as SpringRef<any>).stop());
 
 // Utilities
 
