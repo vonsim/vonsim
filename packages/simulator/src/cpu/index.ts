@@ -5,6 +5,7 @@ import { Component, ComponentInit } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 import { InstructionType, statementToInstruction } from "./instructions";
+import { handleReservedInterrupt, isReservedInterrupt } from "./reserved-interrupts";
 import type {
   ByteRegister,
   Flag,
@@ -147,6 +148,7 @@ export class CPU extends Component {
    * @see {@link https://vonsim.github.io/docs/cpu/#interrupciones}
    *
    * @param number The interrupt number (0-255).
+   * @returns Whether the operation was successful.
    *
    * ---
    * Called by the CPU ({@link CPU.run}).
@@ -158,6 +160,11 @@ export class CPU extends Component {
     yield* this.updateFLAGS({ IF: false });
     yield* this.copyWordRegister("IP", "id");
     if (!(yield* this.pushToStack())) return false; // Stack overflow
+
+    // Check for reserved interrupt
+    if (isReservedInterrupt(number)) {
+      return yield* handleReservedInterrupt(this.computer, number);
+    }
 
     // Get interrupt routine address low
     let vector = Byte.fromUnsigned(number.unsigned * 4, 16);
