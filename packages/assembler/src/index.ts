@@ -75,8 +75,13 @@ export function assemble(source: string): AssembleResult {
       statements,
       item => {
         if (item.isDataDirective()) {
-          item.evaluateExpressions(store);
-          if (item.directive !== "EQU") data.push(item);
+          if (item.directive === "EQU") {
+            item.evaluateExpressions(store);
+          } else {
+            const errs = item.evaluateExpressions(store); // Return posible errors
+            data.push(item);
+            return errs;
+          }
         } else if (item.isInstruction()) {
           item.evaluateExpressions(store);
           instructions.push(item);
