@@ -76,10 +76,11 @@ export class PIC extends IOModule<PICRegister> {
    * Updates the INTR line if needed.
    */
   *#updateINTR(): EventGenerator {
+    // If an interrupt is being handled, do nothing
     if (!this.#ISR.isZero()) return;
-    // If the ISR is zero, no interrupt is being handled.
+
+    // There is a pending interrupt -> turn on the INTR line
     if (this.#getPending() !== null) {
-      // There is a pending interrupt -> turn on the INTR line
       yield { type: "pic:intr.on" };
     }
   }
@@ -171,13 +172,16 @@ export class PIC extends IOModule<PICRegister> {
    * Called by the CPU.
    */
   isINTRActive(): boolean {
-    return !this.#ISR.isZero() || this.#getPending() !== null;
+    return this.#ISR.isZero() && this.#getPending() !== null;
   }
 
   /**
    * Handles requested interrupt.
    * This method handles the INTR / INTA handshake,
    * starting from (and including) the first INTA signal.
+   *
+   * @see {@link https://vonsim.github.io/docs/io/modules/pic/#funcionamiento}.
+   *
    * @returns The interrupt number (8-bits).
    *
    * ---
@@ -198,10 +202,10 @@ export class PIC extends IOModule<PICRegister> {
     }
 
     // Update ISR and IRR
-    this.#IRR = this.#IRR.withBit(pending, false);
-    yield { type: "pic:register.update", register: "IRR", value: this.#IRR };
     this.#ISR = this.#ISR.withBit(pending, true);
     yield { type: "pic:register.update", register: "ISR", value: this.#ISR };
+    this.#IRR = this.#IRR.withBit(pending, false);
+    yield { type: "pic:register.update", register: "IRR", value: this.#IRR };
 
     yield { type: "cpu:inta.off" };
 
@@ -210,6 +214,10 @@ export class PIC extends IOModule<PICRegister> {
     const number = this.#lines[pending];
     yield { type: "pic:int.send", number };
     yield { type: "cpu:inta.off" };
+
+    // Turn off INTR line
+    yield { type: "pic:intr.off" };
+
     return number;
   }
 

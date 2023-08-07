@@ -39,11 +39,22 @@ El registro `ISR` o _in-service register_ (dirección `23h` de la [memoria E/S](
 
 Cuando una línea de interrupción se activa, el PIC la encola en el registro `IRR`. Si la línea no está enmascarada y no hay otra interrupción siendo atendida (es decir, si `ISR = 00h`), el PIC envía la señal de interrupción a la CPU activando línea `INTR`.
 
-Cuando la CPU esté lista para atender la interrupción, esta activa la línea `INTA`. En este momento, el PIC marca la línea como _in-service_ en el registro `ISR` y la saca de la cola en el registro `IRR`.
+Cuando la CPU esté lista para atender la interrupción, comienza el ciclo de _interrupt acknowledge_.
 
-Luego de un tiempo dado, la CPU apaga y enciende la línea `INTA` nuevamente. Ahora, el PIC envía por el bus de datos el número de interrupción correspondiente a la línea que está siendo atendida. La CPU recibe este número y lo utiliza para acceder al vector de interrupciones y ejecutar la rutina de interrupción correspondiente. Finalmente, la CPU apaga la línea `INTA`.
+1. La CPU responde al `INTR` enviando un pulso por la línea `INTA`.
+2. Al recibir la señal, el PIC marca la línea como _in-service_ en el registro `ISR` y la saca de la cola en el registro `IRR`.
+3. La CPU envía nueva un pulso por la línea `INTA`. Durante este pulso, el PIC envía por el bus de datos el número de interrupción correspondiente a la línea que está siendo atendida.
+4. El PIC apaga la línea `INTR`.
 
-Por último, para indicarle al PIC que la la rutina de interrupción terminó, la CPU escribe en la dirección `20h` de la [memoria E/S](/docs/io/modules/) el byte de fin de interrupción o `EOI`, que es, coincidentemente, `20h`. Al leer este byte, el PIC apaga la línea `INTR` y desmarca la línea como _in-service_ en el registro `ISR`. Si hay interrupciones pendientes, el PIC activa la línea `INTR` nuevamente, repitiendo el proceso.
+Luego de, para indicarle al PIC que la la rutina de interrupción terminó, la CPU escribe en la dirección `20h` de la [memoria E/S](/docs/io/modules/) el byte de fin de interrupción o `EOI`, que es, coincidentemente, `20h`. Al leer este byte, el PIC desmarca la línea como _in-service_ en el registro `ISR`. Si hay interrupciones pendientes, el PIC activa la línea `INTR` nuevamente, repitiendo el proceso.
+
+:::note[Nota]
+Este PIC no soporta interrupciones anidadas. Si una interrupción ocurre mientras otra está siendo atendida, la segunda se encolará en el registro `IRR` y se atenderá cuando la primera termine, sin importar su prioridad.
+:::
+
+### Prioridades
+
+Cuando hay más de una interrupción pendiente, el PIC atiende primero la de mayor prioridad. La prioridad de cada línea está determinada por su número de interrupción. Las líneas con menor número de interrupción tienen mayor prioridad. Por ejemplo, la línea `INT0` tiene mayor prioridad que la línea `INT1`.
 
 ---
 
