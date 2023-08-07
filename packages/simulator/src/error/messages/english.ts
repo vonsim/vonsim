@@ -8,6 +8,7 @@ export const english = {
   "address-has-instruction": (address: MemoryAddressLike) => `Memory address ${MemoryAddress.format(address)} has an instruction, and cannot be read nor written.`,
   // prettier-ignore
   "address-out-of-range": (address: MemoryAddressLike) =>`Memory address ${MemoryAddress.format(address)} is out of range (max memory address: ${maxAddress}).`,
+  "device-not-connected": (device: string) => `"${device}" is not connected to the computer.`,
   // prettier-ignore
   "io-memory-not-implemented": (address: IOAddressLike) => `I/O memory address ${IOAddress.format(address)} has no implementation.`,
   // prettier-ignore

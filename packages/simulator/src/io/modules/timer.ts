@@ -6,7 +6,7 @@ import type { ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
 import { IOModule } from "../module";
 
-type TimerRegister = "CONT" | "COMP";
+export type TimerRegister = "CONT" | "COMP";
 
 export type TimerOperation =
   | { type: "timer:read"; register: TimerRegister }

@@ -7,7 +7,7 @@ import type { EventGenerator } from "../../events";
 import { IOModule } from "../module";
 
 type InterruptLine = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-type PICRegister = "EOI" | "IMR" | "IRR" | "ISR" | `INT${InterruptLine}`;
+export type PICRegister = "EOI" | "IMR" | "IRR" | "ISR" | `INT${InterruptLine}`;
 
 export type PICOperation =
   | { type: "pic:read"; register: PICRegister }

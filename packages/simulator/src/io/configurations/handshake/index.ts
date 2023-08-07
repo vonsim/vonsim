@@ -2,6 +2,7 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import type { Byte } from "@vonsim/common/byte";
 import type { JsonObject } from "type-fest";
 
+import type { IORegister } from "../../../bus";
 import type { ComponentInit } from "../../../component";
 import type { EventGenerator } from "../../../events";
 import { IOInterface } from "../../interface";
@@ -31,25 +32,29 @@ export class Handshake extends IOInterface<"handshake"> {
     this.handshake = new HandshakeModule(options);
   }
 
-  *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
+  *chipSelect(address: IOAddressLike): EventGenerator<IORegister | null> {
     const handshake = this.handshake.chipSelect(address);
     if (handshake) {
       yield { type: "bus:io.selected", chip: "handshake" };
-      return yield* this.handshake.read(handshake);
+      return { chip: "handshake", register: handshake };
     }
 
-    return yield* super.read(address);
+    return yield* super.chipSelect(address);
   }
 
-  *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
-    const handshake = this.handshake.chipSelect(address);
-    if (handshake) {
-      yield { type: "bus:io.selected", chip: "handshake" };
-      yield* this.handshake.write(handshake, value);
+  *read(register: IORegister): EventGenerator<Byte<8> | null> {
+    if (register.chip === "handshake") return yield* this.handshake.read(register.register);
+
+    return yield* super.read(register);
+  }
+
+  *write(register: IORegister, value: Byte<8>): EventGenerator<boolean> {
+    if (register.chip === "handshake") {
+      yield* this.handshake.write(register.register, value);
       return true;
     }
 
-    return yield* super.write(address, value);
+    return yield* super.write(register, value);
   }
 
   toJSON() {

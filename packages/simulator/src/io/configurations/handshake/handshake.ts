@@ -6,7 +6,7 @@ import type { ComponentInit } from "../../../component";
 import type { EventGenerator } from "../../../events";
 import { IOModule } from "../../module";
 
-type HandshakeRegister = "DATA" | "STATE";
+export type HandshakeRegister = "DATA" | "STATE";
 
 export type HandshakeOperation =
   | { type: "handshake:read"; register: HandshakeRegister }

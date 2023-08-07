@@ -9,6 +9,7 @@ export const spanish: Messages = {
   "address-has-instruction": address => `La dirección de memoria ${address} tiene una instrucción, y no se puede leer ni escribir.`,
   // prettier-ignore
   "address-out-of-range": address => `La dirección de memoria ${MemoryAddress.format(address)} está fuera de rango (dirección máxima de memoria: ${maxAddress}).`,
+  "device-not-connected": (device: string) => `"${device}" no está conectado a la computadora.`,
   // prettier-ignore
   "io-memory-not-implemented": address => `La dirección de memoria E/S ${IOAddress.format(address)} no está implementada.`,
   // prettier-ignore

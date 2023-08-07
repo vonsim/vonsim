@@ -2,6 +2,7 @@ import { IOAddress, IOAddressLike } from "@vonsim/common/address";
 import type { Byte } from "@vonsim/common/byte";
 import type { JsonObject } from "type-fest";
 
+import type { IORegister } from "../bus";
 import { Component, ComponentInit, DevicesConfiguration } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
@@ -54,24 +55,24 @@ export abstract class IOInterface<
   }
 
   /**
-   * Reads a byte from IO memory at the specified address.
-   * @param address The address to read the byte from.
-   * @returns The byte at the specified address (always 8-bit) or null if there was an error.
+   * Determines which chip is selected by the specified address.
+   * @param address The address to check.
+   * @returns The chip and register selected by the address, or null if the address is not mapped.
    *
    * ---
    * Called by the CPU.
    */
-  *read(address: IOAddressLike): EventGenerator<Byte<8> | null> {
+  *chipSelect(address: IOAddressLike): EventGenerator<IORegister | null> {
     const pic = this.pic.chipSelect(address);
     if (pic) {
       yield { type: "bus:io.selected", chip: "pic" };
-      return yield* this.pic.read(pic);
+      return { chip: "pic", register: pic };
     }
 
     const timer = this.timer.chipSelect(address);
     if (timer) {
       yield { type: "bus:io.selected", chip: "timer" };
-      return yield* this.timer.read(timer);
+      return { chip: "timer", register: timer };
     }
 
     yield { type: "bus:io.error", error: new SimulatorError("io-memory-not-implemented", address) };
@@ -79,30 +80,46 @@ export abstract class IOInterface<
   }
 
   /**
-   * Writes a byte to IO memory at the specified address.
-   * @param address The address to write the byte to.
+   * Reads a byte from IO memory at the specified register.
+   * @param register The register to read the byte from.
+   * @returns The byte at the specified register (always 8-bit) or null if there was an error.
+   *
+   * ---
+   * Called by the CPU.
+   */
+  *read(register: IORegister): EventGenerator<Byte<8> | null> {
+    const { chip, register: reg } = register;
+
+    if (chip === "pic") return yield* this.pic.read(reg);
+    if (chip === "timer") return yield* this.timer.read(reg);
+
+    yield { type: "bus:io.error", error: new SimulatorError("device-not-connected", chip) };
+    return null;
+  }
+
+  /**
+   * Writes a byte to IO memory at the specified register.
+   * @param register The register to write the byte to.
    * @param value The byte to write.
    * @returns Whether the operation succedeed or not (boolean).
    *
    * ---
    * Called by the CPU.
    */
-  *write(address: IOAddressLike, value: Byte<8>): EventGenerator<boolean> {
-    const pic = this.pic.chipSelect(address);
-    if (pic) {
-      yield { type: "bus:io.selected", chip: "pic" };
-      yield* this.pic.write(pic, value);
+  *write(register: IORegister, value: Byte<8>): EventGenerator<boolean> {
+    const { chip, register: reg } = register;
+
+    if (chip === "pic") {
+      yield* this.pic.write(reg, value);
       return true;
     }
 
-    const timer = this.timer.chipSelect(address);
-    if (timer) {
-      yield { type: "bus:io.selected", chip: "timer" };
-      yield* this.timer.write(timer, value);
+    if (chip === "timer") {
+      yield* this.timer.write(reg, value);
       return true;
     }
 
-    yield { type: "bus:io.error", error: new SimulatorError("io-memory-not-implemented", address) };
+    yield { type: "bus:io.error", error: new SimulatorError("device-not-connected", chip) };
     return false;
   }
 

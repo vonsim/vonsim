@@ -479,8 +479,10 @@ export class CPU extends Component {
 
       case "io-read": {
         yield { type: "cpu:iom.on" };
+        const register = yield* this.computer.io.chipSelect(this.#MAR.low);
+        if (!register) return false; // Error selecting i/o register
         yield { type: "cpu:rd.on" };
-        const value = yield* this.computer.io.read(this.#MAR.low);
+        const value = yield* this.computer.io.read(register);
         if (!value) return false; // Error reading from i/o
         this.#MBR = value;
         yield { type: "bus:reset" };
@@ -489,8 +491,10 @@ export class CPU extends Component {
 
       case "io-write": {
         yield { type: "cpu:iom.on" };
+        const register = yield* this.computer.io.chipSelect(this.#MAR.low);
+        if (!register) return false; // Error selecting i/o register
         yield { type: "cpu:wr.on" };
-        const success = yield* this.computer.io.write(this.#MAR.low, this.#MBR);
+        const success = yield* this.computer.io.write(register, this.#MBR);
         if (!success) return false; // Error writing to i/o
         yield { type: "bus:reset" };
         return true;
