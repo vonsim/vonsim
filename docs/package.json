@@ -11,8 +11,8 @@
     "astro": "astro"
   },
   "devDependencies": {
-    "@astrojs/starlight": "^0.6.0",
-    "astro": "^2.9.7",
+    "@astrojs/starlight": "^0.6.1",
+    "astro": "^2.10.3",
     "sharp": "^0.32.4",
     "typescript": "~5.1.6"
   }
