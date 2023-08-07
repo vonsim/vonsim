@@ -1,24 +1,19 @@
 import clsx from "clsx";
-import { useAtomValue } from "jotai";
 import { useKey } from "react-use";
 
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
-import { IMRAtom } from "@/simulator/computer/pic/state";
 
 import styles from "./Button.module.css";
 
 export function F10({ className }: { className?: string }) {
   const translate = useTranslate();
   const [state, dispatch] = useSimulator();
-  const IMR = useAtomValue(IMRAtom);
 
   useKey("F10", ev => {
     ev.preventDefault();
     dispatch("f10.press");
   });
-
-  const disabled = state.type !== "running" || IMR.bit(0);
 
   return (
     <div
@@ -29,7 +24,7 @@ export function F10({ className }: { className?: string }) {
     >
       <button
         className={styles.pushable}
-        disabled={disabled}
+        disabled={state.type !== "running"}
         onClick={() => dispatch("f10.press")}
         title="F10"
       >
