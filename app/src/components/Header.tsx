@@ -15,7 +15,7 @@ export function Header() {
 
       <div className="flex items-center justify-between">
         <div className="flex select-none items-center justify-center">
-          <img src="/logo.svg" className="mr-2 h-10 w-10" />
+          <img src="/favicon.svg" className="mr-2 h-10 w-10" />
           <h1 className="text-xl font-bold max-sm:hidden">
             Von<span className="text-mantis-400">Sim</span>
           </h1>

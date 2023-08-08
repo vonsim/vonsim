@@ -13,6 +13,8 @@
   "devDependencies": {
     "@astrojs/starlight": "^0.6.1",
     "astro": "^2.10.3",
+    "satori": "^0.10.2",
+    "satori-html": "^0.3.2",
     "sharp": "^0.32.4",
     "typescript": "~5.1.6"
   }
