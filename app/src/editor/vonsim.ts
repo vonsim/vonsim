@@ -8,7 +8,7 @@ import { Diagnostic, linter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { assemble, DATA_DIRECTIVES, INSTRUCTIONS, REGISTERS } from "@vonsim/assembler";
 
-import { getLanguage } from "@/lib/settings";
+import { getSettings } from "@/lib/settings";
 
 /**
  * This is the VonSim language definition.
@@ -115,7 +115,7 @@ const vonsimLinter = linter(
 
     if (result.success) return [];
 
-    const lang = getLanguage();
+    const lang = getSettings().language;
     return result.errors.map<Diagnostic>(error => {
       const from = error.position?.start ?? 0;
       const to = error.position?.end ?? source.length;

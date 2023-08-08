@@ -4,7 +4,7 @@ import { EditorView, Panel } from "@codemirror/view";
 import clsx from "clsx";
 
 import { translate } from "@/lib/i18n";
-import { getLanguage } from "@/lib/settings";
+import { getSettings } from "@/lib/settings";
 
 export function lintSummaryPanel(view: EditorView): Panel {
   const dom = document.createElement("div");
@@ -20,7 +20,7 @@ export function lintSummaryPanel(view: EditorView): Panel {
 
 function updatePanel(state: EditorState, panel: HTMLDivElement) {
   const errors = diagnosticCount(state);
-  panel.textContent = translate(getLanguage(), "editor.lintSummary", errors);
+  panel.textContent = translate(getSettings().language, "editor.lintSummary", errors);
   panel.className = clsx(
     "border-t border-stone-600 bg-stone-800 pr-3 text-right font-sans text-xs tracking-wider",
     errors === 0 ? "text-stone-400" : "font-semibold text-red-400",

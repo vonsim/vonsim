@@ -1,14 +1,11 @@
-import { useAtom } from "jotai";
 import { useCallback } from "react";
 import { useEvent } from "react-use";
 
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
-import { speedsAtom } from "@/lib/settings";
 
 export function Controls() {
   const translate = useTranslate();
-  const [speeds, setSpeeds] = useAtom(speedsAtom);
 
   const [status, dispatch] = useSimulator();
 
@@ -40,16 +37,6 @@ export function Controls() {
           {translate("runner.action.start")}
         </span>
       </button>
-
-      <input
-        type="range"
-        className="rotate-180"
-        min={5}
-        max={300}
-        step={5}
-        value={speeds.executionUnit}
-        onChange={e => setSpeeds({ ...speeds, executionUnit: e.currentTarget.valueAsNumber })}
-      />
     </div>
   );
 }

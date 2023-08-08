@@ -1,101 +1,100 @@
-import type { Language } from "@vonsim/common/i18n";
-import type { ComputerOptions } from "@vonsim/simulator";
-import { atomWithStorage, createJSONStorage } from "jotai/utils";
+import { LANGUAGES } from "@vonsim/common/i18n";
+import { atomWithStorage } from "jotai/utils";
+import { z } from "zod";
 
 import { store } from "@/lib/jotai";
 
-const atomStorage = createJSONStorage<any>(() => window.localStorage);
+export { LANGUAGES };
+export const DATA_ON_LOAD_VALUES = ["randomize", "clean", "unchanged"] as const;
+export const DEVICES = ["pio-switches-and-leds", "pio-printer", "handshake"] as const;
 
-/**
- * @returns The preferred language based on the browser's language.
- */
-function getDefaultLanguage(): Language {
-  const langs: Language[] = ["en", "es"];
-  const lang = navigator.language.toLowerCase();
-  for (const l of langs) {
-    if (lang.startsWith(l)) return l;
-  }
-  return "en";
-}
+const settingsSchema = z.object({
+  /**
+   * Interface language.
+   */
+  language: z.enum(LANGUAGES).catch(() => {
+    // Return browser default language
+    const userLang = navigator.language.toLowerCase();
+    for (const lang of LANGUAGES) {
+      if (userLang.startsWith(lang)) return lang;
+    }
+    return "en";
+  }),
 
-/**
- * Stores the selected language.
- */
-export const languageAtom = atomWithStorage<Language>(
-  "language",
-  getDefaultLanguage(),
-  atomStorage,
-  { unstable_getOnInit: true },
-);
-export const getLanguage = () => store.get(languageAtom);
+  /**
+   * Value of {@link ComputerOptions.data}.
+   */
+  dataOnLoad: z.enum(DATA_ON_LOAD_VALUES).catch("randomize"),
 
-/**
- * Stores the value of {@link ComputerOptions.data}.
- */
-export const dataOnLoadAtom = atomWithStorage<ComputerOptions["data"]>(
-  "data-on-load",
-  "randomize",
-  atomStorage,
-  { unstable_getOnInit: true },
-);
-export const getDataOnLoad = () => store.get(dataOnLoadAtom);
+  /**
+   * Value of {@link ComputerOptions.devices}.
+   */
+  devices: z.enum(DEVICES).catch("pio-switches-and-leds"),
 
-/**
- * Stores the value of {@link ComputerOptions.devices}.
- */
-export const devicesAtom = atomWithStorage<ComputerOptions["devices"]>(
-  "devices",
-  "pio-switches-and-leds",
-  atomStorage,
-  { unstable_getOnInit: true },
-);
-export const getDevices = () => store.get(devicesAtom);
-
-export type DataRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
-/**
- * Stores how should the data be represented (binary, hexadecimal, etc.).
- */
-export const dataRepresentationAtom = atomWithStorage<DataRepresentation>(
-  "data-representation",
-  "bin",
-  atomStorage,
-  { unstable_getOnInit: true },
-);
-export const getDataRepresentation = () => store.get(dataRepresentationAtom);
-
-export type Speeds = {
   /**
    * CPU speeds are loosely based on "execution units".
    * Let's say, for example, that updating a register takes 1 execution unit
    * and adding two registers takes 3 execution units.
    *
-   * This property stores how many milliseconds one execution unit takes.
+   * This property states how many milliseconds one execution unit takes.
    */
-  executionUnit: number;
+  executionUnit: z.number().int().min(5).max(500).catch(150),
 
   /**
-   * This property stores how many execution units (see above) takes for
+   * This property states how many execution units (see above) takes for
    * the clock to tick. Should be a positive integer.
    * Usually is a large number.
    */
-  clock: number;
+  clockSpeed: z.number().int().min(10).max(1000).catch(30),
 
   /**
-   * This property stores how many execution units (see above) takes for
+   * This property states how many execution units (see above) takes for
    * the printer to print a character. Should be a positive integer.
    * Usually is a large number.
    */
-  printer: number;
-};
+  printerSpeed: z.number().int().min(10).max(1000).catch(1000),
+});
 
-export const speedsAtom = atomWithStorage<Speeds>(
-  "speeds",
+export type Settings = z.infer<typeof settingsSchema>;
+
+const defaultSettings = settingsSchema.parse({}); // Returns an object with default values (`.catch()`)
+
+export const settingsAtom = atomWithStorage<Settings>(
+  "vonsim-settings",
+  defaultSettings,
   {
-    executionUnit: 150,
-    clock: 30,
-    printer: 1000,
+    getItem(key, initialValue) {
+      try {
+        const storedValue = localStorage.getItem(key);
+        return settingsSchema.parse(JSON.parse(storedValue ?? ""));
+      } catch {
+        return initialValue;
+      }
+    },
+    setItem(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    },
+    removeItem(key) {
+      localStorage.removeItem(key);
+    },
+    subscribe(key, callback, initialValue) {
+      const listener = (e: StorageEvent) => {
+        if (e.storageArea === localStorage && e.key === key) {
+          let newValue;
+          try {
+            newValue = settingsSchema.parse(JSON.parse(e.newValue ?? ""));
+          } catch {
+            newValue = initialValue;
+          }
+          callback(newValue);
+        }
+      };
+
+      window?.addEventListener("storage", listener);
+      return () => window?.removeEventListener("storage", listener);
+    },
   },
-  atomStorage,
   { unstable_getOnInit: true },
 );
-export const getSpeeds = () => store.get(speedsAtom);
+
+export const getSettings = () => store.get(settingsAtom);

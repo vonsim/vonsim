@@ -4,7 +4,7 @@ import dlv from "dlv";
 import type { ConditionalKeys } from "type-fest";
 
 import { store } from "@/lib/jotai";
-import { getSpeeds } from "@/lib/settings";
+import { getSettings } from "@/lib/settings";
 import { colors } from "@/lib/tailwind";
 import { MBRAtom } from "@/simulator/computer/cpu/state";
 
@@ -89,7 +89,7 @@ export async function anim<
     ref.start({
       ...params,
       config: {
-        duration: getSpeeds().executionUnit * config.duration,
+        duration: getSettings().executionUnit * config.duration,
         easing: easings[config.easing],
       },
     }),

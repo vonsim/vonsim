@@ -86,30 +86,43 @@ export const english = {
     },
   },
 
-  menu: {
-    label: "Menu",
-    devices: {
-      label: "Devices",
-      "pio-switches-and-leds": "Switches and LEDs",
-      "pio-printer": "Printer w/PIO",
-      handshake: "Printer w/Handshake",
+  settings: {
+    title: "Settings",
+
+    language: {
+      label: "Language",
     },
-    dataRepresentation: {
-      label: "Representation mode",
-      hex: "Hexadecimal",
-      bin: "Binary",
-      uint: "Unsigned integer",
-      int: "2's complement",
-      ascii: "ASCII",
-    },
+
     dataOnLoad: {
       label: "Data on load",
+      description: "What to do with the memory when loading a new program.",
+
       randomize: "Randomize",
       clean: "Empty",
       unchanged: "Unchanged",
     },
-    language: "Language",
+
+    devices: {
+      label: "Devices",
+      description: "Which preset of devices to use.",
+
+      "pio-switches-and-leds": "Switches and LEDs",
+      "pio-printer": "Printer (PIO)",
+      handshake: "Printer (Handshake)",
+    },
+
+    speeds: {
+      label: "Speeds",
+
+      executionUnit: "Simulation speed",
+      clockSpeed: "Clock speed",
+      printerSpeed: "Printer speed",
+    },
+  },
+
+  footer: {
     documentation: "Documentation",
     "report-issue": "Report an issue",
+    copyright: "III-LIDI, FI, UNLP",
   },
 } satisfies BaseLocale;

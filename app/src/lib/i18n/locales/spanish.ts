@@ -86,30 +86,43 @@ export const spanish: Locale = {
     },
   },
 
-  menu: {
-    label: "Menú",
-    devices: {
-      label: "Dispositivos",
-      "pio-switches-and-leds": "Teclas y leds",
-      "pio-printer": "Impresora con PIO",
-      handshake: "Impresora con Handshake",
+  settings: {
+    title: "Configuración",
+
+    language: {
+      label: "Idioma",
     },
-    dataRepresentation: {
-      label: "Modo de representación",
-      hex: "Hexadecimal",
-      bin: "Binario",
-      uint: "Binario sin signo (BSS)",
-      int: "Complemento a 2 (Ca2)",
-      ascii: "ASCII",
-    },
+
     dataOnLoad: {
       label: "Memoria al cargar",
+      description: "Qué hacer con la memoria al cargar un nuevo programa.",
+
       randomize: "Aleatoria",
       clean: "Vaciar",
       unchanged: "Reusar",
     },
-    language: "Idioma",
+
+    devices: {
+      label: "Dispositivos",
+      description: "Qué conjunto de dispositivos usar.",
+
+      "pio-switches-and-leds": "Teclas y luces",
+      "pio-printer": "Impresora (PIO)",
+      handshake: "Impresora (Handshake)",
+    },
+
+    speeds: {
+      label: "Velocidades",
+
+      executionUnit: "Velocidad de simulación",
+      clockSpeed: "Velocidad del reloj",
+      printerSpeed: "Velocidad de impresión",
+    },
+  },
+
+  footer: {
     documentation: "Documentación",
     "report-issue": "Reportar un error",
+    copyright: "III-LIDI, FI, UNLP",
   },
 };

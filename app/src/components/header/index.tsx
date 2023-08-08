@@ -1,10 +1,13 @@
+import clsx from "clsx";
+import { useAtom } from "jotai";
 import { useLongPress, useToggle } from "react-use";
 
+import { settingsOpenAtom } from "@/components/Settings";
 import { useMobile } from "@/hooks/useMobile";
+import { useTranslate } from "@/hooks/useTranslate";
 import { cn } from "@/lib/utils";
 
 import { Controls } from "./Controls";
-import { MainMenu } from "./MainMenu";
 import { State } from "./State";
 
 /**
@@ -17,6 +20,8 @@ import { State } from "./State";
 
 export function Header() {
   const isMobile = useMobile();
+  const translate = useTranslate();
+  const [settingsOpen, setSettingsOpen] = useAtom(settingsOpenAtom);
 
   const [easterEgg, toggleEasterEgg] = useToggle(false);
   const easterEggEvents = useLongPress(
@@ -52,7 +57,18 @@ export function Header() {
           </>
         )}
 
-        <MainMenu />
+        <button
+          className={clsx(
+            "mr-2 h-min w-min rounded-full p-2 transition-colors focus:outline-stone-400",
+            settingsOpen
+              ? "bg-stone-700 hover:bg-stone-600 focus:bg-stone-600"
+              : "hover:bg-stone-800 focus:bg-stone-800",
+          )}
+          title={translate("settings.title")}
+          onClick={() => setSettingsOpen(!settingsOpen)}
+        >
+          <span className="icon-[lucide--settings] block h-6 w-6" />
+        </button>
       </div>
 
       {isMobile && <Controls />}

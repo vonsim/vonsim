@@ -1,5 +1,5 @@
 import dlv from "dlv";
-import type { Primitive } from "type-fest";
+import type { Primitive, TupleToUnion } from "type-fest";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type PathImpl<K extends string | number, V> = V extends Primitive | Function
@@ -43,7 +43,9 @@ export type LocaleContext<Locale extends BaseLocale, Code extends LocaleCode<Loc
   ? A
   : [];
 
-export type Language = "en" | "es";
+export const LANGUAGES = ["en", "es"] as const;
+
+export type Language = TupleToUnion<typeof LANGUAGES>;
 
 /**
  * Create a translate function from a set of locales.

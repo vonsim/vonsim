@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
-import { getDataOnLoad, getDevices, getLanguage, getSpeeds } from "@/lib/settings";
+import { getSettings } from "@/lib/settings";
 import { resetCPUState } from "@/simulator/computer/cpu/state";
 import { resetMemoryState } from "@/simulator/computer/memory/state";
 import { resetPICState } from "@/simulator/computer/pic/state";
@@ -45,11 +45,11 @@ export function startDebugger() {
 }
 
 function assembleError() {
-  toast.error(translate(getLanguage(), "messages.assemble-error"));
+  toast.error(translate(getSettings().language, "messages.assemble-error"));
 }
 
 function invalidAction() {
-  toast.error(translate(getLanguage(), "messages.invalid-action"));
+  toast.error(translate(getSettings().language, "messages.invalid-action"));
 }
 
 function resetState(state: ComputerState) {
@@ -114,8 +114,8 @@ export async function dispatch(...args: Action) {
         // Reset the simulator
         simulator.loadProgram({
           program: result,
-          data: getDataOnLoad(),
-          devices: getDevices(),
+          data: getSettings().dataOnLoad,
+          devices: getSettings().devices,
         });
         resetState(simulator.getComputerState());
 
@@ -226,7 +226,7 @@ async function startThread(generator: EventGenerator): Promise<void> {
 async function startClock(): Promise<void> {
   try {
     while (getState().type === "running") {
-      const duration = getSpeeds().clock;
+      const duration = getSettings().clockSpeed;
       await anim(
         "clock",
         { from: { angle: 0 }, to: { angle: 360 } },
