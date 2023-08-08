@@ -12,7 +12,7 @@ export function Clock({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "absolute z-10 h-12 w-12 rounded-full border border-stone-600 bg-stone-900 p-1 [&_*]:z-20",
+        "absolute z-10 h-12 w-12 rounded-full border border-stone-600 bg-stone-800 p-1 [&_*]:z-20",
         className,
       )}
     >

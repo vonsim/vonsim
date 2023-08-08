@@ -17,7 +17,7 @@ import { Timer } from "./timer";
 
 export function ComputerContainer() {
   return (
-    <TransformWrapper minScale={0.5} centerOnInit>
+    <TransformWrapper minScale={0.5} initialPositionX={0} initialPositionY={0}>
       <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
         <div className="relative h-[1100px] w-[1500px] border border-red-500">
           <SystemBus className="left-0 top-0" />
