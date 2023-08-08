@@ -3,7 +3,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-import { Header } from "@/components/header";
+import { Header } from "@/components/Header";
 import { Settings, settingsOpenAtom } from "@/components/Settings";
 import { Editor } from "@/editor";
 import { useTranslate } from "@/hooks/useTranslate";

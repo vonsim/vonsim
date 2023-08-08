@@ -14,9 +14,9 @@ export default defineConfig({
         name: "VonSim",
         short_name: "VonSim",
         description: "A 8088-like Assembly Simulator",
-        theme_color: "#1e293b",
+        theme_color: "#1c1917",
         display: "standalone",
-        background_color: "#1e293b",
+        background_color: "#1c1917",
         icons: [
           { src: "icon-192.png", type: "image/png", sizes: "192x192" },
           { src: "icon-512.png", type: "image/png", sizes: "512x512" },

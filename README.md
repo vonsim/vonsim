@@ -1,14 +1,14 @@
-<a href="https://vonsim.github.io/preview" target="_blank" rel="noopener">
-  <img src="./assets/github_banner.png" alt="VonSim - A 8088-like Assembly Simulator" />
-</a>
+<p align="center">
+  <img src="app/public/favicon.svg" height="128px" align="center" alt="VonSim logo" />
+  <h1 align="center">VonSim</h1>
+  <p align="center">
+    ✨ <a href="https://vonsim.github.io">https://vonsim.github.io</a> ✨
+    <br/>
+    A 8088-like Assembly Simulator
+  </p>
+</p>
 
-<div align="center">
-  <br/>
-  <h3><a href="https://vonsim.github.io/preview" target="_blank" rel="noopener"><strong>Try it now</strong></a></h3>
-  <br/>
-  <img src="./assets/demo.gif" alt="Demo" />
-  <br/>
-</div>
+<br/>
 
 ## About this project
 

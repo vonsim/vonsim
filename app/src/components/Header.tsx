@@ -1,0 +1,39 @@
+import clsx from "clsx";
+import { useAtom } from "jotai";
+
+import { Controls } from "@/components/header/Controls";
+import { settingsOpenAtom } from "@/components/Settings";
+import { useTranslate } from "@/hooks/useTranslate";
+
+export function Header() {
+  const translate = useTranslate();
+  const [settingsOpen, setSettingsOpen] = useAtom(settingsOpenAtom);
+
+  return (
+    <header className="relative p-2 text-sm text-white">
+      <Controls className=" absolute inset-0" />
+
+      <div className="flex items-center justify-between">
+        <div className="flex select-none items-center justify-center">
+          <img src="/logo.svg" className="mr-2 h-10 w-10" />
+          <h1 className="text-xl font-bold max-sm:hidden">
+            Von<span className="text-mantis-400">Sim</span>
+          </h1>
+        </div>
+
+        <button
+          className={clsx(
+            "h-min w-min rounded-full p-2 transition-colors focus:outline-stone-400",
+            settingsOpen
+              ? "bg-stone-700 hover:bg-stone-600 focus:bg-stone-600"
+              : "hover:bg-stone-800 focus:bg-stone-800",
+          )}
+          title={translate("settings.title")}
+          onClick={() => setSettingsOpen(!settingsOpen)}
+        >
+          <span className="icon-[lucide--settings] block h-6 w-6" />
+        </button>
+      </div>
+    </header>
+  );
+}

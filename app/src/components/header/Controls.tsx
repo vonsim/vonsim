@@ -1,10 +1,11 @@
+import clsx from "clsx";
 import { useCallback } from "react";
 import { useEvent } from "react-use";
 
 import { useSimulator } from "@/hooks/useSimulator";
 import { useTranslate } from "@/hooks/useTranslate";
 
-export function Controls() {
+export function Controls({ className }: { className?: string }) {
   const translate = useTranslate();
 
   const [status, dispatch] = useSimulator();
@@ -26,7 +27,7 @@ export function Controls() {
   useEvent("keydown", onKeyDown, undefined, [dispatch]);
 
   return (
-    <div className="flex items-center justify-center gap-4 lg:h-full lg:justify-start">
+    <div className={clsx("flex items-center justify-center gap-4", className)}>
       <button
         className="flex w-min items-center gap-1 rounded-md bg-mantis-500 p-2 text-mantis-50 transition-colors hover:enabled:bg-mantis-600 hover:enabled:text-white disabled:opacity-40"
         disabled={status.type === "running"}
