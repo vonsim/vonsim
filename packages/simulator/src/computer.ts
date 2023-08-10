@@ -42,10 +42,29 @@ export class Computer<TDevices extends DevicesConfiguration = DevicesConfigurati
     const init = { computer: this, ...options } as const;
     this.cpu = new CPU(init);
     this.memory = new Memory(init);
-    if (options.devices === "pio-switches-and-leds") this.io = new PIOSwitchesAndLeds(init);
-    else if (options.devices === "pio-printer") this.io = new PIOPrinter(init);
-    else if (options.devices === "handshake") this.io = new Handshake(init);
-    else throw new Error("Invalid devices configuration");
+
+    switch (options.devices) {
+      case "pio-switches-and-leds": {
+        // @ts-expect-error ensured by `TDevices` and `options`
+        this.io = new PIOSwitchesAndLeds(init);
+        break;
+      }
+
+      case "pio-printer": {
+        // @ts-expect-error ensured by `TDevices` and `options`
+        this.io = new PIOPrinter(init);
+        break;
+      }
+
+      case "handshake": {
+        // @ts-expect-error ensured by `TDevices` and `options`
+        this.io = new Handshake(init);
+        break;
+      }
+
+      default:
+        throw new Error("Invalid devices configuration");
+    }
   }
 
   toJSON() {
