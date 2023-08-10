@@ -8,3 +8,14 @@
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+.computer-background {
+  background-color: theme(colors.stone.800);
+  background-image: radial-gradient(
+      circle at 12.5px 12.5px,
+      theme(colors.stone.600) 2%,
+      transparent 0%
+    ),
+    radial-gradient(circle at 37.5px 37.5px, theme(colors.stone.600) 2%, transparent 0%);
+  background-size: 50px 50px;
+}
