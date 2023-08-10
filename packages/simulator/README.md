@@ -13,6 +13,8 @@ Once initialized, the simulation can be _advanced_ one step at a time. Each _adv
 
 These events are minimal and can be used to update the UI. For example, the `cpu:register.copy` event contains the source and destination register, and the value that was copied. This can be used to update the UI with the new value.
 
+Note that the simulator **always performs the action before emitting the event**. In the previous example, the simulator will mutate the state of the registers **before** emitting `cpu:register.copy`. This ensures that the current state of the simulator is always reflected in the events, no matter when they are consumed.
+
 Now, the simulation can be _advanced_ from multiple sources. The main one is given by `Simulator#startCPU()`. This method returns a generator of `SimulatorEvent`. Each `next()` emulates a tick from clock connected to the CPU. It will emit events related to the instruction cycle (like `cpu:cycle.start`) along other events from any devices. For instance, when executing an `IN` instruction, the (reduced) list of events will be:
 
 - `cpu:cycle.start` (instruction cycle start)
