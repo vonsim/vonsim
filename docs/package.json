@@ -7,12 +7,14 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "lint": "astro check",
+    "lint": "astro check && eslint --ignore-path .gitignore .",
     "astro": "astro"
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.7.0",
     "astro": "^2.10.5",
+    "eslint": "^8.46.0",
+    "eslint-config-vonsim": "workspace:^",
     "satori": "^0.10.2",
     "satori-html": "^0.3.2",
     "sharp": "^0.32.4",

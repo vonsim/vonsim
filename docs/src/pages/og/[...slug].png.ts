@@ -1,6 +1,7 @@
+import * as fs from "node:fs/promises";
+
 import type { APIContext, EndpointOutput, GetStaticPathsResult } from "astro";
 import { getCollection, getEntryBySlug } from "astro:content";
-import * as fs from "node:fs/promises";
 import satori, { Font } from "satori";
 import { html } from "satori-html";
 import sharp from "sharp";
