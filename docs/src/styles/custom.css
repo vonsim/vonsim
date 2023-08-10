@@ -1,3 +1,68 @@
+@font-face {
+  font-family: "Chivo";
+  font-style: normal;
+  font-weight: 100 900;
+  src: url("/fonts/chivo/Chivo[wght].ttf") format("ttf-variations");
+  font-named-instance: "Regular";
+}
+
+@font-face {
+  font-family: "Chivo";
+  font-style: italic;
+  font-weight: 100 900;
+  src: url("/fonts/chivo/Chivo-Italic[wght].ttf") format("ttf-variations");
+  font-named-instance: "Italic";
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  src: url("/fonts/jetbrains-mono/JetBrainsMono[wght].woff2") format("woff2-variations");
+  font-named-instance: "Regular";
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: italic;
+  font-weight: 100 800;
+  src: url("/fonts/jetbrains-mono/JetBrainsMono-Italic[wght].woff2") format("woff2-variations");
+  font-named-instance: "Italic";
+}
+
 :root {
-  /* --sl-hue-accent: 114; */
+  --sl-font: Chivo, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --sl-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  /* Dark mode colors. */
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #e7e5e4;
+  --sl-color-gray-2: #d6d3d1;
+  --sl-color-gray-3: #a8a29e;
+  --sl-color-gray-4: #57534e;
+  --sl-color-gray-5: #44403c;
+  --sl-color-gray-6: #292524;
+  --sl-color-black: #1c1917;
+  --sl-color-accent-low: #13250e;
+  --sl-color-accent: #4c8435;
+  --sl-color-accent-high: #82bd69;
+}
+
+/* Light mode colors. */
+:root[data-theme="light"] {
+  --sl-color-white: #1c1917;
+  --sl-color-gray-1: #292524;
+  --sl-color-gray-2: #44403c;
+  --sl-color-gray-3: #78716c;
+  --sl-color-gray-4: #a8a29e;
+  --sl-color-gray-5: #d6d3d1;
+  --sl-color-gray-6: #e7e5e4;
+  --sl-color-gray-7: #f5f5f4;
+  --sl-color-black: #ffffff;
+  --sl-color-accent-low: #82bd69;
+  --sl-color-accent: #4c8435;
+  --sl-color-accent-high: #2b4522;
 }

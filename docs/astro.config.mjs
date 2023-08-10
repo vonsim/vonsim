@@ -11,6 +11,8 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "VonSim",
+      favicon: "/favicon.svg",
+      logo: { src: "./public/favicon.svg", alt: "Logo" },
       editLink: {
         baseUrl: "https://github.com/vonsim/vonsim/edit/main/docs/",
       },
