@@ -1,7 +1,6 @@
-import { animated, useSpring } from "@react-spring/web";
 import type { MARRegister } from "@vonsim/simulator/cpu";
 
-import { animationRefs } from "@/simulator/computer/shared/references";
+import { animated, getSpring } from "@/simulator/computer/shared/springs";
 
 export type { MARRegister as AddressRegister };
 
@@ -31,10 +30,7 @@ export function generateAddressPath(from: MARRegister): string {
  * AddressBus component, to be used inside <CPU />
  */
 export function AddressBus() {
-  const { path, ...style } = useSpring({
-    ref: animationRefs.cpu.internalBus.address,
-    from: { strokeDashoffset: 1, opacity: 1, path: "" },
-  });
+  const { path, ...style } = getSpring("cpu.internalBus.address");
 
   return (
     <svg viewBox="0 0 650 500" className="absolute inset-0">

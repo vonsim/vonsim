@@ -1,6 +1,5 @@
 import clsx from "clsx";
 
-import { animationRefs } from "@/simulator/computer/shared/references";
 import { Register } from "@/simulator/computer/shared/Register";
 
 import { IMRAtom, IRRAtom, ISRAtom, linesAtoms } from "./state";
@@ -19,9 +18,9 @@ export function PIC({ className }: { className?: string }) {
         </span>
 
         <div className="flex h-16 grow items-center justify-evenly">
-          <Register name="IMR" valueAtom={IMRAtom} springRef={animationRefs.pic.IMR} emphasis />
-          <Register name="IRR" valueAtom={IRRAtom} springRef={animationRefs.pic.IRR} emphasis />
-          <Register name="ISR" valueAtom={ISRAtom} springRef={animationRefs.pic.ISR} emphasis />
+          <Register name="IMR" valueAtom={IMRAtom} springs="pic.IMR" emphasis />
+          <Register name="IRR" valueAtom={IRRAtom} springs="pic.IRR" emphasis />
+          <Register name="ISR" valueAtom={ISRAtom} springs="pic.ISR" emphasis />
         </div>
       </div>
 
@@ -33,7 +32,7 @@ export function PIC({ className }: { className?: string }) {
             key={i}
             name={`INT${i}`}
             valueAtom={atom}
-            springRef={animationRefs.pic[`INT${i}` as "INT0"]}
+            springs={`pic.INT${i}` as "pic.INT0"}
             className="mx-auto"
           />
         ))}

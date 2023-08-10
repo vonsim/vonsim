@@ -1,9 +1,9 @@
-import { animated, easings, useSpring, useTransition } from "@react-spring/web";
+import { animated, easings, useTransition } from "@react-spring/web";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { useSpeeds } from "@/hooks/useSettings";
-import { animationRefs } from "@/simulator/computer/shared/references";
+import { getSpring } from "@/simulator/computer/shared/springs";
 
 import { cycleAtom } from "./state";
 
@@ -36,16 +36,6 @@ export function Control() {
     config: { duration: 5 * executionUnit, easing: easings.easeOutElastic },
   });
 
-  const decoderPathStyle = useSpring({
-    ref: animationRefs.cpu.decoder.path,
-    from: { strokeDashoffset: 1, opacity: 1 },
-  });
-
-  const decoderProgressStyle = useSpring({
-    ref: animationRefs.cpu.decoder.progress,
-    from: { progress: 0, opacity: 1 },
-  });
-
   return (
     <>
       <svg viewBox="0 0 650 500" className="absolute inset-0">
@@ -55,7 +45,7 @@ export function Control() {
           d="M 205 300 V 320"
           pathLength={1}
           strokeDasharray={1}
-          style={decoderPathStyle}
+          style={getSpring("cpu.decoder.path")}
         />
       </svg>
 
@@ -72,8 +62,8 @@ export function Control() {
             <animated.div
               className="h-full bg-mantis-400"
               style={{
-                width: decoderProgressStyle.progress.to(t => `${t * 100}%`),
-                opacity: decoderProgressStyle.opacity,
+                width: getSpring("cpu.decoder.progress.progress").to(t => `${t * 100}%`),
+                opacity: getSpring("cpu.decoder.progress.opacity"),
               }}
             />
           </div>

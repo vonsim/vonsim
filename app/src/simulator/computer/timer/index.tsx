@@ -1,6 +1,5 @@
 import clsx from "clsx";
 
-import { animationRefs } from "@/simulator/computer/shared/references";
 import { Register } from "@/simulator/computer/shared/Register";
 
 import { COMPAtom, CONTAtom } from "./state";
@@ -18,8 +17,8 @@ export function Timer({ className }: { className?: string }) {
       </span>
 
       <div className="flex h-full w-full flex-col items-center justify-evenly">
-        <Register name="CONT" valueAtom={CONTAtom} springRef={animationRefs.timer.CONT} />
-        <Register name="COMP" valueAtom={COMPAtom} springRef={animationRefs.timer.COMP} />
+        <Register name="CONT" valueAtom={CONTAtom} springs="timer.CONT" />
+        <Register name="COMP" valueAtom={COMPAtom} springs="timer.COMP" />
       </div>
     </div>
   );

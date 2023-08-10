@@ -67,12 +67,12 @@ export async function handlePICEvent(event: SimulatorEvent<"pic:">): Promise<voi
       return;
 
     case "pic:intr.off": {
-      await turnLineOff("intr");
+      await turnLineOff("bus.intr");
       return;
     }
 
     case "pic:intr.on": {
-      await turnLineOn("intr", 10);
+      await turnLineOn("bus.intr", 10);
       return;
     }
 

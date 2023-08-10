@@ -1,27 +1,8 @@
-import { animated, SpringRef, useSpring } from "@react-spring/web";
 import clsx from "clsx";
 
-import { colors } from "@/lib/tailwind";
-import { animationRefs } from "@/simulator/computer/shared/references";
-
-export type ControlLine = { strokeDashoffset: number; opacity: number };
+import { animated, getSpring, SimplePathKey } from "@/simulator/computer/shared/springs";
 
 export function ControlLines({ className }: { className?: string }) {
-  const rdStyle = useSpring({
-    ref: animationRefs.bus.rd,
-    from: { stroke: colors.stone[700] },
-  });
-
-  const wrStyle = useSpring({
-    ref: animationRefs.bus.wr,
-    from: { stroke: colors.stone[700] },
-  });
-
-  const memStyle = useSpring({
-    ref: animationRefs.bus.mem,
-    from: { stroke: colors.red[500] },
-  });
-
   const rdPath = [
     "M 380 420 H 820 V 400", // CPU -> Memory
     "M 820 420 V 805", // Down
@@ -51,7 +32,7 @@ export function ControlLines({ className }: { className?: string }) {
         className="fill-none stroke-[4px]"
         strokeLinejoin="round"
         d={rdPath}
-        style={rdStyle}
+        style={getSpring("bus.rd")}
       />
 
       <LineText x={384} y={435}>
@@ -62,13 +43,13 @@ export function ControlLines({ className }: { className?: string }) {
         className="fill-none stroke-[4px]"
         strokeLinejoin="round"
         d={wrPath}
-        style={wrStyle}
+        style={getSpring("bus.wr")}
       />
 
       <LineText x={384} y={455}>
         io/m
       </LineText>
-      <ControlLine springRef={animationRefs.bus.iom} d="M 380 460 H 675 V 525" />
+      <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
 
       <LineText x={715} y={550}>
         mem
@@ -82,32 +63,32 @@ export function ControlLines({ className }: { className?: string }) {
         className="fill-none stroke-[4px]"
         strokeLinejoin="round"
         d={memPath}
-        style={memStyle}
+        style={getSpring("bus.mem")}
       />
 
       <LineText x={510} y={585}>
         pic
       </LineText>
-      <ControlLine springRef={animationRefs.bus.pic} d="M 521 595 V 730 H 450" />
+      <ControlLine springs="bus.pic" d="M 521 595 V 730 H 450" />
 
       <LineText x={545} y={585}>
         timer
       </LineText>
-      <ControlLine springRef={animationRefs.bus.pic} d="M 563 595 V 875" />
+      <ControlLine springs="bus.timer" d="M 563 595 V 875" />
 
       <LineText x={75} y={490}>
         intr
       </LineText>
-      <ControlLine springRef={animationRefs.bus.intr} d="M 110 700 V 470" />
+      <ControlLine springs="bus.intr" d="M 110 700 V 470" />
 
       <LineText x={125} y={490}>
         inta
       </LineText>
-      <ControlLine springRef={animationRefs.bus.inta} d="M 160 470 V 700" />
+      <ControlLine springs="bus.inta" d="M 160 470 V 700" />
 
       {/* Interrupt lines */}
-      <ControlLine springRef={animationRefs.bus.int0} d="M 145 950 V 900" />
-      <ControlLine springRef={animationRefs.bus.int1} d="M 500 955 H 400 V 900" />
+      <ControlLine springs="bus.int0" d="M 145 950 V 900" />
+      <ControlLine springs="bus.int1" d="M 500 955 H 400 V 900" />
     </svg>
   );
 }
@@ -120,12 +101,7 @@ function LineText({ x, y, children }: { x: number; y: number; children?: React.R
   );
 }
 
-function ControlLine({ d, springRef }: { d: string; springRef: SpringRef<ControlLine> }) {
-  const style = useSpring({
-    ref: springRef,
-    from: { strokeDashoffset: 1, opacity: 1 },
-  });
-
+function ControlLine({ d, springs }: { d: string; springs: SimplePathKey }) {
   return (
     <>
       <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={d} />
@@ -136,7 +112,7 @@ function ControlLine({ d, springRef }: { d: string; springRef: SpringRef<Control
         strokeLinejoin="round"
         pathLength={1}
         strokeDasharray={1}
-        style={style}
+        style={getSpring(springs)}
       />
     </>
   );

@@ -13,12 +13,11 @@
  * @see {@link https://graphology.github.io/}
  */
 
-import { animated, useSpring } from "@react-spring/web";
 import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import { UndirectedGraph } from "graphology";
 import { bidirectional } from "graphology-shortest-path/unweighted";
 
-import { animationRefs } from "@/simulator/computer/shared/references";
+import { animated, getSpring } from "@/simulator/computer/shared/springs";
 
 type Node = { position: [x: number, y: number] };
 
@@ -121,10 +120,7 @@ export function generateDataPath(from: DataRegister, to: DataRegister): string {
  * DataBus component, to be used inside <CPU />
  */
 export function DataBus() {
-  const { path, ...style } = useSpring({
-    ref: animationRefs.cpu.internalBus.data,
-    from: { strokeDashoffset: 1, opacity: 1, path: "" },
-  });
+  const { path, ...style } = getSpring("cpu.internalBus.data");
 
   return (
     <svg viewBox="0 0 650 500" className="absolute inset-0">

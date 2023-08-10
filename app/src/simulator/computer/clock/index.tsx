@@ -1,13 +1,9 @@
-import { animated, useSpring } from "@react-spring/web";
 import clsx from "clsx";
 
-import { animationRefs } from "@/simulator/computer/shared/references";
+import { animated, getSpring } from "@/simulator/computer/shared/springs";
 
 export function Clock({ className }: { className?: string }) {
-  const { angle } = useSpring({
-    ref: animationRefs.clock,
-    from: { angle: 0 },
-  });
+  const angle = getSpring("clock.angle");
 
   return (
     <div

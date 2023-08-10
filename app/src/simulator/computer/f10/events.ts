@@ -7,12 +7,12 @@ export async function handleF10Event(event: SimulatorEvent<"f10:">): Promise<voi
       return;
 
     case "f10:int.off": {
-      await turnLineOff("int0");
+      await turnLineOff("bus.int0");
       return;
     }
 
     case "f10:int.on": {
-      await turnLineOn("int0", 10);
+      await turnLineOn("bus.int0", 10);
       return;
     }
 

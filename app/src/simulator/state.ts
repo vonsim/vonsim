@@ -227,85 +227,11 @@ async function startClock(): Promise<void> {
   try {
     while (getState().type === "running") {
       const duration = getSettings().clockSpeed;
-      await anim(
-        "clock",
-        { from: { angle: 0 }, to: { angle: 360 } },
-        { duration, easing: "linear" },
-      );
+      await anim({ key: "clock.angle", from: 0, to: 360 }, { duration, easing: "linear" });
       startThread(simulator.devices.clock.tick());
     }
   } catch (error) {
     const err = SimulatorError.from(error);
     finish(err);
   }
-}
-
-// DEBUG: Legacy runner, will be removed in the future
-
-let currentTime = 0;
-let cpuNextTick = 0;
-let clockNextTick = 0;
-let printerNextTick = 0;
-
-function resetSimulatorTimers() {
-  currentTime = 0;
-  cpuNextTick = 1000 / getSpeeds().cpu;
-  clockNextTick = 1000;
-  printerNextTick = 1000 / getSpeeds().printer;
-}
-
-function nextTicks(): [device: "cpu" | "clock" | "printer", nextTick: number][] {
-  if (simulator.devices.printer.connected()) {
-    return [
-      ["cpu", cpuNextTick],
-      ["clock", clockNextTick],
-      ["printer", printerNextTick],
-    ];
-  } else {
-    return [
-      ["cpu", cpuNextTick],
-      ["clock", clockNextTick],
-    ];
-  }
-}
-
-function runSimulator(ms: number) {
-  let nextTick = nextTicks().sort((a, b) => a[1] - b[1])[0];
-
-  while (nextTick[1] <= currentTime + ms) {
-    if (nextTick[0] === "cpu") {
-      let event = simulator.advanceCPU();
-      while (event.type !== "cpu:cycle.end") {
-        handleEvent(event);
-        if (getState().type !== "running" && getState().type !== "paused") return;
-        event = simulator.advanceCPU();
-      }
-      cpuNextTick += 1000 / getSpeeds().cpu;
-    } else if (nextTick[0] === "clock") {
-      const generator = simulator.devices.clock.tick();
-      let event = generator.next();
-      while (!event.done) {
-        handleEvent(event.value);
-        event = generator.next();
-      }
-      clockNextTick += 1000;
-    } else if (nextTick[0] === "printer") {
-      const generator = simulator.devices.printer.print()!;
-      let event = generator.next();
-      while (!event.done) {
-        handleEvent(event.value);
-        event = generator.next();
-      }
-      printerNextTick += 1000 / getSpeeds().printer;
-    } else {
-      const _exhaustiveCheck: never = nextTick[0];
-      return _exhaustiveCheck;
-    }
-
-    ms -= nextTick[1] - currentTime;
-    currentTime = nextTick[1];
-    nextTick = nextTicks().sort((a, b) => a[1] - b[1])[0];
-  }
-
-  currentTime += ms;
 }

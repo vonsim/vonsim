@@ -1,9 +1,7 @@
-import { animated, useSpring } from "@react-spring/web";
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
-import { colors } from "@/lib/tailwind";
-import { animationRefs } from "@/simulator/computer/shared/references";
+import { animated, getSpring } from "@/simulator/computer/shared/springs";
 
 import { aluOperationAtom, registerAtoms } from "./state";
 
@@ -21,31 +19,6 @@ export function ALU() {
   const IF = FLAGS.bit(9);
   const OF = FLAGS.bit(11);
 
-  const flagsStyle = useSpring({
-    ref: animationRefs.cpu.FLAGS,
-    from: { backgroundColor: colors.stone[800], opacity: 1 },
-  });
-
-  const operandsStyle = useSpring({
-    ref: animationRefs.cpu.alu.operands,
-    from: { strokeDashoffset: 1, opacity: 1 },
-  });
-
-  const operationStyle = useSpring({
-    ref: animationRefs.cpu.alu.operation,
-    from: { backgroundColor: colors.stone[800] },
-  });
-
-  const cogProps = useSpring({
-    ref: animationRefs.cpu.alu.cog,
-    from: { rot: 0 },
-  });
-
-  const resultsStyle = useSpring({
-    ref: animationRefs.cpu.alu.results,
-    from: { strokeDashoffset: 1, opacity: 1 },
-  });
-
   return (
     <>
       <svg viewBox="0 0 650 500" className="absolute inset-0">
@@ -55,7 +28,7 @@ export function ALU() {
           d="M 173 85 H 220"
           pathLength={1}
           strokeDasharray={1}
-          style={operandsStyle}
+          style={getSpring("cpu.alu.operands")}
         />
         <animated.path
           className="fill-none stroke-mantis-400 stroke-bus"
@@ -63,7 +36,7 @@ export function ALU() {
           d="M 182 145 H 220"
           pathLength={1}
           strokeDasharray={1}
-          style={operandsStyle}
+          style={getSpring("cpu.alu.operands")}
         />
         <animated.path
           className="fill-none stroke-mantis-400 stroke-bus"
@@ -71,7 +44,7 @@ export function ALU() {
           d="M 272 115 h 28"
           pathLength={1}
           strokeDasharray={1}
-          style={resultsStyle}
+          style={getSpring("cpu.alu.results")}
         />
         <animated.path
           className="fill-none stroke-mantis-400 stroke-bus"
@@ -79,7 +52,7 @@ export function ALU() {
           d="M 250 145 v 46"
           pathLength={1}
           strokeDasharray={1}
-          style={resultsStyle}
+          style={getSpring("cpu.alu.results")}
         />
 
         {/* ALU */}
@@ -93,13 +66,13 @@ export function ALU() {
       <animated.span
         className="icon-[lucide--settings] absolute left-[242px] top-[103px] block h-6 w-6 text-stone-300"
         style={{
-          transform: cogProps.rot.to(t => `rotate(${t * 60}deg)`),
+          transform: getSpring("cpu.alu.cog").rot.to(t => `rotate(${t * 60}deg)`),
         }}
       />
 
       <animated.span
         className="absolute left-[260px] top-[50px] flex w-min items-center rounded-md border border-stone-600 px-2 py-1 font-mono leading-none"
-        style={operationStyle}
+        style={getSpring("cpu.alu.operation")}
       >
         {operation}
       </animated.span>
@@ -107,7 +80,7 @@ export function ALU() {
       {/* Flags */}
       <animated.div
         className="absolute left-[165px] top-[190px] flex w-min items-center gap-1 rounded-md border border-mantis-400 bg-stone-800 px-2 py-1 font-mono leading-none"
-        style={flagsStyle}
+        style={getSpring("cpu.FLAGS")}
       >
         <span className={clsx("rounded p-1 font-light", CF ? "bg-mantis-400" : "bg-stone-900")}>
           CF

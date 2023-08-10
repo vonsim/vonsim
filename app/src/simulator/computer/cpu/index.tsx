@@ -1,7 +1,6 @@
 import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import clsx from "clsx";
 
-import { animationRefs } from "@/simulator/computer/shared/references";
 import { Register } from "@/simulator/computer/shared/Register";
 
 import { AddressBus } from "./AddressBus";
@@ -65,7 +64,7 @@ function Reg({
     <Register
       name={name}
       valueAtom={registerAtoms[name]}
-      springRef={animationRefs.cpu[name]}
+      springs={`cpu.${name}`}
       emphasis={emphasis}
       className={clsx("absolute", className)}
     />

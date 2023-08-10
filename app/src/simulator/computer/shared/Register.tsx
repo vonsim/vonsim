@@ -1,33 +1,26 @@
-import { animated, SpringRef, useSpring } from "@react-spring/web";
+import { animated } from "@react-spring/web";
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
-import { colors } from "@/lib/tailwind";
+import { getSpring, RegisterKey } from "@/simulator/computer/shared/springs";
 import type { AnyByteAtom } from "@/simulator/computer/shared/types";
-
-export type RegisterRef = { backgroundColor: string; opacity: number };
 
 export function Register({
   name,
   valueAtom,
+  springs,
   emphasis = false,
   className,
-  springRef,
 }: {
   name: string;
   valueAtom: AnyByteAtom;
-  springRef: SpringRef<RegisterRef>;
+  springs: RegisterKey;
   emphasis?: boolean;
   className?: string;
 }) {
   const reg = useAtomValue(valueAtom);
   const low = reg.low;
   const high = reg.is16bits() ? reg.high : null;
-
-  const style = useSpring({
-    ref: springRef,
-    from: { backgroundColor: colors.stone[800], opacity: 1 },
-  });
 
   return (
     <animated.div
@@ -36,7 +29,7 @@ export function Register({
         emphasis ? "border-mantis-400 text-lg" : "border-stone-600 text-base",
         className,
       )}
-      style={style}
+      style={getSpring(springs)}
     >
       <span className="mr-2 font-bold">{name}</span>
       {high && (

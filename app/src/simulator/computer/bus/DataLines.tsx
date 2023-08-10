@@ -1,20 +1,8 @@
-import { animated, useSpring } from "@react-spring/web";
 import clsx from "clsx";
 
-import { colors } from "@/lib/tailwind";
-import { animationRefs } from "@/simulator/computer/shared/references";
+import { animated, getSpring } from "@/simulator/computer/shared/springs";
 
 export function DataLines({ className }: { className?: string }) {
-  const addressStyle = useSpring({
-    ref: animationRefs.bus.address,
-    from: { stroke: colors.stone[700] },
-  });
-
-  const dataStyle = useSpring({
-    ref: animationRefs.bus.data,
-    from: { stroke: colors.stone[700] },
-  });
-
   const addressPath = [
     "M 699 349 H 800", // CPU -> Memory
     "M 725 349 V 770", // Down
@@ -44,7 +32,7 @@ export function DataLines({ className }: { className?: string }) {
         className="fill-none stroke-[12px]"
         strokeLinejoin="round"
         d={dataPath}
-        style={dataStyle}
+        style={getSpring("bus.data")}
       />
 
       {/* Address lines */}
@@ -57,7 +45,7 @@ export function DataLines({ className }: { className?: string }) {
         className="fill-none stroke-[12px]"
         strokeLinejoin="round"
         d={addressPath}
-        style={addressStyle}
+        style={getSpring("bus.address")}
       />
     </svg>
   );

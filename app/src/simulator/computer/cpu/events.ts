@@ -20,44 +20,48 @@ import { aluOperationAtom, cycleAtom, MARAtom, MBRAtom, registerAtoms } from "./
 const drawDataPath = (from: DataRegister, to: DataRegister) => {
   const path = generateDataPath(from, to);
   return anim(
-    "cpu.internalBus.data",
-    { from: { strokeDashoffset: 1, opacity: 1, path }, to: { strokeDashoffset: 0 } },
+    [
+      { key: "cpu.internalBus.data.path", from: path },
+      { key: "cpu.internalBus.data.opacity", from: 1 },
+      { key: "cpu.internalBus.data.strokeDashoffset", from: 1, to: 0 },
+    ],
     { duration: 5, easing: "easeInOutSine" },
   );
 };
 
 const resetDataPath = () =>
-  anim("cpu.internalBus.data", { opacity: 0 }, { duration: 1, easing: "easeInSine" });
+  anim({ key: "cpu.internalBus.data.opacity", to: 0 }, { duration: 1, easing: "easeInSine" });
 
 export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<void> {
   switch (event.type) {
     case "cpu:alu.execute": {
       const pathsDrawConfig = { duration: 3, easing: "easeInOutSine" } as const;
-      const pathsResetConfig = { duration: 1, easing: "easeInSine" } as const;
 
       await anim(
-        "cpu.alu.operands",
-        { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+        [
+          { key: "cpu.alu.operands.opacity", from: 1 },
+          { key: "cpu.alu.operands.strokeDashoffset", from: 1, to: 0 },
+        ],
         pathsDrawConfig,
       );
       store.set(aluOperationAtom, event.operation);
       await Promise.all([
         anim(
-          "cpu.alu.operation",
-          { backgroundColor: colors.mantis[400] },
+          { key: "cpu.alu.operation.backgroundColor", to: colors.mantis[400] },
           { duration: 1, easing: "easeOutQuart" },
         ),
-        anim("cpu.alu.cog", { rot: 6 }, { duration: 10, easing: "easeInOutCubic" }),
+        anim({ key: "cpu.alu.cog.rot", to: 6 }, { duration: 10, easing: "easeInOutCubic" }),
       ]);
       await Promise.all([
         anim(
-          "cpu.alu.operation",
-          { backgroundColor: colors.stone[800] },
+          { key: "cpu.alu.operation.backgroundColor", to: colors.stone[800] },
           { duration: 1, easing: "easeOutQuart" },
         ),
         anim(
-          "cpu.alu.results",
-          { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+          [
+            { key: "cpu.alu.results.opacity", from: 1 },
+            { key: "cpu.alu.results.strokeDashoffset", from: 1, to: 0 },
+          ],
           pathsDrawConfig,
         ),
       ]);
@@ -65,10 +69,13 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       store.set(registerAtoms.FLAGS, event.flags);
       store.set(registerAtoms.result, event.result);
       await Promise.all([deactivateRegister("cpu.result"), deactivateRegister("cpu.FLAGS")]);
-      await Promise.all([
-        anim("cpu.alu.operands", { opacity: 0 }, pathsResetConfig),
-        anim("cpu.alu.results", { opacity: 0 }, pathsResetConfig),
-      ]);
+      await anim(
+        [
+          { key: "cpu.alu.operands.opacity", to: 0 },
+          { key: "cpu.alu.results.opacity", to: 0 },
+        ],
+        { duration: 1, easing: "easeInSine" },
+      );
       return;
     }
 
@@ -81,28 +88,26 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
         return { ...prev, phase: "interrupt" };
       });
       // Interrupts handler uses id and ri
-      await Promise.all([
-        anim("cpu.id", { opacity: 1 }, { duration: 0.5, easing: "easeInOutQuad" }),
-        anim("cpu.ri", { opacity: 1 }, { duration: 0.5, easing: "easeInOutQuad" }),
-      ]);
+      await anim(
+        [
+          { key: "cpu.id.opacity", to: 1 },
+          { key: "cpu.ri.opacity", to: 1 },
+        ],
+        { duration: 0.5, easing: "easeInOutQuad" },
+      );
       return;
     }
 
     case "cpu:cycle.start": {
       highlightLine(event.instruction.position.start);
       store.set(cycleAtom, { phase: "fetching", metadata: event.instruction });
-      await Promise.all([
-        anim(
-          "cpu.id",
-          { opacity: event.instruction.willUse.id ? 1 : 0.4 },
-          { duration: 0.5, easing: "easeInOutQuad" },
-        ),
-        anim(
-          "cpu.ri",
-          { opacity: event.instruction.willUse.ri ? 1 : 0.4 },
-          { duration: 0.5, easing: "easeInOutQuad" },
-        ),
-      ]);
+      await anim(
+        [
+          { key: "cpu.id.opacity", to: event.instruction.willUse.id ? 1 : 0.4 },
+          { key: "cpu.ri.opacity", to: event.instruction.willUse.ri ? 1 : 0.4 },
+        ],
+        { duration: 0.5, easing: "easeInOutQuad" },
+      );
       return;
     }
 
@@ -130,19 +135,26 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
 
     case "cpu:decode": {
       await anim(
-        "cpu.decoder.path",
-        { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+        [
+          { key: "cpu.decoder.path.opacity", from: 1 },
+          { key: "cpu.decoder.path.strokeDashoffset", from: 1, to: 0 },
+        ],
         { duration: 3, easing: "easeInOutSine" },
       );
       await anim(
-        "cpu.decoder.progress",
-        { from: { progress: 0, opacity: 1 }, to: { progress: 1 } },
+        [
+          { key: "cpu.decoder.progress.opacity", from: 1 },
+          { key: "cpu.decoder.progress.progress", from: 0, to: 1 },
+        ],
         { duration: 3, easing: "easeInOutSine" },
       );
-      await Promise.all([
-        anim("cpu.decoder.progress", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
-        anim("cpu.decoder.path", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
-      ]);
+      await anim(
+        [
+          { key: "cpu.decoder.path.opacity", to: 0 },
+          { key: "cpu.decoder.progress.opacity", to: 0 },
+        ],
+        { duration: 1, easing: "easeInSine" },
+      );
       return;
     }
 
@@ -171,48 +183,51 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       return;
 
     case "cpu:inta.off": {
-      await turnLineOff("inta");
+      await turnLineOff("bus.inta");
       return;
     }
 
     case "cpu:inta.on": {
-      await turnLineOn("inta", 10);
+      await turnLineOn("bus.inta", 10);
       return;
     }
 
     case "cpu:rd.on":
     case "cpu:wr.on": {
-      const line = event.type === "cpu:rd.on" ? "rd" : "wr";
+      const line = event.type.slice(4, 6) as "rd" | "wr";
       await anim(
-        `bus.${line}`,
-        { stroke: colors.red[500] },
+        { key: `bus.${line}.stroke`, to: colors.red[500] },
         { duration: 5, easing: "easeOutSine" },
       );
       return;
     }
 
     case "cpu:iom.on": {
-      await turnLineOn("iom", 15);
+      await turnLineOn("bus.iom", 15);
       return;
     }
 
     case "cpu:mar.set": {
-      const path = generateAddressPath(event.register);
       await anim(
-        "cpu.internalBus.address",
-        { from: { strokeDashoffset: 1, opacity: 1, path }, to: { strokeDashoffset: 0 } },
+        [
+          { key: "cpu.internalBus.address.path", from: generateAddressPath(event.register) },
+          { key: "cpu.internalBus.address.opacity", from: 1 },
+          { key: "cpu.internalBus.address.strokeDashoffset", from: 1, to: 0 },
+        ],
         { duration: 5, easing: "easeInOutSine" },
       );
       await activateRegister("cpu.MAR", colors.blue[500]);
       store.set(MARAtom, store.get(registerAtoms[event.register]));
       await anim(
-        "bus.address",
-        { stroke: colors.blue[500] },
+        { key: "bus.address.stroke", to: colors.blue[500] },
         { duration: 5, easing: "easeOutSine" },
       );
       await Promise.all([
         deactivateRegister("cpu.MAR"),
-        anim("cpu.internalBus.address", { opacity: 0 }, { duration: 1, easing: "easeInSine" }),
+        anim(
+          { key: "cpu.internalBus.address.opacity", to: 0 },
+          { duration: 1, easing: "easeInSine" },
+        ),
       ]);
       return;
     }
@@ -232,8 +247,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await activateRegister("cpu.MBR");
       store.set(MBRAtom, store.get(registerAtoms[event.register]));
       await anim(
-        "bus.data",
-        { stroke: colors.mantis[400] },
+        { key: "bus.data.stroke", to: colors.mantis[400] },
         { duration: 5, easing: "easeOutSine" },
       );
       await Promise.all([deactivateRegister("cpu.MBR"), resetDataPath()]);

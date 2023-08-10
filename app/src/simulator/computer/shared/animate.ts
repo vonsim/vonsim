@@ -1,165 +1,133 @@
-import { ControllerUpdate, easings, SpringRef } from "@react-spring/web";
+import { easings, SpringValue } from "@react-spring/web";
 import type { Byte } from "@vonsim/common/byte";
-import dlv from "dlv";
-import type { ConditionalKeys } from "type-fest";
 
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
 import { colors } from "@/lib/tailwind";
 import { MBRAtom } from "@/simulator/computer/cpu/state";
 
-import { animationRefs, ControlLine, RegisterRef } from "./references";
+import {
+  getSpring,
+  RegisterKey,
+  resetAllSprings,
+  SimplePathKey,
+  SpringPath,
+  SpringPathValue,
+} from "./springs";
 
-type Refs = typeof animationRefs;
-
-type PathImpl<K extends string | number, V> = V extends SpringRef<any> ? `${K}` : `${K}.${Path<V>}`;
-
-/**
- * Get all the paths of an object in dot notation
- * @example
- * Path<{ a: { b: { c: number } } }> = "a" | "a.b" | "a.b.c"
- */
-type Path<T> = {
-  [K in keyof T]: PathImpl<K & string, T[K]>;
-}[keyof T];
-
-/**
- * Given an object and a path, get the type of the value at that path
- * @see {@link Path}
- * @example
- * PathValue<{ a: { b: { c: number } } }, 'a.b.c'> = number
- * PathValue<{ a: { b: { c: number } } }, 'a.b'> = { c: number }
- */
-type PathValue<T, P extends Path<T>> = T extends any
-  ? P extends `${infer K}.${infer R}`
-    ? K extends keyof T
-      ? R extends Path<T[K]>
-        ? PathValue<T[K], R>
-        : never
-      : never
-    : P extends keyof T
-    ? T[P]
-    : never
-  : never;
+type SpringAnimation = {
+  [K in SpringPath]: SpringPathValue<K> extends SpringValue<infer S>
+    ? { key: K; from?: S; to?: S }
+    : never;
+}[SpringPath];
 
 /**
  * Save all the running animations in a set to be able to cancel them.
  */
-const runningAnimations = new Set<Path<Refs>>();
+const runningAnimations = new Set<SpringAnimation["key"]>();
 
 /**
  * Simple utility to animate a spring.
- * @see {@link https://react-spring.dev/docs/concepts/imperative-api}
+ * @see {@link https://react-spring.dev/docs/advanced/spring-value}
  *
- * @param key The key of the spring ref to animate (see {@link animationRefs}).
- * @param params The parameters to pass to the spring ref, the updated controller values.
+ * @param animations One or more animations to execute with the same configuration.
+ * @param animations.key The key of the spring to animate (see {@link getSpring}).
+ * @param animations.from The initial value of the spring. (optional)
+ * @param animations.to The final value of the spring.
+ * @param config Configuration of the animation. Can be a preset (string) or a custom configuration (object).
  * @param config.duration The duration of the animation in execution units (should be integer).
  * @param config.easing The easing function to use (see {@link easings}).
  * @returns A promise that resolves when the animation is finished.
  */
-export async function anim<
-  Key extends Path<Refs>,
-  State extends PathValue<Refs, Key> extends SpringRef<infer K> ? K : never,
->(
-  key: Key,
-  params: ControllerUpdate<State>,
-  config: {
-    duration: number;
-    easing: Exclude<keyof typeof easings, "steps">;
-  },
+export async function anim(
+  animations: SpringAnimation | SpringAnimation[],
+  config: { duration: number; easing: Exclude<keyof typeof easings, "steps"> },
 ) {
-  const ref = dlv(animationRefs, key) as SpringRef<State>;
-  if (!ref) throw new Error(`No animation ref found for key ${key}`);
+  if (!Array.isArray(animations)) animations = [animations];
 
-  // If the animation is already running, wait for it to finish
-  if (runningAnimations.has(key)) {
-    await new Promise<void>(resolve => {
-      const interval = setInterval(() => {
-        if (!runningAnimations.has(key)) {
-          clearInterval(interval);
-          resolve();
-        }
-      }, 5);
-    });
-  }
+  const springConfig = {
+    duration: getSettings().executionUnit * config.duration,
+    easing: easings[config.easing],
+  };
 
-  runningAnimations.add(key);
+  return await Promise.all(
+    animations.map(async ({ key, from, to }) => {
+      if (to === undefined && from === undefined) return null;
 
-  const result = await Promise.all(
-    ref.start({
-      ...params,
-      config: {
-        duration: getSettings().executionUnit * config.duration,
-        easing: easings[config.easing],
-      },
+      const spring = getSpring(key);
+
+      if (to === undefined) {
+        // @ts-expect-error ensured by `SpringAnimation`
+        return spring.set(from);
+      } else {
+        runningAnimations.add(key);
+        // @ts-expect-error ensured by `SpringAnimation`
+        const result = await getSpring(key).start({ from, to, config: springConfig });
+        runningAnimations.delete(key);
+        return result;
+      }
     }),
   );
-
-  runningAnimations.delete(key);
-  return result;
 }
 
 /**
  * Pause all running animations.
  */
-export const pauseAllAnimations = () =>
-  runningAnimations.forEach(key => (dlv(animationRefs, key) as SpringRef<any>).pause());
+export const pauseAllAnimations = () => runningAnimations.forEach(key => getSpring(key).pause());
 
 /**
  * Resume all running animations.
  */
-export const resumeAllAnimations = () =>
-  runningAnimations.forEach(key => (dlv(animationRefs, key) as SpringRef<any>).resume());
+export const resumeAllAnimations = () => runningAnimations.forEach(key => getSpring(key).resume());
 
 /**
  * Stop all running animations.
  */
-export const stopAllAnimations = () =>
-  runningAnimations.forEach(key => (dlv(animationRefs, key) as SpringRef<any>).stop());
+export function stopAllAnimations() {
+  runningAnimations.clear();
+  resetAllSprings();
+}
 
 // Utilities
 
-type KeysMap = {
-  [K in Path<Refs>]: PathValue<Refs, K> extends SpringRef<infer S> ? S : never;
-};
-
-export async function activateRegister(
-  key: ConditionalKeys<KeysMap, RegisterRef>,
-  color = colors.mantis[400],
-) {
-  await anim(key, { backgroundColor: color }, { duration: 1, easing: "easeOutQuart" });
+export async function activateRegister(key: RegisterKey, color = colors.mantis[400]) {
+  // There's some kind of limitation when discriminating union types
+  // See https://github.com/microsoft/TypeScript/issues/40803
+  return await anim({ key: `${key}.backgroundColor`, to: color } as SpringAnimation, {
+    duration: 1,
+    easing: "easeOutQuart",
+  });
 }
 
-export async function deactivateRegister(key: ConditionalKeys<KeysMap, RegisterRef>) {
-  await anim(key, { backgroundColor: colors.stone[800] }, { duration: 1, easing: "easeOutQuart" });
+export async function deactivateRegister(key: RegisterKey) {
+  // There's some kind of limitation when discriminating union types
+  // See https://github.com/microsoft/TypeScript/issues/40803
+  return await anim({ key: `${key}.backgroundColor`, to: colors.stone[800] } as SpringAnimation, {
+    duration: 1,
+    easing: "easeOutQuart",
+  });
 }
 
 export async function populateDataBus(data: Byte<8>) {
-  await anim("bus.data", { stroke: colors.mantis[400] }, { duration: 5, easing: "easeOutSine" });
   await anim(
-    "cpu.MBR",
-    { backgroundColor: colors.mantis[400] },
-    { duration: 1, easing: "easeOutQuart" },
+    { key: "bus.data.stroke", to: colors.mantis[400] },
+    { duration: 5, easing: "easeOutSine" },
   );
+  await activateRegister("cpu.MBR");
   store.set(MBRAtom, data);
-  await anim(
-    "cpu.MBR",
-    { backgroundColor: colors.stone[800] },
-    { duration: 1, easing: "easeOutQuart" },
-  );
+  await deactivateRegister("cpu.MBR");
 }
 
-export async function turnLineOn(
-  line: ConditionalKeys<Refs["bus"], SpringRef<ControlLine>>,
-  duration: number,
-) {
-  await anim(
-    `bus.${line}`,
-    { from: { strokeDashoffset: 1, opacity: 1 }, to: { strokeDashoffset: 0 } },
+export async function turnLineOn(line: SimplePathKey, duration: number) {
+  return await anim(
+    [
+      { key: `${line}.strokeDashoffset`, from: 1, to: 0 },
+      { key: `${line}.opacity`, from: 1 },
+    ],
     { duration, easing: "easeInOutSine" },
   );
 }
 
-export async function turnLineOff(line: ConditionalKeys<Refs["bus"], SpringRef<ControlLine>>) {
-  await anim(`bus.${line}`, { opacity: 0 }, { duration: 1, easing: "easeInSine" });
+export async function turnLineOff(line: SimplePathKey) {
+  return await anim({ key: `${line}.opacity`, to: 0 }, { duration: 1, easing: "easeInSine" });
 }

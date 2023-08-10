@@ -7,8 +7,11 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
   switch (event.type) {
     case "bus:io.selected": {
       await Promise.all([
-        anim("bus.mem", { stroke: colors.stone[700] }, { duration: 1, easing: "easeInSine" }),
-        turnLineOn(event.chip, 15),
+        anim(
+          { key: "bus.mem.stroke", to: colors.stone[700] },
+          { duration: 1, easing: "easeInSine" },
+        ),
+        turnLineOn(`bus.${event.chip}`, 15),
       ]);
       return;
     }
@@ -19,16 +22,22 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
     }
 
     case "bus:reset": {
-      const stroke = { stroke: colors.stone[700] };
-      const config = { duration: 1, easing: "easeInSine" } as const;
       await Promise.all([
-        anim("bus.address", stroke, config),
-        anim("bus.data", stroke, config),
-        anim("bus.rd", stroke, config),
-        anim("bus.wr", stroke, config),
-        turnLineOff("iom"),
-        anim("bus.mem", { stroke: colors.red[500] }, { duration: 1, easing: "easeOutSine" }),
-        turnLineOff("pic"),
+        anim(
+          [
+            { key: "bus.address.stroke", to: colors.stone[700] },
+            { key: "bus.data.stroke", to: colors.stone[700] },
+            { key: "bus.rd.stroke", to: colors.stone[700] },
+            { key: "bus.wr.stroke", to: colors.stone[700] },
+          ],
+          { duration: 1, easing: "easeInSine" },
+        ),
+        anim(
+          { key: "bus.mem.stroke", to: colors.red[500] },
+          { duration: 1, easing: "easeOutSine" },
+        ),
+        turnLineOff("bus.iom"),
+        turnLineOff("bus.pic"),
       ]);
       return;
     }

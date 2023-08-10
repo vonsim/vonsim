@@ -49,12 +49,12 @@ export async function handleTimerEvent(event: SimulatorEvent<"timer:">): Promise
       return;
 
     case "timer:int.off": {
-      await turnLineOff("int1");
+      await turnLineOff("bus.int1");
       return;
     }
 
     case "timer:int.on": {
-      await turnLineOn("int1", 10);
+      await turnLineOn("bus.int1", 10);
       return;
     }
 
