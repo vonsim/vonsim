@@ -5,9 +5,9 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { Header } from "@/components/Header";
 import { Settings, settingsOpenAtom } from "@/components/Settings";
+import { ComputerContainer } from "@/computer";
 import { Editor } from "@/editor";
 import { useTranslate } from "@/hooks/useTranslate";
-import { ComputerContainer } from "@/simulator/computer";
 
 export default function App() {
   const translate = useTranslate();
