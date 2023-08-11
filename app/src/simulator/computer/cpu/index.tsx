@@ -1,6 +1,7 @@
 import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import clsx from "clsx";
 
+import { useTranslate } from "@/hooks/useTranslate";
 import { Register } from "@/simulator/computer/shared/Register";
 
 import { AddressBus } from "./AddressBus";
@@ -10,6 +11,8 @@ import { DataBus } from "./DataBus";
 import { registerAtoms } from "./state";
 
 export function CPU({ className }: { className?: string }) {
+  const translate = useTranslate();
+
   return (
     <div
       className={clsx(
@@ -18,7 +21,7 @@ export function CPU({ className }: { className?: string }) {
       )}
     >
       <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl font-bold text-white">
-        CPU
+        {translate("computer.cpu.name")}
       </span>
 
       <AddressBus />
@@ -60,12 +63,15 @@ function Reg({
   emphasis?: boolean;
   className?: string;
 }) {
+  const translate = useTranslate();
+
   return (
     <Register
       name={name}
       valueAtom={registerAtoms[name]}
       springs={`cpu.${name}`}
       emphasis={emphasis}
+      title={translate("computer.cpu.register", name)}
       className={clsx("absolute", className)}
     />
   );

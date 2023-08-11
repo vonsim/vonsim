@@ -35,7 +35,7 @@ export function Controls({ className }: { className?: string }) {
         >
           <span className="icon-[lucide--play] block h-5 w-5" />
           <span className="whitespace-nowrap font-semibold tracking-wide">
-            {translate("runner.action.start")}
+            {translate("control.action.start")}
           </span>
         </button>
       ) : (
@@ -45,7 +45,7 @@ export function Controls({ className }: { className?: string }) {
         >
           <span className="icon-[lucide--stop-circle] block h-5 w-5" />
           <span className="whitespace-nowrap font-semibold tracking-wide">
-            {translate("runner.action.stop")}
+            {translate("control.action.stop")}
           </span>
         </button>
       )}

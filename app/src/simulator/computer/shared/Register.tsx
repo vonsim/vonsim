@@ -10,12 +10,14 @@ export function Register({
   valueAtom,
   springs,
   emphasis = false,
+  title,
   className,
 }: {
   name: string;
   valueAtom: AnyByteAtom;
   springs: RegisterKey;
   emphasis?: boolean;
+  title?: string;
   className?: string;
 }) {
   const reg = useAtomValue(valueAtom);
@@ -24,6 +26,7 @@ export function Register({
 
   return (
     <animated.div
+      title={title}
       className={clsx(
         "flex w-min items-center rounded-md border bg-stone-800 px-2 py-1 font-mono leading-none transition-opacity",
         emphasis ? "border-mantis-400 text-lg" : "border-stone-600 text-base",

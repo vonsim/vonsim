@@ -1,10 +1,13 @@
 import clsx from "clsx";
 
+import { useTranslate } from "@/hooks/useTranslate";
 import { Register } from "@/simulator/computer/shared/Register";
 
 import { COMPAtom, CONTAtom } from "./state";
 
 export function Timer({ className }: { className?: string }) {
+  const translate = useTranslate();
+
   return (
     <div
       className={clsx(
@@ -13,12 +16,22 @@ export function Timer({ className }: { className?: string }) {
       )}
     >
       <span className="block h-min w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-2xl font-bold text-white">
-        Timer
+        {translate("computer.timer")}
       </span>
 
       <div className="flex h-full w-full flex-col items-center justify-evenly">
-        <Register name="CONT" valueAtom={CONTAtom} springs="timer.CONT" />
-        <Register name="COMP" valueAtom={COMPAtom} springs="timer.COMP" />
+        <Register
+          name="CONT"
+          title={translate("generics.io-register", "CONT", 0x10)}
+          valueAtom={CONTAtom}
+          springs="timer.CONT"
+        />
+        <Register
+          name="COMP"
+          title={translate("generics.io-register", "COMP", 0x11)}
+          valueAtom={COMPAtom}
+          springs="timer.COMP"
+        />
       </div>
     </div>
   );

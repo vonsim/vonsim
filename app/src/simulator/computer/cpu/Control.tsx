@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { useSpeeds } from "@/hooks/useSettings";
+import { useTranslate } from "@/hooks/useTranslate";
 import { getSpring } from "@/simulator/computer/shared/springs";
 
 import { cycleAtom } from "./state";
@@ -11,6 +12,8 @@ import { cycleAtom } from "./state";
  * Control component, to be used inside <CPU />
  */
 export function Control() {
+  const translate = useTranslate();
+
   const cycle = useAtomValue(cycleAtom);
   const operandsText = useMemo(() => {
     if (!("metadata" in cycle)) return "";
@@ -51,13 +54,13 @@ export function Control() {
 
       <div className="absolute bottom-[172px] left-[30px] flex w-full items-start">
         <span className="block w-min whitespace-nowrap rounded-t-lg border border-b-0 border-stone-600 bg-mantis-500 px-2 pb-3 pt-1 text-xs font-semibold tracking-wide text-white">
-          Unidad de control
+          {translate("computer.cpu.control-unit")}
         </span>
       </div>
 
       <div className="absolute bottom-[30px] left-[30px] flex h-[150px] w-[350px] flex-col items-center rounded-lg border border-stone-600 bg-stone-800">
         <div className="overflow-hidden rounded-b-lg border border-t-0 border-stone-600 bg-stone-900 px-4">
-          <span className="text-sm leading-none">Decodificador</span>
+          <span className="text-sm leading-none">{translate("computer.cpu.decoder")}</span>
           <div className="my-1 h-1 w-full overflow-hidden rounded-full bg-stone-600">
             <animated.div
               className="h-full bg-mantis-400"
@@ -73,19 +76,7 @@ export function Control() {
           {transitions((style, phase) => (
             <animated.div className="absolute inset-0 flex items-center" style={style}>
               <span className="w-full text-center align-middle text-sm leading-none">
-                {phase === "fetching"
-                  ? "Leyendo instrucción..."
-                  : phase === "fetching-operands"
-                  ? "Leyendo operandos..."
-                  : phase === "executing"
-                  ? "Ejecutando..."
-                  : phase === "writeback"
-                  ? "Escribiendo resultados..."
-                  : phase === "interrupt"
-                  ? "Manejando interrupción..."
-                  : phase === "stopped"
-                  ? "Detenido"
-                  : null}
+                {translate(`computer.cpu.phase.${phase}`)}
               </span>
             </animated.div>
           ))}

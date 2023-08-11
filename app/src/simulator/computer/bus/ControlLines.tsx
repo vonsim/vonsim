@@ -1,8 +1,11 @@
 import clsx from "clsx";
 
+import { useTranslate } from "@/hooks/useTranslate";
 import { animated, getSpring, SimplePathKey } from "@/simulator/computer/shared/springs";
 
 export function ControlLines({ className }: { className?: string }) {
+  const translate = useTranslate();
+
   const rdPath = [
     "M 380 420 H 820 V 400", // CPU -> Memory
     "M 820 420 V 805", // Down
@@ -52,7 +55,7 @@ export function ControlLines({ className }: { className?: string }) {
       <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
 
       <LineText x={715} y={550}>
-        mem
+        {translate("computer.chip-select.mem")}
       </LineText>
       <path
         className="fill-none stroke-stone-900 stroke-[6px]"
@@ -67,12 +70,12 @@ export function ControlLines({ className }: { className?: string }) {
       />
 
       <LineText x={510} y={585}>
-        pic
+        {translate("computer.chip-select.pic")}
       </LineText>
       <ControlLine springs="bus.pic" d="M 521 595 V 730 H 450" />
 
       <LineText x={545} y={585}>
-        timer
+        {translate("computer.chip-select.timer")}
       </LineText>
       <ControlLine springs="bus.timer" d="M 563 595 V 875" />
 

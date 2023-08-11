@@ -1,10 +1,13 @@
 import clsx from "clsx";
 
+import { useTranslate } from "@/hooks/useTranslate";
 import { Register } from "@/simulator/computer/shared/Register";
 
 import { IMRAtom, IRRAtom, ISRAtom, linesAtoms } from "./state";
 
 export function PIC({ className }: { className?: string }) {
+  const translate = useTranslate();
+
   return (
     <div
       className={clsx(
@@ -14,13 +17,31 @@ export function PIC({ className }: { className?: string }) {
     >
       <div className="flex items-start">
         <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-2xl font-bold text-white">
-          PIC
+          {translate("computer.pic")}
         </span>
 
         <div className="flex h-16 grow items-center justify-evenly">
-          <Register name="IMR" valueAtom={IMRAtom} springs="pic.IMR" emphasis />
-          <Register name="IRR" valueAtom={IRRAtom} springs="pic.IRR" emphasis />
-          <Register name="ISR" valueAtom={ISRAtom} springs="pic.ISR" emphasis />
+          <Register
+            name="IMR"
+            title={translate("generics.io-register", "IMR", 0x21)}
+            valueAtom={IMRAtom}
+            springs="pic.IMR"
+            emphasis
+          />
+          <Register
+            name="IRR"
+            title={translate("generics.io-register", "IRR", 0x22)}
+            valueAtom={IRRAtom}
+            springs="pic.IRR"
+            emphasis
+          />
+          <Register
+            name="ISR"
+            title={translate("generics.io-register", "ISR", 0x23)}
+            valueAtom={ISRAtom}
+            springs="pic.ISR"
+            emphasis
+          />
         </div>
       </div>
 
@@ -31,6 +52,7 @@ export function PIC({ className }: { className?: string }) {
           <Register
             key={i}
             name={`INT${i}`}
+            title={translate("generics.io-register", `INT${i}`, 0x24 + i)}
             valueAtom={atom}
             springs={`pic.INT${i}` as "pic.INT0"}
             className="mx-auto"

@@ -8,7 +8,7 @@ import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
-import { resetCPUState } from "@/simulator/computer/cpu/state";
+import { cycleAtom, resetCPUState } from "@/simulator/computer/cpu/state";
 import { resetMemoryState } from "@/simulator/computer/memory/state";
 import { resetPICState } from "@/simulator/computer/pic/state";
 import { anim, resumeAllAnimations, stopAllAnimations } from "@/simulator/computer/shared/animate";
@@ -37,6 +37,7 @@ export function finish(error?: SimulatorError<any>) {
   highlightLine(null);
   setReadOnly(false);
   store.set(simulatorStateAtom, { type: "stopped", error });
+  store.set(cycleAtom, { phase: "stopped", error });
   stopAllAnimations();
 }
 

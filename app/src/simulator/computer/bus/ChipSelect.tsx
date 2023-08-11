@@ -1,6 +1,10 @@
 import clsx from "clsx";
 
+import { useTranslate } from "@/hooks/useTranslate";
+
 export function ChipSelect({ className }: { className?: string }) {
+  const translate = useTranslate();
+
   return (
     <div
       className={clsx(
@@ -9,7 +13,7 @@ export function ChipSelect({ className }: { className?: string }) {
       )}
     >
       <span className="block w-min whitespace-nowrap rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-lg font-bold text-white">
-        Chip select
+        {translate("computer.chip-select.name")}
       </span>
     </div>
   );
