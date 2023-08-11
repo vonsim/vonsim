@@ -51,19 +51,12 @@ When using [Visual Studio Code](https://code.visualstudio.com/), you can use the
 
 ## To-do list
 
-- [ ] Add ✨ animations ✨
-  - [x] Rethink the simulator
-  - [ ] Add animated diagrams
-  - [ ] [Support mobile](https://github.com/prc5/react-zoom-pan-pinch)
-- [ ] Add usage documentation (maybe with LaTeX or [Typst](https://typst.app/))
-- [ ] Add internal documentation (maybe with [TypeDoc](https://typedoc.org/) or [documentation.js](https://documentation.js.org/))
-- [ ] Add Printer w/CDMA
-- [ ] Dark mode everywhere
-- [ ] Perf measurements
-- [ ] Add advanced filesave support
-- [ ] Support indirect access with offset (maybe revisit the codification)
-- [ ] Support calling a custom interrupt with `INT`
-- [ ] Support adding an offset to a memory label
+- Add usage documentation (maybe with LaTeX or [Typst](https://typst.app/))
+- Add Printer w/CDMA
+- Add Printer w/USART
+- Add advanced filesave support
+- Implement indirect access with offset
+- Support adding an offset to a memory label
 
   ```asm
   letras db "abcd"
