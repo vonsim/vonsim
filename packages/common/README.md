@@ -38,6 +38,28 @@ This package exports utilities for internationalization. It's implemented this w
 
 This package exports utilities for looping over a range of numbers.
 
+## `@vonsim/common/paths`
+
+Utilities to access deep properties of an object using a string path. Plus type safety.
+
+```ts
+import getFromPath, { Path, PathValue, TerminalObjPath } from "@vonsim/common/paths";
+
+const obj = { a: { b: { c: 1984 } } };
+
+type Obj = typeof obj;
+type EndValue = number; // This type indicates when to stop traversing the object
+type ObjPath = Path<Obj, EndValue>; // "a" | "a.b" | "a.b.c"
+type TerminalObjPath = TerminalObjPath<Obj, EndValue>; // "a.b.c"
+type PathValue<P extends ObjPath> = PathValue<Obj, P, EndValue>;
+
+PathValue<"a.b.c">; // number
+PathValue<"a.b">; // { c: number }
+
+getFromPath(obj, "a.b.c") === obj.a.b.c;
+getFromPath(obj, "a.b") === obj.a.b;
+```
+
 ## `@vonsim/common/position`
 
 This package exports `Position`, a class that represents a position (or a range) inside the source assembly code, plus some utilities.

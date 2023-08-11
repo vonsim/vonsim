@@ -8,16 +8,13 @@
     "./byte": "./src/byte.ts",
     "./i18n": "./src/i18n.ts",
     "./loops": "./src/loops.ts",
+    "./paths": "./src/paths.ts",
     "./position": "./src/position.ts"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint --ignore-path .gitignore ."
   },
-  "dependencies": {
-    "dlv": "^1.1.3"
-  },
   "devDependencies": {
-    "@types/dlv": "^1.1.2",
     "@vonsim/tsconfig": "workspace:*",
     "eslint": "^8.46.0",
     "eslint-config-vonsim": "workspace:*",

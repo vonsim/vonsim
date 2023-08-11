@@ -8,7 +8,7 @@
  */
 
 import { SpringValue } from "@react-spring/web";
-import dlv from "dlv";
+import getFromPath, { Path, PathValue } from "@vonsim/common/paths";
 import type { Opaque, UnknownRecord } from "type-fest";
 
 import { colors } from "@/lib/tailwind";
@@ -119,40 +119,8 @@ const springs = {
 
 type Springs = typeof springs;
 
-type PathImpl<K extends string, V> = V extends SpringValue<any>
-  ? `${K}`
-  : `${K}` | `${K}.${Path<V>}`;
-
-/**
- * Get all the paths of an object in dot notation
- * @example
- * Path<{ a: { b: { c: SpringValue, d: SpringValue, } } }> = "a" | "a.b" | "a.b.c" | "a.b.d"
- */
-type Path<T> = {
-  [K in keyof T]: PathImpl<K & string, T[K]>;
-}[keyof T];
-
-/**
- * Given an object and a path, get the type of the value at that path
- * @see {@link Path}
- * @example
- * PathValue<{ a: { b: { c: SpringValue<number> } } }, 'a.b.c'> = SpringValue<number>
- * PathValue<{ a: { b: { c: SpringValue<number> } } }, 'a.b'> = { c: SpringValue<number> }
- */
-type PathValue<T, P extends Path<T>> = T extends any
-  ? P extends `${infer K}.${infer R}`
-    ? K extends keyof T
-      ? R extends Path<T[K]>
-        ? PathValue<T[K], R>
-        : never
-      : never
-    : P extends keyof T
-    ? T[P]
-    : never
-  : never;
-
-export type SpringPath = Path<Springs>;
-export type SpringPathValue<P extends SpringPath> = PathValue<Springs, P>;
+export type SpringPath = Path<Springs, SpringValue<any>>;
+export type SpringPathValue<P extends SpringPath> = PathValue<Springs, P, SpringValue<any>>;
 
 export type SpringPathWhere<T> = {
   [K in SpringPath]: SpringPathValue<K> extends T ? K : never;
@@ -165,14 +133,9 @@ export type SpringPathWhere<T> = {
  * getSpring("bus.address.stroke") // SpringValue<string>
  * getSpring("bus.address") // { stroke: SpringValue<string> }
  */
-export function getSpring<const Key extends SpringPath>(key: Key): SpringPathValue<Key> {
-  const spring = dlv(springs, key, null) as SpringPathValue<Key> | null;
-  if (spring === null) throw new Error(`No spring found for key ${key}`);
-
-  return spring;
+export function getSpring<const Key extends SpringPath>(key: Key) {
+  return getFromPath<Springs, Key, SpringValue<any>>(springs, key);
 }
-
-export { animated } from "@react-spring/web";
 
 // This final section programatically saves the intial
 // values (once on load) of the springs and exposes a
@@ -204,3 +167,5 @@ function recursiveReset(springs: UnknownRecord, defaults: UnknownRecord) {
 }
 
 export const resetAllSprings = () => recursiveReset(springs, defaultValues);
+
+export { animated } from "@react-spring/web";

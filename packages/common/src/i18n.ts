@@ -1,44 +1,14 @@
-import dlv from "dlv";
-import type { Primitive, TupleToUnion } from "type-fest";
+import type { TupleToUnion } from "type-fest";
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type PathImpl<K extends string | number, V> = V extends Primitive | Function
-  ? `${K}`
-  : `${K}.${Path<V>}`;
+import getFromPath, { PathValue, TerminalPath } from "./paths";
 
-/**
- * Get all the paths of an object in dot notation
- * @example
- * Path<{ a: { b: { c: number } } }> = "a" | "a.b" | "a.b.c"
- */
-type Path<T> = {
-  [K in keyof T]: PathImpl<K & string, T[K]>;
-}[keyof T];
-
-/**
- * Given an object and a path, get the type of the value at that path
- * @see {@link Path}
- * @example
- * PathValue<{ a: { b: { c: number } } }, 'a.b.c'> = number
- * PathValue<{ a: { b: { c: number } } }, 'a.b'> = { c: number }
- */
-type PathValue<T, P extends Path<T>> = T extends any
-  ? P extends `${infer K}.${infer R}`
-    ? K extends keyof T
-      ? R extends Path<T[K]>
-        ? PathValue<T[K], R>
-        : never
-      : never
-    : P extends keyof T
-    ? T[P]
-    : never
-  : never;
-
-export type BaseLocale = { [key: string]: BaseLocale | string | ((...context: any) => string) };
-export type LocaleCode<Locale extends BaseLocale> = Path<Locale>;
+type LocaleValue = string | ((...context: any) => string);
+export type BaseLocale = { [key: string]: LocaleValue | BaseLocale };
+export type LocaleCode<Locale extends BaseLocale> = TerminalPath<Locale, LocaleValue>;
 export type LocaleContext<Locale extends BaseLocale, Code extends LocaleCode<Locale>> = PathValue<
   Locale,
-  Code
+  Code,
+  LocaleValue
 > extends (...context: infer A) => string
   ? A
   : [];
@@ -71,15 +41,13 @@ export type Language = TupleToUnion<typeof LANGUAGES>;
  * translate("en", "hello") // "Hello"
  * translate("en", "helloName", "John") // "Hello John"
  */
-export function initTranlate<Locale extends BaseLocale>(locales: {
-  [key in Language]: Locale;
-}) {
+export function initTranlate<Locale extends BaseLocale>(locales: Record<Language, Locale>) {
   return function translate<Key extends LocaleCode<Locale>>(
     lang: Language,
     key: Key,
     ...context: LocaleContext<Locale, Key>
   ) {
-    const value = dlv(locales, `${lang}.${key}`, null);
+    const value = getFromPath<Locale, Key, LocaleValue>(locales[lang], key);
 
     if (typeof value === "function") return value(...context);
     else if (typeof value === "string") return value;
