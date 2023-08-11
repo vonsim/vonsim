@@ -22,7 +22,7 @@ export const english = {
 
   editor: {
     lintSummary: (n: number) =>
-      n === 0 ? "Listo para compilar" : n === 1 ? "Hay un error" : `Hay ${n} errores`,
+      n === 0 ? "Ready to compile" : n === 1 ? "There's an error" : `There're ${n} errors`,
   },
 
   control: {
