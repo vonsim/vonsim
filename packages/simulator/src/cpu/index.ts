@@ -5,7 +5,7 @@ import { Component, ComponentInit } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 import { InstructionType, statementToInstruction } from "./instructions";
-import { handleReservedInterrupt, isReservedInterrupt } from "./reserved-interrupts";
+import { handleSyscall, isSyscall } from "./syscalls";
 import type {
   ByteRegister,
   Flag,
@@ -110,18 +110,25 @@ export class CPU extends Component {
     // Infinite loop until computer halts
     while (true) {
       // Gets the instruction at the current IP from `this.#instructions`
-      const instruction = this.#instructions.get(this.#registers.IP.unsigned);
-      if (!instruction) {
-        yield {
-          type: "cpu:error",
-          error: new SimulatorError("no-instruction", this.#registers.IP),
-        };
-        return;
-      }
+      const IP = this.#registers.IP;
+      if (isSyscall(IP)) {
+        // Syscall
+        const continueExecuting = yield* handleSyscall(this.computer, IP);
+        if (!continueExecuting) return;
+      } else {
+        const instruction = this.#instructions.get(IP.unsigned);
+        if (!instruction) {
+          yield {
+            type: "cpu:error",
+            error: new SimulatorError("no-instruction", this.#registers.IP),
+          };
+          return;
+        }
 
-      // Execute the instruction, and checks if the instruction returned `false` (halt)
-      const continueExecuting = yield* instruction.execute(this.computer);
-      if (!continueExecuting) return;
+        // Execute the instruction, and checks if the instruction returned `false` (halt)
+        const continueExecuting = yield* instruction.execute(this.computer);
+        if (!continueExecuting) return;
+      }
 
       // Check for interrupts
       if (this.getFlag("IF") && this.computer.io.pic.isINTRActive()) {
@@ -160,11 +167,6 @@ export class CPU extends Component {
     yield* this.updateFLAGS({ IF: false });
     yield* this.copyWordRegister("IP", "id");
     if (!(yield* this.pushToStack())) return false; // Stack overflow
-
-    // Check for reserved interrupt
-    if (isReservedInterrupt(number)) {
-      return yield* handleReservedInterrupt(this.computer, number);
-    }
 
     // Get interrupt routine address low
     let vector = Byte.fromUnsigned(number.unsigned * 4, 16);

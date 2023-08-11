@@ -4,6 +4,7 @@ import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
 import { Component, ComponentInit } from "./component";
+import { syscallsAddresses } from "./cpu/syscalls";
 import { SimulatorError } from "./error";
 import type { EventGenerator } from "./events";
 
@@ -43,6 +44,12 @@ export class Memory extends Component {
       this.#buffer = new Uint8Array(Memory.SIZE).map(() => Byte.random(8).unsigned);
     } else {
       this.#buffer = new Uint8Array(Memory.SIZE);
+    }
+
+    // Load syscalls addresses into memory
+    for (const [number, address] of Object.entries(syscallsAddresses)) {
+      const bytes = Byte.fromUnsigned(address, 16);
+      this.#buffer.set(bytes.toUint8Array(), Number(number) * 4); // Interrupt vector position
     }
 
     // Load data directives into memory

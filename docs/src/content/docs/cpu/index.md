@@ -90,16 +90,16 @@ Específicamente, el procesador:
 
 Y así se comienza a ejecutar la rutina de interrupción. Estas tienen el mismo formato que una [subrutina](#subrutinas) salvo que terminan en [`IRET`](/docs/cpu/instructions/iret/) en vez de [`RET`](/docs/cpu/instructions/ret/).
 
-### Interrupciones reservadas
+### Llamadas al sistema
 
-Hay algunas interrupciones que están reservadas para el funcionamiento del sistema. Estas son:
+El simulador permite realizar llamadas al sistema o _syscalls_. En el simulador, estas llamadas son realizadas idénticamente a las interrupciones. Antes de cargar un programa en memoria, se almacenan direcciones de memoria especiales en el vector de interrupciones. Estas direcciones corresponden a las rutinas de las _syscalls_. Los números de interrupción asociados a estas llamadas son:
 
 - `INT 0`: termina la ejecución del programa, equivalente a la instrucción [`HLT`](/docs/cpu/instructions/hlt/);
 - `INT 3`: incia el modo de depuración (_breakpoint_);
 - `INT 6`: lee un carácter de la [consola](/docs/io/devices/console/);
 - `INT 7`: escribe una cadena de caracteres en la [consola](/docs/io/devices/console/).
 
-Estas pueden ser llamadas por el usuario mediante la instrucción `INT` o por el PIC (si se configura para ello).
+Además, las direcciones asociadas a estas llamadas son `8000h`, `8003h`, `8006h` y `8007h` respectivamente, que no son modificables por el usuario. Nótese que el programa podría modificar el vector de interrupciones e invalidar las llamadas al sistema. También podría posicionar en el `IP` una de las direcciones especiales y la llamada al sistema se ejecutaría de igual manera. Lo único necesario para que la _syscall_ se ejecute es que se ejecute la dirección de la rutina asociada.
 
 ---
 

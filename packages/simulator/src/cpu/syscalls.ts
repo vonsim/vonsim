@@ -3,46 +3,47 @@ import { Byte } from "@vonsim/common/byte";
 import type { Computer } from "../computer";
 import type { EventGenerator } from "../events";
 
-// Reserved interrupts
-// https://vonsim.github.io/docs/cpu/#interrupciones-reservadas
-const reservedInterrupts = [0, 3, 6, 7] as const;
+// https://vonsim.github.io/docs/cpu/#llamadas-al-sistema
+export const syscallsAddresses = {
+  0: 0x8000,
+  3: 0x8003,
+  6: 0x8006,
+  7: 0x8007,
+} as const;
 
 /**
- * @see {@link https://vonsim.github.io/docs/cpu/#interrupciones-reservadas}.
- * @param number Interrupt number
- * @returns true if interrupt number is reserved
+ * @see {@link https://vonsim.github.io/docs/cpu/#llamadas-al-sistema}.
+ * @param address Address
+ * @returns true if address points to a syscall, false otherwise.
  */
-export function isReservedInterrupt(number: Byte<8>) {
-  return reservedInterrupts.includes(number.unsigned);
+export function isSyscall(address: Byte<16>) {
+  return Object.values(syscallsAddresses).includes(address.unsigned);
 }
 
 /**
- * Executes the reserved interrupt routine.
- * @see {@link https://vonsim.github.io/docs/cpu/#interrupciones-reservadas}.
- * @param number Interrupt number
+ * Executes the desired syscall.
+ * @see {@link https://vonsim.github.io/docs/cpu/#llamadas-al-sistema}.
+ * @param address Syscall address ({@link syscallsAddresses})
  * @returns Whether the operation was successful.
  *
  * ---
- * Called by the CPU ({@link CPU.startInterrupt}).
+ * Called by the CPU ({@link CPU.run}).
  */
-export function* handleReservedInterrupt(
-  computer: Computer,
-  number: Byte<8>,
-): EventGenerator<boolean> {
-  switch (number.unsigned) {
-    case 0: {
+export function* handleSyscall(computer: Computer, address: Byte<16>): EventGenerator<boolean> {
+  switch (address.unsigned) {
+    case syscallsAddresses[0]: {
       // INT 0 - Halt
       yield { type: "cpu:int.0" };
       return false; // Halt
     }
 
-    case 3: {
+    case syscallsAddresses[3]: {
       // INT 3 - Breakpoint
       yield { type: "cpu:int.3" };
       return true;
     }
 
-    case 6: {
+    case syscallsAddresses[6]: {
       // INT 6 - Read character from console and store it in [BX]
       yield* computer.cpu.copyWordRegister("BX", "ri");
 
@@ -58,7 +59,7 @@ export function* handleReservedInterrupt(
       break;
     }
 
-    case 7: {
+    case syscallsAddresses[7]: {
       // INT 7 - Write string to console, starting from [BX] and of length AL
 
       // Push AX and BX to stack

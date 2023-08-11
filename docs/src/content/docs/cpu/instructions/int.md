@@ -12,7 +12,7 @@ INT N
 
 _N_ es el número de interrupción (0-255), que debe ser inmediato (ver [tipos de operandos](/docs/cpu/assembly/#operandos)).
 
-Utiliza el mismo mecanismo de vector de interrupciones que las interrupciones por hardware. Generalmente se utiliza para llamar [interrupciones reservadas](/docs/cpu/#interrupciones-reservadas), pero si se la llama con cualquier otro número, se ejecutará la rutina de interrupción asociada a ese número.
+Utiliza el mismo mecanismo de vector de interrupciones que las interrupciones por hardware. Generalmente se utiliza para realizar [llamadas al sistema](/docs/cpu/#llamadas-al-sistema), pero si se la llama con cualquier otro número, se ejecutará la rutina de interrupción asociada a ese número.
 
 ## Codificación
 

@@ -4,7 +4,7 @@ title: Consola
 
 El simulador cuenta con una consola para escribir y leer caracteres. Esta es un dispositivo y el CPU puede comunicarse con la misma únicamente mediante interrupciones. Esto es así por simplicidad, ya que una consola real es mucho más compleja. Por eso, en la interfaz gráfica del simulador, esta no se encuentra conectada a ningún módulo.
 
-Dentro de las interrupciones reservadas, se encuentran las interrupciones `INT 6` e `INT 7` para escribir y leer caracteres, respectivamente.
+Dentro de las [llamadas al sistema](/docs/cpu/#llamadas-al-sistema), se encuentran las interrupciones `INT 6` e `INT 7` para escribir y leer caracteres, respectivamente.
 
 Con `INT 6` se detiene la ejecución del código hasta que se escriba un carácter en la consola. El carácter que se escriba será guardado en la dirección de memoria almacenada en `BX` según su representación en ASCII.
 
