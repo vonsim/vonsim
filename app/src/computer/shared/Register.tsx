@@ -1,8 +1,7 @@
-import { animated } from "@react-spring/web";
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
-import { getSpring, RegisterKey } from "@/computer/shared/springs";
+import { animated, getSpring, RegisterKey } from "@/computer/shared/springs";
 import type { AnyByteAtom } from "@/computer/shared/types";
 
 export function Register({
