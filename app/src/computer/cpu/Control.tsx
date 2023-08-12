@@ -74,9 +74,12 @@ export function Control() {
 
         <span
           className={clsx(
-            "mt-4 w-48 rounded-lg border border-stone-600 bg-stone-900 py-2 text-center text-sm leading-none transition-colors",
-            statusKey === "stopped-error" && "bg-red-500",
-            statusKey === "waiting-for-input" && "bg-amber-600",
+            "mt-4 w-48 rounded-lg border border-stone-600 py-2 text-center text-sm leading-none transition-colors",
+            statusKey === "stopped-error"
+              ? "bg-red-500"
+              : statusKey === "waiting-for-input"
+              ? "bg-amber-600"
+              : "bg-stone-900",
           )}
         >
           {translate(`computer.cpu.status.${statusKey}`)}
