@@ -82,6 +82,7 @@ export default defineConfig({
           path: fileURLToPath(new URL("./src/assets/vonsim.tmLanguage.json", import.meta.url)),
         },
       ],
+      theme: "vitesse-dark", // best approximation of the theme
     },
   },
 });

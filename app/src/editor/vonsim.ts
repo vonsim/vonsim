@@ -91,20 +91,20 @@ const vonsimLanguage = StreamLanguage.define({
 
 const vonsimHighlighter = syntaxHighlighting(
   HighlightStyle.define([
-    { tag: vonsimTags.comment, class: "text-stone-400 italic" },
-    { tag: vonsimTags["data-directive"], class: "text-rose-400" },
+    { tag: vonsimTags.comment, class: "text-stone-500 italic" },
+    { tag: vonsimTags["data-directive"], class: "text-rose-400/80" },
     // { tag: vonsimTags.identifier, class: "" },
     { tag: vonsimTags.instruction, class: "text-mantis-400" },
     // { tag: vonsimTags.label, class: "" },
-    { tag: vonsimTags.number, class: "text-amber-500 font-semibold" },
-    { tag: vonsimTags.operator, class: "text-rose-400" },
-    { tag: vonsimTags.offset, class: "text-rose-400 italic" },
-    { tag: vonsimTags["ptr-size"], class: "text-rose-400 italic" },
-    { tag: vonsimTags.punctuation, class: "text-stone-500" },
-    { tag: vonsimTags.register, class: "text-amber-500 italic" },
-    { tag: vonsimTags.special, class: "text-sky-300 italic" },
-    { tag: vonsimTags.string, class: "text-emerald-300" },
-    { tag: vonsimTags.unassigned, class: "text-rose-400" },
+    { tag: vonsimTags.number, class: "text-cyan-300/60" },
+    { tag: vonsimTags.operator, class: "text-rose-300" },
+    { tag: vonsimTags.offset, class: "text-rose-400/80 italic" },
+    { tag: vonsimTags["ptr-size"], class: "text-rose-400/80 italic" },
+    { tag: vonsimTags.punctuation, class: "text-stone-600" },
+    { tag: vonsimTags.register, class: "text-emerald-400/80" },
+    { tag: vonsimTags.special, class: "text-yellow-300/80" },
+    { tag: vonsimTags.string, class: "text-orange-300" },
+    { tag: vonsimTags.unassigned, class: "text-rose-400/80" },
   ]),
 );
 
