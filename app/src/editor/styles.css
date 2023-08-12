@@ -9,6 +9,10 @@
     @apply bg-stone-700/50;
   }
 
+  &:not(.cm-focused) .cm-activeLine {
+    @apply bg-transparent;
+  }
+
   .cm-content {
     @apply caret-white;
   }
@@ -23,7 +27,7 @@
 
   &.cm-focused .cm-selectionBackground,
   ::selection {
-    @apply bg-stone-700;
+    @apply !bg-stone-700;
   }
 
   &:not(.cm-focused) .cm-selectionBackground {
@@ -40,6 +44,10 @@
 
   .cm-activeLineGutter {
     @apply border-none bg-stone-500/50 text-stone-200 font-normal;
+  }
+
+  &:not(.cm-focused) .cm-activeLineGutter {
+    @apply bg-stone-800 text-stone-400;
   }
 
   .cm-tooltip {
