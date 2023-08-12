@@ -4,6 +4,7 @@ import { ComputerState, EventGenerator, Simulator, SimulatorError } from "@vonsi
 import { atom } from "jotai";
 import { toast } from "sonner";
 
+import { resetConsoleState } from "@/computer/console/state";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
@@ -65,6 +66,8 @@ function resetState(state: ComputerState) {
   resetPICState(state);
   resetTimerState(state);
 
+  resetConsoleState(state);
+
   if ("handshake" in state.io) {
     store.set(DATAAtom, Byte.fromUnsigned(state.io.handshake.DATA, 8));
     store.set(STATEAtom, Byte.fromUnsigned(state.io.handshake.STATE, 8));
@@ -95,7 +98,7 @@ type Action =
   | [action: "cpu.stop"]
   | [action: "f10.press"]
   | [action: "switch.toggle", index: number]
-  | [action: "console.handleKey", event: InputEvent]
+  | [action: "console.sendChar", char: string]
   | [action: "console.clean"]
   | [action: "printer.clean"];
 
@@ -167,30 +170,11 @@ export async function dispatch(...args: Action) {
       return;
     }
 
-    /**
-     * Handle a key input from the user after a `INT 6`. Will be emited by the Console.
-     *
-     * It's a InputEvent and not a KeyboardEvent because the latter
-     * works awfully on mobile devices.
-     * https://clark.engineering/input-on-android-229-unidentified-1d92105b9a04
-     */
-    case "console.handleKey": {
+    case "console.sendChar": {
       if (state.type !== "running" || !state.waitingForInput) return invalidAction();
 
-      const ev = args[1];
-      let char: string;
-
-      if (ev.inputType === "insertLineBreak") {
-        char = "\n";
-      } else if (ev.inputType === "insertText" || ev.inputType === "insertCompositionText") {
-        if (!ev.data) return;
-        char = ev.data;
-      } else {
-        return;
-      }
-
       // Save read character
-      simulator.devices.console.readChar(Byte.fromChar(char));
+      simulator.devices.console.readChar(Byte.fromChar(args[1]));
 
       store.set(simulationAtom, { ...state, waitingForInput: false });
       return;

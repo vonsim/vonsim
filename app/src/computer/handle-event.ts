@@ -3,13 +3,13 @@ import { Byte } from "@vonsim/common/byte";
 
 import { handleBusEvent } from "./bus/events";
 import { handleClockEvent } from "./clock/events";
+import { handleConsoleEvent } from "./console/events";
 import { handleCPUEvent } from "./cpu/events";
 import { handleF10Event } from "./f10/events";
 import { handleMemoryEvent } from "./memory/events";
 import { handlePICEvent } from "./pic/events";
 import type { SimulatorEvent } from "./shared/types";
 import { handleTimerEvent } from "./timer/events";
-import { handleConsoleEvent } from "./unfinished/console";
 import { handleHandshakeEvent } from "./unfinished/handshake";
 import { handleLedsEvent } from "./unfinished/leds";
 import { handlePIOEvent } from "./unfinished/pio";
@@ -76,19 +76,47 @@ export async function handleEvent(event: SimulatorEvent) {
   }
   console.groupEnd();
 
-  if (ns === "bus") return await handleBusEvent(event as SimulatorEvent<"bus:">);
-  if (ns === "clock") return await handleClockEvent(event as SimulatorEvent<"clock:">);
-  if (ns === "console") return handleConsoleEvent(event as SimulatorEvent<"console:">);
-  if (ns === "cpu") return await handleCPUEvent(event as SimulatorEvent<"cpu:">);
-  if (ns === "f10") return await handleF10Event(event as SimulatorEvent<"f10:">);
-  if (ns === "handshake") return handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
-  if (ns === "leds") return handleLedsEvent(event as SimulatorEvent<"leds:">);
-  if (ns === "memory") return await handleMemoryEvent(event as SimulatorEvent<"memory:">);
-  if (ns === "pic") return await handlePICEvent(event as SimulatorEvent<"pic:">);
-  if (ns === "pio") return handlePIOEvent(event as SimulatorEvent<"pio:">);
-  if (ns === "printer") return handlePrinterEvent(event as SimulatorEvent<"printer:">);
-  if (ns === "switches") return handleSwitchesEvent(event as SimulatorEvent<"switches:">);
-  if (ns === "timer") return await handleTimerEvent(event as SimulatorEvent<"timer:">);
+  switch (ns) {
+    case "bus":
+      return await handleBusEvent(event as SimulatorEvent<"bus:">);
 
-  throw new Error(`Unknown event type: ${event.type}`);
+    case "clock":
+      return await handleClockEvent(event as SimulatorEvent<"clock:">);
+
+    case "console":
+      return await handleConsoleEvent(event as SimulatorEvent<"console:">);
+
+    case "cpu":
+      return await handleCPUEvent(event as SimulatorEvent<"cpu:">);
+
+    case "f10":
+      return await handleF10Event(event as SimulatorEvent<"f10:">);
+
+    case "handshake":
+      return await handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
+
+    case "leds":
+      return await handleLedsEvent(event as SimulatorEvent<"leds:">);
+
+    case "memory":
+      return await handleMemoryEvent(event as SimulatorEvent<"memory:">);
+
+    case "pic":
+      return await handlePICEvent(event as SimulatorEvent<"pic:">);
+
+    case "pio":
+      return await handlePIOEvent(event as SimulatorEvent<"pio:">);
+
+    case "printer":
+      return await handlePrinterEvent(event as SimulatorEvent<"printer:">);
+
+    case "switches":
+      return await handleSwitchesEvent(event as SimulatorEvent<"switches:">);
+
+    case "timer":
+      return await handleTimerEvent(event as SimulatorEvent<"timer:">);
+
+    default:
+      throw new Error(`Unknown event type: ${event.type}`);
+  }
 }

@@ -1,0 +1,73 @@
+/* Class names taken from react-simple-keyboard/build/css/index.css */
+
+.hg-theme-vonsim {
+  @apply bg-stone-900 rounded-lg font-sans overflow-hidden px-1 py-2 touch-manipulation select-none w-full text-sm;
+
+  button.hg-button {
+    @apply border-0 outline-0;
+  }
+
+  .hg-button {
+    @apply flex flex-grow items-center justify-center bg-stone-800 border-b border-stone-700 rounded-md shadow-sm cursor-pointer h-8 p-1;
+
+    span {
+      @apply pointer-events-none;
+    }
+
+    &.hg-standardBtn {
+      @apply w-5;
+    }
+
+    &.hg-functionBtn {
+      @apply border-mantis-400 text-xs;
+    }
+
+    &.hg-activeButton {
+      @apply bg-mantis-400;
+    }
+  }
+
+  .hg-row {
+    @apply flex;
+
+    &:not(:last-child) {
+      @apply mb-1;
+    }
+
+    .hg-button-container,
+    .hg-button:not(:last-child) {
+      @apply mr-1;
+    }
+
+    > div:last-child {
+      @apply mr-0;
+    }
+
+    .hg-button-container {
+      @apply flex;
+    }
+  }
+}
+
+.hg-shift-once {
+  .hg-button.hg-button-shiftleft,
+  .hg-button.hg-button-shiftright {
+    @apply bg-mantis-400;
+  }
+}
+
+.hg-shift-lock .hg-button.hg-button-lock {
+  @apply bg-mantis-400;
+}
+
+.hg-accentDeadKey .hg-button {
+  &:not(.hg-accentDeadKeyButton) {
+    @apply opacity-30;
+  }
+}
+
+.hg-diaeresisDeadKey .hg-button {
+  &:not(.hg-diaeresisDeadKeyButton) {
+    @apply opacity-30;
+  }
+}

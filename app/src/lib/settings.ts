@@ -1,4 +1,4 @@
-import { LANGUAGES } from "@vonsim/common/i18n";
+import { Language, LANGUAGES } from "@vonsim/common/i18n";
 import { atomWithStorage } from "jotai/utils";
 import { z } from "zod";
 
@@ -12,14 +12,7 @@ const settingsSchema = z.object({
   /**
    * Interface language.
    */
-  language: z.enum(LANGUAGES).catch(() => {
-    // Return browser default language
-    const userLang = navigator.language.toLowerCase();
-    for (const lang of LANGUAGES) {
-      if (userLang.startsWith(lang)) return lang;
-    }
-    return "en";
-  }),
+  language: z.enum(LANGUAGES).catch(getDefaultLanguage),
 
   /**
    * Value of {@link ComputerOptions.data}.
@@ -57,7 +50,8 @@ const settingsSchema = z.object({
 
 export type Settings = z.infer<typeof settingsSchema>;
 
-const defaultSettings = settingsSchema.parse({}); // Returns an object with default values (`.catch()`)
+// Returns an object with default values (`.catch()`)
+const defaultSettings = settingsSchema.parse({});
 
 export const settingsAtom = atomWithStorage<Settings>(
   "vonsim-settings",
@@ -98,3 +92,12 @@ export const settingsAtom = atomWithStorage<Settings>(
 );
 
 export const getSettings = () => store.get(settingsAtom);
+
+function getDefaultLanguage(): Language {
+  // Return browser default language
+  const userLang = navigator.language.toLowerCase();
+  for (const lang of LANGUAGES) {
+    if (userLang.startsWith(lang)) return lang;
+  }
+  return "en";
+}

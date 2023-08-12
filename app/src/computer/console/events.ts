@@ -1,10 +1,8 @@
-import { atom } from "jotai";
-
 import type { SimulatorEvent } from "@/computer/shared/types";
 import { simulationAtom, simulator } from "@/computer/state";
 import { store } from "@/lib/jotai";
 
-export const consoleAtom = atom("");
+import { consoleAtom } from "./state";
 
 export async function handleConsoleEvent(event: SimulatorEvent<"console:">): Promise<void> {
   switch (event.type) {

@@ -1,0 +1,25 @@
+/* Based on https://css-tricks.com/old-timey-terminal-styling/ */
+.monitor {
+  @apply whitespace-pre-wrap break-all font-mono relative text-lg text-white h-48 rounded-lg border border-stone-600 p-1 m-4;
+
+  background-color: theme(colors.stone.900);
+  background-image: radial-gradient(theme(colors.mantis.500 / 75%), theme(colors.stone.900) 120%);
+  text-shadow: 0 0 5px #c8c8c8;
+
+  &::after {
+    @apply pointer-events-none absolute inset-0 h-full w-full;
+    content: "";
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  }
+
+  ::selection {
+    background-color: #0080ff;
+    text-shadow: none;
+  }
+}

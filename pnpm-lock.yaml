@@ -89,6 +89,9 @@ importers:
       react-resizable-panels:
         specifier: ^0.0.54
         version: 0.0.54(react-dom@18.2.0)(react@18.2.0)
+      react-simple-keyboard:
+        specifier: ^3.6.51
+        version: 3.6.51(react-dom@18.2.0)(react@18.2.0)
       react-use:
         specifier: ^17.4.0
         version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
@@ -3767,7 +3770,7 @@ packages:
   /@types/resolve@1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 20.4.9
+      '@types/node': 18.17.4
     dev: true
 
   /@types/resolve@1.20.2:
@@ -6439,7 +6442,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.4.9
+      '@types/node': 18.17.4
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -8046,6 +8049,16 @@ packages:
     peerDependencies:
       react: ^16.14.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-simple-keyboard@3.6.51(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-JM6R50/Lx10YqLGKJsucWlr9hTGOvkPiMiZ6XS0Uv3ZujD8KQ7Bw4WYVK9a3h6EdmfGlWo2gdhkZz6ezmSqyMQ==}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)

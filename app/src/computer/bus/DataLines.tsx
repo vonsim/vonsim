@@ -19,8 +19,8 @@ export function DataLines({ className }: { className?: string }) {
 
   return (
     <svg
-      viewBox="0 0 1500 1100"
-      className={clsx("pointer-events-none absolute z-[5] h-[1100px] w-[1500px]", className)}
+      viewBox="0 0 1700 1100"
+      className={clsx("pointer-events-none absolute z-[5] h-[1100px] w-[1700px]", className)}
     >
       {/* Data lines */}
       <path
