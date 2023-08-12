@@ -1,9 +1,11 @@
-import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import { useRef } from "react";
+import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
-import { Console } from "@/computer/console";
+import { ZoomControls } from "@/components/ZoomControls";
 
 import { SystemBus } from "./bus";
 import { Clock } from "./clock";
+import { Console } from "./console";
 import { CPU } from "./cpu";
 import { F10 } from "./f10";
 import { Memory } from "./memory";
@@ -17,23 +19,28 @@ import { Timer } from "./timer";
 // - Registers/subcomponents should have a z-index of 20.
 
 export function ComputerContainer() {
+  const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
+
   return (
-    <TransformWrapper minScale={0.5} initialPositionX={0} initialPositionY={0}>
-      <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
-        <div className="relative h-[1100px] w-[1700px] border border-red-500">
-          <SystemBus className="left-0 top-0" />
+    <div className="relative h-full w-full">
+      <TransformWrapper minScale={0.5} initialPositionX={0} initialPositionY={0} ref={wrapperRef}>
+        <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
+          <div className="relative h-[1100px] w-[1700px] border border-red-500">
+            <SystemBus className="left-0 top-0" />
 
-          <CPU className="left-0 top-0" />
-          <Memory className="left-[800px] top-0" />
+            <CPU className="left-0 top-0" />
+            <Memory className="left-[800px] top-0" />
 
-          <PIC className="left-0 top-[700px]" />
-          <Timer className="left-[500px] top-[875px]" />
+            <PIC className="left-0 top-[700px]" />
+            <Timer className="left-[500px] top-[875px]" />
 
-          <Clock className="left-[520px] top-[930px]" />
-          <Console className="left-[1200px] top-0" />
-          <F10 className="left-[50px] top-[950px]" />
-        </div>
-      </TransformComponent>
-    </TransformWrapper>
+            <Clock className="left-[520px] top-[930px]" />
+            <Console className="left-[1200px] top-0" />
+            <F10 className="left-[50px] top-[950px]" />
+          </div>
+        </TransformComponent>
+        <ZoomControls wrapperRef={wrapperRef} />
+      </TransformWrapper>
+    </div>
   );
 }

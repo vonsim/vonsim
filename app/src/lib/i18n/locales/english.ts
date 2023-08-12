@@ -30,6 +30,10 @@ export const english = {
       start: "Start",
       stop: "Stop",
     },
+    zoom: {
+      in: "Zoom in",
+      out: "Zoom out",
+    },
   },
 
   computer: {

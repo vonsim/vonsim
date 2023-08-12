@@ -30,6 +30,10 @@ export const spanish: Locale = {
       start: "Ejecutar",
       stop: "Detener",
     },
+    zoom: {
+      in: "Acercar",
+      out: "Alejar",
+    },
   },
 
   computer: {
