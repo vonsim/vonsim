@@ -15,13 +15,12 @@ export function Console({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="block w-min whitespace-nowrap rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-xs font-semibold tracking-wide text-white">
+      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-xl font-bold text-white">
         {translate("computer.console")}
       </span>
+
       <Monitor />
-
       <hr className="border-stone-600" />
-
       <Keyboard />
     </div>
   );
