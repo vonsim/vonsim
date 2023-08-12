@@ -1,9 +1,9 @@
-import { animated, easings, useTransition } from "@react-spring/web";
+import clsx from "clsx";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { getSpring } from "@/computer/shared/springs";
-import { useSpeeds } from "@/hooks/useSettings";
+import { animated, getSpring } from "@/computer/shared/springs";
+import { useSimulation } from "@/hooks/useSimulation";
 import { useTranslate } from "@/hooks/useTranslate";
 
 import { cycleAtom } from "./state";
@@ -14,7 +14,9 @@ import { cycleAtom } from "./state";
 export function Control() {
   const translate = useTranslate();
 
+  const [status] = useSimulation();
   const cycle = useAtomValue(cycleAtom);
+
   const operandsText = useMemo(() => {
     if (!("metadata" in cycle)) return "";
     if (cycle.metadata.operands.length === 0) return "";
@@ -30,14 +32,12 @@ export function Control() {
     }
   }, [cycle]);
 
-  const { executionUnit } = useSpeeds();
-
-  const transitions = useTransition(cycle.phase, {
-    from: { transform: "translateY(-100%)" },
-    enter: { transform: "translateY(0%)" },
-    leave: { transform: "translateY(100%)" },
-    config: { duration: 5 * executionUnit, easing: easings.easeOutElastic },
-  });
+  const statusKey = useMemo(() => {
+    if (status.type === "running" && status.waitingForInput) return "waiting-for-input";
+    if (status.type === "stopped") return status.error ? "stopped-error" : "stopped";
+    if (cycle.phase === "stopped" && cycle.error) return "stopped-error";
+    return cycle.phase;
+  }, [status, cycle]);
 
   return (
     <>
@@ -72,15 +72,15 @@ export function Control() {
           </div>
         </div>
 
-        <div className="relative mt-4 h-8 w-48 overflow-hidden rounded-lg border border-stone-600 bg-stone-900">
-          {transitions((style, phase) => (
-            <animated.div className="absolute inset-0 flex items-center" style={style}>
-              <span className="w-full text-center align-middle text-sm leading-none">
-                {translate(`computer.cpu.phase.${phase}`)}
-              </span>
-            </animated.div>
-          ))}
-        </div>
+        <span
+          className={clsx(
+            "mt-4 w-48 rounded-lg border border-stone-600 bg-stone-900 py-2 text-center text-sm leading-none transition-colors",
+            statusKey === "stopped-error" && "bg-red-500",
+            statusKey === "waiting-for-input" && "bg-amber-600",
+          )}
+        >
+          {translate(`computer.cpu.status.${statusKey}`)}
+        </span>
 
         <div className="mt-4 w-64 overflow-hidden rounded-lg border border-stone-600 bg-stone-900 py-2">
           <p className="text-center font-mono">

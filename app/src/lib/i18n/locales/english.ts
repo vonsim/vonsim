@@ -42,13 +42,15 @@ export const english = {
       register: (register: string) => `${register} register`,
       "control-unit": "Control unit",
       decoder: "Decoder",
-      phase: {
+      status: {
         fetching: "Fetching instruction...",
         "fetching-operands": "Fetching operands...",
         executing: "Executing...",
         writeback: "Saving results...",
         interrupt: "Handling interrupt...",
         stopped: "Stopped",
+        "stopped-error": "Error",
+        "waiting-for-input": "Waiting for input...",
       },
     },
 

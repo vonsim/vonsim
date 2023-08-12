@@ -42,13 +42,15 @@ export const spanish: Locale = {
       register: register => `Registro ${register}`,
       "control-unit": "Unidad de control",
       decoder: "Decodificador",
-      phase: {
+      status: {
         fetching: "Leyendo instrucción...",
         "fetching-operands": "Leyendo operandos...",
         executing: "Ejecutando...",
         writeback: "Escribiendo resultados...",
         interrupt: "Manejando interrupción...",
         stopped: "Detenido",
+        "stopped-error": "Error",
+        "waiting-for-input": "Esperando tecla...",
       },
     },
 
