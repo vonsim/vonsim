@@ -120,11 +120,13 @@ export function Settings({ className }: { className?: string }) {
 
         <Slider
           className="w-44"
-          value={[500 - settings.executionUnit]}
-          onValueChange={value => setSettings(prev => ({ ...prev, executionUnit: 500 - value[0] }))}
-          min={0} // min executionUnit == 500 --> min = 500 - 500 = 0
-          max={495} // max executionUnit == 5 --> min = 500 - 5 = 495
-          step={1}
+          {...logSlider({
+            value: settings.executionUnit,
+            onValueChange: (value: number) =>
+              setSettings(prev => ({ ...prev, executionUnit: value })),
+            min: 500,
+            max: 1,
+          })}
         />
       </Setting>
 
@@ -138,11 +140,12 @@ export function Settings({ className }: { className?: string }) {
 
         <Slider
           className="w-44"
-          value={[1000 - settings.clockSpeed]}
-          onValueChange={value => setSettings(prev => ({ ...prev, clockSpeed: 1000 - value[0] }))}
-          min={0} // min clockSpeed == 1000 --> min = 1000 - 1000 = 0
-          max={990} // max clockSpeed == 10 --> min = 1000 - 10 = 990
-          step={10}
+          {...logSlider({
+            value: settings.clockSpeed,
+            onValueChange: (value: number) => setSettings(prev => ({ ...prev, clockSpeed: value })),
+            min: 1000,
+            max: 10,
+          })}
         />
       </Setting>
 
@@ -156,11 +159,13 @@ export function Settings({ className }: { className?: string }) {
 
         <Slider
           className="w-44"
-          value={[1000 - settings.printerSpeed]}
-          onValueChange={value => setSettings(prev => ({ ...prev, printerSpeed: 1000 - value[0] }))}
-          min={0} // min printerSpeed == 1000 --> min = 1000 - 1000 = 0
-          max={990} // max printerSpeed == 10 --> min = 1000 - 10 = 990
-          step={10}
+          {...logSlider({
+            value: settings.printerSpeed,
+            onValueChange: (value: number) =>
+              setSettings(prev => ({ ...prev, printerSpeed: value })),
+            min: 1000,
+            max: 10,
+          })}
         />
       </Setting>
     </div>
@@ -181,4 +186,32 @@ function SettingTitle({ children }: { children?: React.ReactNode }) {
 
 function SettingSubtitle({ children }: { children?: React.ReactNode }) {
   return <p className="mt-1 text-xs text-stone-400">{children}</p>;
+}
+
+function logSlider({
+  value,
+  onValueChange,
+  min,
+  max,
+}: {
+  value: number;
+  onValueChange: (value: number) => void;
+  min: number;
+  max: number;
+}): {
+  value: [number];
+  onValueChange: (value: [number]) => void;
+  min: number;
+  max: number;
+} {
+  const minl = Math.log(min);
+  const maxl = Math.log(max);
+  const scale = (maxl - minl) / 100;
+
+  return {
+    value: [(Math.log(value) - minl) / scale],
+    onValueChange: (value: [number]) => onValueChange(Math.exp(minl + scale * value[0])),
+    min: 0,
+    max: 100,
+  };
 }

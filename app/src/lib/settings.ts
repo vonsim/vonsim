@@ -31,7 +31,7 @@ const settingsSchema = z.object({
    *
    * This property states how many milliseconds one execution unit takes.
    */
-  executionUnit: z.number().int().min(5).max(500).catch(150),
+  executionUnit: z.number().int().min(1).max(500).catch(150),
 
   /**
    * This property states how many execution units (see above) takes for
