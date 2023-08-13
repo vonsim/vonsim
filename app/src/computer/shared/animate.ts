@@ -2,6 +2,7 @@ import { easings, SpringValue } from "@react-spring/web";
 import type { Byte } from "@vonsim/common/byte";
 
 import { MBRAtom } from "@/computer/cpu/state";
+import { simulationAtom } from "@/computer/state";
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
 import { colors } from "@/lib/tailwind";
@@ -27,7 +28,10 @@ type SpringAnimation = {
 const runningAnimations = new Set<SpringAnimation["key"]>();
 
 /**
- * Simple utility to animate a spring.
+ * The only way animate a spring.
+ * This utility also handles cases of forced stop of the simulaiton.
+ * NEVER START AN ANIMATION DIRECTLY, ALWAYS USE `anim`.
+ *
  * @see {@link https://react-spring.dev/docs/advanced/spring-value}
  *
  * @param animations One or more animations to execute with the same configuration.
@@ -43,6 +47,9 @@ export async function anim(
   animations: SpringAnimation | SpringAnimation[],
   config: { duration: number; easing: Exclude<keyof typeof easings, "steps"> },
 ) {
+  // Don't run if simulation is stopped
+  if (store.get(simulationAtom).type !== "running") return null;
+
   if (!Array.isArray(animations)) animations = [animations];
 
   const springConfig = {
@@ -84,8 +91,11 @@ export const resumeAllAnimations = () => runningAnimations.forEach(key => getSpr
  * Stop all running animations.
  */
 export function stopAllAnimations() {
-  runningAnimations.clear();
-  resetAllSprings();
+  // Stop running animations. After stopped, `getSpring(key).start()`
+  // from `anim()` will resolve and the key will be removed from the set.
+  runningAnimations.forEach(key => getSpring(key).stop(true));
+  // Subtle delay to enusre all springs are being reset correctly
+  setTimeout(() => resetAllSprings(), 10);
 }
 
 // Utilities
