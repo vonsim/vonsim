@@ -11,7 +11,7 @@ import { getSettings } from "@/lib/settings";
 
 import { resetConsoleState } from "./console/state";
 import { cycleAtom, resetCPUState } from "./cpu/state";
-import { handleEvent } from "./handle-event";
+import { eventIsRunning, handleEvent } from "./handle-event";
 import { resetMemoryState } from "./memory/state";
 import { resetPICState } from "./pic/state";
 import { resetPIOState } from "./pio/state";
@@ -140,10 +140,6 @@ export async function dispatch(...args: Action) {
       return;
     }
 
-    // case "cpu.pause": {
-
-    // }
-
     case "cpu.stop": {
       finish();
       return;
@@ -151,6 +147,8 @@ export async function dispatch(...args: Action) {
 
     case "f10.press": {
       if (state.type !== "running") return invalidAction();
+      // Prevent simultaneous presses
+      if (eventIsRunning("f10:press", "f10:int.on", "f10:int.off")) return;
 
       startThread(simulator.devices.f10.press());
       return;

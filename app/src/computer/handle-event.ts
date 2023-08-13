@@ -1,5 +1,6 @@
 import { IOAddress, MemoryAddress } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
+import type { Split } from "type-fest";
 
 import { handleBusEvent } from "./bus/events";
 import { handleClockEvent } from "./clock/events";
@@ -15,6 +16,105 @@ import { handleHandshakeEvent } from "./unfinished/handshake";
 import { handleLedsEvent } from "./unfinished/leds";
 import { handlePrinterEvent } from "./unfinished/printer";
 import { handleSwitchesEvent } from "./unfinished/switches";
+
+type EventType = SimulatorEvent["type"];
+
+const runningEvents = new Set<EventType>();
+
+export async function handleEvent(event: SimulatorEvent) {
+  // NOTE: import.meta.env.DEV can be checked to automatically
+  // remove this call. However, it's OK to keep it in production
+  // for now ;)
+  detailedLog(event);
+
+  const [ns] = event.type.split(":", 2) as Split<EventType, ":">;
+
+  runningEvents.add(event.type);
+
+  switch (ns) {
+    case "bus": {
+      await handleBusEvent(event as SimulatorEvent<"bus:">);
+      break;
+    }
+
+    case "clock": {
+      await handleClockEvent(event as SimulatorEvent<"clock:">);
+      break;
+    }
+
+    case "console": {
+      await handleConsoleEvent(event as SimulatorEvent<"console:">);
+      break;
+    }
+
+    case "cpu": {
+      await handleCPUEvent(event as SimulatorEvent<"cpu:">);
+      break;
+    }
+
+    case "f10": {
+      await handleF10Event(event as SimulatorEvent<"f10:">);
+      break;
+    }
+
+    case "handshake": {
+      await handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
+      break;
+    }
+
+    case "leds": {
+      await handleLedsEvent(event as SimulatorEvent<"leds:">);
+      break;
+    }
+
+    case "memory": {
+      await handleMemoryEvent(event as SimulatorEvent<"memory:">);
+      break;
+    }
+
+    case "pic": {
+      await handlePICEvent(event as SimulatorEvent<"pic:">);
+      break;
+    }
+
+    case "pio": {
+      await handlePIOEvent(event as SimulatorEvent<"pio:">);
+      break;
+    }
+
+    case "printer": {
+      await handlePrinterEvent(event as SimulatorEvent<"printer:">);
+      break;
+    }
+
+    case "switches": {
+      await handleSwitchesEvent(event as SimulatorEvent<"switches:">);
+      break;
+    }
+
+    case "timer": {
+      await handleTimerEvent(event as SimulatorEvent<"timer:">);
+      break;
+    }
+
+    default: {
+      const _exhaustiveCheck: never = ns;
+      return _exhaustiveCheck;
+    }
+  }
+
+  runningEvents.delete(event.type);
+}
+
+/**
+ * Returs whether any of the events specified is running
+ */
+export function eventIsRunning(...events: EventType[]): boolean {
+  for (const event of events) {
+    if (runningEvents.has(event)) return true;
+  }
+  return false;
+}
 
 const debugColors = {
   bus: "#2563eb",
@@ -32,8 +132,8 @@ const debugColors = {
   timer: "#2563eb",
 };
 
-export async function handleEvent(event: SimulatorEvent) {
-  const [ns, name] = event.type.split(":");
+function detailedLog(event: SimulatorEvent) {
+  const [ns, name] = event.type.split(":", 2) as Split<EventType, ":">;
 
   console.group(
     `%c ${ns} %c ${name}`,
@@ -42,7 +142,7 @@ export async function handleEvent(event: SimulatorEvent) {
   );
   for (const key in event) {
     if (key !== "type" && Object.prototype.hasOwnProperty.call(event, key)) {
-      const element = event[key];
+      const element = event[key as keyof SimulatorEvent] as unknown;
       if (element instanceof Byte) {
         console.log(
           `${key}: %c${element.toString("hex")}h %c(Byte)`,
@@ -62,7 +162,11 @@ export async function handleEvent(event: SimulatorEvent) {
           "color: #737373;",
         );
       } else if (typeof element === "number") {
-        console.log(`${key}: %c${element} %c(number)`, "color: #8b5cf6;", "color: #737373;");
+        console.log(
+          `${key}: %c${element.toString(16)}h %c(number)`,
+          "color: #8b5cf6;",
+          "color: #737373;",
+        );
       } else if (typeof element === "string") {
         console.log(`${key}: %c"${element}" %c(string)`, "color: #f97316;", "color: #737373;");
       } else if (typeof element === "boolean") {
@@ -75,48 +179,4 @@ export async function handleEvent(event: SimulatorEvent) {
     }
   }
   console.groupEnd();
-
-  switch (ns) {
-    case "bus":
-      return await handleBusEvent(event as SimulatorEvent<"bus:">);
-
-    case "clock":
-      return await handleClockEvent(event as SimulatorEvent<"clock:">);
-
-    case "console":
-      return await handleConsoleEvent(event as SimulatorEvent<"console:">);
-
-    case "cpu":
-      return await handleCPUEvent(event as SimulatorEvent<"cpu:">);
-
-    case "f10":
-      return await handleF10Event(event as SimulatorEvent<"f10:">);
-
-    case "handshake":
-      return await handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
-
-    case "leds":
-      return await handleLedsEvent(event as SimulatorEvent<"leds:">);
-
-    case "memory":
-      return await handleMemoryEvent(event as SimulatorEvent<"memory:">);
-
-    case "pic":
-      return await handlePICEvent(event as SimulatorEvent<"pic:">);
-
-    case "pio":
-      return await handlePIOEvent(event as SimulatorEvent<"pio:">);
-
-    case "printer":
-      return await handlePrinterEvent(event as SimulatorEvent<"printer:">);
-
-    case "switches":
-      return await handleSwitchesEvent(event as SimulatorEvent<"switches:">);
-
-    case "timer":
-      return await handleTimerEvent(event as SimulatorEvent<"timer:">);
-
-    default:
-      throw new Error(`Unknown event type: ${event.type}`);
-  }
 }
