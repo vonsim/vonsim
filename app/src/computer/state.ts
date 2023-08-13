@@ -4,12 +4,12 @@ import { ComputerState, EventGenerator, Simulator, SimulatorError } from "@vonsi
 import { atom } from "jotai";
 import { toast } from "sonner";
 
-import { resetConsoleState } from "@/computer/console/state";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
 
+import { resetConsoleState } from "./console/state";
 import { cycleAtom, resetCPUState } from "./cpu/state";
 import { handleEvent } from "./handle-event";
 import { resetMemoryState } from "./memory/state";

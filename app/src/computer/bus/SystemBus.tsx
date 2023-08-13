@@ -4,8 +4,6 @@ import { ChipSelect } from "./ChipSelect";
 import { ControlLines } from "./ControlLines";
 import { DataLines } from "./DataLines";
 
-export type ControlLine = { strokeDashoffset: number; opacity: number };
-
 export function SystemBus({ className }: { className?: string }) {
   return (
     <div className={clsx("absolute", className)}>

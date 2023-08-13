@@ -3,14 +3,14 @@ import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "reac
 
 import { ZoomControls } from "@/components/ZoomControls";
 
-import { SystemBus } from "./bus";
-import { Clock } from "./clock";
-import { Console } from "./console";
-import { CPU } from "./cpu";
-import { F10 } from "./f10";
-import { Memory } from "./memory";
-import { PIC } from "./pic";
-import { Timer } from "./timer";
+import { SystemBus } from "./bus/SystemBus";
+import { Clock } from "./clock/Clock";
+import { Console } from "./console/Console";
+import { CPU } from "./cpu/CPU";
+import { F10 } from "./f10/F10";
+import { Memory } from "./memory/Memory";
+import { PIC } from "./pic/PIC";
+import { Timer } from "./timer/Timer";
 
 // Notes about Z index:
 // - The SystemBus should have a z-index of 5.
