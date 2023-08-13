@@ -9,14 +9,14 @@ export function ControlLines({ className }: { className?: string }) {
   const rdPath = [
     "M 380 420 H 820 V 400", // CPU -> Memory
     "M 820 420 V 805", // Down
-    "M 450 805 H 999", // Big horizontal line
+    "M 450 805 H 900", // PIC to PIO/Handshake
     "M 583 805 V 875", // Timer
   ].join(" ");
 
   const wrPath = [
     "M 380 440 H 840 V 400", // CPU -> Memory
     "M 840 440 V 815", // Down
-    "M 450 815 H 999", // Big horizontal line
+    "M 450 815 H 900", // PIC to PIO/Handshake
     "M 573 815 V 875", // Timer
   ].join(" ");
 

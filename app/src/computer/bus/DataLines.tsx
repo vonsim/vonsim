@@ -6,14 +6,14 @@ export function DataLines({ className }: { className?: string }) {
   const addressPath = [
     "M 699 349 H 800", // CPU -> Memory
     "M 725 349 V 770", // Down
-    "M 450 770 H 999", // Big horizontal line
+    "M 450 770 H 900", // PIC to PIO/Handshake
     "M 618 770 V 875", // Timer
   ].join(" ");
 
   const dataPath = [
     "M 687 249 H 800", // CPU -> Memory
     "M 770 249 V 790", // Down
-    "M 450 790 H 999", // Big horizontal line
+    "M 450 790 H 900", // PIC to PIO/Handshake
     "M 598 790 V 875", // Timer
   ].join(" ");
 

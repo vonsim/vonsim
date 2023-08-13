@@ -14,11 +14,11 @@ import { cycleAtom, resetCPUState } from "./cpu/state";
 import { handleEvent } from "./handle-event";
 import { resetMemoryState } from "./memory/state";
 import { resetPICState } from "./pic/state";
+import { resetPIOState } from "./pio/state";
 import { anim, resumeAllAnimations, stopAllAnimations } from "./shared/animate";
 import { resetTimerState } from "./timer/state";
 import { DATAAtom, STATEAtom } from "./unfinished/handshake";
 import { ledsAtom } from "./unfinished/leds";
-import { CAAtom, CBAtom, PAAtom, PBAtom } from "./unfinished/pio";
 import { bufferAtom, paperAtom } from "./unfinished/printer";
 import { switchesAtom } from "./unfinished/switches";
 
@@ -64,6 +64,7 @@ function resetState(state: ComputerState) {
   resetMemoryState(state);
 
   resetPICState(state);
+  resetPIOState(state);
   resetTimerState(state);
 
   resetConsoleState(state);
@@ -74,12 +75,6 @@ function resetState(state: ComputerState) {
   }
   if ("leds" in state.io) {
     store.set(ledsAtom, Byte.fromUnsigned(state.io.leds, 8));
-  }
-  if ("pio" in state.io) {
-    store.set(PAAtom, Byte.fromUnsigned(state.io.pio.PA, 8));
-    store.set(PBAtom, Byte.fromUnsigned(state.io.pio.PB, 8));
-    store.set(CAAtom, Byte.fromUnsigned(state.io.pio.CA, 8));
-    store.set(CBAtom, Byte.fromUnsigned(state.io.pio.CB, 8));
   }
   if ("printer" in state.io) {
     store.set(

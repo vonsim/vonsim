@@ -111,6 +111,12 @@ const springs = {
     INT6: Register(),
     INT7: Register(),
   },
+  pio: {
+    PA: Register(),
+    PB: Register(),
+    CA: Register(),
+    CB: Register(),
+  },
   timer: {
     CONT: Register(),
     COMP: Register(),

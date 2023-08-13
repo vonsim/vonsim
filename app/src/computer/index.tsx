@@ -10,6 +10,7 @@ import { CPU } from "./cpu/CPU";
 import { F10 } from "./f10/F10";
 import { Memory } from "./memory/Memory";
 import { PIC } from "./pic/PIC";
+import { PIO } from "./pio/PIO";
 import { Timer } from "./timer/Timer";
 
 // Notes about Z index:
@@ -32,6 +33,7 @@ export function ComputerContainer() {
             <Memory className="left-[800px] top-0" />
 
             <PIC className="left-0 top-[700px]" />
+            <PIO className="left-[900px] top-[700px]" />
             <Timer className="left-[500px] top-[875px]" />
 
             <Clock className="left-[520px] top-[930px]" />

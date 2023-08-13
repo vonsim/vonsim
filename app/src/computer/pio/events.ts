@@ -1,46 +1,43 @@
-import { Byte } from "@vonsim/common/byte";
-import { atom } from "jotai";
-
-import { MBRAtom } from "@/computer/cpu/state";
+import { activateRegister, deactivateRegister, populateDataBus } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
 import { store } from "@/lib/jotai";
 
-export const PAAtom = atom(Byte.zero(8));
-export const PBAtom = atom(Byte.zero(8));
-export const CAAtom = atom(Byte.zero(8));
-export const CBAtom = atom(Byte.zero(8));
+import { CAAtom, CBAtom, PAAtom, PBAtom } from "./state";
 
-export function handlePIOEvent(event: SimulatorEvent<"pio:">): void {
+export async function handlePIOEvent(event: SimulatorEvent<"pio:">): Promise<void> {
   switch (event.type) {
     case "pio:read":
       return;
 
     case "pio:read.ok": {
-      store.set(MBRAtom, event.value);
+      await populateDataBus(event.value);
       return;
     }
 
     case "pio:write":
+      return;
+
     case "pio:register.update": {
+      await activateRegister(`pio.${event.register}`);
       switch (event.register) {
         case "PA": {
           store.set(PAAtom, event.value);
-          return;
+          break;
         }
 
         case "PB": {
           store.set(PBAtom, event.value);
-          return;
+          break;
         }
 
         case "CA": {
           store.set(CAAtom, event.value);
-          return;
+          break;
         }
 
         case "CB": {
           store.set(CBAtom, event.value);
-          return;
+          break;
         }
 
         default: {
@@ -48,6 +45,8 @@ export function handlePIOEvent(event: SimulatorEvent<"pio:">): void {
           return _exhaustiveCheck;
         }
       }
+      await deactivateRegister(`pio.${event.register}`);
+      return;
     }
 
     case "pio:write.ok":
