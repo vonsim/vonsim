@@ -1,12 +1,9 @@
-import { Byte } from "@vonsim/common/byte";
-import { atom } from "jotai";
-
 import type { SimulatorEvent } from "@/computer/shared/types";
 import { store } from "@/lib/jotai";
 
-export const switchesAtom = atom(Byte.zero(8));
+import { switchesAtom } from "./state";
 
-export function handleSwitchesEvent(event: SimulatorEvent<"switches:">): void {
+export async function handleSwitchesEvent(event: SimulatorEvent<"switches:">): Promise<void> {
   switch (event.type) {
     case "switches:toggle": {
       store.set(switchesAtom, switches =>
@@ -16,7 +13,7 @@ export function handleSwitchesEvent(event: SimulatorEvent<"switches:">): void {
     }
 
     default: {
-      const _exhaustiveCheck: never = event;
+      const _exhaustiveCheck: never = event.type;
       return _exhaustiveCheck;
     }
   }

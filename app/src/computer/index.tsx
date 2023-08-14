@@ -8,9 +8,11 @@ import { Clock } from "./clock/Clock";
 import { Console } from "./console/Console";
 import { CPU } from "./cpu/CPU";
 import { F10 } from "./f10/F10";
+import { Leds } from "./leds/Leds";
 import { Memory } from "./memory/Memory";
 import { PIC } from "./pic/PIC";
 import { PIO } from "./pio/PIO";
+import { Switches } from "./switches/Switches";
 import { Timer } from "./timer/Timer";
 
 // Notes about Z index:
@@ -26,7 +28,7 @@ export function ComputerContainer() {
     <div className="relative h-full w-full">
       <TransformWrapper minScale={0.5} initialPositionX={0} initialPositionY={0} ref={wrapperRef}>
         <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
-          <div className="relative h-[1100px] w-[1700px] border border-red-500">
+          <div className="relative h-[1100px] w-[1700px]">
             <SystemBus className="left-0 top-0" />
 
             <CPU className="left-0 top-0" />
@@ -39,6 +41,8 @@ export function ComputerContainer() {
             <Clock className="left-[520px] top-[930px]" />
             <Console className="left-[1200px] top-0" />
             <F10 className="left-[50px] top-[950px]" />
+            <Leds className="left-[1300px] top-[800px]" />
+            <Switches className="left-[1300px] top-[600px]" />
           </div>
         </TransformComponent>
         <ZoomControls wrapperRef={wrapperRef} />

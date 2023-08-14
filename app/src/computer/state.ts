@@ -12,15 +12,15 @@ import { getSettings } from "@/lib/settings";
 import { resetConsoleState } from "./console/state";
 import { cycleAtom, resetCPUState } from "./cpu/state";
 import { eventIsRunning, handleEvent } from "./handle-event";
+import { resetLedsState } from "./leds/state";
 import { resetMemoryState } from "./memory/state";
 import { resetPICState } from "./pic/state";
 import { resetPIOState } from "./pio/state";
 import { anim, resumeAllAnimations, stopAllAnimations } from "./shared/animate";
+import { resetSwitchesState } from "./switches/state";
 import { resetTimerState } from "./timer/state";
 import { DATAAtom, STATEAtom } from "./unfinished/handshake";
-import { ledsAtom } from "./unfinished/leds";
 import { bufferAtom, paperAtom } from "./unfinished/printer";
-import { switchesAtom } from "./unfinished/switches";
 
 export const simulator = new Simulator();
 
@@ -68,13 +68,12 @@ function resetState(state: ComputerState) {
   resetTimerState(state);
 
   resetConsoleState(state);
+  resetLedsState(state);
+  resetSwitchesState(state);
 
   if ("handshake" in state.io) {
     store.set(DATAAtom, Byte.fromUnsigned(state.io.handshake.DATA, 8));
     store.set(STATEAtom, Byte.fromUnsigned(state.io.handshake.STATE, 8));
-  }
-  if ("leds" in state.io) {
-    store.set(ledsAtom, Byte.fromUnsigned(state.io.leds, 8));
   }
   if ("printer" in state.io) {
     store.set(
@@ -82,9 +81,6 @@ function resetState(state: ComputerState) {
       state.io.printer.buffer.map(char => Byte.fromUnsigned(char, 8)),
     );
     store.set(paperAtom, state.io.printer.paper);
-  }
-  if ("switches" in state.io) {
-    store.set(switchesAtom, Byte.fromUnsigned(state.io.switches, 8));
   }
 }
 
@@ -155,6 +151,7 @@ export async function dispatch(...args: Action) {
     }
 
     case "switch.toggle": {
+      console.log(...args);
       if (state.type !== "running" || !simulator.devices.switches.connected())
         return invalidAction();
 

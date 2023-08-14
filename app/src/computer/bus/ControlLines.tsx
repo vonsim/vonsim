@@ -1,10 +1,12 @@
 import clsx from "clsx";
 
 import { animated, getSpring, SimplePathKey } from "@/computer/shared/springs";
+import { useDevices } from "@/hooks/useSettings";
 import { useTranslate } from "@/hooks/useTranslate";
 
 export function ControlLines({ className }: { className?: string }) {
   const translate = useTranslate();
+  const devices = useDevices();
 
   const rdPath = [
     "M 380 420 H 820 V 400", // CPU -> Memory
@@ -78,6 +80,15 @@ export function ControlLines({ className }: { className?: string }) {
         {translate("computer.chip-select.timer")}
       </LineText>
       <ControlLine springs="bus.timer" d="M 563 595 V 875" />
+
+      {(devices === "pio-switches-and-leds" || devices === "pio-printer") && (
+        <>
+          <LineText x={600} y={585}>
+            {translate("computer.chip-select.pio")}
+          </LineText>
+          <ControlLine springs="bus.pio" d="M 612 595 V 730 H 900" />
+        </>
+      )}
 
       <LineText x={75} y={490}>
         intr

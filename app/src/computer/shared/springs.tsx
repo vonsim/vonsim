@@ -51,6 +51,7 @@ const springs = {
     iom: SimplePath(),
     mem: { stroke: new SpringValue(colors.red[500]) },
     pic: SimplePath(),
+    pio: SimplePath(),
     timer: SimplePath(),
     intr: SimplePath(),
     inta: SimplePath(),

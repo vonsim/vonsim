@@ -80,7 +80,7 @@ export class Simulator {
         },
       },
       switches: {
-        connected: () => "printer" in this.#computer.io,
+        connected: () => "switches" in this.#computer.io,
         toggle: (index: number) => {
           if ("switches" in this.#computer.io) return this.#computer.io.switches.toggle(index);
           else console.warn("No switches connected to the computer!");

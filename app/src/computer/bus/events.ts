@@ -38,6 +38,8 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
         ),
         turnLineOff("bus.iom"),
         turnLineOff("bus.pic"),
+        turnLineOff("bus.timer"),
+        turnLineOff("bus.pio"),
       ]);
       return;
     }

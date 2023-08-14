@@ -52,8 +52,6 @@ export function PIO({ className }: { className?: string }) {
           springs="pio.CB"
         />
       </div>
-
-      {/* <div className="flex h-full w-full flex-col items-center justify-evenly"></div> */}
     </div>
   );
 }

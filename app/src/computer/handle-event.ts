@@ -7,15 +7,15 @@ import { handleClockEvent } from "./clock/events";
 import { handleConsoleEvent } from "./console/events";
 import { handleCPUEvent } from "./cpu/events";
 import { handleF10Event } from "./f10/events";
+import { handleLedsEvent } from "./leds/events";
 import { handleMemoryEvent } from "./memory/events";
 import { handlePICEvent } from "./pic/events";
 import { handlePIOEvent } from "./pio/events";
 import type { SimulatorEvent } from "./shared/types";
+import { handleSwitchesEvent } from "./switches/events";
 import { handleTimerEvent } from "./timer/events";
 import { handleHandshakeEvent } from "./unfinished/handshake";
-import { handleLedsEvent } from "./unfinished/leds";
 import { handlePrinterEvent } from "./unfinished/printer";
-import { handleSwitchesEvent } from "./unfinished/switches";
 
 type EventType = SimulatorEvent["type"];
 
