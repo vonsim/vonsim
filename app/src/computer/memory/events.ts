@@ -2,7 +2,7 @@ import { MemoryAddress } from "@vonsim/common/address";
 
 import { populateDataBus } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { finish } from "@/computer/state";
+import { finish } from "@/computer/simulation";
 import { store } from "@/lib/jotai";
 
 import { memoryAtom, selectedAddressAtom } from "./state";

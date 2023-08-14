@@ -2,13 +2,13 @@ import clsx from "clsx";
 import { useCallback } from "react";
 import { useEvent } from "react-use";
 
-import { useSimulation } from "@/hooks/useSimulation";
+import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/hooks/useTranslate";
 
 export function Controls({ className }: { className?: string }) {
   const translate = useTranslate();
 
-  const [status, dispatch] = useSimulation();
+  const { status, dispatch } = useSimulation();
 
   const onKeyDown = useCallback(
     (ev: KeyboardEvent) => {

@@ -5,8 +5,8 @@ import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import SimpleKeyboard from "react-simple-keyboard/build/index.modern";
 
+import { useSimulation } from "@/computer/simulation";
 import { useLanguage } from "@/hooks/useSettings";
-import { useSimulation } from "@/hooks/useSimulation";
 
 const layouts = {
   en: [
@@ -93,7 +93,7 @@ const diaeresisDeadKeys = "Ü ü \u0308";
 
 export function Keyboard() {
   const language = useLanguage();
-  const [status, dispatch] = useSimulation();
+  const { status, dispatch } = useSimulation();
 
   const [shift, setShift] = useState<"none" | "once" | "lock">("none");
   const [accent, setAccent] = useState(false);

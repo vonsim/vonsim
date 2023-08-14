@@ -1,16 +1,16 @@
 import clsx from "clsx";
 
 import { Register } from "@/computer/shared/Register";
-import { useDevices } from "@/hooks/useSettings";
+import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/hooks/useTranslate";
 
 import { CAAtom, CBAtom, PAAtom, PBAtom } from "./state";
 
 export function PIO({ className }: { className?: string }) {
   const translate = useTranslate();
-  const devices = useDevices();
+  const { devices } = useSimulation();
 
-  if (devices !== "pio-switches-and-leds" && devices !== "pio-printer") return null;
+  if (!devices.pio) return null;
 
   return (
     <div

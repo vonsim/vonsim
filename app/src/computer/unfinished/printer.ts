@@ -2,7 +2,6 @@ import { Byte } from "@vonsim/common/byte";
 import { atom } from "jotai";
 
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { simulator } from "@/computer/state";
 import { store } from "@/lib/jotai";
 
 export const bufferAtom = atom<Byte<8>[]>([]);
@@ -30,8 +29,7 @@ export function handlePrinterEvent(event: SimulatorEvent<"printer:">): void {
       return;
 
     case "printer:paper.print": {
-      const io = simulator.getComputerState()!.io;
-      if ("printer" in io) store.set(paperAtom, io.printer.paper);
+      store.set(paperAtom, text => text + event.char);
       return;
     }
 

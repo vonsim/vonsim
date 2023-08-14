@@ -9,7 +9,7 @@ import {
   turnLineOn,
 } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { finish, startDebugger } from "@/computer/state";
+import { finish, startDebugger } from "@/computer/simulation";
 import { highlightLine } from "@/editor/methods";
 import { store } from "@/lib/jotai";
 import { colors } from "@/lib/tailwind";

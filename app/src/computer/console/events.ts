@@ -1,5 +1,5 @@
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { simulationAtom, simulator } from "@/computer/state";
+import { simulationAtom } from "@/computer/simulation";
 import { store } from "@/lib/jotai";
 
 import { consoleAtom } from "./state";
@@ -26,7 +26,7 @@ export async function handleConsoleEvent(event: SimulatorEvent<"console:">): Pro
     }
 
     case "console:write": {
-      store.set(consoleAtom, simulator.getComputerState()!.io.console);
+      store.set(consoleAtom, event.screen);
       return;
     }
 

@@ -2,19 +2,17 @@ import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
 import { Switch } from "@/components/ui/Switch";
-import { useDevices } from "@/hooks/useSettings";
-import { useSimulation } from "@/hooks/useSimulation";
+import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/hooks/useTranslate";
 
 import { switchesAtom } from "./state";
 
 export function Switches({ className }: { className?: string }) {
   const translate = useTranslate();
-  const devices = useDevices();
-  const [status, dispatch] = useSimulation();
+  const { status, dispatch, devices } = useSimulation();
   const state = useAtomValue(switchesAtom).toArray();
 
-  if (devices !== "pio-switches-and-leds") return null;
+  if (!devices.switches) return null;
 
   /**
    * We do `flex-row-reverse` to show this order:

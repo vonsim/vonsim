@@ -1,10 +1,17 @@
+/**
+ * @fileoverview
+ * This file exposes methods/state that the UI uses to interact with the simulator.
+ */
+
 import { assemble } from "@vonsim/assembler";
 import { Byte } from "@vonsim/common/byte";
 import { ComputerState, EventGenerator, Simulator, SimulatorError } from "@vonsim/simulator";
-import { atom } from "jotai";
+import { atom, useAtomValue } from "jotai";
+import { useMemo } from "react";
 import { toast } from "sonner";
 
 import { highlightLine, setReadOnly } from "@/editor/methods";
+import { useDevices } from "@/hooks/useSettings";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
@@ -22,7 +29,7 @@ import { resetTimerState } from "./timer/state";
 import { DATAAtom, STATEAtom } from "./unfinished/handshake";
 import { bufferAtom, paperAtom } from "./unfinished/printer";
 
-export const simulator = new Simulator();
+const simulator = new Simulator();
 
 type SimulationStatus =
   | { type: "running"; until: "end-of-instruction" | "infinity"; waitingForInput?: boolean }
@@ -93,7 +100,7 @@ type Action =
   | [action: "console.clean"]
   | [action: "printer.clean"];
 
-export async function dispatch(...args: Action) {
+async function dispatch(...args: Action) {
   const action = args[0];
   const state = getState();
 
@@ -214,4 +221,27 @@ async function startClock(): Promise<void> {
     const err = SimulatorError.from(error);
     finish(err);
   }
+}
+
+export function useSimulation() {
+  const status = useAtomValue(simulationAtom);
+
+  const devicesPreset = useDevices();
+  const devices = useMemo(
+    () => ({
+      clock: true,
+      console: true,
+      f10: true,
+      handshake: devicesPreset === "handshake",
+      leds: devicesPreset === "pio-switches-and-leds",
+      pic: true,
+      pio: devicesPreset === "pio-switches-and-leds" || devicesPreset === "pio-printer",
+      printer: devicesPreset === "pio-printer" || devicesPreset === "handshake",
+      switches: devicesPreset === "pio-switches-and-leds",
+      timer: true,
+    }),
+    [devicesPreset],
+  );
+
+  return { status, dispatch, devices };
 }

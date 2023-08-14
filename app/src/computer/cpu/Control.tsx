@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { animated, getSpring } from "@/computer/shared/springs";
-import { useSimulation } from "@/hooks/useSimulation";
+import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/hooks/useTranslate";
 
 import { cycleAtom } from "./state";
@@ -14,7 +14,7 @@ import { cycleAtom } from "./state";
 export function Control() {
   const translate = useTranslate();
 
-  const [status] = useSimulation();
+  const { status } = useSimulation();
   const cycle = useAtomValue(cycleAtom);
 
   const operandsText = useMemo(() => {

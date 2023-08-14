@@ -4,7 +4,9 @@ import { Byte } from "@vonsim/common/byte";
 import { Component, ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
 
-export type ConsoleEvent = { type: "console:read" } | { type: "console:write"; char: Byte<8> };
+export type ConsoleEvent =
+  | { type: "console:read" }
+  | { type: "console:write"; char: Byte<8>; screen: string };
 
 /**
  * The console is a device that prints characters to a screen
@@ -106,7 +108,7 @@ export class Console extends Component {
         break;
     }
 
-    yield { type: "console:write", char };
+    yield { type: "console:write", char, screen: this.#screen };
   }
 
   toJSON() {

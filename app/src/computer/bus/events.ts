@@ -1,6 +1,6 @@
 import { anim, turnLineOff, turnLineOn } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { finish } from "@/computer/state";
+import { finish } from "@/computer/simulation";
 import { colors } from "@/lib/tailwind";
 
 export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<void> {

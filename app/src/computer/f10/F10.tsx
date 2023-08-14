@@ -1,14 +1,14 @@
 import clsx from "clsx";
 import { useKey } from "react-use";
 
-import { useSimulation } from "@/hooks/useSimulation";
+import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/hooks/useTranslate";
 
 import styles from "./Button.module.css";
 
 export function F10({ className }: { className?: string }) {
   const translate = useTranslate();
-  const [status, dispatch] = useSimulation();
+  const { status, dispatch } = useSimulation();
 
   useKey("F10", ev => {
     ev.preventDefault();

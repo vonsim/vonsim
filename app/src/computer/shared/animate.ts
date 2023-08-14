@@ -2,7 +2,7 @@ import { easings, SpringValue } from "@react-spring/web";
 import type { Byte } from "@vonsim/common/byte";
 
 import { MBRAtom } from "@/computer/cpu/state";
-import { simulationAtom } from "@/computer/state";
+import { simulationAtom } from "@/computer/simulation";
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
 import { colors } from "@/lib/tailwind";
