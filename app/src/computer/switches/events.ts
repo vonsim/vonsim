@@ -1,3 +1,4 @@
+import { turnLineOff, turnLineOn } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
 import { store } from "@/lib/jotai";
 
@@ -9,6 +10,8 @@ export async function handleSwitchesEvent(event: SimulatorEvent<"switches:">): P
       store.set(switchesAtom, switches =>
         switches.withBit(event.index, !switches.bit(event.index)),
       );
+      await turnLineOn("bus.switches->pio", 15);
+      await turnLineOff("bus.switches->pio");
       return;
     }
 

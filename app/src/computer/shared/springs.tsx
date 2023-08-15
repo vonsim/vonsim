@@ -58,6 +58,10 @@ const springs = {
     int0: SimplePath(),
     int1: SimplePath(),
     int2: SimplePath(),
+
+    // pio-switches-and-leds
+    "switches->pio": SimplePath(),
+    "pio->leds": SimplePath(),
   },
   clock: { angle: new SpringValue(0) },
   cpu: {

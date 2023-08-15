@@ -56,6 +56,8 @@ export function ControlLines({ className }: { className?: string }) {
       </LineText>
       <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
 
+      {/* Chip select */}
+
       <LineText x={715} y={550}>
         {translate("computer.chip-select.mem")}
       </LineText>
@@ -90,6 +92,8 @@ export function ControlLines({ className }: { className?: string }) {
         </>
       )}
 
+      {/* CPU/PIC */}
+
       <LineText x={75} y={490}>
         intr
       </LineText>
@@ -101,8 +105,18 @@ export function ControlLines({ className }: { className?: string }) {
       <ControlLine springs="bus.inta" d="M 160 470 V 700" />
 
       {/* Interrupt lines */}
+
       <ControlLine springs="bus.int0" d="M 145 950 V 900" />
       <ControlLine springs="bus.int1" d="M 500 955 H 400 V 900" />
+
+      {/* Other devices */}
+
+      {devices.preset === "pio-switches-and-leds" && (
+        <>
+          <ControlLine springs="bus.switches->pio" d="M 1300 760 H 1120" />
+          <ControlLine springs="bus.pio->leds" d="M 1120 850 H 1300" />
+        </>
+      )}
     </svg>
   );
 }

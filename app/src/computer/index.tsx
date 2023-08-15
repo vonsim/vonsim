@@ -42,8 +42,8 @@ export function ComputerContainer() {
             <Clock className="left-[520px] top-[930px]" />
             <F10 className="left-[50px] top-[950px]" />
             <Keyboard className="left-[1200px] top-[300px]" />
-            <Leds className="left-[1300px] top-[800px]" />
-            <Switches className="left-[1300px] top-[600px]" />
+            <Leds className="left-[1300px] top-[820px]" />
+            <Switches className="left-[1300px] top-[690px]" />
             <Screen className="left-[1200px] top-0" />
           </div>
         </TransformComponent>

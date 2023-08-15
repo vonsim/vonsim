@@ -1,7 +1,7 @@
 import { Component } from "../../component";
 import type { EventGenerator } from "../../events";
 
-export type F10Event = { type: "f10:press" } | { type: "f10:int.on" } | { type: "f10:int.off" };
+export type F10Event = { type: "f10:press" };
 
 /**
  * The F10 key is a device that sends an interrupt to the PIC module.
@@ -22,9 +22,7 @@ export class F10 extends Component {
    */
   *press(): EventGenerator {
     yield { type: "f10:press" };
-    yield { type: "f10:int.on" };
     yield* this.computer.io.pic.interrupt(0);
-    yield { type: "f10:int.off" };
   }
 
   toJSON() {

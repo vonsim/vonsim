@@ -150,17 +150,21 @@ async function dispatch(...args: Action) {
 
     case "f10.press": {
       if (state.type !== "running") return invalidAction();
+
       // Prevent simultaneous presses
-      if (eventIsRunning("f10:press", "f10:int.on", "f10:int.off")) return;
+      if (eventIsRunning("f10:press")) return;
 
       startThread(simulator.devices.f10.press());
       return;
     }
 
     case "switch.toggle": {
-      console.log(...args);
-      if (state.type !== "running" || !simulator.devices.switches.connected())
+      if (state.type !== "running" || !simulator.devices.switches.connected()) {
         return invalidAction();
+      }
+
+      // Prevent simultaneous presses
+      if (eventIsRunning("switches:toggle")) return;
 
       const index = args[1];
       startThread(simulator.devices.switches.toggle(index)!);
@@ -229,6 +233,8 @@ export function useSimulation() {
   const devicesPreset = useDevices();
   const devices = useMemo(
     () => ({
+      preset: devicesPreset,
+
       clock: true,
       f10: true,
       keyboard: true,
