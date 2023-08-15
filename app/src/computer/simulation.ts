@@ -209,7 +209,10 @@ async function startClock(): Promise<void> {
   try {
     while (getState().type === "running") {
       const duration = getSettings().clockSpeed;
-      await anim({ key: "clock.angle", from: 0, to: 360 }, { duration, easing: "linear" });
+      await anim(
+        { key: "clock.angle", from: 0, to: 360 },
+        { duration, absoluteDuration: true, easing: "linear" },
+      );
       startThread(simulator.devices.clock.tick());
     }
   } catch (error) {
@@ -229,7 +232,7 @@ async function startPrinter(): Promise<void> {
           { key: "printer.printing.opacity", from: 1 },
           { key: "printer.printing.progress", from: 0, to: 1 },
         ],
-        { duration, easing: "easeInOutSine" },
+        { duration, absoluteDuration: true, easing: "easeInOutSine" },
       );
       await anim({ key: "printer.printing.opacity", to: 0 }, { duration: 1, easing: "easeInSine" });
       startThread(simulator.devices.printer.print()!);

@@ -34,18 +34,15 @@ const settingsSchema = z.object({
   executionUnit: z.number().min(1).max(500).catch(150),
 
   /**
-   * This property states how many execution units (see above) takes for
-   * the clock to tick. Should be a positive number.
-   * Usually is a large number.
+   * This property states how many milliseconds takes for the clock to tick.
    */
-  clockSpeed: z.number().min(10).max(1000).catch(30),
+  clockSpeed: z.number().min(100).max(3000).catch(1000),
 
   /**
-   * This property states how many execution units (see above) takes for
-   * the printer to print a character. Should be a positive number.
-   * Usually is a large number.
+   * This property states how many milliseconds units takes for the printer
+   * to print a character.
    */
-  printerSpeed: z.number().min(10).max(1000).catch(1000),
+  printerSpeed: z.number().min(500).max(20000).catch(5000),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;

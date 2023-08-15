@@ -143,8 +143,8 @@ export function Settings({ className }: { className?: string }) {
           {...logSlider({
             value: settings.clockSpeed,
             onValueChange: (value: number) => setSettings(prev => ({ ...prev, clockSpeed: value })),
-            min: 1000,
-            max: 10,
+            min: 3000,
+            max: 100,
           })}
         />
       </Setting>
@@ -163,8 +163,8 @@ export function Settings({ className }: { className?: string }) {
             value: settings.printerSpeed,
             onValueChange: (value: number) =>
               setSettings(prev => ({ ...prev, printerSpeed: value })),
-            min: 1000,
-            max: 10,
+            min: 20000,
+            max: 500,
           })}
         />
       </Setting>

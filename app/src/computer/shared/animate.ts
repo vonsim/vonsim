@@ -40,12 +40,17 @@ const runningAnimations = new Set<SpringAnimation["key"]>();
  * @param animations.to The final value of the spring.
  * @param config Configuration of the animation. Can be a preset (string) or a custom configuration (object).
  * @param config.duration The duration of the animation in execution units (should be integer).
+ * @param config.absoluteDuration Whether the duration is in milliseconds (true) or relative to the `executionUnit` (false, default).
  * @param config.easing The easing function to use (see {@link easings}).
  * @returns A promise that resolves when the animation is finished.
  */
 export async function anim(
   animations: SpringAnimation | SpringAnimation[],
-  config: { duration: number; easing: Exclude<keyof typeof easings, "steps"> },
+  config: {
+    duration: number;
+    absoluteDuration?: boolean;
+    easing: Exclude<keyof typeof easings, "steps">;
+  },
 ) {
   // Don't run if simulation is stopped
   if (store.get(simulationAtom).type !== "running") return null;
@@ -53,7 +58,9 @@ export async function anim(
   if (!Array.isArray(animations)) animations = [animations];
 
   const springConfig = {
-    duration: getSettings().executionUnit * config.duration,
+    duration: config.absoluteDuration
+      ? config.duration
+      : getSettings().executionUnit * config.duration,
     easing: easings[config.easing],
   };
 
