@@ -31,21 +31,21 @@ const settingsSchema = z.object({
    *
    * This property states how many milliseconds one execution unit takes.
    */
-  executionUnit: z.number().int().min(1).max(500).catch(150),
+  executionUnit: z.number().min(1).max(500).catch(150),
 
   /**
    * This property states how many execution units (see above) takes for
-   * the clock to tick. Should be a positive integer.
+   * the clock to tick. Should be a positive number.
    * Usually is a large number.
    */
-  clockSpeed: z.number().int().min(10).max(1000).catch(30),
+  clockSpeed: z.number().min(10).max(1000).catch(30),
 
   /**
    * This property states how many execution units (see above) takes for
-   * the printer to print a character. Should be a positive integer.
+   * the printer to print a character. Should be a positive number.
    * Usually is a large number.
    */
-  printerSpeed: z.number().int().min(10).max(1000).catch(1000),
+  printerSpeed: z.number().min(10).max(1000).catch(1000),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
@@ -101,3 +101,5 @@ function getDefaultLanguage(): Language {
   }
   return "en";
 }
+
+store.sub(settingsAtom, () => console.log(store.get(settingsAtom)));
