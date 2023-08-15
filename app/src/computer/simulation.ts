@@ -22,12 +22,12 @@ import { resetLedsState } from "./leds/state";
 import { resetMemoryState } from "./memory/state";
 import { resetPICState } from "./pic/state";
 import { resetPIOState } from "./pio/state";
+import { resetPrinterState } from "./printer/state";
 import { resetScreenState } from "./screen/state";
 import { anim, resumeAllAnimations, stopAllAnimations } from "./shared/animate";
 import { resetSwitchesState } from "./switches/state";
 import { resetTimerState } from "./timer/state";
 import { DATAAtom, STATEAtom } from "./unfinished/handshake";
-import { bufferAtom, paperAtom } from "./unfinished/printer";
 
 const simulator = new Simulator();
 
@@ -75,19 +75,13 @@ function resetState(state: ComputerState) {
   resetTimerState(state);
 
   resetLedsState(state);
+  resetPrinterState(state);
   resetScreenState(state);
   resetSwitchesState(state);
 
   if ("handshake" in state.io) {
     store.set(DATAAtom, Byte.fromUnsigned(state.io.handshake.DATA, 8));
     store.set(STATEAtom, Byte.fromUnsigned(state.io.handshake.STATE, 8));
-  }
-  if ("printer" in state.io) {
-    store.set(
-      bufferAtom,
-      state.io.printer.buffer.map(char => Byte.fromUnsigned(char, 8)),
-    );
-    store.set(paperAtom, state.io.printer.paper);
   }
 }
 
@@ -130,6 +124,7 @@ async function dispatch(...args: Action) {
 
         startThread(simulator.startCPU());
         startClock();
+        startPrinter();
       } else {
         store.set(simulationAtom, {
           type: "running",
@@ -220,6 +215,28 @@ async function startClock(): Promise<void> {
       const duration = getSettings().clockSpeed;
       await anim({ key: "clock.angle", from: 0, to: 360 }, { duration, easing: "linear" });
       startThread(simulator.devices.clock.tick());
+    }
+  } catch (error) {
+    const err = SimulatorError.from(error);
+    finish(err);
+  }
+}
+
+async function startPrinter(): Promise<void> {
+  if (!simulator.devices.printer.connected()) return;
+
+  try {
+    while (getState().type === "running") {
+      const duration = getSettings().printerSpeed;
+      await anim(
+        [
+          { key: "printer.printing.opacity", from: 1 },
+          { key: "printer.printing.progress", from: 0, to: 1 },
+        ],
+        { duration, easing: "easeInOutSine" },
+      );
+      await anim({ key: "printer.printing.opacity", to: 0 }, { duration: 1, easing: "easeInSine" });
+      startThread(simulator.devices.printer.print()!);
     }
   } catch (error) {
     const err = SimulatorError.from(error);

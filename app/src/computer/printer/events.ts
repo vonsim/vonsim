@@ -1,13 +1,10 @@
-import { Byte } from "@vonsim/common/byte";
-import { atom } from "jotai";
-
+import { turnLineOff, turnLineOn } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
 import { store } from "@/lib/jotai";
 
-export const bufferAtom = atom<Byte<8>[]>([]);
-export const paperAtom = atom("");
+import { bufferAtom, paperAtom } from "./state";
 
-export function handlePrinterEvent(event: SimulatorEvent<"printer:">): void {
+export async function handlePrinterEvent(event: SimulatorEvent<"printer:">): Promise<void> {
   switch (event.type) {
     case "printer:buffer.add": {
       store.set(bufferAtom, buffer => [...buffer, event.char]);
@@ -19,14 +16,21 @@ export function handlePrinterEvent(event: SimulatorEvent<"printer:">): void {
       return;
     }
 
-    case "printer:busy.off":
+    case "printer:busy.off": {
+      await turnLineOff("bus.printer.busy");
       return;
+    }
 
-    case "printer:busy.on":
+    case "printer:busy.on": {
+      await turnLineOn("bus.printer.busy", 15);
       return;
+    }
 
-    case "printer:data.read":
+    case "printer:data.read": {
+      await turnLineOn("bus.printer.data", 15);
+      await turnLineOff("bus.printer.data");
       return;
+    }
 
     case "printer:paper.print": {
       store.set(paperAtom, text => text + event.char);
@@ -38,11 +42,15 @@ export function handlePrinterEvent(event: SimulatorEvent<"printer:">): void {
       return;
     }
 
-    case "printer:strobe.off":
+    case "printer:strobe.off": {
+      await turnLineOff("bus.printer.strobe");
       return;
+    }
 
-    case "printer:strobe.on":
+    case "printer:strobe.on": {
+      await turnLineOn("bus.printer.strobe", 15);
       return;
+    }
 
     default: {
       const _exhaustiveCheck: never = event;

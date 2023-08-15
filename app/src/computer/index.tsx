@@ -12,6 +12,7 @@ import { Leds } from "./leds/Leds";
 import { Memory } from "./memory/Memory";
 import { PIC } from "./pic/PIC";
 import { PIO } from "./pio/PIO";
+import { Printer } from "./printer/Printer";
 import { Screen } from "./screen/Screen";
 import { Switches } from "./switches/Switches";
 import { Timer } from "./timer/Timer";
@@ -43,6 +44,7 @@ export function ComputerContainer() {
             <F10 className="left-[50px] top-[950px]" />
             <Keyboard className="left-[1200px] top-[300px]" />
             <Leds className="left-[1300px] top-[820px]" />
+            <Printer className="left-[1250px] top-[750px]" />
             <Switches className="left-[1300px] top-[690px]" />
             <Screen className="left-[1200px] top-0" />
           </div>

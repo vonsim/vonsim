@@ -1,0 +1,39 @@
+/* Based on https://www.joshwcomeau.com/animation/3d-button/#mobile-enhancements-8 */
+.printer {
+  @apply relative m-2;
+}
+
+.shadow {
+  @apply absolute inset-0 rounded-xl bg-black/25;
+  transform: translateY(2px);
+}
+
+.sides {
+  @apply absolute inset-0 rounded-xl;
+  background: linear-gradient(
+    to left,
+    theme(colors.zinc.500) 0%,
+    theme(colors.zinc.400) 8%,
+    theme(colors.zinc.400) 92%,
+    theme(colors.zinc.500) 100%
+  );
+}
+
+.front {
+  @apply relative block rounded-xl bg-zinc-300 px-4 py-6;
+  transform: translateY(-30px);
+}
+
+.trailContainer {
+  @apply absolute inset-x-0 -top-14;
+
+  .trail {
+    @apply mx-auto flex h-16 w-40 items-end bg-zinc-900 px-2 pb-1;
+
+    .paper {
+      @apply w-full whitespace-pre-wrap break-all bg-zinc-50 font-mono text-lg p-1;
+      color: theme(colors.zinc.900);
+      text-shadow: 0 0 2px theme(colors.zinc.500);
+    }
+  }
+}

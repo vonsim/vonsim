@@ -11,12 +11,12 @@ import { handleLedsEvent } from "./leds/events";
 import { handleMemoryEvent } from "./memory/events";
 import { handlePICEvent } from "./pic/events";
 import { handlePIOEvent } from "./pio/events";
+import { handlePrinterEvent } from "./printer/events";
 import { handleScreenEvent } from "./screen/events";
 import type { SimulatorEvent } from "./shared/types";
 import { handleSwitchesEvent } from "./switches/events";
 import { handleTimerEvent } from "./timer/events";
 import { handleHandshakeEvent } from "./unfinished/handshake";
-import { handlePrinterEvent } from "./unfinished/printer";
 
 type EventType = SimulatorEvent["type"];
 

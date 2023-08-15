@@ -111,10 +111,32 @@ export function ControlLines({ className }: { className?: string }) {
 
       {/* Other devices */}
 
+      {devices.printer && (
+        <>
+          <LineText x={1260} y={770}>
+            strobe
+          </LineText>
+          <LineText x={1260} y={785}>
+            busy
+          </LineText>
+          <LineText x={1260} y={840}>
+            data
+          </LineText>
+        </>
+      )}
+
       {devices.preset === "pio-switches-and-leds" && (
         <>
           <ControlLine springs="bus.switches->pio" d="M 1300 760 H 1120" />
           <ControlLine springs="bus.pio->leds" d="M 1120 850 H 1300" />
+        </>
+      )}
+
+      {devices.preset === "pio-printer" && (
+        <>
+          <ControlLine springs="bus.printer.strobe" d="M 1120 767 H 1250" />
+          <ControlLine springs="bus.printer.busy" d="M 1250 782 H 1120" />
+          <ControlLine springs="bus.printer.data" d="M 1120 837 H 1250" />
         </>
       )}
     </svg>

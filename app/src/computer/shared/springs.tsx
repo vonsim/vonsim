@@ -62,6 +62,12 @@ const springs = {
     // pio-switches-and-leds
     "switches->pio": SimplePath(),
     "pio->leds": SimplePath(),
+
+    printer: {
+      data: SimplePath(),
+      strobe: SimplePath(),
+      busy: SimplePath(),
+    },
   },
   clock: { angle: new SpringValue(0) },
   cpu: {
@@ -121,6 +127,9 @@ const springs = {
     PB: Register(),
     CA: Register(),
     CB: Register(),
+  },
+  printer: {
+    printing: { progress: new SpringValue(0), opacity: new SpringValue(1) },
   },
   timer: {
     CONT: Register(),
