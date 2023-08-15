@@ -101,5 +101,3 @@ function getDefaultLanguage(): Language {
   }
   return "en";
 }
-
-store.sub(settingsAtom, () => console.log(store.get(settingsAtom)));
