@@ -16,8 +16,6 @@
     "@codemirror/search": "^6.5.1",
     "@codemirror/state": "^6.2.1",
     "@codemirror/view": "^6.16.0",
-    "@headlessui-float/react": "^0.11.2",
-    "@headlessui/react": "^1.7.16",
     "@lezer/highlight": "^1.1.6",
     "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-slider": "^1.1.2",
@@ -38,7 +36,6 @@
     "react-use": "^17.4.0",
     "react-zoom-pan-pinch": "^3.1.0",
     "sonner": "^0.6.2",
-    "tailwind-merge": "^1.14.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
