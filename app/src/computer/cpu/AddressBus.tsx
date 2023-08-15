@@ -33,7 +33,7 @@ export function AddressBus() {
   const { path, ...style } = getSpring("cpu.internalBus.address");
 
   return (
-    <svg viewBox="0 0 650 500" className="absolute inset-0">
+    <svg viewBox="0 0 650 500" className="pointer-events-none absolute inset-0">
       <path
         className="fill-none stroke-stone-700 stroke-bus"
         strokeLinejoin="round"

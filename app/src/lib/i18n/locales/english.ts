@@ -8,6 +8,13 @@ export const english = {
     clean: "Clean",
     "io-register": (name: string, address: IOAddressLike) =>
       `${name} register (${IOAddress.format(address)})`,
+    "byte-representation": {
+      hex: "Hexadecimal",
+      bin: "Binary",
+      uint: "Unsigned integer",
+      int: "Signed integer",
+      ascii: "ASCII",
+    },
   },
 
   update: {

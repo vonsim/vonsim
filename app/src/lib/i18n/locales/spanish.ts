@@ -8,6 +8,13 @@ export const spanish: Locale = {
   generics: {
     clean: "Limpiar",
     "io-register": (name, address) => `Registro ${name} (${IOAddress.format(address)})`,
+    "byte-representation": {
+      hex: "Hexadecimal",
+      bin: "Binario",
+      uint: "Entero sin signo",
+      int: "Entero con signo",
+      ascii: "ASCII",
+    },
   },
 
   update: {

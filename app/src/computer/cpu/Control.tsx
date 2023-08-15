@@ -41,7 +41,7 @@ export function Control() {
 
   return (
     <>
-      <svg viewBox="0 0 650 500" className="absolute inset-0">
+      <svg viewBox="0 0 650 500" className="pointer-events-none absolute inset-0">
         <animated.path
           className="fill-none stroke-mantis-400 stroke-bus"
           strokeLinejoin="round"
