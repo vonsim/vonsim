@@ -6,6 +6,7 @@ import { handleBusEvent } from "./bus/events";
 import { handleClockEvent } from "./clock/events";
 import { handleCPUEvent } from "./cpu/events";
 import { handleF10Event } from "./f10/events";
+import { handleHandshakeEvent } from "./handshake/events";
 import { handleKeyboardEvent } from "./keyboard/events";
 import { handleLedsEvent } from "./leds/events";
 import { handleMemoryEvent } from "./memory/events";
@@ -16,7 +17,6 @@ import { handleScreenEvent } from "./screen/events";
 import type { SimulatorEvent } from "./shared/types";
 import { handleSwitchesEvent } from "./switches/events";
 import { handleTimerEvent } from "./timer/events";
-import { handleHandshakeEvent } from "./unfinished/handshake";
 
 type EventType = SimulatorEvent["type"];
 

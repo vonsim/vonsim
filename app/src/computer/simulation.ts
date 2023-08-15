@@ -18,6 +18,7 @@ import { getSettings } from "@/lib/settings";
 
 import { cycleAtom, resetCPUState } from "./cpu/state";
 import { eventIsRunning, handleEvent } from "./handle-event";
+import { resetHandshakeState } from "./handshake/state";
 import { resetLedsState } from "./leds/state";
 import { resetMemoryState } from "./memory/state";
 import { resetPICState } from "./pic/state";
@@ -27,7 +28,6 @@ import { resetScreenState } from "./screen/state";
 import { anim, resumeAllAnimations, stopAllAnimations } from "./shared/animate";
 import { resetSwitchesState } from "./switches/state";
 import { resetTimerState } from "./timer/state";
-import { DATAAtom, STATEAtom } from "./unfinished/handshake";
 
 const simulator = new Simulator();
 
@@ -70,6 +70,7 @@ function resetState(state: ComputerState) {
   resetCPUState(state);
   resetMemoryState(state);
 
+  resetHandshakeState(state);
   resetPICState(state);
   resetPIOState(state);
   resetTimerState(state);
@@ -78,11 +79,6 @@ function resetState(state: ComputerState) {
   resetPrinterState(state);
   resetScreenState(state);
   resetSwitchesState(state);
-
-  if ("handshake" in state.io) {
-    store.set(DATAAtom, Byte.fromUnsigned(state.io.handshake.DATA, 8));
-    store.set(STATEAtom, Byte.fromUnsigned(state.io.handshake.STATE, 8));
-  }
 }
 
 type Action =

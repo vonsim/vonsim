@@ -48,11 +48,15 @@ const springs = {
     data: { stroke: new SpringValue(colors.stone[700]) },
     rd: { stroke: new SpringValue(colors.stone[700]) },
     wr: { stroke: new SpringValue(colors.stone[700]) },
+
     iom: SimplePath(),
     mem: { stroke: new SpringValue(colors.red[500]) },
+
+    handshake: SimplePath(),
     pic: SimplePath(),
     pio: SimplePath(),
     timer: SimplePath(),
+
     intr: SimplePath(),
     inta: SimplePath(),
     int0: SimplePath(),
@@ -108,6 +112,10 @@ const springs = {
     FLAGS: Register(),
     MAR: Register(),
     MBR: Register(),
+  },
+  handshake: {
+    DATA: Register(),
+    STATE: Register(),
   },
   pic: {
     IMR: Register(),

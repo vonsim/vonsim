@@ -92,6 +92,15 @@ export function ControlLines({ className }: { className?: string }) {
         </>
       )}
 
+      {devices.handshake && (
+        <>
+          <LineText x={600} y={585}>
+            {translate("computer.chip-select.handshake")}
+          </LineText>
+          <ControlLine springs="bus.handshake" d="M 635 595 V 730 H 900" />
+        </>
+      )}
+
       {/* CPU/PIC */}
 
       <LineText x={75} y={490}>
@@ -137,6 +146,15 @@ export function ControlLines({ className }: { className?: string }) {
           <ControlLine springs="bus.printer.strobe" d="M 1120 767 H 1250" />
           <ControlLine springs="bus.printer.busy" d="M 1250 782 H 1120" />
           <ControlLine springs="bus.printer.data" d="M 1120 837 H 1250" />
+        </>
+      )}
+
+      {devices.preset === "handshake" && (
+        <>
+          <ControlLine springs="bus.printer.strobe" d="M 1120 767 H 1250" />
+          <ControlLine springs="bus.printer.busy" d="M 1250 782 H 1120" />
+          <ControlLine springs="bus.printer.data" d="M 1120 837 H 1250" />
+          <ControlLine springs="bus.int2" d="M 930 866 V 1050 H 300 V 900" />
         </>
       )}
     </svg>

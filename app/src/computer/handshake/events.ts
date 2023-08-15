@@ -1,34 +1,37 @@
-import { Byte } from "@vonsim/common/byte";
-import { atom } from "jotai";
-
-import { MBRAtom } from "@/computer/cpu/state";
+import {
+  activateRegister,
+  deactivateRegister,
+  populateDataBus,
+  turnLineOff,
+  turnLineOn,
+} from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
 import { store } from "@/lib/jotai";
 
-export const DATAAtom = atom(Byte.fromUnsigned(0x00, 8));
-export const STATEAtom = atom(Byte.fromUnsigned(0x01, 8));
+import { DATAAtom, STATEAtom } from "./state";
 
-export function handleHandshakeEvent(event: SimulatorEvent<"handshake:">): void {
+export async function handleHandshakeEvent(event: SimulatorEvent<"handshake:">): Promise<void> {
   switch (event.type) {
     case "handshake:read":
       return;
 
     case "handshake:read.ok": {
-      store.set(MBRAtom, event.value);
+      await populateDataBus(event.value);
       return;
     }
 
     case "handshake:write":
     case "handshake:register.update": {
+      await activateRegister(`handshake.${event.register}`);
       switch (event.register) {
         case "DATA": {
           store.set(DATAAtom, event.value);
-          return;
+          break;
         }
 
         case "STATE": {
           store.set(STATEAtom, event.value);
-          return;
+          break;
         }
 
         default: {
@@ -36,13 +39,22 @@ export function handleHandshakeEvent(event: SimulatorEvent<"handshake:">): void 
           return _exhaustiveCheck;
         }
       }
+      await deactivateRegister(`handshake.${event.register}`);
+      return;
     }
 
     case "handshake:write.ok":
       return;
 
-    case "handshake:interrupt":
+    case "handshake:int.off": {
+      await turnLineOff("bus.int2");
       return;
+    }
+
+    case "handshake:int.on": {
+      await turnLineOn("bus.int2", 10);
+      return;
+    }
 
     default: {
       const _exhaustiveCheck: never = event;

@@ -7,6 +7,7 @@ import { SystemBus } from "./bus/SystemBus";
 import { Clock } from "./clock/Clock";
 import { CPU } from "./cpu/CPU";
 import { F10 } from "./f10/F10";
+import { Handshake } from "./handshake/Handshake";
 import { Keyboard } from "./keyboard/Keyboard";
 import { Leds } from "./leds/Leds";
 import { Memory } from "./memory/Memory";
@@ -36,6 +37,7 @@ export function ComputerContainer() {
             <CPU className="left-0 top-0" />
             <Memory className="left-[800px] top-0" />
 
+            <Handshake className="left-[900px] top-[700px]" />
             <PIC className="left-0 top-[700px]" />
             <PIO className="left-[900px] top-[700px]" />
             <Timer className="left-[500px] top-[875px]" />
