@@ -60,14 +60,14 @@ export class PIO extends GenericPIO<"pio-printer"> {
     if (PA !== this.PA.unsigned) {
       this.PA = Byte.fromUnsigned(PA, 8);
       yield { type: "pio:register.update", register: "PA", value: this.PA };
+    }
 
-      // If the strobe line (1) is set as output, then send the
-      // strobe signal to the printer.
-      // If the value is the same as the previous one, Printer.setStrobe
-      // won't fire any event.
-      if (this.line("A", 1) === "output") {
-        yield* this.computer.io.printer.setStrobe(this.PA.bit(1));
-      }
+    // If the strobe line (1) is set as output, then send the
+    // strobe signal to the printer.
+    // If the value is the same as the previous one, Printer.setStrobe
+    // won't fire any event.
+    if (this.line("A", 1) === "output") {
+      yield* this.computer.io.printer.setStrobe(this.PA.bit(1));
     }
   }
 }

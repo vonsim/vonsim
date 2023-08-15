@@ -120,7 +120,7 @@ export abstract class GenericPIO<
    * ---
    * Called by {@link GenericPIO.updatePort}.
    */
-  line(port: PIOPort, index: number): "input" | "output" {
+  protected line(port: PIOPort, index: number): "input" | "output" {
     // 0 = output, 1 = input
     if (port === "A") return this.CA.bit(index) ? "input" : "output";
     else return this.CB.bit(index) ? "input" : "output";
