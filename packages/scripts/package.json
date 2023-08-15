@@ -10,9 +10,9 @@
     "execa": "^7.2.0"
   },
   "devDependencies": {
-    "@types/node": "^18.17.4",
+    "@types/node": "^18.17.5",
     "@vonsim/tsconfig": "workspace:^",
-    "eslint": "^8.46.0",
+    "eslint": "^8.47.0",
     "eslint-config-vonsim": "workspace:^",
     "typescript": "~5.1.6"
   }
