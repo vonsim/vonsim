@@ -96,8 +96,8 @@ El simulador permite realizar llamadas al sistema o _syscalls_. En el simulador,
 
 - `INT 0`: termina la ejecución del programa, equivalente a la instrucción [`HLT`](/docs/cpu/instructions/hlt/);
 - `INT 3`: incia el modo de depuración (_breakpoint_);
-- `INT 6`: lee un carácter de la [consola](/docs/io/devices/console/);
-- `INT 7`: escribe una cadena de caracteres en la [consola](/docs/io/devices/console/).
+- `INT 6`: lee un carácter del [teclado](/docs/io/devices/keyboard/);
+- `INT 7`: escribe una cadena de caracteres en [pantalla](/docs/io/devices/screen/).
 
 Además, las direcciones asociadas a estas llamadas son `8000h`, `8003h`, `8006h` y `8007h` respectivamente, que no son modificables por el usuario. Nótese que el programa podría modificar el vector de interrupciones e invalidar las llamadas al sistema. También podría posicionar en el `IP` una de las direcciones especiales y la llamada al sistema se ejecutaría de igual manera. Lo único necesario para que la _syscall_ se ejecute es que se ejecute la dirección de la rutina asociada.
 

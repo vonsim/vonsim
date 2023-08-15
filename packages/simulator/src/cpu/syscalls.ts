@@ -44,10 +44,10 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
     }
 
     case syscallsAddresses[6]: {
-      // INT 6 - Read character from console and store it in [BX]
+      // INT 6 - Read character from the keyboard and store it in [BX]
       yield* computer.cpu.copyWordRegister("BX", "ri");
 
-      const char = yield* computer.io.console.read();
+      const char = yield* computer.io.keyboard.readChar();
 
       yield* computer.cpu.updateWordRegister("id", char.withHigh(Byte.zero(8)));
 
@@ -60,7 +60,7 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
     }
 
     case syscallsAddresses[7]: {
-      // INT 7 - Write string to console, starting from [BX] and of length AL
+      // INT 7 - Write string to the screen, starting from [BX] and of length AL
 
       // Push AX and BX to stack
       yield* computer.cpu.copyWordRegister("AX", "id");
@@ -85,9 +85,9 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
         yield* computer.cpu.setMAR("ri");
         if (!(yield* computer.cpu.useBus("mem-read"))) return false; // Error reading from memory
         yield* computer.cpu.getMBR("id.l");
-        // Write character to console
+        // Send character to the screen
         const char = computer.cpu.getRegister("id.l");
-        yield* computer.io.console.write(char);
+        yield* computer.io.screen.sendChar(char);
         // INC BX
         yield* computer.cpu.copyWordRegister("BX", "left");
         yield* computer.cpu.updateWordRegister("right", Byte.fromUnsigned(1, 16));

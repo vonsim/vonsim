@@ -4,13 +4,14 @@ import type { Split } from "type-fest";
 
 import { handleBusEvent } from "./bus/events";
 import { handleClockEvent } from "./clock/events";
-import { handleConsoleEvent } from "./console/events";
 import { handleCPUEvent } from "./cpu/events";
 import { handleF10Event } from "./f10/events";
+import { handleKeyboardEvent } from "./keyboard/events";
 import { handleLedsEvent } from "./leds/events";
 import { handleMemoryEvent } from "./memory/events";
 import { handlePICEvent } from "./pic/events";
 import { handlePIOEvent } from "./pio/events";
+import { handleScreenEvent } from "./screen/events";
 import type { SimulatorEvent } from "./shared/types";
 import { handleSwitchesEvent } from "./switches/events";
 import { handleTimerEvent } from "./timer/events";
@@ -42,11 +43,6 @@ export async function handleEvent(event: SimulatorEvent) {
       break;
     }
 
-    case "console": {
-      await handleConsoleEvent(event as SimulatorEvent<"console:">);
-      break;
-    }
-
     case "cpu": {
       await handleCPUEvent(event as SimulatorEvent<"cpu:">);
       break;
@@ -59,6 +55,11 @@ export async function handleEvent(event: SimulatorEvent) {
 
     case "handshake": {
       await handleHandshakeEvent(event as SimulatorEvent<"handshake:">);
+      break;
+    }
+
+    case "keyboard": {
+      await handleKeyboardEvent(event as SimulatorEvent<"keyboard:">);
       break;
     }
 
@@ -84,6 +85,11 @@ export async function handleEvent(event: SimulatorEvent) {
 
     case "printer": {
       await handlePrinterEvent(event as SimulatorEvent<"printer:">);
+      break;
+    }
+
+    case "screen": {
+      await handleScreenEvent(event as SimulatorEvent<"screen:">);
       break;
     }
 
@@ -119,15 +125,16 @@ export function eventIsRunning(...events: EventType[]): boolean {
 const debugColors = {
   bus: "#2563eb",
   clock: "#65a30d",
-  console: "#65a30d",
   cpu: "#dc2626",
   f10: "#65a30d",
   handshake: "#2563eb",
+  keyboard: "#65a30d",
   leds: "#65a30d",
   memory: "#f59e0b",
   pic: "#2563eb",
   pio: "#2563eb",
   printer: "#65a30d",
+  screen: "#65a30d",
   switches: "#65a30d",
   timer: "#2563eb",
 };

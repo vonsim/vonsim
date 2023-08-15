@@ -63,11 +63,8 @@ export class Simulator {
 
     return {
       clock: { tick: () => this.#computer.io.clock.tick() },
-      console: {
-        readChar: (char: Byte<8>) => this.#computer.io.console.setLastCharRead(char),
-        clear: () => this.#computer.io.console.clear(),
-      },
       f10: { press: () => this.#computer.io.f10.press() },
+      keyboard: { readChar: (char: Byte<8>) => this.#computer.io.keyboard.setLastCharRead(char) },
       printer: {
         connected: () => "printer" in this.#computer.io,
         clear: () => {
@@ -79,6 +76,7 @@ export class Simulator {
           else console.warn("No printer connected to the computer!");
         },
       },
+      screen: { clear: () => this.#computer.io.screen.clear() },
       switches: {
         connected: () => "switches" in this.#computer.io,
         toggle: (index: number) => {

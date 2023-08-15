@@ -5,13 +5,14 @@ import { ZoomControls } from "@/components/ZoomControls";
 
 import { SystemBus } from "./bus/SystemBus";
 import { Clock } from "./clock/Clock";
-import { Console } from "./console/Console";
 import { CPU } from "./cpu/CPU";
 import { F10 } from "./f10/F10";
+import { Keyboard } from "./keyboard/Keyboard";
 import { Leds } from "./leds/Leds";
 import { Memory } from "./memory/Memory";
 import { PIC } from "./pic/PIC";
 import { PIO } from "./pio/PIO";
+import { Screen } from "./screen/Screen";
 import { Switches } from "./switches/Switches";
 import { Timer } from "./timer/Timer";
 
@@ -39,10 +40,11 @@ export function ComputerContainer() {
             <Timer className="left-[500px] top-[875px]" />
 
             <Clock className="left-[520px] top-[930px]" />
-            <Console className="left-[1200px] top-0" />
             <F10 className="left-[50px] top-[950px]" />
+            <Keyboard className="left-[1200px] top-[300px]" />
             <Leds className="left-[1300px] top-[800px]" />
             <Switches className="left-[1300px] top-[600px]" />
+            <Screen className="left-[1200px] top-0" />
           </div>
         </TransformComponent>
         <ZoomControls wrapperRef={wrapperRef} />

@@ -1,5 +1,5 @@
 /* Based on https://css-tricks.com/old-timey-terminal-styling/ */
-.monitor {
+.screen {
   @apply whitespace-pre-wrap break-all font-mono relative text-lg text-white h-48 rounded-lg border border-stone-600 p-1 m-4;
 
   background-color: theme(colors.stone.900);

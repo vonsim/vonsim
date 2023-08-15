@@ -16,13 +16,13 @@ import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
 
-import { resetConsoleState } from "./console/state";
 import { cycleAtom, resetCPUState } from "./cpu/state";
 import { eventIsRunning, handleEvent } from "./handle-event";
 import { resetLedsState } from "./leds/state";
 import { resetMemoryState } from "./memory/state";
 import { resetPICState } from "./pic/state";
 import { resetPIOState } from "./pio/state";
+import { resetScreenState } from "./screen/state";
 import { anim, resumeAllAnimations, stopAllAnimations } from "./shared/animate";
 import { resetSwitchesState } from "./switches/state";
 import { resetTimerState } from "./timer/state";
@@ -74,8 +74,8 @@ function resetState(state: ComputerState) {
   resetPIOState(state);
   resetTimerState(state);
 
-  resetConsoleState(state);
   resetLedsState(state);
+  resetScreenState(state);
   resetSwitchesState(state);
 
   if ("handshake" in state.io) {
@@ -96,8 +96,8 @@ type Action =
   | [action: "cpu.stop"]
   | [action: "f10.press"]
   | [action: "switch.toggle", index: number]
-  | [action: "console.sendChar", char: string]
-  | [action: "console.clean"]
+  | [action: "keyboard.sendChar", char: string]
+  | [action: "screen.clean"]
   | [action: "printer.clean"];
 
 async function dispatch(...args: Action) {
@@ -167,18 +167,18 @@ async function dispatch(...args: Action) {
       return;
     }
 
-    case "console.sendChar": {
+    case "keyboard.sendChar": {
       if (state.type !== "running" || !state.waitingForInput) return invalidAction();
 
       // Save read character
-      simulator.devices.console.readChar(Byte.fromChar(args[1]));
+      simulator.devices.keyboard.readChar(Byte.fromChar(args[1]));
 
       store.set(simulationAtom, { ...state, waitingForInput: false });
       return;
     }
 
-    case "console.clean": {
-      startThread(simulator.devices.console.clear());
+    case "screen.clean": {
+      startThread(simulator.devices.screen.clear());
       return;
     }
 
@@ -230,13 +230,14 @@ export function useSimulation() {
   const devices = useMemo(
     () => ({
       clock: true,
-      console: true,
       f10: true,
+      keyboard: true,
       handshake: devicesPreset === "handshake",
       leds: devicesPreset === "pio-switches-and-leds",
       pic: true,
       pio: devicesPreset === "pio-switches-and-leds" || devicesPreset === "pio-printer",
       printer: devicesPreset === "pio-printer" || devicesPreset === "handshake",
+      screen: true,
       switches: devicesPreset === "pio-switches-and-leds",
       timer: true,
     }),

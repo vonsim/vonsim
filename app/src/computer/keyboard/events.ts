@@ -2,11 +2,9 @@ import type { SimulatorEvent } from "@/computer/shared/types";
 import { simulationAtom } from "@/computer/simulation";
 import { store } from "@/lib/jotai";
 
-import { consoleAtom } from "./state";
-
-export async function handleConsoleEvent(event: SimulatorEvent<"console:">): Promise<void> {
+export async function handleKeyboardEvent(event: SimulatorEvent<"keyboard:">): Promise<void> {
   switch (event.type) {
-    case "console:read": {
+    case "keyboard:listen-key": {
       // Set state.waitingForInput = true
       store.set(simulationAtom, prev => {
         if (prev.type !== "running" || prev.waitingForInput) return prev;
@@ -25,10 +23,8 @@ export async function handleConsoleEvent(event: SimulatorEvent<"console:">): Pro
       return;
     }
 
-    case "console:write": {
-      store.set(consoleAtom, event.screen);
+    case "keyboard:read":
       return;
-    }
 
     default: {
       const _exhaustiveCheck: never = event;

@@ -9,7 +9,7 @@ Está [basado](/docs/cpu/) en el procesador 8088 de Intel, y cuenta con:
 - cuatro registros multipropósito de 16 bits;
 - una memoria de 32 kB;
 - un bus de direcciones de 16 bits y un bus de datos de 8 bits;
-- interrupciones por software (como lectura y escritura a la consola);
+- interrupciones por software (como lectura del teclado y escritura en pantalla);
 - interrupciones por hardware con un [PIC](/docs/io/modules/pic/);
 - múltiples [dispositivos](/docs/io/devices/): reloj, teclas, leds y una impresora centronics.
 

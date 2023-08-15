@@ -1,12 +1,14 @@
 import clsx from "clsx";
+import { useAtomValue } from "jotai";
 
 import { useTranslate } from "@/hooks/useTranslate";
 
-import { Keyboard } from "./Keyboard";
-import { Monitor } from "./Monitor";
+import styles from "./Screen.module.css";
+import { screenAtom } from "./state";
 
-export function Console({ className }: { className?: string }) {
+export function Screen({ className }: { className?: string }) {
   const translate = useTranslate();
+  const value = useAtomValue(screenAtom);
 
   return (
     <div
@@ -16,12 +18,10 @@ export function Console({ className }: { className?: string }) {
       )}
     >
       <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-xl font-bold text-white">
-        {translate("computer.console")}
+        {translate("computer.screen")}
       </span>
 
-      <Monitor />
-      <hr className="border-stone-600" />
-      <Keyboard />
+      <pre className={styles.screen}>{value}</pre>
     </div>
   );
 }

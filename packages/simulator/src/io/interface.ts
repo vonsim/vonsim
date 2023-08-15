@@ -7,8 +7,9 @@ import { Component, ComponentInit, DevicesConfiguration } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 import { Clock } from "./devices/clocks";
-import { Console } from "./devices/console";
 import { F10 } from "./devices/f10";
+import { Keyboard } from "./devices/keyboard";
+import { Screen } from "./devices/screen";
 import { PIC } from "./modules/pic";
 import { Timer } from "./modules/timer";
 
@@ -20,8 +21,9 @@ import { Timer } from "./modules/timer";
  * interface can be extended to add more. These are:
  * - Devices:
  *   - {@link Clock}
- *   - {@link Console}
  *   - {@link F10}
+ *   - {@link Keyboard}
+ *   - {@link Screen}
  * - Modules:
  *   - {@link PIC}
  *   - {@link Timer}
@@ -36,8 +38,9 @@ export abstract class IOInterface<
 
   // Devices
   readonly clock: Clock;
-  readonly console: Console;
   readonly f10: F10;
+  readonly keyboard: Keyboard;
+  readonly screen: Screen;
 
   // Modules
   readonly pic: PIC;
@@ -47,8 +50,9 @@ export abstract class IOInterface<
     super(options);
 
     this.clock = new Clock(options);
-    this.console = new Console(options);
     this.f10 = new F10(options);
+    this.keyboard = new Keyboard(options);
+    this.screen = new Screen(options);
 
     this.pic = new PIC(options);
     this.timer = new Timer(options);
@@ -126,8 +130,9 @@ export abstract class IOInterface<
   toJSON() {
     return {
       clock: this.clock.toJSON(),
-      console: this.console.toJSON(),
       f10: this.f10.toJSON(),
+      keyboard: this.keyboard.toJSON(),
+      screen: this.screen.toJSON(),
 
       pic: this.pic.toJSON(),
       timer: this.timer.toJSON(),

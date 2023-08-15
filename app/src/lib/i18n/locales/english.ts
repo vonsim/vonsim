@@ -71,10 +71,11 @@ export const english = {
       handshake: "handshake",
     },
 
-    console: "Console",
     f10: { name: "F10", interrupt: "Interrupt" },
+    keyboard: "Keyboard",
     leds: "LEDs",
     printer: { name: "Printer", buffer: "Buffer" },
+    screen: "Screen",
     switches: "Switches",
 
     handshake: { name: "Handshake", data: "Data", state: "State" },

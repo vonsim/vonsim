@@ -7,6 +7,7 @@ import SimpleKeyboard from "react-simple-keyboard/build/index.modern";
 
 import { useSimulation } from "@/computer/simulation";
 import { useLanguage } from "@/hooks/useSettings";
+import { useTranslate } from "@/hooks/useTranslate";
 
 const layouts = {
   en: [
@@ -91,8 +92,9 @@ const displays = {
 const accentDeadKeys = "Á É Í Ó Ú á é í ó ú \u0301";
 const diaeresisDeadKeys = "Ü ü \u0308";
 
-export function Keyboard() {
+export function Keyboard({ className }: { className?: string }) {
   const language = useLanguage();
+  const translate = useTranslate();
   const { status, dispatch } = useSimulation();
 
   const [shift, setShift] = useState<"none" | "once" | "lock">("none");
@@ -114,80 +116,91 @@ export function Keyboard() {
   const handleChar = useCallback(
     (char: string) => {
       if (status.type === "running" && status.waitingForInput) {
-        dispatch("console.sendChar", char);
+        dispatch("keyboard.sendChar", char);
       }
     },
     [status, dispatch],
   );
 
   return (
-    <SimpleKeyboard
-      // eslint-disable-next-line tailwindcss/no-custom-classname
-      theme={clsx(
-        "hg-theme-vonsim",
-        `hg-shift-${shift}`,
-        accent && "hg-accentDeadKey",
-        diaeresis && "hg-diaeresisDeadKey",
+    <div
+      className={clsx(
+        "absolute z-10 h-min w-[500px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
+        className,
       )}
-      layoutName={layout}
-      layout={layouts}
-      display={displays[language]}
-      buttonTheme={[
-        { class: "hg-accentDeadKeyButton", buttons: accentDeadKeys },
-        { class: "hg-diaeresisDeadKeyButton", buttons: diaeresisDeadKeys },
-      ]}
-      disableButtonHold
-      onKeyPress={button => {
-        // Toggle shift
-        if (button === "{shiftleft}" || button === "{shiftright}") {
-          setShift(shift => (shift === "none" ? "once" : "none"));
-          return;
-        }
+    >
+      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-xl font-bold text-white">
+        {translate("computer.keyboard")}
+      </span>
 
-        // Toggle caps lock
-        if (button === "{lock}") {
-          setShift(shift => (shift === "none" ? "lock" : "none"));
-          return;
-        }
-
-        if (language === "es") {
-          // Handle accent dead keys
-          if (accent) {
-            if (accentDeadKeys.includes(button)) {
-              setAccent(false);
-              if (shift === "once") setShift("none");
-              handleChar(button);
-            }
-            return;
-          } else if (button === "\u0301") {
-            setAccent(true);
+      <SimpleKeyboard
+        // eslint-disable-next-line tailwindcss/no-custom-classname
+        theme={clsx(
+          "hg-theme-vonsim",
+          `hg-shift-${shift}`,
+          accent && "hg-accentDeadKey",
+          diaeresis && "hg-diaeresisDeadKey",
+        )}
+        layoutName={layout}
+        layout={layouts}
+        display={displays[language]}
+        buttonTheme={[
+          { class: "hg-accentDeadKeyButton", buttons: accentDeadKeys },
+          { class: "hg-diaeresisDeadKeyButton", buttons: diaeresisDeadKeys },
+        ]}
+        disableButtonHold
+        onKeyPress={button => {
+          // Toggle shift
+          if (button === "{shiftleft}" || button === "{shiftright}") {
+            setShift(shift => (shift === "none" ? "once" : "none"));
             return;
           }
 
-          // Handle diaeresis dead keys
-          if (diaeresis) {
-            if (diaeresisDeadKeys.includes(button)) {
-              setDiaeresis(false);
-              if (shift === "once") setShift("none");
-              handleChar(button);
-            }
-            return;
-          } else if (button === "\u0308") {
-            setDiaeresis(true);
+          // Toggle caps lock
+          if (button === "{lock}") {
+            setShift(shift => (shift === "none" ? "lock" : "none"));
             return;
           }
-        }
 
-        // Rest of the keys
+          if (language === "es") {
+            // Handle accent dead keys
+            if (accent) {
+              if (accentDeadKeys.includes(button)) {
+                setAccent(false);
+                if (shift === "once") setShift("none");
+                handleChar(button);
+              }
+              return;
+            } else if (button === "\u0301") {
+              setAccent(true);
+              return;
+            }
 
-        if (shift === "once") setShift("none");
+            // Handle diaeresis dead keys
+            if (diaeresis) {
+              if (diaeresisDeadKeys.includes(button)) {
+                setDiaeresis(false);
+                if (shift === "once") setShift("none");
+                handleChar(button);
+              }
+              return;
+            } else if (button === "\u0308") {
+              setDiaeresis(true);
+              return;
+            }
+          }
 
-        if (button === "{bksp}") handleChar("\b");
-        else if (button === "{enter}") handleChar("\n");
-        else if (button === "{tab}") handleChar("\t");
-        else if (button === "{space}") handleChar(" ");
-        else handleChar(button);
-      }}
-    />
+          // Rest of the keys
+
+          if (shift === "once") setShift("none");
+
+          if (button === "{bksp}") handleChar("\b");
+          else if (button === "{enter}") handleChar("\n");
+          else if (button === "{tab}") handleChar("\t");
+          else if (button === "{space}") handleChar(" ");
+          else handleChar(button);
+        }}
+      />
+    </div>
   );
 }
