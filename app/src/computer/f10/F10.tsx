@@ -20,11 +20,10 @@ export function F10() {
         className={styles.pushable}
         disabled={status.type !== "running"}
         onClick={() => dispatch("f10.press")}
-        title={translate("computer.f10.name")}
       >
         <div className={styles.shadow} />
         <div className={styles.edge} />
-        <span className={styles.front}>{translate("computer.f10.interrupt")}</span>
+        <span className={styles.front}>{translate("computer.f10")}</span>
       </button>
     </div>
   );

@@ -89,7 +89,7 @@ export const spanish: Locale = {
       handshake: "handshake",
     },
 
-    f10: { name: "F10", interrupt: "Interrumpir" },
+    f10: "Tecla F10",
     keyboard: "Teclado",
     leds: "Leds",
     printer: { name: "Impresora", buffer: "Buffer" },

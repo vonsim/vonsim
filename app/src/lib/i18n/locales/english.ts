@@ -89,7 +89,7 @@ export const english = {
       handshake: "handshake",
     },
 
-    f10: { name: "F10", interrupt: "Interrupt" },
+    f10: "F10 key",
     keyboard: "Keyboard",
     leds: "LEDs",
     printer: { name: "Printer", buffer: "Buffer" },

@@ -62,7 +62,7 @@
 
 .front {
   @apply relative block rounded-xl bg-red-600 px-10 py-3;
-  @apply text-lg font-medium text-white;
+  @apply text-lg font-medium text-white text-center;
   will-change: transform;
   transform: translateY(-4px);
   transition: transform 600ms theme(transitionTimingFunction.realistic);
