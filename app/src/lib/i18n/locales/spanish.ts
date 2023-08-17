@@ -131,6 +131,11 @@ export const spanish: Locale = {
       executionUnit: "Velocidad de simulación",
       clockSpeed: "Velocidad del reloj",
       printerSpeed: "Velocidad de impresión",
+      disableAnimations: {
+        label: "Inhabilitar animaciones",
+        description:
+          "Inhabilitar animaciones para una ejecución más rápida. Solo afecta a las animaciones afectadas por la velocidad de simulación (como la CPU). Otras animaciones (como el reloj y la impresora) se ejecutarán a su propia velocidad.",
+      },
     },
   },
 

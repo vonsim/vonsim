@@ -38,6 +38,13 @@ export const settingsSchema = z.object({
    * to print a character.
    */
   printerSpeed: z.number().min(500).max(20000).catch(5000),
+
+  /**
+   * Disable animations for faster running. Only affects animations affected
+   * by the `executionUnit` (e.g. the cpu). Other animations (like the clock
+   * and the printer) will run at their own speed.
+   */
+  disableAnimations: z.boolean().catch(false),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;

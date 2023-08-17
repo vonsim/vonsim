@@ -90,6 +90,7 @@ async function startThread(generator: EventGenerator): Promise<void> {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const status = store.get(simulationAtom);
+      const settings = getSettings();
       if (status.type === "stopped") break; // stop the thread
       if (status.type === "paused") {
         // Wait until the simulation is resumed
@@ -107,13 +108,18 @@ async function startThread(generator: EventGenerator): Promise<void> {
       if (event.done) break;
       await handleEvent(event.value);
 
-      if (
-        (status.until === "cycle-change" &&
-          (event.value.type === "cpu:cycle.update" ||
-            event.value.type === "cpu:cycle.interrupt")) ||
-        (status.until === "end-of-instruction" && event.value.type === "cpu:cycle.end")
-      ) {
-        pauseSimulation();
+      if (event.value.type === "cpu:cycle.update" || event.value.type === "cpu:cycle.interrupt") {
+        if (status.until === "cycle-change") pauseSimulation();
+        else if (settings.disableAnimations) {
+          // If animations are disabled, wait for some time to not overwhelm the CPU
+          await new Promise(resolve => setTimeout(resolve, settings.executionUnit));
+        }
+      } else if (event.value.type === "cpu:cycle.end") {
+        if (status.until === "end-of-instruction") pauseSimulation();
+        else if (settings.disableAnimations) {
+          // If animations are disabled, wait for some time to not overwhelm the CPU
+          await new Promise(resolve => setTimeout(resolve, settings.executionUnit));
+        }
       }
     }
 
@@ -237,7 +243,7 @@ async function startClock(): Promise<void> {
     const duration = getSettings().clockSpeed;
     await anim(
       { key: "clock.angle", from: 0, to: 360 },
-      { duration, absoluteDuration: true, easing: "linear" },
+      { duration, forceMs: true, easing: "linear" },
     );
     startThread(simulator.devices.clock.tick());
   }
@@ -253,7 +259,7 @@ async function startPrinter(): Promise<void> {
         { key: "printer.printing.opacity", from: 1 },
         { key: "printer.printing.progress", from: 0, to: 1 },
       ],
-      { duration, absoluteDuration: true, easing: "easeInOutSine" },
+      { duration, forceMs: true, easing: "easeInOutSine" },
     );
     await anim({ key: "printer.printing.opacity", to: 0 }, { duration: 1, easing: "easeInSine" });
     startThread(simulator.devices.printer.print()!);

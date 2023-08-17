@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 import { Slider } from "@/components/ui/Slider";
+import { Switch } from "@/components/ui/Switch";
 import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 import { DATA_ON_LOAD_VALUES, DEVICES, useSettings } from "@/lib/settings";
@@ -168,6 +169,24 @@ export function Settings({ className }: { className?: string }) {
             min: 20000,
             max: 500,
           })}
+        />
+      </Setting>
+
+      <Setting>
+        <SettingInfo>
+          <SettingTitle>
+            <span className="icon-[lucide--rabbit] h-6 w-6" />
+            {translate("settings.speeds.disableAnimations.label")}
+          </SettingTitle>
+          <SettingSubtitle>
+            {translate("settings.speeds.disableAnimations.description")}
+          </SettingSubtitle>
+        </SettingInfo>
+
+        <Switch
+          className="ml-8"
+          checked={settings.disableAnimations}
+          onCheckedChange={value => setSettings(prev => ({ ...prev, disableAnimations: value }))}
         />
       </Setting>
     </div>

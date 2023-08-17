@@ -40,7 +40,7 @@ const runningAnimations = new Set<SpringAnimation["key"]>();
  * @param animations.to The final value of the spring.
  * @param config Configuration of the animation. Can be a preset (string) or a custom configuration (object).
  * @param config.duration The duration of the animation in execution units (should be integer).
- * @param config.absoluteDuration Whether the duration is in milliseconds (true) or relative to the `executionUnit` (false, default).
+ * @param config.forceMs Whether the duration is in milliseconds (true) or relative to the `executionUnit` (false, default).
  * @param config.easing The easing function to use (see {@link easings}).
  * @returns A promise that resolves when the animation is finished.
  */
@@ -48,7 +48,7 @@ export async function anim(
   animations: SpringAnimation | SpringAnimation[],
   config: {
     duration: number;
-    absoluteDuration?: boolean;
+    forceMs?: boolean;
     easing: Exclude<keyof typeof easings, "steps">;
   },
 ): Promise<unknown> {
@@ -69,14 +69,17 @@ export async function anim(
     return await anim(animations, config);
   }
 
-  if (!Array.isArray(animations)) animations = [animations];
+  const settings = getSettings();
+
+  // Don't run animations if disabled AND not forced
+  if (settings.disableAnimations && !config.forceMs) return null;
 
   const springConfig = {
-    duration: config.absoluteDuration
-      ? config.duration
-      : getSettings().executionUnit * config.duration,
+    duration: config.forceMs ? config.duration : config.duration * settings.executionUnit,
     easing: easings[config.easing],
   };
+
+  if (!Array.isArray(animations)) animations = [animations];
 
   return await Promise.all(
     animations.map(async ({ key, from, to }) => {

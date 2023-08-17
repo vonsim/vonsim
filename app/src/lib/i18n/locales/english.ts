@@ -131,6 +131,11 @@ export const english = {
       executionUnit: "Simulation speed",
       clockSpeed: "Clock speed",
       printerSpeed: "Printer speed",
+      disableAnimations: {
+        label: "Disable animations",
+        description:
+          "Disable animations for faster running. Only affects animations affected by the simulation speed (e.g. the CPU). Other animations (like the clock and the printer) will run at their own speed.",
+      },
     },
   },
 
