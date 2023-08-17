@@ -117,6 +117,7 @@ const springs = {
     DATA: Register(),
     STATE: Register(),
   },
+  memory: { "operating-cell": { color: new SpringValue(colors.white) } },
   pic: {
     IMR: Register(),
     IRR: Register(),

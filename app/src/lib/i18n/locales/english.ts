@@ -74,9 +74,10 @@ export const english = {
     memory: {
       name: "Memory",
       cell: (address: MemoryAddressLike) => `Cell ${MemoryAddress.format(address)}`,
-      "start-address": "Start address",
-      "start-address-must-be-integer": "Start address must be an integer.",
-      "start-address-too-big": `Start address must be less or equal to ${maxAddress}.`,
+      "fix-address": "Fix address",
+      "unfix-address": "Unfix address",
+      "address-must-be-integer": "Start address must be an integer.",
+      "address-out-of-range": `Start address must be less or equal to ${maxAddress}.`,
     },
 
     "chip-select": {

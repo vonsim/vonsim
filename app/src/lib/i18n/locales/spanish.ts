@@ -74,9 +74,10 @@ export const spanish: Locale = {
     memory: {
       name: "Memoria",
       cell: address => `Celda ${MemoryAddress.format(address)}`,
-      "start-address": "Dirección de inicio",
-      "start-address-must-be-integer": "El valor de inicio debe ser un número entero.",
-      "start-address-too-big": `El valor de inicio debe ser menor o igual a ${maxAddress}.`,
+      "fix-address": "Fijar dirección",
+      "unfix-address": "Desfijar dirección",
+      "address-must-be-integer": "El valor de inicio debe ser un número entero.",
+      "address-out-of-range": `El valor de inicio debe ser menor o igual a ${maxAddress}.`,
     },
 
     "chip-select": {

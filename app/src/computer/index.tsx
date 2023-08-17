@@ -29,7 +29,12 @@ export function ComputerContainer() {
 
   return (
     <div className="relative h-full w-full">
-      <TransformWrapper minScale={0.3} initialScale={0.75} ref={wrapperRef}>
+      <TransformWrapper
+        minScale={0.3}
+        initialScale={0.75}
+        ref={wrapperRef}
+        panning={{ excluded: ["input"] }}
+      >
         <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[200px]">
           <div className="relative h-[1300px] w-[1900px]">
             <SystemBus />

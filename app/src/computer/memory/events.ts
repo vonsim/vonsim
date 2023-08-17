@@ -1,40 +1,50 @@
 import { MemoryAddress } from "@vonsim/common/address";
 
-import { populateDataBus } from "@/computer/shared/animate";
+import { anim, populateDataBus } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
 import { finishSimulation } from "@/computer/simulation";
 import { store } from "@/lib/jotai";
+import { colors } from "@/lib/tailwind";
 
-import { memoryAtom, selectedAddressAtom } from "./state";
+import { memoryAtom, operatingAddressAtom } from "./state";
 
 export async function handleMemoryEvent(event: SimulatorEvent<"memory:">): Promise<void> {
   switch (event.type) {
-    case "memory:read": {
-      if (MemoryAddress.inRange(event.address)) {
-        store.set(selectedAddressAtom, MemoryAddress.from(event.address));
-      }
+    case "memory:read":
       return;
-    }
 
     case "memory:read.ok": {
+      store.set(operatingAddressAtom, MemoryAddress.from(event.address));
+      await anim(
+        { key: "memory.operating-cell.color", to: colors.mantis[400] },
+        { duration: 1, easing: "easeOutQuart" },
+      );
       await populateDataBus(event.value);
+      await anim(
+        { key: "memory.operating-cell.color", to: colors.white },
+        { duration: 1, easing: "easeOutQuart" },
+      );
       return;
     }
 
-    case "memory:write": {
-      if (MemoryAddress.inRange(event.address)) {
-        const address = Number(event.address);
-        store.set(selectedAddressAtom, MemoryAddress.from(event.address));
-        store.set(memoryAtom, arr => [
-          ...arr.slice(0, address),
-          event.value,
-          ...arr.slice(address + 1),
-        ]);
-      }
+    case "memory:write":
       return;
-    }
 
     case "memory:write.ok": {
+      store.set(operatingAddressAtom, MemoryAddress.from(event.address));
+      await anim(
+        { key: "memory.operating-cell.color", to: colors.mantis[400] },
+        { duration: 1, easing: "easeOutQuart" },
+      );
+      store.set(memoryAtom, arr => [
+        ...arr.slice(0, event.address.value),
+        event.value,
+        ...arr.slice(event.address.value + 1),
+      ]);
+      await anim(
+        { key: "memory.operating-cell.color", to: colors.white },
+        { duration: 1, easing: "easeOutQuart" },
+      );
       return;
     }
 

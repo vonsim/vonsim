@@ -10,7 +10,7 @@ export function DataLines() {
 
   const dataPath = [
     "M 687 249 H 800", // CPU -> Memory
-    "M 770 249 V 790", // Down
+    "M 765 249 V 790", // Down
     "M 450 790 H 900", // PIC to PIO/Handshake
     "M 598 790 V 875", // Timer
   ].join(" ");

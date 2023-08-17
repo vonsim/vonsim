@@ -10,10 +10,10 @@ import type { EventGenerator } from "./events";
 
 export type MemoryOperation =
   | { type: "memory:read"; address: MemoryAddressLike }
-  | { type: "memory:read.ok"; value: Byte<8> }
+  | { type: "memory:read.ok"; address: MemoryAddress; value: Byte<8> }
   | { type: "memory:read.error"; error: SimulatorError<"address-out-of-range"> }
   | { type: "memory:write"; address: MemoryAddressLike; value: Byte<8> }
-  | { type: "memory:write.ok" }
+  | { type: "memory:write.ok"; address: MemoryAddress; value: Byte<8> }
   | {
       type: "memory:write.error";
       error: SimulatorError<"address-has-instruction"> | SimulatorError<"address-out-of-range">;
@@ -92,7 +92,7 @@ export class Memory extends Component {
     }
 
     const value = Byte.fromUnsigned(this.#buffer.at(address)!, 8);
-    yield { type: "memory:read.ok", value };
+    yield { type: "memory:read.ok", address: MemoryAddress.from(address), value };
     return value;
   }
 
@@ -126,7 +126,7 @@ export class Memory extends Component {
     }
 
     this.#buffer.set([value.unsigned], address);
-    yield { type: "memory:write.ok" };
+    yield { type: "memory:write.ok", address: MemoryAddress.from(address), value };
     return true;
   }
 
