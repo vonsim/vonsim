@@ -47,7 +47,7 @@ const config = {
             "&::-webkit-scrollbar": {
               backgroundColor: "transparent",
             },
-            "&::-webkit-scrollbar-thumb": {
+            "&::-webkit-scrollbar-thumb, &::-webkit-scrollbar-corner": {
               borderRadius: "9999px",
               borderStyle: "solid",
               borderWidth: "4px",
