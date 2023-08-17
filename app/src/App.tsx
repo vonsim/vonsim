@@ -120,14 +120,14 @@ function MobileLayout() {
         <TabsList className="grid grid-cols-2 gap-2 p-2">
           <TabsTrigger
             value="editor"
-            className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold leading-none text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
+            className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
           >
             <span className="icon-[lucide--file-terminal] mr-2 h-4 w-4" />
             {translate("control.tabs.editor")}
           </TabsTrigger>
           <TabsTrigger
             value="computer"
-            className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold leading-none text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
+            className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
           >
             <span className="icon-[lucide--computer] mr-2 h-4 w-4" />
             {translate("control.tabs.computer")}
