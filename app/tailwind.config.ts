@@ -1,4 +1,3 @@
-import headlessUI from "@headlessui/tailwindcss";
 import { addDynamicIconSelectors } from "@iconify/tailwind";
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
@@ -14,7 +13,6 @@ const config = {
       },
 
       colors: {
-        accent: "rgb(var(--color-accent) / <alpha-value>)",
         mantis: {
           "50": "#f6faf3",
           "100": "#e9f5e3",
@@ -30,10 +28,6 @@ const config = {
         },
       },
 
-      width: {
-        byte: "8ch",
-      },
-
       strokeWidth: {
         bus: "10px",
       },
@@ -45,7 +39,6 @@ const config = {
     },
   },
   plugins: [
-    headlessUI({}),
     addDynamicIconSelectors(),
     plugin(({ matchUtilities, theme }) => {
       matchUtilities(

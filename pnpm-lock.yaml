@@ -105,9 +105,6 @@ importers:
         specifier: ^3.22.1
         version: 3.22.1
     devDependencies:
-      '@headlessui/tailwindcss':
-        specifier: ^0.2.0
-        version: 0.2.0(tailwindcss@3.3.3)
       '@iconify/json':
         specifier: ^2.2.102
         version: 2.2.102
@@ -2404,15 +2401,6 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
-
-  /@headlessui/tailwindcss@0.2.0(tailwindcss@3.3.3):
-    resolution: {integrity: sha512-fpL830Fln1SykOCboExsWr3JIVeQKieLJ3XytLe/tt1A0XzqUthOftDmjcCYLW62w7mQI7wXcoPXr3tZ9QfGxw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      tailwindcss: ^3.0
-    dependencies:
-      tailwindcss: 3.3.3
-    dev: true
 
   /@humanwhocodes/config-array@0.11.10:
     resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}
