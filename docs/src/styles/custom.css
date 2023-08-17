@@ -2,7 +2,7 @@
   font-family: "Chivo";
   font-style: normal;
   font-weight: 100 900;
-  src: url("/fonts/chivo/Chivo[wght].ttf") format("ttf-variations");
+  src: url("/fonts/chivo/Chivo[wght].ttf") format("truetype-variations");
   font-named-instance: "Regular";
 }
 
@@ -10,7 +10,7 @@
   font-family: "Chivo";
   font-style: italic;
   font-weight: 100 900;
-  src: url("/fonts/chivo/Chivo-Italic[wght].ttf") format("ttf-variations");
+  src: url("/fonts/chivo/Chivo-Italic[wght].ttf") format("truetype-variations");
   font-named-instance: "Italic";
 }
 

@@ -4,7 +4,7 @@ export function Footer() {
   const translate = useTranslate();
 
   return (
-    <footer className="px-2 py-1 text-center text-xs font-semibold tracking-wider text-stone-500">
+    <footer className="px-2 py-1 text-center text-xs tracking-wider text-stone-500">
       <a
         href="/docs"
         className="transition-colors hover:text-stone-400"

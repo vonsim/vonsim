@@ -98,7 +98,7 @@ export function Settings({ className }: { className?: string }) {
           onValueChange={value => setSettings(prev => ({ ...prev, devices: value as any }))}
           disabled={status.type !== "stopped"}
         >
-          <SelectTrigger className="w-48 min-w-[theme(width.48)]">
+          <SelectTrigger className="w-52 min-w-[theme(width.52)]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
