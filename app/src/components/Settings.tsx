@@ -11,12 +11,14 @@ import { Slider } from "@/components/ui/Slider";
 import { useSettings } from "@/hooks/useSettings";
 import { useTranslate } from "@/hooks/useTranslate";
 import { DATA_ON_LOAD_VALUES, DEVICES } from "@/lib/settings";
+import { useSimulation } from "@/computer/simulation";
 
 export const settingsOpenAtom = atom(false);
 
 export function Settings({ className }: { className?: string }) {
   const translate = useTranslate();
   const [settings, setSettings] = useSettings();
+  const { status } = useSimulation();
 
   return (
     <div className={className}>
@@ -94,6 +96,7 @@ export function Settings({ className }: { className?: string }) {
         <Select
           value={settings.devices}
           onValueChange={value => setSettings(prev => ({ ...prev, devices: value as any }))}
+          disabled={status.type !== "stopped"}
         >
           <SelectTrigger className="w-48 min-w-[theme(width.48)]">
             <SelectValue />

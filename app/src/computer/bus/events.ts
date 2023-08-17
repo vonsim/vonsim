@@ -1,6 +1,6 @@
 import { anim, turnLineOff, turnLineOn } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { finish } from "@/computer/simulation";
+import { finishSimulation } from "@/computer/simulation";
 import { colors } from "@/lib/tailwind";
 
 export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<void> {
@@ -17,7 +17,7 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
     }
 
     case "bus:io.error": {
-      finish(event.error);
+      finishSimulation(event.error);
       return;
     }
 

@@ -51,9 +51,23 @@ export async function anim(
     absoluteDuration?: boolean;
     easing: Exclude<keyof typeof easings, "steps">;
   },
-) {
+): Promise<unknown> {
+  const status = store.get(simulationAtom);
+
   // Don't run if simulation is stopped
-  if (store.get(simulationAtom).type !== "running") return null;
+  if (status.type === "stopped") return null;
+
+  // Wait if animations are paused
+  if (status.type === "paused") {
+    await new Promise<void>(resolve => {
+      const unsubscribe = store.sub(simulationAtom, () => {
+        unsubscribe();
+        resolve();
+      });
+    });
+    // recall anim with the same arguments
+    return await anim(animations, config);
+  }
 
   if (!Array.isArray(animations)) animations = [animations];
 

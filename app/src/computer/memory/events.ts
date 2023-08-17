@@ -2,7 +2,7 @@ import { MemoryAddress } from "@vonsim/common/address";
 
 import { populateDataBus } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { finish } from "@/computer/simulation";
+import { finishSimulation } from "@/computer/simulation";
 import { store } from "@/lib/jotai";
 
 import { memoryAtom, selectedAddressAtom } from "./state";
@@ -40,7 +40,7 @@ export async function handleMemoryEvent(event: SimulatorEvent<"memory:">): Promi
 
     case "memory:read.error":
     case "memory:write.error": {
-      finish(event.error);
+      finishSimulation(event.error);
       return;
     }
 

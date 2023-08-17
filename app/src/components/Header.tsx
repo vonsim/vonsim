@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useAtom } from "jotai";
 
-import { Controls } from "@/components/header/Controls";
+import { Controls } from "@/components/Controls";
 import { settingsOpenAtom } from "@/components/Settings";
 import { useTranslate } from "@/hooks/useTranslate";
 

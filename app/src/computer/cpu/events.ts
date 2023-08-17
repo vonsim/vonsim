@@ -9,7 +9,7 @@ import {
   turnLineOn,
 } from "@/computer/shared/animate";
 import type { SimulatorEvent } from "@/computer/shared/types";
-import { finish, startDebugger } from "@/computer/simulation";
+import { finishSimulation, pauseSimulation } from "@/computer/simulation";
 import { highlightLine } from "@/editor/methods";
 import { store } from "@/lib/jotai";
 import { colors } from "@/lib/tailwind";
@@ -160,19 +160,19 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
 
     case "cpu:error": {
       store.set(cycleAtom, { phase: "stopped", error: event.error });
-      finish(event.error);
+      finishSimulation(event.error);
       return;
     }
 
     case "cpu:halt":
     case "cpu:int.0": {
       store.set(cycleAtom, { phase: "stopped" });
-      finish();
+      finishSimulation();
       return;
     }
 
     case "cpu:int.3": {
-      startDebugger();
+      pauseSimulation();
       return;
     }
 

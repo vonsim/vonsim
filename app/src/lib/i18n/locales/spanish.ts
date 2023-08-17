@@ -35,6 +35,11 @@ export const spanish: Locale = {
   control: {
     action: {
       start: "Ejecutar",
+      run: {
+        "cycle-change": "Un ciclo",
+        "end-of-instruction": "Una instrucción",
+        infinity: "Hasta el final",
+      },
       stop: "Detener",
     },
     zoom: {
