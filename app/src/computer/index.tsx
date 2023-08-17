@@ -29,9 +29,9 @@ export function ComputerContainer() {
 
   return (
     <div className="relative h-full w-full">
-      <TransformWrapper minScale={0.3} initialPositionX={0} initialPositionY={0} ref={wrapperRef}>
-        <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
-          <div className="relative h-[1100px] w-[1700px]">
+      <TransformWrapper minScale={0.3} initialScale={0.75} ref={wrapperRef}>
+        <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[200px]">
+          <div className="relative h-[1300px] w-[1900px]">
             <SystemBus />
 
             <CPU />
