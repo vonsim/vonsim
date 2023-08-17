@@ -1,9 +1,10 @@
+import clsx from "clsx";
+
 import { animated, getSpring, SimplePathKey } from "@/computer/shared/springs";
 import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 
 export function ControlLines() {
-  const translate = useTranslate();
   const { devices } = useSimulation();
 
   const rdPath = [
@@ -24,9 +25,6 @@ export function ControlLines() {
 
   return (
     <svg className="pointer-events-none absolute inset-0 z-[15] h-full w-full">
-      <LineText x={384} y={415}>
-        rd
-      </LineText>
       <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={rdPath} />
       <animated.path
         className="fill-none stroke-[4px]"
@@ -35,9 +33,6 @@ export function ControlLines() {
         style={getSpring("bus.rd")}
       />
 
-      <LineText x={384} y={435}>
-        wr
-      </LineText>
       <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={wrPath} />
       <animated.path
         className="fill-none stroke-[4px]"
@@ -46,16 +41,10 @@ export function ControlLines() {
         style={getSpring("bus.wr")}
       />
 
-      <LineText x={384} y={455}>
-        io/m
-      </LineText>
       <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
 
       {/* Chip select */}
 
-      <LineText x={715} y={550}>
-        {translate("computer.chip-select.mem")}
-      </LineText>
       <path
         className="fill-none stroke-stone-900 stroke-[6px]"
         strokeLinejoin="round"
@@ -68,44 +57,14 @@ export function ControlLines() {
         style={getSpring("bus.mem")}
       />
 
-      <LineText x={510} y={585}>
-        {translate("computer.chip-select.pic")}
-      </LineText>
       <ControlLine springs="bus.pic" d="M 521 595 V 730 H 450" />
-
-      <LineText x={545} y={585}>
-        {translate("computer.chip-select.timer")}
-      </LineText>
       <ControlLine springs="bus.timer" d="M 563 595 V 875" />
-
-      {devices.pio && (
-        <>
-          <LineText x={600} y={585}>
-            {translate("computer.chip-select.pio")}
-          </LineText>
-          <ControlLine springs="bus.pio" d="M 612 595 V 730 H 900" />
-        </>
-      )}
-
-      {devices.handshake && (
-        <>
-          <LineText x={600} y={585}>
-            {translate("computer.chip-select.handshake")}
-          </LineText>
-          <ControlLine springs="bus.handshake" d="M 635 595 V 730 H 900" />
-        </>
-      )}
+      {devices.pio && <ControlLine springs="bus.pio" d="M 612 595 V 730 H 900" />}
+      {devices.handshake && <ControlLine springs="bus.handshake" d="M 635 595 V 730 H 900" />}
 
       {/* CPU/PIC */}
 
-      <LineText x={75} y={490}>
-        intr
-      </LineText>
       <ControlLine springs="bus.intr" d="M 110 700 V 470" />
-
-      <LineText x={125} y={490}>
-        inta
-      </LineText>
       <ControlLine springs="bus.inta" d="M 160 470 V 700" />
 
       {/* Interrupt lines */}
@@ -114,20 +73,6 @@ export function ControlLines() {
       <ControlLine springs="bus.int1" d="M 500 955 H 400 V 900" />
 
       {/* Other devices */}
-
-      {devices.printer && (
-        <>
-          <LineText x={1260} y={770}>
-            strobe
-          </LineText>
-          <LineText x={1260} y={785}>
-            busy
-          </LineText>
-          <LineText x={1260} y={840}>
-            data
-          </LineText>
-        </>
-      )}
 
       {devices.preset === "pio-switches-and-leds" && (
         <>
@@ -156,14 +101,6 @@ export function ControlLines() {
   );
 }
 
-function LineText({ x, y, children }: { x: number; y: number; children?: React.ReactNode }) {
-  return (
-    <text className="fill-stone-400 font-mono text-xs font-bold tracking-wider" x={x} y={y}>
-      {children}
-    </text>
-  );
-}
-
 function ControlLine({ d, springs }: { d: string; springs: SimplePathKey }) {
   return (
     <>
@@ -178,5 +115,73 @@ function ControlLine({ d, springs }: { d: string; springs: SimplePathKey }) {
         style={getSpring(springs)}
       />
     </>
+  );
+}
+
+/**
+ * Legends are not inside the SVG as `<text>` elements because of a bug
+ * in Chrome that causes these text to render in another position when
+ * zooming in/out. Maybe related to this https://bugs.webkit.org/show_bug.cgi?id=202588
+ */
+export function ControlLinesLegends() {
+  const translate = useTranslate();
+  const { devices } = useSimulation();
+
+  return (
+    <>
+      <ControlLineLegend className="left-[384px] top-[403px]">rd</ControlLineLegend>
+      <ControlLineLegend className="left-[384px] top-[423px]">wr</ControlLineLegend>
+      <ControlLineLegend className="left-[384px] top-[443px]">io/m</ControlLineLegend>
+      <ControlLineLegend className="left-[715px] top-[538px]">
+        {translate("computer.chip-select.mem")}
+      </ControlLineLegend>
+
+      <ControlLineLegend className="left-[510px] top-[573px]">
+        {translate("computer.chip-select.pic")}
+      </ControlLineLegend>
+      <ControlLineLegend className="left-[545px] top-[573px]">
+        {translate("computer.chip-select.timer")}
+      </ControlLineLegend>
+      {devices.pio && (
+        <ControlLineLegend className="left-[600px] top-[573px]">
+          {translate("computer.chip-select.pio")}
+        </ControlLineLegend>
+      )}
+      {devices.handshake && (
+        <ControlLineLegend className="left-[600px] top-[573px]">
+          {translate("computer.chip-select.handshake")}
+        </ControlLineLegend>
+      )}
+
+      <ControlLineLegend className="left-[75px] top-[478px]">intr</ControlLineLegend>
+      <ControlLineLegend className="left-[125px] top-[478px]">inta</ControlLineLegend>
+
+      {devices.printer && (
+        <>
+          <ControlLineLegend className="left-[1260px] top-[758px]">strobe</ControlLineLegend>
+          <ControlLineLegend className="left-[1260px] top-[773px]">busy</ControlLineLegend>
+          <ControlLineLegend className="left-[1260px] top-[828px]">data</ControlLineLegend>
+        </>
+      )}
+    </>
+  );
+}
+
+function ControlLineLegend({
+  className,
+  children,
+}: {
+  className?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <span
+      className={clsx(
+        "pointer-events-none absolute z-[15] block font-mono text-xs font-bold tracking-wider text-stone-400",
+        className,
+      )}
+    >
+      {children}
+    </span>
   );
 }

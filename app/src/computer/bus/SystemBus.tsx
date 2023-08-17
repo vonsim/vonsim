@@ -1,5 +1,5 @@
 import { ChipSelect } from "./ChipSelect";
-import { ControlLines } from "./ControlLines";
+import { ControlLines, ControlLinesLegends } from "./ControlLines";
 import { DataLines } from "./DataLines";
 
 export function SystemBus() {
@@ -7,6 +7,7 @@ export function SystemBus() {
     <>
       <DataLines />
       <ControlLines />
+      <ControlLinesLegends />
       <ChipSelect />
     </>
   );
