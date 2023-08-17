@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { animated, getSpring, RegisterKey } from "@/computer/shared/springs";
 import type { AnyByteAtom } from "@/computer/shared/types";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 export function Register({
   name,

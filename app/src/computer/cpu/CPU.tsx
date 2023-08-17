@@ -2,7 +2,7 @@ import type { PhysicalRegister } from "@vonsim/simulator/cpu";
 import clsx from "clsx";
 
 import { Register } from "@/computer/shared/Register";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 import { AddressBus } from "./AddressBus";
 import { ALU } from "./ALU";

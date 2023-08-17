@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 import { Register } from "@/computer/shared/Register";
 import { useSimulation } from "@/computer/simulation";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 import { CAAtom, CBAtom, PAAtom, PBAtom } from "./state";
 

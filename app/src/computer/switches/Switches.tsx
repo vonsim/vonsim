@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 
 import { Switch } from "@/components/ui/Switch";
 import { useSimulation } from "@/computer/simulation";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 import { switchesAtom } from "./state";
 

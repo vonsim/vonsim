@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { useSimulation } from "@/computer/simulation";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 export function Controls({ className }: { className?: string }) {
   const translate = useTranslate();

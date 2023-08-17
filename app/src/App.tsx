@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 import { Settings, settingsOpenAtom } from "@/components/Settings";
 import { ComputerContainer } from "@/computer";
 import { Editor } from "@/editor";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 export default function App() {
   const translate = useTranslate();

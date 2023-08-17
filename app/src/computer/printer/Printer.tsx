@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai";
 
 import { animated, getSpring } from "@/computer/shared/springs";
 import { useSimulation } from "@/computer/simulation";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 import styles from "./Printer.module.css";
 import { bufferAtom, paperAtom } from "./state";

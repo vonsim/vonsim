@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 import { memoryShownAtom } from "./state";
 

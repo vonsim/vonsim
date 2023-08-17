@@ -8,10 +8,10 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 import { Slider } from "@/components/ui/Slider";
-import { useSettings } from "@/hooks/useSettings";
-import { useTranslate } from "@/hooks/useTranslate";
-import { DATA_ON_LOAD_VALUES, DEVICES } from "@/lib/settings";
 import { useSimulation } from "@/computer/simulation";
+import { useSettings } from "@/hooks/useSettings";
+import { useTranslate } from "@/lib/i18n";
+import { DATA_ON_LOAD_VALUES, DEVICES } from "@/lib/settings";
 
 export const settingsOpenAtom = atom(false);
 

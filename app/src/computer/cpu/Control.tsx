@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import { animated, getSpring } from "@/computer/shared/springs";
 import { useSimulation } from "@/computer/simulation";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 import { cycleAtom } from "./state";
 

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useKey } from "react-use";
 
 import { useSimulation } from "@/computer/simulation";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 import styles from "./Button.module.css";
 

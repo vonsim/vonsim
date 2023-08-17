@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 
 import { Controls } from "@/components/Controls";
 import { settingsOpenAtom } from "@/components/Settings";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 export function Header() {
   const translate = useTranslate();

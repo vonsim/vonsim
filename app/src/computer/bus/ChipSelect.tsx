@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 export function ChipSelect({ className }: { className?: string }) {
   const translate = useTranslate();

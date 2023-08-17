@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 import { animated, getSpring, SimplePathKey } from "@/computer/shared/springs";
 import { useSimulation } from "@/computer/simulation";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 export function ControlLines({ className }: { className?: string }) {
   const translate = useTranslate();

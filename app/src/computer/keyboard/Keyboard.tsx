@@ -7,7 +7,7 @@ import SimpleKeyboard from "react-simple-keyboard/build/index.modern";
 
 import { useSimulation } from "@/computer/simulation";
 import { useLanguage } from "@/hooks/useSettings";
-import { useTranslate } from "@/hooks/useTranslate";
+import { useTranslate } from "@/lib/i18n";
 
 const layouts = {
   en: [
