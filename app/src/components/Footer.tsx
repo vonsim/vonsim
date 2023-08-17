@@ -4,7 +4,7 @@ export function Footer() {
   const translate = useTranslate();
 
   return (
-    <footer className="px-2 py-1 text-center text-xs font-semibold tracking-wider text-stone-500  [text-wrap:balance]">
+    <footer className="px-2 py-1 text-center text-xs font-semibold tracking-wider text-stone-500">
       <a
         href="/docs"
         className="transition-colors hover:text-stone-400"
@@ -31,7 +31,8 @@ export function Footer() {
       >
         {translate("footer.report-issue")}
       </a>
-      <span className="px-2">&middot;</span>
+      <span className="px-2 max-sm:hidden">&middot;</span>
+      <br className="sm:hidden" />
       <a
         href="/docs#licencia"
         className="transition-colors hover:text-stone-400"
