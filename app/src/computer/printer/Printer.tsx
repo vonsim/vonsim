@@ -11,7 +11,7 @@ import { bufferAtom, paperAtom } from "./state";
 
 const bufferIterator = Array.from({ length: 5 }, (_, i) => i); // Array from 0 to 4
 
-export function Printer({ className }: { className?: string }) {
+export function Printer() {
   const translate = useTranslate();
   const { devices } = useSimulation();
 
@@ -21,12 +21,7 @@ export function Printer({ className }: { className?: string }) {
   if (!devices.printer) return null;
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 flex h-min w-80 flex-col rounded-lg border border-stone-600 bg-stone-900 pl-16 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-[1250px] top-[750px] z-10 flex h-min w-80 flex-col rounded-lg border border-stone-600 bg-stone-900 pl-16 [&_*]:z-20">
       <div className={styles.printer} title={translate("computer.printer.name")}>
         <div className={styles.shadow} />
         <div className={styles.sides} />

@@ -10,16 +10,11 @@ import { Control } from "./Control";
 import { DataBus } from "./DataBus";
 import { registerAtoms } from "./state";
 
-export function CPU({ className }: { className?: string }) {
+export function CPU() {
   const translate = useTranslate();
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-0 top-0 z-10 h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl font-bold text-white">
         {translate("computer.cpu.name")}
       </span>

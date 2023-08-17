@@ -92,7 +92,7 @@ const displays = {
 const accentDeadKeys = "Á É Í Ó Ú á é í ó ú \u0301";
 const diaeresisDeadKeys = "Ü ü \u0308";
 
-export function Keyboard({ className }: { className?: string }) {
+export function Keyboard() {
   const language = useLanguage();
   const translate = useTranslate();
   const { status, dispatch } = useSimulation();
@@ -123,12 +123,7 @@ export function Keyboard({ className }: { className?: string }) {
   );
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 h-min w-[500px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-[1200px] top-[300px] z-10 h-min w-[500px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-xl font-bold text-white">
         {translate("computer.keyboard")}
       </span>

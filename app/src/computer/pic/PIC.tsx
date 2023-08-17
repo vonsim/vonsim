@@ -1,20 +1,13 @@
-import clsx from "clsx";
-
 import { Register } from "@/computer/shared/Register";
 import { useTranslate } from "@/lib/i18n";
 
 import { IMRAtom, IRRAtom, ISRAtom, linesAtoms } from "./state";
 
-export function PIC({ className }: { className?: string }) {
+export function PIC() {
   const translate = useTranslate();
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 flex h-[200px] w-[450px] flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-0 top-[700px] z-10 flex h-[200px] w-[450px] flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <div className="flex items-start">
         <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-2xl font-bold text-white">
           {translate("computer.pic")}

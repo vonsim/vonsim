@@ -6,7 +6,7 @@ import { useTranslate } from "@/lib/i18n";
 
 import { ledsAtom } from "./state";
 
-export function Leds({ className }: { className?: string }) {
+export function Leds() {
   const translate = useTranslate();
   const { devices } = useSimulation();
   const state = useAtomValue(ledsAtom).toArray();
@@ -25,12 +25,7 @@ export function Leds({ className }: { className?: string }) {
    */
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 h-min w-min rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-[1300px] top-[820px] z-10 h-min w-min rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <span className="block h-min w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-2xl font-bold text-white">
         {translate("computer.leds")}
       </span>

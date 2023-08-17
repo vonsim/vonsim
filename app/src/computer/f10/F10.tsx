@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { useKey } from "react-use";
 
 import { useSimulation } from "@/computer/simulation";
@@ -6,7 +5,7 @@ import { useTranslate } from "@/lib/i18n";
 
 import styles from "./Button.module.css";
 
-export function F10({ className }: { className?: string }) {
+export function F10() {
   const translate = useTranslate();
   const { status, dispatch } = useSimulation();
 
@@ -16,12 +15,7 @@ export function F10({ className }: { className?: string }) {
   });
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 flex h-min w-48 flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-[50px] top-[950px] z-10 flex h-min w-48 flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <button
         className={styles.pushable}
         disabled={status.type !== "running"}

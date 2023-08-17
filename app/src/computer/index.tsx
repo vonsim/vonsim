@@ -32,23 +32,23 @@ export function ComputerContainer() {
       <TransformWrapper minScale={0.3} initialPositionX={0} initialPositionY={0} ref={wrapperRef}>
         <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
           <div className="relative h-[1100px] w-[1700px]">
-            <SystemBus className="left-0 top-0" />
+            <SystemBus />
 
-            <CPU className="left-0 top-0" />
-            <Memory className="left-[800px] top-0" />
+            <CPU />
+            <Memory />
 
-            <Handshake className="left-[900px] top-[700px]" />
-            <PIC className="left-0 top-[700px]" />
-            <PIO className="left-[900px] top-[700px]" />
-            <Timer className="left-[500px] top-[875px]" />
+            <Handshake />
+            <PIC />
+            <PIO />
+            <Timer />
 
-            <Clock className="left-[520px] top-[930px]" />
-            <F10 className="left-[50px] top-[950px]" />
-            <Keyboard className="left-[1200px] top-[300px]" />
-            <Leds className="left-[1300px] top-[820px]" />
-            <Printer className="left-[1250px] top-[750px]" />
-            <Switches className="left-[1300px] top-[690px]" />
-            <Screen className="left-[1200px] top-0" />
+            <Clock />
+            <F10 />
+            <Keyboard />
+            <Leds />
+            <Printer />
+            <Switches />
+            <Screen />
           </div>
         </TransformComponent>
         <ZoomControls wrapperRef={wrapperRef} />

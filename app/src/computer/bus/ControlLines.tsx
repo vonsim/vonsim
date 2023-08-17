@@ -1,10 +1,8 @@
-import clsx from "clsx";
-
 import { animated, getSpring, SimplePathKey } from "@/computer/shared/springs";
 import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 
-export function ControlLines({ className }: { className?: string }) {
+export function ControlLines() {
   const translate = useTranslate();
   const { devices } = useSimulation();
 
@@ -25,10 +23,7 @@ export function ControlLines({ className }: { className?: string }) {
   const memPath = "M 750 545 H 860 V 400";
 
   return (
-    <svg
-      viewBox="0 0 1700 1100"
-      className={clsx("pointer-events-none absolute z-[15] h-[1100px] w-[1700px]", className)}
-    >
+    <svg className="pointer-events-none absolute inset-0 z-[15] h-full w-full">
       <LineText x={384} y={415}>
         rd
       </LineText>

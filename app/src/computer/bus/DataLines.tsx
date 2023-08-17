@@ -1,8 +1,6 @@
-import clsx from "clsx";
-
 import { animated, getSpring } from "@/computer/shared/springs";
 
-export function DataLines({ className }: { className?: string }) {
+export function DataLines() {
   const addressPath = [
     "M 699 349 H 800", // CPU -> Memory
     "M 725 349 V 770", // Down
@@ -18,10 +16,7 @@ export function DataLines({ className }: { className?: string }) {
   ].join(" ");
 
   return (
-    <svg
-      viewBox="0 0 1700 1100"
-      className={clsx("pointer-events-none absolute z-[5] h-[1100px] w-[1700px]", className)}
-    >
+    <svg className="pointer-events-none absolute inset-0 z-[5] h-full w-full">
       {/* Data lines */}
       <path
         className="fill-none stroke-stone-900 stroke-[14px]"

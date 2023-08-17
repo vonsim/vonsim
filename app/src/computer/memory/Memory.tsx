@@ -1,22 +1,16 @@
-import clsx from "clsx";
 import { useAtomValue } from "jotai";
 
 import { useTranslate } from "@/lib/i18n";
 
 import { memoryShownAtom } from "./state";
 
-export function Memory({ className }: { className?: string }) {
+export function Memory() {
   const translate = useTranslate();
 
   const memory = useAtomValue(memoryShownAtom);
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 h-[400px] w-[150px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-[800px] top-0 z-10 h-[400px] w-[150px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl font-bold text-white">
         {translate("computer.memory.name")}
       </span>

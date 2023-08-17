@@ -1,17 +1,10 @@
-import clsx from "clsx";
-
 import { animated, getSpring } from "@/computer/shared/springs";
 
-export function Clock({ className }: { className?: string }) {
+export function Clock() {
   const angle = getSpring("clock.angle");
 
   return (
-    <div
-      className={clsx(
-        "absolute z-10 h-12 w-12 rounded-full border border-stone-600 bg-stone-800 p-1 [&_*]:z-20",
-        className,
-      )}
-    >
+    <div className="absolute left-[520px] top-[930px] z-10 h-12 w-12 rounded-full border border-stone-600 bg-stone-800 p-1 [&_*]:z-20">
       <svg
         viewBox="0 0 24 24"
         strokeLinecap="round"
