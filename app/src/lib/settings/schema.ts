@@ -20,6 +20,13 @@ export const settingsSchema = z.object({
   devices: z.enum(DEVICES).catch("pio-switches-and-leds"),
 
   /**
+   * Disable animations for faster running. Only affects animations affected
+   * by the `executionUnit` (e.g. the cpu). Other animations (like the clock
+   * tick and the printer "printing bar") will run normally.
+   */
+  animations: z.boolean().catch(true),
+
+  /**
    * CPU speeds are loosely based on "execution units".
    * Let's say, for example, that updating a register takes 1 execution unit
    * and adding two registers takes 3 execution units.
@@ -38,13 +45,6 @@ export const settingsSchema = z.object({
    * to print a character.
    */
   printerSpeed: z.number().min(500).max(20000).catch(5000),
-
-  /**
-   * Disable animations for faster running. Only affects animations affected
-   * by the `executionUnit` (e.g. the cpu). Other animations (like the clock
-   * and the printer) will run at their own speed.
-   */
-  disableAnimations: z.boolean().catch(false),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;

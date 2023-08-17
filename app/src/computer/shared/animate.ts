@@ -72,7 +72,7 @@ export async function anim(
   const settings = getSettings();
 
   // Don't run animations if disabled AND not forced
-  if (settings.disableAnimations && !config.forceMs) return null;
+  if (!settings.animations && !config.forceMs) return null;
 
   const springConfig = {
     duration: config.forceMs ? config.duration : config.duration * settings.executionUnit,

@@ -127,17 +127,20 @@ export const spanish: Locale = {
       handshake: "Impresora (Handshake)",
     },
 
-    speeds: {
-      label: "Velocidades",
+    animations: {
+      label: "Animaciones",
+      description: [
+        "Inhabilitando las animaciones, se obtiene ejecución más rápida.",
+        "Solo afecta a las animaciones afectadas por la velocidad de simulación (como la CPU).",
+        "Otras animaciones (como el reloj y la impresora) se ejecutarán a su propia velocidad.",
+        "¡Cuidado! Velocidades de simulación muy altas sin animaciones puede saturar el procesador.",
+      ].join(" "),
+    },
 
+    speeds: {
       executionUnit: "Velocidad de simulación",
       clockSpeed: "Velocidad del reloj",
       printerSpeed: "Velocidad de impresión",
-      disableAnimations: {
-        label: "Inhabilitar animaciones",
-        description:
-          "Inhabilitar animaciones para una ejecución más rápida. Solo afecta a las animaciones afectadas por la velocidad de simulación (como la CPU). Otras animaciones (como el reloj y la impresora) se ejecutarán a su propia velocidad.",
-      },
     },
   },
 

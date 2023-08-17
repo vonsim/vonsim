@@ -116,6 +116,22 @@ export function Settings({ className }: { className?: string }) {
       <Setting>
         <SettingInfo>
           <SettingTitle>
+            <span className="icon-[lucide--rotate-3d] h-6 w-6" />
+            {translate("settings.animations.label")}
+          </SettingTitle>
+          <SettingSubtitle>{translate("settings.animations.description")}</SettingSubtitle>
+        </SettingInfo>
+
+        <Switch
+          className="ml-8"
+          checked={settings.animations}
+          onCheckedChange={value => setSettings(prev => ({ ...prev, animations: value }))}
+        />
+      </Setting>
+
+      <Setting>
+        <SettingInfo>
+          <SettingTitle>
             <span className="icon-[lucide--gauge] h-6 w-6" />
             {translate("settings.speeds.executionUnit")}
           </SettingTitle>
@@ -169,24 +185,6 @@ export function Settings({ className }: { className?: string }) {
             min: 20000,
             max: 500,
           })}
-        />
-      </Setting>
-
-      <Setting>
-        <SettingInfo>
-          <SettingTitle>
-            <span className="icon-[lucide--rabbit] h-6 w-6" />
-            {translate("settings.speeds.disableAnimations.label")}
-          </SettingTitle>
-          <SettingSubtitle>
-            {translate("settings.speeds.disableAnimations.description")}
-          </SettingSubtitle>
-        </SettingInfo>
-
-        <Switch
-          className="ml-8"
-          checked={settings.disableAnimations}
-          onCheckedChange={value => setSettings(prev => ({ ...prev, disableAnimations: value }))}
         />
       </Setting>
     </div>
