@@ -42,6 +42,10 @@ export const spanish: Locale = {
       },
       stop: "Detener",
     },
+    tabs: {
+      editor: "Editor",
+      computer: "Computadora",
+    },
     zoom: {
       in: "Acercar",
       out: "Alejar",

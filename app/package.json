@@ -22,6 +22,7 @@
     "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-tabs": "^1.0.4",
     "@react-spring/web": "^9.7.3",
     "@replit/codemirror-vscode-keymap": "^6.0.2",
     "@vonsim/assembler": "workspace:*",

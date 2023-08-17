@@ -42,6 +42,10 @@ export const english = {
       },
       stop: "Stop",
     },
+    tabs: {
+      editor: "Editor",
+      computer: "Computer",
+    },
     zoom: {
       in: "Zoom in",
       out: "Zoom out",

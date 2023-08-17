@@ -29,7 +29,7 @@ export function ComputerContainer() {
 
   return (
     <div className="relative h-full w-full">
-      <TransformWrapper minScale={0.5} initialPositionX={0} initialPositionY={0} ref={wrapperRef}>
+      <TransformWrapper minScale={0.3} initialPositionX={0} initialPositionY={0} ref={wrapperRef}>
         <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[100px]">
           <div className="relative h-[1100px] w-[1700px]">
             <SystemBus className="left-0 top-0" />
