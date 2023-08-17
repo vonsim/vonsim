@@ -24,7 +24,9 @@ export function Controls({ className }: { className?: string }) {
             className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-mantis-500 px-3 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mantis-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           >
             <span className="icon-[lucide--play] mr-2 h-4 w-4" />
-            {translate("control.action.start")}
+            {translate(
+              status.type === "stopped" ? "control.action.start" : "control.action.continue",
+            )}
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="start">

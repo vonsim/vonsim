@@ -35,6 +35,7 @@ export const english = {
   control: {
     action: {
       start: "Start",
+      continue: "Continue",
       run: {
         "cycle-change": "One cycle",
         "end-of-instruction": "One instruction",

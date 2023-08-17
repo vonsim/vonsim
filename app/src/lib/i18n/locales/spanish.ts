@@ -34,7 +34,8 @@ export const spanish: Locale = {
 
   control: {
     action: {
-      start: "Ejecutar",
+      start: "Iniciar",
+      continue: "Continuar",
       run: {
         "cycle-change": "Un ciclo",
         "end-of-instruction": "Una instrucción",
