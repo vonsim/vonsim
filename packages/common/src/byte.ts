@@ -1,8 +1,18 @@
-import { charToDecimal, decimalToChar } from "./ascii";
+import { charToDecimal, decimalToChar, displayCharacter } from "./ascii";
 
 export type ByteSize = 8 | 16;
-export type ByteRepresentation = "hex" | "bin" | "int" | "uint" | "ascii";
 export type AnyByte = Byte<8> | Byte<16>;
+
+/**
+ * The representation of a byte.
+ * - `hex`: hexadecimal (base 16)
+ * - `bin`: binary (base 2)
+ * - `int`: signed integer (base 10, 2's complement)
+ * - `uint`: unsigned integer (base 10)
+ * - `ascii`: ASCII character(s)
+ * - `safe-ascii`: ASCII character(s) that can be displayed ({@link displayCharacter})
+ */
+export type ByteRepresentation = "hex" | "bin" | "int" | "uint" | "ascii" | "safe-ascii";
 
 /**
  * General purpose byte.
@@ -218,6 +228,11 @@ export class Byte<TSize extends ByteSize> {
       case "ascii": {
         if (this.#size === 8) return decimalToChar(this.#value) ?? "---";
         else return this.low.toString("ascii") + this.high.toString("ascii");
+      }
+
+      case "safe-ascii": {
+        if (this.#size === 8) return displayCharacter(this.#value) ?? "---";
+        else return this.low.toString("safe-ascii") + " " + this.high.toString("safe-ascii");
       }
     }
   }

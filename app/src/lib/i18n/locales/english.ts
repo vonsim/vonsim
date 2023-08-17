@@ -13,7 +13,7 @@ export const english = {
       bin: "Binary",
       uint: "Unsigned integer",
       int: "Signed integer",
-      ascii: "ASCII",
+      "safe-ascii": "ASCII",
     },
   },
 

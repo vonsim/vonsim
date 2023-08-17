@@ -13,7 +13,7 @@ export const spanish: Locale = {
       bin: "Binario",
       uint: "Entero sin signo",
       int: "Entero con signo",
-      ascii: "ASCII",
+      "safe-ascii": "ASCII",
     },
   },
 
