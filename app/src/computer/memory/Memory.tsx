@@ -1,11 +1,13 @@
 import { MemoryAddress } from "@vonsim/common/address";
+import type { Byte } from "@vonsim/common/byte";
 import clsx from "clsx";
 import { useAtom, useAtomValue } from "jotai";
-import { Fragment, useCallback, useId, useState } from "react";
+import { useCallback, useId, useState } from "react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { animated, getSpring } from "@/computer/shared/springs";
 import { useTranslate } from "@/lib/i18n";
 
@@ -15,7 +17,7 @@ export function Memory() {
   const translate = useTranslate();
 
   const memory = useAtomValue(memoryShownAtom);
-  const operatingAddress = useAtomValue(operatingAddressAtom);
+  const halfMemory = Math.ceil(memory.length / 2);
   const [fixedAddress, setFixedAddress] = useAtom(fixedAddressAtom);
 
   const inputId = useId();
@@ -73,44 +75,63 @@ export function Memory() {
         </div>
       </div>
 
-      <div className="m-4 w-min overflow-hidden rounded-lg border border-stone-600">
+      <div className="m-4 flex w-min items-start overflow-hidden rounded-lg border border-stone-600">
+        <table className="border-r border-stone-600 font-mono text-lg">
+          <tbody>
+            {memory.slice(0, halfMemory).map((cell, i) => (
+              <MemoryCell {...cell} key={i} />
+            ))}
+          </tbody>
+        </table>
         <table className="font-mono text-lg">
           <tbody>
-            {memory.map((row, i) => (
-              <tr
-                key={i}
-                className="border-b border-stone-600 odd:bg-stone-900 even:bg-stone-800 last-of-type:border-b-0"
-              >
-                {row.map((cell, j) => (
-                  <Fragment key={j}>
-                    <animated.td
-                      className="border-r border-stone-600 px-2 py-1 font-thin"
-                      style={
-                        cell.address.value === operatingAddress.value
-                          ? getSpring("memory.operating-cell")
-                          : undefined
-                      }
-                    >
-                      {cell.address.toString()}
-                    </animated.td>
-                    <animated.td
-                      title={translate("computer.memory.cell", cell.address)}
-                      className="border-r border-stone-600 px-2 py-1 last-of-type:border-r-0"
-                      style={
-                        cell.address.value === operatingAddress.value
-                          ? getSpring("memory.operating-cell")
-                          : undefined
-                      }
-                    >
-                      {cell.value.toString("hex")}
-                    </animated.td>
-                  </Fragment>
-                ))}
-              </tr>
+            {memory.slice(halfMemory).map((cell, i) => (
+              <MemoryCell {...cell} key={i} />
             ))}
           </tbody>
         </table>
       </div>
     </div>
+  );
+}
+
+function MemoryCell({ address, value }: { address: MemoryAddress; value: Byte<8> }) {
+  const translate = useTranslate();
+  const operatingAddress = useAtomValue(operatingAddressAtom);
+
+  const title = translate("computer.memory.cell", address);
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <animated.tr
+          title={title}
+          className="cursor-pointer border-b border-stone-600 odd:bg-stone-900 even:bg-stone-800 last-of-type:border-b-0"
+          style={
+            address.value === operatingAddress.value
+              ? getSpring("memory.operating-cell")
+              : undefined
+          }
+        >
+          <td className="border-r border-stone-600 px-2 py-1 font-thin">{address.toString()}</td>
+          <td className="border-r border-stone-600 px-2 py-1 last-of-type:border-r-0">
+            {value.toString("hex")}
+          </td>
+        </animated.tr>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-60">
+        <p className="px-4 py-2 font-medium text-white">{title}</p>
+        <hr className="border-stone-600" />
+        <ul className="px-4 py-2 text-sm">
+          {(["hex", "bin", "uint", "int", "ascii"] as const).map(rep => (
+            <li key={rep}>
+              <b className="font-medium">{translate(`generics.byte-representation.${rep}`)}</b>:{" "}
+              <span className="font-mono text-mantis-400">{value.toString(rep)}</span>
+            </li>
+          ))}
+        </ul>
+      </PopoverContent>
+    </Popover>
   );
 }

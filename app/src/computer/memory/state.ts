@@ -12,34 +12,29 @@ export const memoryAtom = atom(
 export const operatingAddressAtom = atom<MemoryAddress>(MemoryAddress.from(0x2000));
 export const fixedAddressAtom = atom<MemoryAddress | null>(null);
 
-type MemoryShown = { address: MemoryAddress; value: Byte<8> }[][];
-const ROWS = 8;
-const COLS = 2;
+type MemoryShown = { address: MemoryAddress; value: Byte<8> }[];
+const CELLS = 16;
 
 export const memoryShownAtom = atom<MemoryShown>(get => {
   // If there's a fixed address, show it and the surrounding addresses
   // Otherwise, show the operating address and the surrounding addresses
   const selected = get(fixedAddressAtom) ?? get(operatingAddressAtom);
 
-  let lowEnd = selected.value - (selected.value % (ROWS * COLS));
-  let highEnd = lowEnd + ROWS * COLS - 1;
+  let lowEnd = selected.value - (selected.value % CELLS);
+  let highEnd = lowEnd + CELLS - 1;
   // Prevent overflow
   if (highEnd > MemoryAddress.MAX_ADDRESS) {
     highEnd = MemoryAddress.MAX_ADDRESS;
-    lowEnd = highEnd - ROWS * COLS + 1;
+    lowEnd = highEnd - CELLS + 1;
   }
 
   const memory = get(memoryAtom);
   const result: MemoryShown = [];
-  for (let i = 0; i < ROWS; i++) {
-    result.push([]);
-    for (let j = 0; j < COLS; j++) {
-      const addr = lowEnd + i + j * ROWS;
-      result.at(-1)!.push({
-        address: MemoryAddress.from(addr),
-        value: memory[addr],
-      });
-    }
+  for (let i = 0; i < CELLS; i++) {
+    result.push({
+      address: MemoryAddress.from(lowEnd + i),
+      value: memory[lowEnd + i],
+    });
   }
   return result;
 });
