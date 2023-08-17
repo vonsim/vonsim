@@ -45,14 +45,15 @@ function DesktopLayout() {
   return (
     <PanelGroup
       autoSaveId="layout"
-      tagName="main"
       direction="horizontal"
+      units="pixels"
+      tagName="main"
       className="overflow-auto px-2"
     >
       <Panel
         id="panel-editor"
         order={1}
-        minSize={20}
+        minSize={250}
         tagName="section"
         className="rounded-lg border border-stone-600 bg-stone-800"
       >
@@ -62,7 +63,6 @@ function DesktopLayout() {
       <Panel
         id="panel-computer"
         order={2}
-        minSize={20}
         tagName="section"
         className="computer-background rounded-lg border border-stone-600"
       >
@@ -74,7 +74,7 @@ function DesktopLayout() {
           <Panel
             id="panel-settings"
             order={3}
-            minSize={30}
+            minSize={450}
             tagName="section"
             className="rounded-lg border border-stone-600 bg-stone-800"
           >
