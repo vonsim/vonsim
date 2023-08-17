@@ -6,8 +6,8 @@ import { useCallback, useMemo, useState } from "react";
 import SimpleKeyboard from "react-simple-keyboard/build/index.modern";
 
 import { useSimulation } from "@/computer/simulation";
-import { useLanguage } from "@/hooks/useSettings";
 import { useTranslate } from "@/lib/i18n";
+import { useLanguage } from "@/lib/settings";
 
 const layouts = {
   en: [

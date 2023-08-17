@@ -11,10 +11,9 @@ import { useMemo } from "react";
 import { toast } from "sonner";
 
 import { highlightLine, setReadOnly } from "@/editor/methods";
-import { useDevices } from "@/hooks/useSettings";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
-import { getSettings } from "@/lib/settings";
+import { getSettings, useDevices } from "@/lib/settings";
 
 import { cycleAtom, resetCPUState } from "./cpu/state";
 import { eventIsRunning, handleEvent } from "./handle-event";

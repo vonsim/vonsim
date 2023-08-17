@@ -1,6 +1,6 @@
 import { initTranlate, LocaleCode, LocaleContext } from "@vonsim/common/i18n";
 
-import { useLanguage } from "@/hooks/useSettings";
+import { useLanguage } from "@/lib/settings";
 
 import { english } from "./locales/english";
 import { spanish } from "./locales/spanish";
