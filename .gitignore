@@ -18,6 +18,3 @@ dist/
 *.njsproj
 *.sln
 *.sw?
-
-# deployment
-.vercel
