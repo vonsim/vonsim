@@ -18,30 +18,44 @@ export function Controls({ className }: { className?: string }) {
   const runCycle = useCallback(() => {
     if (status.type === "running") return;
     dispatch("cpu.run", "cycle-change");
-  }, [status, dispatch]);
+  }, [status.type, dispatch]);
+  useKey(
+    "F7",
+    ev => {
+      ev.preventDefault();
+      runCycle();
+    },
+    undefined,
+    [runCycle],
+  );
 
   const runInstruction = useCallback(() => {
     if (status.type === "running") return;
     dispatch("cpu.run", "end-of-instruction");
-  }, [status, dispatch]);
+  }, [status.type, dispatch]);
+  useKey(
+    "F8",
+    ev => {
+      ev.preventDefault();
+      runInstruction();
+    },
+    undefined,
+    [runInstruction],
+  );
 
   const runInfinity = useCallback(() => {
     if (status.type === "running") return;
     dispatch("cpu.run", "infinity");
-  }, [status, dispatch]);
-
-  useKey("F7", ev => {
-    ev.preventDefault();
-    runCycle();
-  });
-  useKey("F8", ev => {
-    ev.preventDefault();
-    runInstruction();
-  });
-  useKey("F4", ev => {
-    ev.preventDefault();
-    runInfinity();
-  });
+  }, [status.type, dispatch]);
+  useKey(
+    "F4",
+    ev => {
+      ev.preventDefault();
+      runInfinity();
+    },
+    undefined,
+    [runInfinity],
+  );
 
   return (
     <div className={clsx("flex items-center justify-center gap-4", className)}>

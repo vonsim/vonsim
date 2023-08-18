@@ -9,10 +9,15 @@ export function F10() {
   const translate = useTranslate();
   const { status, dispatch } = useSimulation();
 
-  useKey("F10", ev => {
-    ev.preventDefault();
-    dispatch("f10.press");
-  });
+  useKey(
+    "F10",
+    ev => {
+      ev.preventDefault();
+      dispatch("f10.press");
+    },
+    undefined,
+    [dispatch],
+  );
 
   return (
     <div className="absolute left-[50px] top-[950px] z-10 flex h-min w-48 flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
