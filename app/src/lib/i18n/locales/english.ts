@@ -36,6 +36,7 @@ export const english = {
     action: {
       start: "Start",
       continue: "Continue",
+      running: "Running...",
       run: {
         "cycle-change": "One cycle",
         "end-of-instruction": "One instruction",

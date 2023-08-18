@@ -65,9 +65,21 @@ export function Controls({ className }: { className?: string }) {
             disabled={status.type === "running"}
             className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-mantis-500 px-3 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mantis-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           >
-            <span className="icon-[lucide--play] mr-2 h-4 w-4" />
-            {translate(
-              status.type === "stopped" ? "control.action.start" : "control.action.continue",
+            {status.type === "stopped" ? (
+              <>
+                <span className="icon-[lucide--play] mr-2 h-4 w-4" />
+                {translate("control.action.start")}
+              </>
+            ) : status.type === "paused" ? (
+              <>
+                <span className="icon-[lucide--play] mr-2 h-4 w-4" />
+                {translate("control.action.continue")}
+              </>
+            ) : (
+              <>
+                <span className="icon-[lucide--refresh-cw] mr-2 h-4 w-4 animate-spin" />
+                {translate("control.action.running")}
+              </>
             )}
           </button>
         </DropdownMenuTrigger>
