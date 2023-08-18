@@ -69,6 +69,8 @@ export const spanish: Locale = {
         stopped: "Detenido",
         "stopped-error": "Error",
         "waiting-for-input": "Esperando tecla...",
+        int6: "Ejecutando INT 6...",
+        int7: "Ejecutando INT 7...",
       },
     },
 

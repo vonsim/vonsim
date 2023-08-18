@@ -84,7 +84,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
 
     case "cpu:cycle.interrupt": {
       store.set(cycleAtom, prev => {
-        if (prev.phase === "stopped") return prev;
+        if (!("metadata" in prev)) return prev;
         return { ...prev, phase: "interrupt" };
       });
       // Interrupts handler uses id and ri
@@ -113,7 +113,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
 
     case "cpu:cycle.update": {
       store.set(cycleAtom, prev => {
-        if (prev.phase === "stopped") return prev;
+        if (!("metadata" in prev)) return prev;
         return {
           ...prev,
           phase:
@@ -176,11 +176,15 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       return;
     }
 
-    case "cpu:int.6":
+    case "cpu:int.6": {
+      store.set(cycleAtom, { phase: "int6" });
       return;
+    }
 
-    case "cpu:int.7":
+    case "cpu:int.7": {
+      store.set(cycleAtom, { phase: "int7" });
       return;
+    }
 
     case "cpu:inta.off": {
       await turnLineOff("bus.inta");

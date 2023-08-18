@@ -79,6 +79,8 @@ export function Control() {
               ? "bg-red-500"
               : statusKey === "waiting-for-input"
               ? "bg-amber-600"
+              : statusKey === "int6" || statusKey === "int7"
+              ? "bg-blue-600"
               : "bg-stone-900",
           )}
         >
@@ -87,7 +89,7 @@ export function Control() {
 
         <div className="mt-4 w-64 overflow-hidden rounded-lg border border-stone-600 bg-stone-900 py-2">
           <p className="text-center font-mono">
-            {cycle.phase === "fetching" || cycle.phase === "stopped" ? (
+            {!("metadata" in cycle) || cycle.phase === "fetching" ? (
               <span className="font-bold italic text-stone-400">???</span>
             ) : (
               <>

@@ -69,6 +69,8 @@ export const english = {
         stopped: "Stopped",
         "stopped-error": "Error",
         "waiting-for-input": "Waiting for input...",
+        int6: "Running INT 6...",
+        int7: "Running INT 7...",
       },
     },
 

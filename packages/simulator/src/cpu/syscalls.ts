@@ -45,6 +45,8 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
 
     case syscallsAddresses[6]: {
       // INT 6 - Read character from the keyboard and store it in [BX]
+      yield { type: "cpu:int.6" };
+
       yield* computer.cpu.copyWordRegister("BX", "ri");
 
       const char = yield* computer.io.keyboard.readChar();
@@ -61,6 +63,7 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
 
     case syscallsAddresses[7]: {
       // INT 7 - Write string to the screen, starting from [BX] and of length AL
+      yield { type: "cpu:int.7" };
 
       // Push AX and BX to stack
       yield* computer.cpu.copyWordRegister("AX", "id");
