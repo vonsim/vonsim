@@ -7,7 +7,7 @@ import { ledsAtom } from "./state";
 export async function handleLedsEvent(event: SimulatorEvent<"leds:">): Promise<void> {
   switch (event.type) {
     case "leds:update": {
-      await turnLineOn("bus.pio->leds", 10);
+      await turnLineOn("bus.pio->leds", 2);
       store.set(ledsAtom, event.state);
       await turnLineOff("bus.pio->leds");
       return;

@@ -10,7 +10,7 @@ export async function handleSwitchesEvent(event: SimulatorEvent<"switches:">): P
       store.set(switchesAtom, switches =>
         switches.withBit(event.index, !switches.bit(event.index)),
       );
-      await turnLineOn("bus.switches->pio", 15);
+      await turnLineOn("bus.switches->pio", 2);
       await turnLineOff("bus.switches->pio");
       return;
     }
