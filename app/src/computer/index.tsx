@@ -33,6 +33,7 @@ export function ComputerContainer() {
         minScale={0.3}
         initialScale={0.75}
         ref={wrapperRef}
+        doubleClick={{ disabled: true }}
         panning={{ excluded: ["input"] }}
       >
         <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[200px]">
