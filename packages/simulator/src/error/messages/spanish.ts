@@ -6,14 +6,14 @@ const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
 
 export const spanish: Messages = {
   // prettier-ignore
-  "address-has-instruction": address => `La dirección de memoria ${address} tiene una instrucción, y no se puede leer ni escribir.`,
+  "address-has-instruction": address => `La dirección de memoria ${MemoryAddress.format(address)} tiene una instrucción, y no se puede leer ni escribir.`,
   // prettier-ignore
   "address-out-of-range": address => `La dirección de memoria ${MemoryAddress.format(address)} está fuera de rango (dirección máxima de memoria: ${maxAddress}).`,
   "device-not-connected": (device: string) => `"${device}" no está conectado a la computadora.`,
   // prettier-ignore
   "io-memory-not-implemented": address => `La dirección de memoria E/S ${IOAddress.format(address)} no está implementada.`,
   // prettier-ignore
-  "no-instruction": address => `Se esperaba una instrucción en la dirección de memoria ${address} pero no se encontró ninguna.`,
+  "no-instruction": address => `Se esperaba una instrucción en la dirección de memoria ${MemoryAddress.format(address)} pero no se encontró ninguna.`,
   "no-program": "No hay ningún programa cargado. Ensamblá antes de ejecutar.",
   "stack-overflow": "Stack overflow",
   "stack-underflow": "Stack underflow",

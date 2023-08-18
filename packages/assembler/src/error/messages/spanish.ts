@@ -9,7 +9,7 @@ export const spanish: Messages = {
   // prettier-ignore
   "address-has-code": address => `La dirección de memoria ${MemoryAddress.format(address)} tiene instrucciones. No se puede usar como dirección de datos.`,
   // prettier-ignore
-  "address-out-of-range": address => `La dirección de memoria ${address} está fuera de rango (dirección máxima de memoria: ${maxAddress}).`,
+  "address-out-of-range": address => `La dirección de memoria ${MemoryAddress.format(address)} está fuera de rango (dirección máxima de memoria: ${maxAddress}).`,
   "cannot-accept-strings": directive => `${directive} no puede aceptar cadenas de texto.`,
   "cannot-be-indirect": "Este operando no puede ser una dirección de memoria indirecta.",
   "cannot-be-unassinged": directive => `${directive} no puede estar sin asignar.`,
@@ -47,7 +47,7 @@ export const spanish: Messages = {
   "missing-org": "No hay ningún ORG antes de esta instrucción, por lo que no se puede determinar su ubicación en memoria.",
   "must-have-one-or-more-values": directive => `${directive} debe tener al menos un valor.`,
   // prettier-ignore
-  "occupied-address": address => `Esta instrucción sería colocada en la dirección ${(address)}, la cual ya está ocupada.`,
+  "occupied-address": address => `Esta instrucción sería colocada en la dirección ${MemoryAddress.format(address)}, la cual ya está ocupada.`,
   "offset-only-with-data-directive": "OFFSET solo puede ser usado con variables.",
   // prettier-ignore
   "size-mismatch": (src, out) => `La fuente (${src} bits) y el destino (${out} bits) deben ser del mismo tamaño.`,
