@@ -76,8 +76,8 @@ export function ControlLines() {
 
       {devices.preset === "pio-switches-and-leds" && (
         <>
-          <ControlLine springs="bus.switches->pio" d="M 1300 760 H 1120" />
-          <ControlLine springs="bus.pio->leds" d="M 1120 850 H 1300" />
+          <ControlLine springs="bus.switches->pio" d="M 1300 768 H 1120" />
+          <ControlLine springs="bus.pio->leds" d="M 1120 858 H 1300" />
         </>
       )}
 
