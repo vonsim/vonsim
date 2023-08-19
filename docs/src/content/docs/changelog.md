@@ -2,7 +2,9 @@
 title: Notas de versión
 ---
 
-### Sábado 19 de agosto de 2023
+### 19 de agosto de 2023
+
+> Commit [`cfdbb03`](https://github.com/vonsim/vonsim/commit/cfdbb0321f574771301f12366a6dbe7a48696842)
 
 ¡Lanzamiento de la nueva versión de VonSim! Ahora con animaciones en detalle de cada instrucción.
 
