@@ -9,7 +9,7 @@ export function PIC() {
   return (
     <div className="absolute left-0 top-[700px] z-10 flex h-[200px] w-[450px] flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <div className="flex items-start">
-        <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-2xl font-bold text-white">
+        <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-2xl text-white">
           {translate("computer.pic")}
         </span>
 
