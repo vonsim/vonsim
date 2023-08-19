@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { atom } from "jotai";
 
 import {
@@ -21,7 +22,7 @@ export function Settings({ className }: { className?: string }) {
   const { status } = useSimulation();
 
   return (
-    <div className={className}>
+    <div className={clsx("overflow-auto scrollbar-stone-700", className)}>
       <h3 className="flex items-center gap-2 border-b border-stone-600 py-2 pl-4 text-xl font-semibold">
         <span className="icon-[lucide--settings] h-6 w-6" /> {translate("settings.title")}
       </h3>
