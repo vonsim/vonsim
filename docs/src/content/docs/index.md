@@ -55,4 +55,6 @@ VonSim se basa en el trabajo previo de Rubén de Diego Martínez para la Univers
 
 Todo el contenido del mismo se encuentra bajo la licencia [GNU Affero General Public License v3.0](https://github.com/vonsim/vonsim/blob/main/LICENSE) y su código fuente está disponible en [GitHub](https://github.com/vonsim/vonsim).
 
+&copy; 2017-presente Facundo Quiroga, Manuel Bustos Berrondo y Juan Martín Seery ([III-LIDI](https://weblidi.info.unlp.edu.ar/), [Facultad de Informática](https://info.unlp.edu.ar/), [UNLP](https://unlp.edu.ar/)).
+
 Esta documentación está bajo la licencia [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), salvo que se indique lo contrario.

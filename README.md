@@ -69,3 +69,9 @@ When using [Visual Studio Code](https://code.visualstudio.com/), you can use the
   mov al, letras + 1 ; copies "b"
   mov al, letras + 2 ; copies "c"
   ```
+
+## License
+
+This project is licensed under the [ GNU Affero General Public License v3.0](./LICENSE) license.
+
+&copy; 2017-present Facundo Quiroga, Manuel Bustos Berrondo y Juan Martín Seery ([III-LIDI](https://weblidi.info.unlp.edu.ar/), [Facultad de Informática](https://info.unlp.edu.ar/), [UNLP](https://unlp.edu.ar/)).
