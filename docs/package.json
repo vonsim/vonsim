@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.7.2",
-    "astro": "^2.10.9",
+    "astro": "^2.10.12",
     "eslint": "^8.47.0",
     "eslint-config-vonsim": "workspace:^",
     "satori": "^0.10.3",
