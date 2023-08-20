@@ -82,6 +82,8 @@ export function FileHandler() {
       notify.error(translate("editor.files.open-error"));
     }
   }, [translate, unsavedChanges, setFileHanlde, setLastSavedProgram]);
+
+  // Open file with Ctrl+O
   useKey(
     ev => ev.ctrlKey && ev.key === "o",
     ev => {
@@ -159,15 +161,6 @@ export function FileHandler() {
       notify.error(translate("editor.files.save-error"));
     }
   }, [translate, unsavedChanges, fileHandle, setLastSavedProgram]);
-  useKey(
-    ev => ev.ctrlKey && ev.key === "s",
-    ev => {
-      ev.preventDefault();
-      saveFile();
-    },
-    undefined,
-    [saveFile],
-  );
 
   const saveFileAs = useCallback(async () => {
     const source = window.codemirror!.state.doc.toString();
@@ -206,6 +199,33 @@ export function FileHandler() {
     }
   }, [translate, fileHandle, setFileHanlde, setLastSavedProgram]);
 
+  // ONLY IF the browser supports native file system
+  // If a file is open, save it with Ctrl+S
+  // If no file is open, save as with Ctrl+S
+  useKey(
+    ev => ev.ctrlKey && ev.key === "s",
+    ev => {
+      ev.preventDefault();
+      if (supportsNativeFileSystem) {
+        if (fileHandle) saveFile();
+        else saveFileAs();
+      }
+    },
+    undefined,
+    [fileHandle, saveFile, saveFileAs],
+  );
+
+  // Save file as with Ctrl+Shift+S
+  useKey(
+    ev => ev.ctrlKey && ev.shiftKey && ev.key === "S",
+    ev => {
+      ev.preventDefault();
+      saveFileAs();
+    },
+    undefined,
+    [saveFileAs],
+  );
+
   // Prevent user from exiting the page with unsaved changes
   const beforeunload = useCallback(
     (ev: BeforeUnloadEvent) => {
@@ -231,7 +251,7 @@ export function FileHandler() {
           {unsavedChanges && <span className="ml-1 h-2 w-2 rounded-full bg-current" />}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start">
+      <DropdownMenuContent className="w-64" align="start">
         <DropdownMenuItem onClick={openFile}>
           <span className="icon-[lucide--file-search-2] mr-2 h-4 w-4" />
           {translate("editor.files.open")}
@@ -247,6 +267,8 @@ export function FileHandler() {
         <DropdownMenuItem onClick={saveFileAs}>
           <span className="icon-[lucide--save-all] mr-2 h-4 w-4" />
           {translate("editor.files.save-as")}
+          <div className="grow" />
+          <kbd className="text-stone-600">Ctrl+Shift+S</kbd>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
