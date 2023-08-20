@@ -1,7 +1,6 @@
 import "./styles.css";
 
-import { history } from "@codemirror/commands";
-import { indentOnInput } from "@codemirror/language";
+import { history, indentMore } from "@codemirror/commands";
 import { EditorSelection, EditorState } from "@codemirror/state";
 import {
   drawSelection,
@@ -65,10 +64,8 @@ export function Editor({ className }: { className?: string }) {
           drawSelection(),
           dropCursor(),
           EditorState.allowMultipleSelections.of(true),
-          indentOnInput(),
           highlightActiveLine(),
           keymap.of([
-            ...vscodeKeymap,
             {
               key: "Escape",
               run: view => {
@@ -78,6 +75,20 @@ export function Editor({ className }: { className?: string }) {
                 return true;
               },
             },
+            {
+              key: "Tab",
+              run: view => {
+                if (view.state.selection.ranges.some(r => !r.empty)) return indentMore(view);
+                view.dispatch(
+                  view.state.update(view.state.replaceSelection(" ".repeat(view.state.tabSize)), {
+                    scrollIntoView: true,
+                    userEvent: "input",
+                  }),
+                );
+                return true;
+              },
+            },
+            ...vscodeKeymap,
           ]),
           VonSim(),
           showPanel.of(lintSummaryPanel),
