@@ -13,7 +13,9 @@ export type F10Event = { type: "f10:press" };
  * ---
  * This class is: IMMUTABLE
  */
-export class F10 extends Component {
+export class F10<
+  TDevices extends "pio-switches-and-leds" | "pio-printer" | "handshake",
+> extends Component<TDevices> {
   /**
    * Sends an interrupt to the PIC module.
    *

@@ -42,6 +42,7 @@ export default defineConfig({
             },
           ],
         },
+        { label: "Memoria principal", link: "/memory/" },
         {
           label: "Entrada/Salida",
           items: [

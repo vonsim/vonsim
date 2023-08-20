@@ -1,6 +1,7 @@
 import { Byte } from "@vonsim/common/byte";
 
 import type { Computer } from "../computer";
+import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 
 // https://vonsim.github.io/docs/cpu/#llamadas-al-sistema
@@ -47,6 +48,11 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
       // INT 6 - Read character from the keyboard and store it in [BX]
       yield { type: "cpu:int.6" };
 
+      if (!("keyboard" in computer.io)) {
+        yield { type: "cpu:error", error: new SimulatorError("device-not-connected", "keyboard") };
+        return false;
+      }
+
       yield* computer.cpu.copyWordRegister("BX", "ri");
 
       const char = yield* computer.io.keyboard.readChar();
@@ -64,6 +70,11 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
     case syscallsAddresses[7]: {
       // INT 7 - Write string to the screen, starting from [BX] and of length AL
       yield { type: "cpu:int.7" };
+
+      if (!("screen" in computer.io)) {
+        yield { type: "cpu:error", error: new SimulatorError("device-not-connected", "screen") };
+        return false;
+      }
 
       // Push AX and BX to stack
       yield* computer.cpu.copyWordRegister("AX", "id");

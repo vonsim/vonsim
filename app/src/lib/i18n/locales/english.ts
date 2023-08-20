@@ -164,6 +164,7 @@ export const english = {
       label: "Devices",
       description: "Which preset of devices to use.",
 
+      "no-devices": "No devices",
       "pio-switches-and-leds": "Switches and LEDs",
       "pio-printer": "Printer (PIO)",
       handshake: "Printer (Handshake)",

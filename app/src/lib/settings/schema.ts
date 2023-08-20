@@ -17,7 +17,7 @@ export const settingsSchema = z.object({
   /**
    * Value of {@link ComputerOptions.devices}.
    */
-  devices: z.enum(DEVICES).catch("pio-switches-and-leds"),
+  devices: z.enum(DEVICES).catch("no-devices"),
 
   /**
    * Disable animations for faster running. Only affects animations affected

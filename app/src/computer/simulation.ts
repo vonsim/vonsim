@@ -187,12 +187,12 @@ async function dispatch(...args: Action) {
     }
 
     case "f10.press": {
-      if (status.type !== "running") return invalidAction();
+      if (!simulator.devices.f10.connected() || status.type !== "running") return invalidAction();
 
       // Prevent simultaneous presses
       if (eventIsRunning("f10:press")) return;
 
-      startThread(simulator.devices.f10.press());
+      startThread(simulator.devices.f10.press()!);
       return;
     }
 
@@ -220,7 +220,9 @@ async function dispatch(...args: Action) {
     }
 
     case "screen.clean": {
-      startThread(simulator.devices.screen.clear());
+      if (!simulator.devices.screen.connected()) return invalidAction();
+
+      startThread(simulator.devices.screen.clear()!);
       return;
     }
 
@@ -239,13 +241,15 @@ async function dispatch(...args: Action) {
 }
 
 async function startClock(): Promise<void> {
+  if (!simulator.devices.clock.connected()) return;
+
   while (store.get(simulationAtom).type !== "stopped") {
     const duration = getSettings().clockSpeed;
     await anim(
       { key: "clock.angle", from: 0, to: 360 },
       { duration, forceMs: true, easing: "linear" },
     );
-    startThread(simulator.devices.clock.tick());
+    startThread(simulator.devices.clock.tick()!);
   }
 }
 
@@ -274,17 +278,35 @@ export function useSimulation() {
     () => ({
       preset: devicesPreset,
 
-      clock: true,
-      f10: true,
-      keyboard: true,
+      clock:
+        devicesPreset === "pio-switches-and-leds" ||
+        devicesPreset === "pio-printer" ||
+        devicesPreset === "handshake",
+      f10:
+        devicesPreset === "pio-switches-and-leds" ||
+        devicesPreset === "pio-printer" ||
+        devicesPreset === "handshake",
+      keyboard:
+        devicesPreset === "pio-switches-and-leds" ||
+        devicesPreset === "pio-printer" ||
+        devicesPreset === "handshake",
       handshake: devicesPreset === "handshake",
       leds: devicesPreset === "pio-switches-and-leds",
-      pic: true,
+      pic:
+        devicesPreset === "pio-switches-and-leds" ||
+        devicesPreset === "pio-printer" ||
+        devicesPreset === "handshake",
       pio: devicesPreset === "pio-switches-and-leds" || devicesPreset === "pio-printer",
       printer: devicesPreset === "pio-printer" || devicesPreset === "handshake",
-      screen: true,
+      screen:
+        devicesPreset === "pio-switches-and-leds" ||
+        devicesPreset === "pio-printer" ||
+        devicesPreset === "handshake",
       switches: devicesPreset === "pio-switches-and-leds",
-      timer: true,
+      timer:
+        devicesPreset === "pio-switches-and-leds" ||
+        devicesPreset === "pio-printer" ||
+        devicesPreset === "handshake",
     }),
     [devicesPreset],
   );

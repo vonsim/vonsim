@@ -95,7 +95,7 @@ const diaeresisDeadKeys = "Ü ü \u0308";
 export function Keyboard() {
   const language = useLanguage();
   const translate = useTranslate();
-  const { status, dispatch } = useSimulation();
+  const { status, dispatch, devices } = useSimulation();
 
   const [shift, setShift] = useState<"none" | "once" | "lock">("none");
   const [accent, setAccent] = useState(false);
@@ -115,12 +115,14 @@ export function Keyboard() {
 
   const handleChar = useCallback(
     (char: string) => {
-      if (status.type === "running" && status.waitingForInput) {
+      if (devices.keyboard && status.type === "running" && status.waitingForInput) {
         dispatch("keyboard.sendChar", char);
       }
     },
-    [status, dispatch],
+    [status, dispatch, devices.keyboard],
   );
+
+  if (!devices.keyboard) return null;
 
   return (
     <div className="absolute left-[1200px] top-[300px] z-10 h-min w-[500px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">

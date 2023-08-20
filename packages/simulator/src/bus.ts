@@ -17,6 +17,6 @@ export type BusEvent =
   | { type: "bus:io.selected"; chip: IORegister["chip"] }
   | {
       type: "bus:io.error";
-      error: SimulatorError<"io-memory-not-implemented"> | SimulatorError<"device-not-connected">;
+      error: SimulatorError<"io-memory-not-connected"> | SimulatorError<"device-not-connected">;
     }
   | { type: "bus:reset" };

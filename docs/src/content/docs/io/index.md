@@ -2,13 +2,13 @@
 title: "E/S: Conceptos generales"
 ---
 
-En el simulador, hay un dos [módulos de E/S](/docs/io/modules/) que están siempre conectados al bus: un [PIC](/docs/io/modules/pic/) y un [_timer_](/docs/io/modules/timer/). Además, dos [dispositivos](/docs/io/devices/): un [reloj](/docs/io/devices/clock/) conectado al _timer_ y una [tecla](/docs/io/devices/f10/) conectada al PIC para interrupir a la CPU. Hay también hay un [teclado](/docs/io/devices/keyboard/) y una [pantalla](/docs/io/devices/screen/), pero no están conectados al bus.
-
-A su vez, el simulador VonSim se puede configurar según las necesidades del usuario. Para ello, se pueden conectar y desconectar módulos y dispositivos de entrada/salida. Las _configuraciones_ disponibles son las siguientes:
+Por defecto, los únicos componentes conectados al bus la [CPU](/docs/cpu/) y la [memoria principal](/docs/memory/). El simulador puede configurarse para conectar [módulos](/docs/io/modules/) de entrada/salida al bus y otros [dispositivos](/docs/io/devices/). Estos se encuentrar agrupados en conjuntos o configuraciones:
 
 - **PIO con teclas y luces**: un [PIO](/docs/io/modules/pio/) conectado a [teclas y luces](/docs/io/devices/switches-and-leds/).
 - **PIO con impresora**: un [PIO](/docs/io/modules/pio/) conectado a una [impresora Centronics](/docs/io/devices/printer/).
 - **Handshake**: Una [impresora Centronics](/docs/io/devices/printer/) conectada por un [Handshake](/docs/io/modules/handshake).
+
+Estas configuraciones, además, incluyen un [PIC](/docs/io/modules/pic/), la [tecla F10](/docs/io/devices/f10/) para interrumpir, un [timer](/docs/io/modules/timer/) con su [reloj](/docs/io/devices/clock/), una [pantalla](/docs/io/devices/screen/) y un [teclado](/docs/io/devices/keyboard/).
 
 ---
 

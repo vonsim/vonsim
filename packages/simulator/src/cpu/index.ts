@@ -131,7 +131,7 @@ export class CPU extends Component {
       }
 
       // Check for interrupts
-      if (this.getFlag("IF") && this.computer.io.pic.isINTRActive()) {
+      if (this.getFlag("IF") && "pic" in this.computer.io && this.computer.io.pic.isINTRActive()) {
         // Start interrupt phase
         yield { type: "cpu:cycle.interrupt" };
         const intn = yield* this.computer.io.pic.handleINTR();
@@ -503,6 +503,7 @@ export class CPU extends Component {
       }
 
       case "intr-read": {
+        if (!("pic" in this.computer.io)) return false; // Error reading from pic (no pic)
         const intn = yield* this.computer.io.pic.handleINTR();
         this.#MBR = intn;
         yield { type: "bus:reset" };

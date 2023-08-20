@@ -32,11 +32,13 @@ export type TimerOperation =
  * ---
  * This class is: MUTABLE
  */
-export class Timer extends IOModule<TimerRegister> {
+export class Timer<
+  TDevices extends "pio-switches-and-leds" | "pio-printer" | "handshake",
+> extends IOModule<TimerRegister, TDevices> {
   #CONT: Byte<8>;
   #COMP: Byte<8>;
 
-  constructor(options: ComponentInit) {
+  constructor(options: ComponentInit<TDevices>) {
     super(options);
     this.#CONT = Byte.zero(8);
     this.#COMP = Byte.zero(8);

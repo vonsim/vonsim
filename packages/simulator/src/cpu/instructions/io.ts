@@ -56,7 +56,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
       if (!computer.cpu.getRegister("DX").high.isZero()) {
         yield {
           type: "cpu:error",
-          error: new SimulatorError("io-memory-not-implemented", computer.cpu.getRegister("DX")),
+          error: new SimulatorError("io-memory-not-connected", computer.cpu.getRegister("DX")),
         };
         return false;
       }
@@ -75,7 +75,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
           // User tried to read from ports 255 and 256
           yield {
             type: "cpu:error",
-            error: new SimulatorError("io-memory-not-implemented", computer.cpu.getRegister("ri")),
+            error: new SimulatorError("io-memory-not-connected", computer.cpu.getRegister("ri")),
           };
           return false;
         }
@@ -94,7 +94,7 @@ export class IOInstruction extends Instruction<"IN" | "OUT"> {
           // User tried to write to ports 255 and 256
           yield {
             type: "cpu:error",
-            error: new SimulatorError("io-memory-not-implemented", computer.cpu.getRegister("ri")),
+            error: new SimulatorError("io-memory-not-connected", computer.cpu.getRegister("ri")),
           };
           return false;
         }

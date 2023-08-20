@@ -2,7 +2,7 @@ import type { Program } from "@vonsim/assembler";
 import type { JsonObject, Simplify } from "type-fest";
 
 import { CPU } from "./cpu";
-import { Handshake, PIOPrinter, PIOSwitchesAndLeds } from "./io/configurations";
+import { Handshake, NoDevices, PIOPrinter, PIOSwitchesAndLeds } from "./io/configurations";
 import { Memory } from "./memory";
 
 export type ComputerOptions<TDevices extends DevicesConfiguration = DevicesConfiguration> = {
@@ -11,6 +11,7 @@ export type ComputerOptions<TDevices extends DevicesConfiguration = DevicesConfi
 } & ({ data: "clean" | "randomize" } | { data: "unchanged"; previous: Computer });
 
 export type DevicesMap = {
+  "no-devices": NoDevices;
   "pio-switches-and-leds": PIOSwitchesAndLeds;
   "pio-printer": PIOPrinter;
   handshake: Handshake;
@@ -24,6 +25,7 @@ export type DevicesConfiguration = Simplify<keyof DevicesMap>;
  *
  * It can be initialized with a program and one of multiple devices configurations,
  * represented as a IOInterface. Those cannot be changed after initialization. Those are:
+ * - `no-devices`: {@link NoDevices}
  * - `pio-switches-and-leds`: {@link PIOSwitchesAndLeds}
  * - `pio-printer`: {@link PIOPrinter}
  * - `handshake`: {@link Handshake}
@@ -44,6 +46,12 @@ export class Computer<TDevices extends DevicesConfiguration = DevicesConfigurati
     this.memory = new Memory(init);
 
     switch (options.devices) {
+      case "no-devices": {
+        // @ts-expect-error ensured by `TDevices` and `options`
+        this.io = new NoDevices(init);
+        break;
+      }
+
       case "pio-switches-and-leds": {
         // @ts-expect-error ensured by `TDevices` and `options`
         this.io = new PIOSwitchesAndLeds(init);
@@ -62,8 +70,10 @@ export class Computer<TDevices extends DevicesConfiguration = DevicesConfigurati
         break;
       }
 
-      default:
-        throw new Error("Invalid devices configuration");
+      default: {
+        const _exhaustiveCheck: never = options.devices;
+        throw new Error(`Unknown devices configuration: ${_exhaustiveCheck}`);
+      }
     }
   }
 

@@ -11,7 +11,7 @@ export const spanish: Messages = {
   "address-out-of-range": address => `La dirección de memoria ${MemoryAddress.format(address)} está fuera de rango (dirección máxima de memoria: ${maxAddress}).`,
   "device-not-connected": (device: string) => `"${device}" no está conectado a la computadora.`,
   // prettier-ignore
-  "io-memory-not-implemented": address => `La dirección de memoria E/S ${IOAddress.format(address)} no está implementada.`,
+  "io-memory-not-connected": (address)=> `No se encontró ningún módulo conectado a la dirección de memoria E/S ${IOAddress.format(address)}.`,
   // prettier-ignore
   "no-instruction": address => `Se esperaba una instrucción en la dirección de memoria ${MemoryAddress.format(address)} pero no se encontró ninguna.`,
   "no-program": "No hay ningún programa cargado. Ensamblá antes de ejecutar.",

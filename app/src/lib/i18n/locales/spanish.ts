@@ -164,6 +164,7 @@ export const spanish: Locale = {
       label: "Dispositivos",
       description: "Qué conjunto de dispositivos usar.",
 
+      "no-devices": "Ninguno",
       "pio-switches-and-leds": "Teclas y luces",
       "pio-printer": "Impresora (PIO)",
       handshake: "Impresora (Handshake)",

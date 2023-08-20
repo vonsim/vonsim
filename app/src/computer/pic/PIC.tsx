@@ -1,10 +1,14 @@
 import { Register } from "@/computer/shared/Register";
+import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 
 import { IMRAtom, IRRAtom, ISRAtom, linesAtoms } from "./state";
 
 export function PIC() {
   const translate = useTranslate();
+  const { devices } = useSimulation();
+
+  if (!devices.pic) return null;
 
   return (
     <div className="absolute left-0 top-[700px] z-10 flex h-[200px] w-[450px] flex-col rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">

@@ -1,10 +1,14 @@
 import { Register } from "@/computer/shared/Register";
+import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 
 import { COMPAtom, CONTAtom } from "./state";
 
 export function Timer() {
   const translate = useTranslate();
+  const { devices } = useSimulation();
+
+  if (!devices.timer) return null;
 
   return (
     <div className="absolute left-[500px] top-[875px] z-10 flex h-[120px] w-[220px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">

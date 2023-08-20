@@ -9,17 +9,21 @@ export function ControlLines() {
 
   const rdPath = [
     "M 380 420 H 800", // CPU -> Memory
-    "M 780 420 V 805", // Down
-    "M 450 805 H 900", // PIC to PIO/Handshake
-    "M 583 805 V 875", // Timer
-  ].join(" ");
+    devices.preset !== "no-devices" && "M 780 420 V 805", // Down
+    devices.preset !== "no-devices" && "M 450 805 H 900", // PIC to PIO/Handshake
+    devices.preset !== "no-devices" && "M 583 805 V 875", // Timer
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const wrPath = [
     "M 380 440 H 800", // CPU -> Memory
-    "M 790 440 V 815", // Down
-    "M 450 815 H 900", // PIC to PIO/Handshake
-    "M 573 815 V 875", // Timer
-  ].join(" ");
+    devices.preset !== "no-devices" && "M 790 440 V 815", // Down
+    devices.preset !== "no-devices" && "M 450 815 H 900", // PIC to PIO/Handshake
+    devices.preset !== "no-devices" && "M 573 815 V 875", // Timer
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const memPath = "M 750 545 H 860 V 460";
 
@@ -41,36 +45,47 @@ export function ControlLines() {
         style={getSpring("bus.wr")}
       />
 
-      <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
-
       {/* Chip select */}
 
-      <path
-        className="fill-none stroke-stone-900 stroke-[6px]"
-        strokeLinejoin="round"
-        d={memPath}
-      />
-      <animated.path
-        className="fill-none stroke-[4px]"
-        strokeLinejoin="round"
-        d={memPath}
-        style={getSpring("bus.mem")}
-      />
+      {devices.preset !== "no-devices" && (
+        <>
+          <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
 
-      <ControlLine springs="bus.pic" d="M 521 595 V 730 H 450" />
-      <ControlLine springs="bus.timer" d="M 563 595 V 875" />
+          <path
+            className="fill-none stroke-stone-900 stroke-[6px]"
+            strokeLinejoin="round"
+            d={memPath}
+          />
+          <animated.path
+            className="fill-none stroke-[4px]"
+            strokeLinejoin="round"
+            d={memPath}
+            style={getSpring("bus.mem")}
+          />
+        </>
+      )}
+
+      {devices.pic && <ControlLine springs="bus.pic" d="M 521 595 V 730 H 450" />}
+      {devices.timer && <ControlLine springs="bus.timer" d="M 563 595 V 875" />}
       {devices.pio && <ControlLine springs="bus.pio" d="M 612 595 V 730 H 900" />}
       {devices.handshake && <ControlLine springs="bus.handshake" d="M 635 595 V 730 H 900" />}
 
       {/* CPU/PIC */}
 
-      <ControlLine springs="bus.intr" d="M 110 700 V 470" />
-      <ControlLine springs="bus.inta" d="M 160 470 V 700" />
+      {devices.pic && (
+        <>
+          <ControlLine springs="bus.intr" d="M 110 700 V 470" />
+          <ControlLine springs="bus.inta" d="M 160 470 V 700" />
+        </>
+      )}
 
       {/* Interrupt lines */}
 
-      <ControlLine springs="bus.int0" d="M 145 950 V 900" />
-      <ControlLine springs="bus.int1" d="M 500 955 H 400 V 900" />
+      {devices.pic && devices.f10 && <ControlLine springs="bus.int0" d="M 145 950 V 900" />}
+      {devices.pic && devices.timer && <ControlLine springs="bus.int1" d="M 500 955 H 400 V 900" />}
+      {devices.pic && devices.handshake && (
+        <ControlLine springs="bus.int2" d="M 930 866 V 1050 H 300 V 900" />
+      )}
 
       {/* Other devices */}
 
@@ -94,7 +109,6 @@ export function ControlLines() {
           <ControlLine springs="bus.printer.strobe" d="M 1120 767 H 1250" />
           <ControlLine springs="bus.printer.busy" d="M 1250 782 H 1120" />
           <ControlLine springs="bus.printer.data" d="M 1120 837 H 1250" />
-          <ControlLine springs="bus.int2" d="M 930 866 V 1050 H 300 V 900" />
         </>
       )}
     </svg>
@@ -131,17 +145,25 @@ export function ControlLinesLegends() {
     <>
       <ControlLineLegend className="left-[384px] top-[403px]">rd</ControlLineLegend>
       <ControlLineLegend className="left-[384px] top-[423px]">wr</ControlLineLegend>
-      <ControlLineLegend className="left-[384px] top-[443px]">io/m</ControlLineLegend>
-      <ControlLineLegend className="left-[715px] top-[538px]">
-        {translate("computer.chip-select.mem")}
-      </ControlLineLegend>
+      {devices.preset !== "no-devices" && (
+        <>
+          <ControlLineLegend className="left-[384px] top-[443px]">io/m</ControlLineLegend>
+          <ControlLineLegend className="left-[715px] top-[538px]">
+            {translate("computer.chip-select.mem")}
+          </ControlLineLegend>
+        </>
+      )}
 
-      <ControlLineLegend className="left-[510px] top-[573px]">
-        {translate("computer.chip-select.pic")}
-      </ControlLineLegend>
-      <ControlLineLegend className="left-[545px] top-[573px]">
-        {translate("computer.chip-select.timer")}
-      </ControlLineLegend>
+      {devices.pic && (
+        <ControlLineLegend className="left-[510px] top-[573px]">
+          {translate("computer.chip-select.pic")}
+        </ControlLineLegend>
+      )}
+      {devices.timer && (
+        <ControlLineLegend className="left-[545px] top-[573px]">
+          {translate("computer.chip-select.timer")}
+        </ControlLineLegend>
+      )}
       {devices.pio && (
         <ControlLineLegend className="left-[600px] top-[573px]">
           {translate("computer.chip-select.pio")}
@@ -153,8 +175,12 @@ export function ControlLinesLegends() {
         </ControlLineLegend>
       )}
 
-      <ControlLineLegend className="left-[75px] top-[478px]">intr</ControlLineLegend>
-      <ControlLineLegend className="left-[125px] top-[478px]">inta</ControlLineLegend>
+      {devices.pic && (
+        <>
+          <ControlLineLegend className="left-[75px] top-[478px]">intr</ControlLineLegend>
+          <ControlLineLegend className="left-[125px] top-[478px]">inta</ControlLineLegend>
+        </>
+      )}
 
       {devices.printer && (
         <>

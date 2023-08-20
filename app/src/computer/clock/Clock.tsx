@@ -1,6 +1,11 @@
 import { animated, getSpring } from "@/computer/shared/springs";
+import { useSimulation } from "@/computer/simulation";
 
 export function Clock() {
+  const { devices } = useSimulation();
+
+  if (!devices.clock) return null;
+
   const angle = getSpring("clock.angle");
 
   return (

@@ -21,7 +21,7 @@ export type MemoryOperation =
 
 /**
  * Memory.
- * @see {@link https://vonsim.github.io/docs/}
+ * @see {@link https://vonsim.github.io/docs/memory/}
  *
  * It has the memory itself ({@link Memory.#buffer}) and a set of reserved memory addresses.
  * These reserved addresses are the ones that are used by the instructions, and they are

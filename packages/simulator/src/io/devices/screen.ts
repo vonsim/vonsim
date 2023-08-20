@@ -15,12 +15,14 @@ export type ScreenEvent = { type: "screen:send-char"; char: Byte<8>; output: str
  * ---
  * This class is: MUTABLE
  */
-export class Screen extends Component {
+export class Screen<
+  TDevices extends "pio-switches-and-leds" | "pio-printer" | "handshake",
+> extends Component<TDevices> {
   #output: string;
 
-  constructor(options: ComponentInit) {
+  constructor(options: ComponentInit<TDevices>) {
     super(options);
-    if (options.data === "unchanged") {
+    if (options.data === "unchanged" && "screen" in options.previous.io) {
       this.#output = options.previous.io.screen.#output;
     } else {
       this.#output = "";

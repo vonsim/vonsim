@@ -12,7 +12,9 @@ export type ClockEvent = { type: "clock:tick" };
  * ---
  * This class is: IMMUTABLE
  */
-export class Clock extends Component {
+export class Clock<
+  TDevices extends "pio-switches-and-leds" | "pio-printer" | "handshake",
+> extends Component<TDevices> {
   /**
    * Sends a tick signal to the Timer module.
    *

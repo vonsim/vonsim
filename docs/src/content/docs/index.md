@@ -7,7 +7,7 @@ VonSim es una herramienta destinada a la enseñanza y aprendizaje de arquitectur
 Está [basado](/docs/cpu/) en el procesador 8088 de Intel, y cuenta con:
 
 - cuatro registros multipropósito de 16 bits;
-- una memoria de 32 kB;
+- una [memoria principal](/docs/memory/) de 32 kB;
 - un bus de direcciones de 16 bits y un bus de datos de 8 bits;
 - interrupciones por software (como lectura del teclado y escritura en pantalla);
 - interrupciones por hardware con un [PIC](/docs/io/modules/pic/);

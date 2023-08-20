@@ -14,7 +14,7 @@ El procesador cuenta con los siguientes puertos:
 - 8 bits de datos (bus de datos, con su respectivo _buffer_ `MBR`)
 - 1 bit para la señal de lectura (`RD`)
 - 1 bit para la señal de escritura (`WR`)
-- 1 bit para indicar si la escritura es a memoria principal o a un dispositivo de entrada/salida (`IO/M`, siendo `1` para E/S)
+- 1 bit para indicar si la escritura es a [memoria principal](/docs/memory/) o a un módulo de [entrada/salida](/docs/io/modules/) (`IO/M`, siendo `1` para E/S)
 - 1 bit para la petición de interrupción (`INTR`)
 - 1 bit para la señal de _acknowledge_ de interrupción (`INTA`)
 

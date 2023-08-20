@@ -2,9 +2,9 @@
 title: Memoria E/S
 ---
 
-VonSim implementa dos "memorias". Una es la memoria principal de almacenamiento, que cuenta con 32 kB de espacio (`0000h` hasta `7FFFh`) y donde se almacenan los programas y datos.
+La memoria de entrada/salida se encuentra aislada de la memoria principal. Es decir, para acceder a ella se utilizan exclusivamente las instrucciones [`IN`](/docs/cpu/instructions/in/) y [`OUT`](/docs/cpu/instructions/out/). Cuando se quiere acceder a un módulo de entrada/salida, la [CPU](/docs/cpu/) activa la señal `IO/M`, lo que causa que un selector de chips (_chip select_) lea la dirección del bus del direcciones y envíe la señal de lectura/escritura al módulo correspondiente.
 
-La otra es la memoria de entrada/salida, a la que se accede con direcciones de un byte (`00h` hasta `FFh`) y se encuentra aislada de la memoria principal. Es decir, para acceder a ella se utilizan exclusivamente las instrucciones [`IN`](/docs/cpu/instructions/in/) y [`OUT`](/docs/cpu/instructions/out/). Cuando se quiere acceder a un módulo de entrada/salida, la [CPU](/docs/cpu/) activa la señal `M/IO`, lo que causa que un selector de chips (_chip select_) lea la dirección del bus del direcciones y envíe la señal de lectura/escritura al módulo correspondiente.
+El rango de direcciones de la memoria de entrada/salida es de `00h` hasta `FFh` (256 direcciones).
 
 ## Registros de E/S
 
