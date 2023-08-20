@@ -2,23 +2,36 @@
 title: Notas de versión
 ---
 
-### 19 de agosto de 2023
+### 22 de agosto de 2023
 
-> Commit [`cfdbb03`](https://github.com/vonsim/vonsim/commit/cfdbb0321f574771301f12366a6dbe7a48696842)
+¡Lanzamiento de la nueva versión de VonSim! Con respecto a la versión anterior, esta versión incluye:
 
-¡Lanzamiento de la nueva versión de VonSim! Ahora con animaciones en detalle de cada instrucción.
+- animaciones para las microinstrucciones;
+- soporte para celulares y tablets;
+- documentación accesible desde la aplicación;
+- modo offline (PWA);
+- editor de texto más avanzado, con soporte para abrir y guardar archivos;
 
-### Diciembre de 2022
+Se hicieron muchos cambios internos sobre la arquitectura de VonSim. Los más importantes para el usuario son:
 
-Se inició el desarrollo de la nueva versión de VonSim.
+- ensamblador más inteligente, que detecta errores de sintaxis y semántica arrojando mensajes de error más claros y específicos;
+- sporte para acceso directo a memoria, como `mov al, [1234h]`;
 
 ### 2019
 
-Se agregaron los primeros dispositivos.
+Se agregó la entrada/salida al simulador.
 
 ### 2017
 
-Primera versión de VonSim. Actualmente guarda en la rama [`legacy`](https://github.com/vonsim/vonsim/tree/legacy).
+Primera versión de VonSim. Actualmente guarda en la rama [`legacy`](https://github.com/vonsim/vonsim/tree/legacy). Comparado con el MSX88, esta versión:
+
+- es web, por lo que no requiere instalación y es multiplataforma;
+- tiene una interfaz gráfica más moderna;
+- tiene un editor de texto con resaltado de sintaxis integrado.
+
+### 1988
+
+Rubén de Diego Martínez lanza el simulador MSX88 para la Universidad Politécnica de Madrid.
 
 ---
 
