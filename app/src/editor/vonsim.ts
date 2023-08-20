@@ -8,7 +8,10 @@ import { Diagnostic, linter } from "@codemirror/lint";
 import { Tag, tags } from "@lezer/highlight";
 import { assemble, DATA_DIRECTIVES, INSTRUCTIONS, REGISTERS } from "@vonsim/assembler";
 
+import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
+
+import { lintErrorsAtom } from "./StatusBar";
 
 /**
  * This is the VonSim language definition.
@@ -113,14 +116,19 @@ const vonsimLinter = linter(
     const source = view.state.doc.toString();
     const result = assemble(source);
 
-    if (result.success) return [];
+    if (result.success) {
+      store.set(lintErrorsAtom, 0);
+      return [];
+    }
 
     const lang = getSettings().language;
-    return result.errors.map<Diagnostic>(error => {
+    const errors = result.errors.map<Diagnostic>(error => {
       const from = error.position?.start ?? 0;
       const to = error.position?.end ?? source.length;
       return { message: error.translate(lang), severity: "error", from, to };
     });
+    store.set(lintErrorsAtom, errors.length);
+    return errors;
   },
   {
     delay: 200, // gotta go fast

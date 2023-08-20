@@ -11,15 +11,14 @@ import {
   highlightSpecialChars,
   keymap,
   lineNumbers,
-  showPanel,
 } from "@codemirror/view";
 import { vscodeKeymap } from "@replit/codemirror-vscode-keymap";
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
 
-import { lintSummaryPanel } from "./lint";
 import { lineHighlightField, readOnly } from "./methods";
+import { StatusBar } from "./StatusBar";
 import { initialDoc, storePlugin } from "./store";
 import { VonSim } from "./vonsim";
 
@@ -91,7 +90,6 @@ export function Editor({ className }: { className?: string }) {
             ...vscodeKeymap,
           ]),
           VonSim(),
-          showPanel.of(lintSummaryPanel),
         ],
       }),
       parent: element,
@@ -121,5 +119,10 @@ export function Editor({ className }: { className?: string }) {
     },
   );
 
-  return <div ref={ref} className={clsx("overflow-auto font-mono", className)} />;
+  return (
+    <div className={clsx("flex flex-col", className)}>
+      <div ref={ref} className="grow overflow-auto font-mono" />
+      <StatusBar />
+    </div>
+  );
 }
