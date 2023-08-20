@@ -51,14 +51,10 @@ When using [Visual Studio Code](https://code.visualstudio.com/), you can use the
 
 ## To-do list
 
-- Add usage documentation (maybe with LaTeX or [Typst](https://typst.app/))
-- Change ui components name font weight to 400
-- Add padding between "PIO" and the line below
-- Save file legend
 - Add mode without devices
+- Welcome tour (with mentions to downloadable PWA)
 - Add Printer w/CDMA
 - Add Printer w/USART
-- Add advanced filesave support
 - Implement indirect access with offset
 - Add character literal (`'a'`)
 - Support adding an offset to a memory label
