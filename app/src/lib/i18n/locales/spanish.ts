@@ -4,6 +4,34 @@ import type { Locale } from "..";
 
 const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
 
+const example = `; ¡Bienvenido a VonSim!
+; Este es un ejemplo de código que calcula los primeros
+; n números de la sucesión de Fibonacci, y se guardan a
+; partir de la posición 1000h de la memoria.
+
+     n  equ 10    ; Calcula los primeros 10 números
+
+        org 1000h
+inicio  db 1
+
+        org 2000h
+        mov bx, offset inicio + 1
+        mov al, 0
+        mov ah, inicio
+
+bucle:  cmp bx, offset inicio + n
+        jns fin
+        mov cl, ah
+        add cl, al
+        mov al, ah
+        mov ah, cl
+        mov [bx], cl
+        inc bx
+        jmp bucle
+fin:    hlt
+        end
+`;
+
 export const spanish: Locale = {
   generics: {
     clean: "Limpiar",
@@ -28,8 +56,19 @@ export const spanish: Locale = {
   },
 
   editor: {
+    example,
     lintSummary: n =>
       n === 0 ? "Listo para compilar" : n === 1 ? "Hay un error" : `Hay ${n} errores`,
+    files: {
+      unsupported: "Tu navegador no soporta la “FileSystem API”",
+      "no-file": "No hay ningún archivo abierto",
+      open: "Abrir",
+      unsaved: "Hay cambios sin guardar, ¿desea descartarlos?",
+      "open-error": "Error al abrir el archivo",
+      save: "Guardar",
+      "save-as": "Guardar como",
+      "save-error": "Error al guardar el archivo",
+    },
   },
 
   control: {

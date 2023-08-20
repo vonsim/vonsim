@@ -15,11 +15,10 @@ import {
 import { vscodeKeymap } from "@replit/codemirror-vscode-keymap";
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
-import { useKey } from "react-use";
 
+import { getSavedProgram, syncStatePlugin } from "./files";
 import { lineHighlightField, readOnly } from "./methods";
 import { StatusBar } from "./StatusBar";
-import { initialDoc, storePlugin } from "./store";
 import { VonSim } from "./vonsim";
 
 /**
@@ -48,12 +47,12 @@ export function Editor({ className }: { className?: string }) {
 
     window.codemirror = new EditorView({
       state: EditorState.create({
-        doc: initialDoc,
+        doc: getSavedProgram(),
         extensions: [
           EditorState.tabSize.of(2),
           readOnly.of(EditorState.readOnly.of(false)),
 
-          storePlugin,
+          syncStatePlugin,
 
           lineNumbers(),
           lineHighlightField,
@@ -97,27 +96,6 @@ export function Editor({ className }: { className?: string }) {
 
     return () => window.codemirror?.destroy();
   }, [element]);
-
-  useKey(
-    e => e.ctrlKey && e.key === "s",
-    ev => {
-      ev.preventDefault();
-      if (!window.codemirror) return;
-
-      const blob = new Blob([window.codemirror.state.doc.toString()], { type: "text/plain" });
-      const href = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = href;
-      a.download = `vonsim-${new Date().toISOString().slice(0, 16)}.txt`;
-
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(href);
-    },
-  );
 
   return (
     <div className={clsx("flex flex-col", className)}>

@@ -129,6 +129,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.7
         version: 18.2.7
+      '@types/wicg-file-system-access':
+        specifier: ^2020.9.6
+        version: 2020.9.6
       '@vitejs/plugin-react-swc':
         specifier: ^3.3.2
         version: 3.3.2(vite@4.4.9)
@@ -3842,6 +3845,10 @@ packages:
 
   /@types/unist@2.0.7:
     resolution: {integrity: sha512-cputDpIbFgLUaGQn6Vqg3/YsJwxUwHLO13v3i5ouxT4lat0khip9AEWxtERujXV9wxIB1EyF97BSJFt6vpdI8g==}
+    dev: true
+
+  /@types/wicg-file-system-access@2020.9.6:
+    resolution: {integrity: sha512-6hogE75Hl2Ov/jgp8ZhDaGmIF/q3J07GtXf8nCJCwKTHq7971po5+DId7grft09zG7plBwpF6ZU0yx9Du4/e1A==}
     dev: true
 
   /@types/yargs-parser@21.0.0:
