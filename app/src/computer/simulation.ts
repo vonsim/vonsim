@@ -8,11 +8,11 @@ import { Byte } from "@vonsim/common/byte";
 import { ComputerState, EventGenerator, Simulator, SimulatorError } from "@vonsim/simulator";
 import { atom, useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { toast } from "sonner";
 
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
+import { notify } from "@/lib/notifications";
 import { getSettings, useDevices } from "@/lib/settings";
 
 import { cycleAtom, resetCPUState } from "./cpu/state";
@@ -40,7 +40,7 @@ export const simulationAtom = atom<SimulationStatus>({ type: "stopped" });
 
 function notifyError(error: SimulatorError<any>) {
   const message = error.translate(getSettings().language);
-  toast.error(message);
+  notify.error(message);
 }
 
 export function finishSimulation(error?: SimulatorError<any>) {
@@ -59,11 +59,11 @@ export function pauseSimulation() {
 }
 
 function assembleError() {
-  toast.error(translate(getSettings().language, "messages.assemble-error"));
+  notify.error(translate(getSettings().language, "messages.assemble-error"));
 }
 
 function invalidAction() {
-  toast.error(translate(getSettings().language, "messages.invalid-action"));
+  notify.error(translate(getSettings().language, "messages.invalid-action"));
 }
 
 function resetState(state: ComputerState) {

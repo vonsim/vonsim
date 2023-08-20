@@ -3,7 +3,6 @@ import { useAtom } from "jotai";
 import { useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useMedia } from "react-use";
-import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { Footer } from "@/components/Footer";
@@ -12,6 +11,7 @@ import { Settings, settingsOpenAtom } from "@/components/Settings";
 import { ComputerContainer } from "@/computer";
 import { Editor } from "@/editor";
 import { useTranslate } from "@/lib/i18n";
+import { notify } from "@/lib/notifications";
 
 export default function App() {
   const translate = useTranslate();
@@ -19,11 +19,12 @@ export default function App() {
 
   const { updateServiceWorker } = useRegisterSW({
     onNeedRefresh() {
-      toast(translate("update.update-available"), {
+      notify(translate("update.update-available"), {
         action: {
           label: translate("update.reload"),
           onClick: () => updateServiceWorker(true),
         },
+        duration: Infinity,
       });
     },
   });

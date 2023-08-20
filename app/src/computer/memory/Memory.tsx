@@ -3,13 +3,13 @@ import type { Byte } from "@vonsim/common/byte";
 import clsx from "clsx";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useId, useState } from "react";
-import { toast } from "sonner";
 
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { animated, getSpring } from "@/computer/shared/springs";
 import { useTranslate } from "@/lib/i18n";
+import { notify } from "@/lib/notifications";
 
 import { fixedAddressAtom, memoryShownAtom, operatingAddressAtom } from "./state";
 
@@ -26,7 +26,7 @@ export function Memory() {
   const updateFixedAddress = useCallback(() => {
     const match = /^(\d+)[Hh]?$/.exec(inputValue);
     if (!match || !match[1]) {
-      toast.error(translate("computer.memory.address-must-be-integer"));
+      notify.error(translate("computer.memory.address-must-be-integer"));
       return;
     }
     let value = parseInt(match[1], 16);
@@ -35,7 +35,7 @@ export function Memory() {
       // to quickly jump to the end of the memory
       value -= 1;
     } else if (!MemoryAddress.inRange(value)) {
-      toast.error(translate("computer.memory.address-out-of-range"));
+      notify.error(translate("computer.memory.address-out-of-range"));
       return;
     }
     setFixedAddress(MemoryAddress.from(value));
