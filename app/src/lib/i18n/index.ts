@@ -1,4 +1,5 @@
 import { initTranlate, LocaleCode, LocaleContext } from "@vonsim/common/i18n";
+import { useCallback } from "react";
 
 import { useLanguage } from "@/lib/settings";
 
@@ -15,6 +16,9 @@ export const translate = initTranlate<Locale>({
 export function useTranslate() {
   const lang = useLanguage();
 
-  return <Key extends LocaleCode<Locale>>(key: Key, ...context: LocaleContext<Locale, Key>) =>
-    translate(lang, key, ...context);
+  return useCallback(
+    <Key extends LocaleCode<Locale>>(key: Key, ...context: LocaleContext<Locale, Key>) =>
+      translate(lang, key, ...context),
+    [lang],
+  );
 }
