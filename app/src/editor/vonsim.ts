@@ -20,6 +20,7 @@ import { lintErrorsAtom } from "./StatusBar";
  */
 
 const vonsimTags = {
+  character: tags.character,
   comment: tags.comment,
   "data-directive": Tag.define(),
   identifier: tags.variableName,
@@ -44,6 +45,10 @@ const vonsimLanguage = StreamLanguage.define({
     if (stream.match(/[01]+b\b/i)) return "number";
     if (stream.match(/\d[a-f\d]*h\b/i)) return "number";
     if (stream.match(/\d+\b/)) return "number";
+
+    if (stream.match(/'[^'\n]'/)) {
+      return "character";
+    }
 
     if (stream.eat('"')) {
       stream.eatWhile(/[^"\n]/);
@@ -94,6 +99,7 @@ const vonsimLanguage = StreamLanguage.define({
 
 const vonsimHighlighter = syntaxHighlighting(
   HighlightStyle.define([
+    { tag: vonsimTags.character, class: "text-orange-300" },
     { tag: vonsimTags.comment, class: "text-stone-500 italic" },
     { tag: vonsimTags["data-directive"], class: "text-rose-400/80" },
     // { tag: vonsimTags.identifier, class: "" },

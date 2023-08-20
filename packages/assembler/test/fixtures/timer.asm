@@ -27,15 +27,13 @@ input_msj db 12, "Ingrese un tiempo (máx 99 seg): "
 err_msj   db 10, "Número inválido"
 
 disp      db 8, 8 ; 2 backspaces
-seg_h     db "0"
-seg_l     db "0"
+seg_h     db '0'
+seg_l     db '0'
 count     db 00h ; booleano. 00h = false
 
 input_len equ offset err_msj - offset input_msj
 err_len   equ offset disp - offset err_msj
 disp_len  equ offset count - offset disp
-cero      equ 30h
-nueve     equ 39h
 
 
                 org 3000h
@@ -43,9 +41,9 @@ nueve     equ 39h
                 ; Retorna FFh si el caracter es un número
                 ;         y 00h si no lo es en AL.
 es_num:         mov al, [bx]
-                cmp al, cero
+                cmp al, '0'
                 js es_num_F
-                cmp al, nueve+1
+                cmp al, '9'+1
                 jns es_num_F
                 mov al, 0FFh
                 jmp es_num_ret
@@ -71,9 +69,9 @@ handle_clk:     push ax
                 cmp count, 0
                 jz handle_clk_end ; Si count = 00h, no contar
                 dec seg_l
-                cmp seg_l, cero
+                cmp seg_l, '0'
                 jns handle_clk_end
-                mov seg_l, nueve
+                mov seg_l, '9'
                 dec seg_h
 handle_clk_end: mov bx, offset disp
                 mov al, disp_len
@@ -116,9 +114,9 @@ handle_clk_end: mov bx, offset disp
         out INT1, al
         sti
 
-loop:   cmp seg_h, cero
+loop:   cmp seg_h, '0'
         jnz loop
-        cmp seg_l, cero
+        cmp seg_l, '0'
         jnz loop
         jmp fin
 

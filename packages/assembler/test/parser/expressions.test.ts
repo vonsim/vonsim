@@ -103,6 +103,38 @@ describe("Number literals", () => {
       ]
     `);
   });
+  it("character", () => {
+    expect(parse("DB 'a'")).toMatchInlineSnapshot(`
+      [
+        {
+          "directive": "DB",
+          "label": null,
+          "position": [
+            0,
+            6,
+          ],
+          "type": "data-directive",
+          "values": [
+            {
+              "position": [
+                3,
+                6,
+              ],
+              "type": "number-expression",
+              "value": {
+                "position": [
+                  3,
+                  6,
+                ],
+                "type": "number-literal",
+                "value": 97,
+              },
+            },
+          ],
+        },
+      ]
+    `);
+  });
 });
 
 it("label", () => {
@@ -420,6 +452,52 @@ it("binary", () => {
                   "value": 4,
                 },
                 "type": "binary-operation",
+              },
+              "type": "binary-operation",
+            },
+          },
+        ],
+      },
+    ]
+  `);
+  expect(parse("DB 'a' + 10")).toMatchInlineSnapshot(`
+    [
+      {
+        "directive": "DB",
+        "label": null,
+        "position": [
+          0,
+          11,
+        ],
+        "type": "data-directive",
+        "values": [
+          {
+            "position": [
+              3,
+              11,
+            ],
+            "type": "number-expression",
+            "value": {
+              "left": {
+                "position": [
+                  3,
+                  6,
+                ],
+                "type": "number-literal",
+                "value": 97,
+              },
+              "operator": "+",
+              "position": [
+                3,
+                11,
+              ],
+              "right": {
+                "position": [
+                  9,
+                  11,
+                ],
+                "type": "number-literal",
+                "value": 10,
               },
               "type": "binary-operation",
             },

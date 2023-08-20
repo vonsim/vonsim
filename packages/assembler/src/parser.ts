@@ -1,3 +1,4 @@
+import { charToDecimal } from "@vonsim/common/ascii";
 import { Position } from "@vonsim/common/position";
 
 import { AssemblerError } from "./error";
@@ -338,6 +339,12 @@ export class Parser {
       const numberToken = this.previous();
       const value = this.parseNumber(numberToken);
       return NumberExpression.numberLiteral(value, numberToken.position);
+    }
+
+    if (this.match("CHARACTER")) {
+      const characterToken = this.previous();
+      const value = charToDecimal(characterToken.lexeme.slice(1, -1))!; // Checked by the lexer
+      return NumberExpression.numberLiteral(value, characterToken.position);
     }
 
     if (this.match("LEFT_PAREN")) {

@@ -25,6 +25,7 @@
     { "name": "constant.numeric.integer.binary.asm.vonsim", "match": "(?i)\\b([01]+b)\\b" },
     { "name": "constant.numeric.integer.decimal.asm.vonsim", "match": "\\b(\\d+)\\b" },
     { "name": "punctuation.asm.vonsim", "match": "([\\(\\),\\[\\]])" },
+    { "name": "string.quoted.single.asm.vonsim", "match": "('[^']')" },
     { "name": "string.quoted.double.asm.vonsim", "match": "(\"[^\"]*\")" }
   ]
 }

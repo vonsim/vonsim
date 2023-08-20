@@ -16,6 +16,7 @@ export type TokenType =
   // Literals.
   | "IDENTIFIER"
   | "LABEL"
+  | "CHARACTER"
   | "STRING"
   | "NUMBER"
   // Keywords.

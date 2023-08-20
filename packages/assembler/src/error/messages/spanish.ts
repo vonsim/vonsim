@@ -58,10 +58,13 @@ export const spanish: Messages = {
   "value-out-of-range": (value, size) => `El número ${value} no puede ser representado con ${size} bits.`,
 
   lexer: {
+    "character-too-long": "El carácter solo puede contener un carácter.",
+    "empty-character": "Los carácter no puede estar vacío.",
     "invalid-binary": "Número binario inválido. Solo puede contener ceros y unos.",
     "invalid-decimal": "Número decimal inválido. Solo puede contener dígitos.",
-    "only-ascii": "Solo se soportan caracteres ASCII para cadenas de texto.",
+    "only-ascii": "Solo se soportan caracteres ASCII para caracteres y cadenas de texto.",
     "unexpected-character": char => `Carácter inesperado "${char}".`,
+    "unterminated-character": "Carácter sin terminar.",
     "unterminated-string": "Cadena sin terminar.",
   },
 

@@ -23,20 +23,23 @@ db 24h    ; Los números hexadecimales se escriben con un sufijo h.
 db 10b    ; Los números binarios se escriben con un sufijo b.
           ; En este caso, se escribe el byte 10b (2) en la dirección 1002h.
 
+db '0'    ; Los caracteres se escriben entre comillas simples.
+          ; En este caso, se escribe el byte 30h (48) en la dirección 1003h.
+
 dw 5      ; DW es la directiva para escribir una palabra (2 bytes) en memoria.
-          ; En este caso, se escribe la palabra 5 en la dirección 1003h.
-          ; Quedando el byte 05h en la dirección 1003h y 00h en 1004h.
+          ; En este caso, se escribe la palabra 5 en la dirección 1004h.
+          ; Quedando el byte 05h en la dirección 1004h y 00h en 1005h.
 
 etq dw 7  ; 'etq' es una etiqueta. Se utiliza para referenciar una dirección
           ; de memoria.
 
 dw ?      ; El símbolo ? indica que el valor de la palabra es desconocido. En
-          ; este caso, no se escribe nada las direcciones 1007h y 1008h.
+          ; este caso, no se escribe nada las direcciones 1008h y 1009h.
 
 str db "Hola, Mundo!" ; También se pueden escribir cadenas de texto en ASCII,
                       ; (H=48h, o=6Fh, l=6Ch, a=61h, ...). En este caso, se
-                      ; guardará la cadena a partir de la dirección 1009h.
-                      ; Quedando 48h en 1009h, 6Fh en 100Ah, 6Ch en 100Bh, etc.
+                      ; guardará la cadena a partir de la dirección 100Ah.
+                      ; Quedando 48h en 100Ah, 6Fh en 100Bh, 6Ch en 100Ch, etc.
                       ; Las cadenas solo se pueden escribir con la directiva DB.
 
 db 1, 2, 3, 4 ; Se pueden escribir varios bytes en una misma línea.
@@ -122,18 +125,22 @@ Estos valores inmediatos son números, que se pueden escribir de la siguiente fo
 24      ; Decimal
 18h     ; Hexadecimal
 11000b  ; Binario
+'0'     ; Carácter ASCII
 
 0FFh    ; Si el número empieza con una letra,
         ; se debe escribir un 0 antes.
 
-13 + 8h ; Operaciones aritméticas
+13 + 8h       ; Operaciones aritméticas
 13 * (7 - 2)
+'A' + 5
 
 cinco   ; Constantes definidas con la directiva EQU y etiquetas a instrucciones
 offset etq ; Dirección de memoria de la etiqueta 'etq' (que define un DB o DW)
 
 offset str + 4 ; Dirección de memoria de la cadena 'str' + 4
 ```
+
+Tantos los caracteres (`'a'`) como las cadenas de texto (`"texto"`) se convierten a su valor ASCII según la [tabla ASCII utilizada por VonSim](/docs/reference/ascii/).
 
 Nótese que hay una diferencia entre las etiquetas de una directiva `DB` o `DW` y las etiquetas de una instrucción o `EQU`. Las segundas pueden ser utilizadas como un reemplazo textual de sus valores. Es decir:
 

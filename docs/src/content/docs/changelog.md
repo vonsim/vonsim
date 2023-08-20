@@ -16,6 +16,7 @@ Se hicieron muchos cambios internos sobre la arquitectura de VonSim. Los más im
 
 - ensamblador más inteligente, que detecta errores de sintaxis y semántica arrojando mensajes de error más claros y específicos;
 - sporte para acceso directo a memoria, como `mov al, [1234h]`;
+- soporte para caracteres literales, como `cmp al, '0'`;
 
 ### 2019
 

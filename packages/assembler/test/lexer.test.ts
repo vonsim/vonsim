@@ -4,6 +4,91 @@ import { Scanner } from "../src/lexer/scanner";
 
 const lex = (input: string) => new Scanner(input).scanTokens();
 
+describe("Characters", () => {
+  it("lex a character", () => {
+    expect(lex("'a'")).toMatchInlineSnapshot(`
+      [
+        {
+          "lexeme": "'a'",
+          "position": [
+            0,
+            3,
+          ],
+          "type": "CHARACTER",
+        },
+        {
+          "lexeme": "",
+          "position": [
+            3,
+            3,
+          ],
+          "type": "EOF",
+        },
+      ]
+    `);
+    expect(lex("'0'")).toMatchInlineSnapshot(`
+      [
+        {
+          "lexeme": "'0'",
+          "position": [
+            0,
+            3,
+          ],
+          "type": "CHARACTER",
+        },
+        {
+          "lexeme": "",
+          "position": [
+            3,
+            3,
+          ],
+          "type": "EOF",
+        },
+      ]
+    `);
+    expect(lex("' '")).toMatchInlineSnapshot(`
+      [
+        {
+          "lexeme": "' '",
+          "position": [
+            0,
+            3,
+          ],
+          "type": "CHARACTER",
+        },
+        {
+          "lexeme": "",
+          "position": [
+            3,
+            3,
+          ],
+          "type": "EOF",
+        },
+      ]
+    `);
+  });
+
+  it("only one character", () => {
+    expect(() => lex("'str'")).toThrowErrorMatchingInlineSnapshot(
+      '"Character literals can only have one character. (0:5)"',
+    );
+  });
+
+  it("unterminated characters", () => {
+    expect(() => lex("'0")).toThrowErrorMatchingInlineSnapshot('"Unterminated character. (0:2)"');
+    expect(() => lex("'asdf")).toThrowErrorMatchingInlineSnapshot(
+      '"Unterminated character. (0:5)"',
+    );
+    expect(() => lex("'\n'")).toThrowErrorMatchingInlineSnapshot('"Unterminated character. (0:1)"');
+  });
+
+  it("only ASCII", () => {
+    expect(() => lex("'α'")).toThrowErrorMatchingInlineSnapshot(
+      '"Only ASCII character are supported for characters literals and strings. (1:2)"',
+    );
+  });
+});
+
 describe("Strings", () => {
   it("lex a string", () => {
     expect(lex('"My string"')).toMatchInlineSnapshot(`
@@ -75,7 +160,7 @@ describe("Strings", () => {
 
   it("only ASCII", () => {
     expect(() => lex('"My Unicode string αβγ"')).toThrowErrorMatchingInlineSnapshot(
-      '"Only ASCII character are supported for strings. (19:20)"',
+      '"Only ASCII character are supported for characters literals and strings. (19:20)"',
     );
   });
 });

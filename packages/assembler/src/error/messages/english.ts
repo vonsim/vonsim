@@ -61,10 +61,13 @@ export const english = {
   "value-out-of-range": (value: number, size: ByteSize) => `The number ${value} cannot be represented with ${size} bits.`,
 
   lexer: {
+    "character-too-long": "Character literals can only have one character.",
+    "empty-character": "Character literals can't be empty.",
     "invalid-binary": "Invalid binary number. It should only contain 0s and 1s.",
     "invalid-decimal": "Invalid decimal number. It should only contain digits.",
-    "only-ascii": "Only ASCII character are supported for strings.",
+    "only-ascii": "Only ASCII character are supported for characters literals and strings.",
     "unexpected-character": (char: string) => `Unexpected character "${char}".`,
+    "unterminated-character": "Unterminated character.",
     "unterminated-string": "Unterminated string.",
   },
 

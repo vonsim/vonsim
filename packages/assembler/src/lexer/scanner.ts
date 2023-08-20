@@ -1,3 +1,4 @@
+import { charToDecimal } from "@vonsim/common/ascii";
 import { Position } from "@vonsim/common/position";
 
 import { AssemblerError } from "../error";
@@ -73,13 +74,36 @@ export class Scanner {
           this.addToken("ASTERISK");
           continue;
 
+        // Read character
+        case "'": {
+          let length = 0;
+          while (this.peek() !== "'") {
+            if (this.isAtEnd() || this.peek() === "\n") {
+              throw new AssemblerError("lexer.unterminated-character").at(this.position);
+            }
+            if (charToDecimal(this.peek()) === null) {
+              throw new AssemblerError("lexer.only-ascii").at(
+                new Position(this.position.end, this.position.end + 1),
+              );
+            }
+            this.advance();
+            length++;
+          }
+          this.advance();
+
+          if (length === 0) throw new AssemblerError("lexer.empty-character").at(this.position);
+          if (length >= 2) throw new AssemblerError("lexer.character-too-long").at(this.position);
+          this.addToken("CHARACTER");
+          continue;
+        }
+
         // Read string
         case '"':
           while (this.peek() !== '"') {
             if (this.isAtEnd() || this.peek() === "\n") {
               throw new AssemblerError("lexer.unterminated-string").at(this.position);
             }
-            if (this.peek().charCodeAt(0) > 255) {
+            if (charToDecimal(this.peek()) === null) {
               throw new AssemblerError("lexer.only-ascii").at(
                 new Position(this.position.end, this.position.end + 1),
               );
