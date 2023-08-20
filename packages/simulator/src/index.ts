@@ -65,21 +65,22 @@ export class Simulator {
       clock: {
         connected: () => "clock" in this.#computer.io,
         tick: () => {
-          if ("clock" in this.#computer.io) this.#computer.io.clock.tick();
+          if ("clock" in this.#computer.io) return this.#computer.io.clock.tick();
           else console.warn("Called clock.tick() when no clock was connected to the computer");
         },
       },
       f10: {
         connected: () => "f10" in this.#computer.io,
         press: () => {
-          if ("f10" in this.#computer.io) this.#computer.io.f10.press();
+          if ("f10" in this.#computer.io) return this.#computer.io.f10.press();
           else console.warn("Called f10.press() when no f10 was connected to the computer");
         },
       },
       keyboard: {
         connected: () => "keyboard" in this.#computer.io,
         readChar: (char: Byte<8>) => {
-          if ("keyboard" in this.#computer.io) this.#computer.io.keyboard.setLastCharRead(char);
+          if ("keyboard" in this.#computer.io)
+            return this.#computer.io.keyboard.setLastCharRead(char);
           else
             console.warn("Called keyboard.press() when no keyboard was connected to the computer");
         },
@@ -101,14 +102,14 @@ export class Simulator {
       screen: {
         connected: () => "screen" in this.#computer.io,
         clear: () => {
-          if ("screen" in this.#computer.io) this.#computer.io.screen.clear();
+          if ("screen" in this.#computer.io) return this.#computer.io.screen.clear();
           else console.warn("Called screen.clear() when no screen was connected to the computer");
         },
       },
       switches: {
         connected: () => "switches" in this.#computer.io,
         toggle: (index: number) => {
-          if ("switches" in this.#computer.io) this.#computer.io.switches.toggle(index);
+          if ("switches" in this.#computer.io) return this.#computer.io.switches.toggle(index);
           else
             console.warn(
               "Called switches.toggle() when no switches were connected to the computer",
