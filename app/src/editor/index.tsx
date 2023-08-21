@@ -4,7 +4,6 @@ import { history, indentMore } from "@codemirror/commands";
 import { EditorSelection, EditorState } from "@codemirror/state";
 import {
   drawSelection,
-  dropCursor,
   EditorView,
   highlightActiveLine,
   highlightActiveLineGutter,
@@ -60,7 +59,10 @@ export function Editor({ className }: { className?: string }) {
           highlightSpecialChars(),
           history(),
           drawSelection(),
-          dropCursor(),
+          EditorView.domEventHandlers({
+            // Prevent dropping files into the editor, handled by the file handler
+            drop: ev => ev.preventDefault(),
+          }),
           EditorState.allowMultipleSelections.of(true),
           highlightActiveLine(),
           keymap.of([

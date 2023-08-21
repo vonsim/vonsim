@@ -137,7 +137,6 @@ export function FileHandler() {
     ev => {
       ev.preventDefault();
       ev.stopPropagation();
-      ev.stopImmediatePropagation();
     },
     window,
   );
