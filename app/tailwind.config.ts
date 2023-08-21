@@ -2,6 +2,7 @@ import { addDynamicIconSelectors } from "@iconify/tailwind";
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -40,6 +41,7 @@ const config = {
   },
   plugins: [
     addDynamicIconSelectors(),
+    tailwindcssAnimate,
     plugin(({ matchUtilities, theme }) => {
       matchUtilities(
         {

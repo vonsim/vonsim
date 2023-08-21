@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/Label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { animated, getSpring } from "@/computer/shared/springs";
 import { useTranslate } from "@/lib/i18n";
-import { notify } from "@/lib/notifications";
+import { toast } from "@/lib/toast";
 
 import { fixedAddressAtom, memoryShownAtom, operatingAddressAtom } from "./state";
 
@@ -26,7 +26,7 @@ export function Memory() {
   const updateFixedAddress = useCallback(() => {
     const match = /^(\d+)[Hh]?$/.exec(inputValue);
     if (!match || !match[1]) {
-      notify.error(translate("computer.memory.address-must-be-integer"));
+      toast({ title: translate("computer.memory.address-must-be-integer"), variant: "error" });
       return;
     }
     let value = parseInt(match[1], 16);
@@ -35,7 +35,7 @@ export function Memory() {
       // to quickly jump to the end of the memory
       value -= 1;
     } else if (!MemoryAddress.inRange(value)) {
-      notify.error(translate("computer.memory.address-out-of-range"));
+      toast({ title: translate("computer.memory.address-out-of-range"), variant: "error" });
       return;
     }
     setFixedAddress(MemoryAddress.from(value));

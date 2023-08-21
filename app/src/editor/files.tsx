@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { translate, useTranslate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
-import { notify } from "@/lib/notifications";
 import { getSettings } from "@/lib/settings";
+import { toast } from "@/lib/toast";
 
 // Sync program with CodeMirror
 const programAtom = atomWithStorage(
@@ -54,7 +54,7 @@ export function FileHandler() {
 
   const openFile = useCallback(async () => {
     if (!supportsNativeFileSystem) {
-      notify.error(translate("editor.files.unsupported"));
+      toast({ title: translate("editor.files.unsupported"), variant: "error" });
       return;
     }
 
@@ -79,7 +79,7 @@ export function FileHandler() {
       });
     } catch (error) {
       console.error(error);
-      notify.error(translate("editor.files.open-error"));
+      toast({ title: translate("editor.files.open-error"), variant: "error" });
     }
   }, [translate, unsavedChanges, setFileHanlde, setLastSavedProgram]);
 
@@ -101,7 +101,7 @@ export function FileHandler() {
       ev.preventDefault();
 
       if (!supportsNativeFileSystem) {
-        notify.error(translate("editor.files.unsupported"));
+        toast({ title: translate("editor.files.unsupported"), variant: "error" });
         return;
       }
       const item = ev.dataTransfer?.items?.[0];
@@ -125,7 +125,7 @@ export function FileHandler() {
         });
       } catch (error) {
         console.error(error);
-        notify.error(translate("editor.files.open-error"));
+        toast({ title: translate("editor.files.open-error"), variant: "error" });
       }
     },
     [setFileHanlde, setLastSavedProgram, translate, unsavedChanges],
@@ -143,7 +143,7 @@ export function FileHandler() {
 
   const saveFile = useCallback(async () => {
     if (!supportsNativeFileSystem) {
-      notify.error(translate("editor.files.unsupported"));
+      toast({ title: translate("editor.files.unsupported"), variant: "error" });
       return;
     }
 
@@ -157,7 +157,7 @@ export function FileHandler() {
       setLastSavedProgram(source);
     } catch (error) {
       console.error(error);
-      notify.error(translate("editor.files.save-error"));
+      toast({ title: translate("editor.files.save-error"), variant: "error" });
     }
   }, [translate, unsavedChanges, fileHandle, setLastSavedProgram]);
 
@@ -180,7 +180,7 @@ export function FileHandler() {
         setLastSavedProgram(source);
       } catch (error) {
         console.error(error);
-        notify.error(translate("editor.files.save-error"));
+        toast({ title: translate("editor.files.save-error"), variant: "error" });
       }
     } else {
       const blob = new Blob([source], { type: "text/plain" });

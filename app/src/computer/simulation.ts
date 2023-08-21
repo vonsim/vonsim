@@ -12,8 +12,8 @@ import { useMemo } from "react";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
-import { notify } from "@/lib/notifications";
 import { getSettings, useDevices } from "@/lib/settings";
+import { toast } from "@/lib/toast";
 
 import { cycleAtom, resetCPUState } from "./cpu/state";
 import { eventIsRunning, handleEvent } from "./handle-event";
@@ -40,7 +40,7 @@ export const simulationAtom = atom<SimulationStatus>({ type: "stopped" });
 
 function notifyError(error: SimulatorError<any>) {
   const message = error.translate(getSettings().language);
-  notify.error(message);
+  toast({ title: message, variant: "error" });
 }
 
 export function finishSimulation(error?: SimulatorError<any>) {
@@ -59,11 +59,11 @@ export function pauseSimulation() {
 }
 
 function assembleError() {
-  notify.error(translate(getSettings().language, "messages.assemble-error"));
+  toast({ title: translate(getSettings().language, "messages.assemble-error"), variant: "error" });
 }
 
 function invalidAction() {
-  notify.error(translate(getSettings().language, "messages.invalid-action"));
+  toast({ title: translate(getSettings().language, "messages.invalid-action"), variant: "error" });
 }
 
 function resetState(state: ComputerState) {
