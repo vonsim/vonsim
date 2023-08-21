@@ -42,8 +42,6 @@ export const spanish: Messages = {
   // prettier-ignore
   "label-should-be-an-instruction": label => `La etiqueta ${label} debería apuntar a una instrucción.`,
   // prettier-ignore
-  "label-should-be-writable": label => `La etiqueta ${label} no apunta a una dirección de memoria modificable — debería apuntar a una declaración DB o DW.`,
-  // prettier-ignore
   "missing-org": "No hay ningún ORG antes de esta instrucción, por lo que no se puede determinar su ubicación en memoria.",
   "must-have-one-or-more-values": directive => `${directive} debe tener al menos un valor.`,
   // prettier-ignore

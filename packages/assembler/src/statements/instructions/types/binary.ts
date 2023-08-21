@@ -260,31 +260,28 @@ export class BinaryInstruction extends InstructionStatement {
 
       // src is NumberExpression
 
-      if (src.value.isLabel()) {
-        // ^ This check is primarily for type-safety
+      const directAddress = src.getAsDirectAddress(store);
+      if (directAddress) {
+        // Is a direct address to a data directive pointed by a label,
+        // like `mov al, dataLabel` or `mov al, dataLabel + 1`
 
-        const srcSize = src.isDataDirectiveLabel(store);
-        if (srcSize) {
-          // Is a data label, like `mov al, dataLabel`
-
-          // It needs to check if the size of the data label is the same as the size of the register
-          if (srcSize !== out.size) {
-            throw new AssemblerError("size-mismatch", srcSize, out.size).at(this);
-          }
-
-          this.#initialOperation = {
-            mode: "reg<-mem",
-            size: out.size,
-            out: out.value,
-            src: {
-              mode: "direct",
-              // Since doing `mov al, dataLabel` is equivalent to `mov al, [OFFSET dataLabel]`,
-              // we'll transform the data label into an offset expression
-              address: NumberExpression.label(src.value.value, true, src.value.position),
-            },
-          };
-          return;
+        // Check if the size of the data directive pointed is the same as the size of the register
+        if (directAddress.size !== out.size) {
+          throw new AssemblerError("size-mismatch", directAddress.size, out.size).at(this);
         }
+
+        this.#initialOperation = {
+          mode: "reg<-mem",
+          size: out.size,
+          out: out.value,
+          src: {
+            mode: "direct",
+            // Since doing `mov al, dataLabel` is equivalent to `mov al, [OFFSET dataLabel]`,
+            // we'll set the address to the returned expression
+            address: directAddress.expression,
+          },
+        };
+        return;
       }
 
       this.#initialOperation = {
@@ -310,18 +307,17 @@ export class BinaryInstruction extends InstructionStatement {
       } else {
         // out is NumberExpression
 
-        if (out.value.isLabel()) {
-          // Could be a data label, like `mov dest, al`
-          size = out.isDataDirectiveLabel(store) || "auto";
-          if (size === "auto") {
-            // If the size is auto, it means that the label doesn't point to a data directive.
-            throw new AssemblerError("label-should-be-writable", out.value.value).at(out);
-          }
+        const directAddress = out.getAsDirectAddress(store);
+        if (directAddress) {
+          // Is a direct address to a data directive pointed by a label,
+          // like `mov dataLabel, al` or `mov dataLabel + 1, al`
+
+          size = directAddress.size;
           address = {
             mode: "direct",
-            // Since doing `mov dest, al` is equivalent to `mov [OFFSET dest], al`,
-            // we'll transform the data label into an offset expression
-            address: NumberExpression.label(out.value.value, true, out.value.position),
+            // Since doing `mov dataLabel, al` is equivalent to `mov [OFFSET dataLabel], al`,
+            // we'll set the address to the returned expression
+            address: directAddress.expression,
           };
         } else {
           throw new AssemblerError("destination-cannot-be-immediate").at(out);
@@ -343,8 +339,8 @@ export class BinaryInstruction extends InstructionStatement {
       }
 
       if (src.isNumberExpression()) {
-        if (src.isDataDirectiveLabel(store)) {
-          // It's a data label, like `mov mem1, mem2`
+        if (src.getAsDirectAddress(store)) {
+          // Is a direct address to a data directive pointed by a label, like `mov mem1, mem2`
           throw new AssemblerError("double-memory-access").at(this);
         }
 

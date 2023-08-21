@@ -350,6 +350,85 @@ it("binary", () => {
       },
     ]
   `);
+  expect(parse("DB label + 8 + 4*9")).toMatchInlineSnapshot(`
+    [
+      {
+        "directive": "DB",
+        "label": null,
+        "position": [
+          0,
+          18,
+        ],
+        "type": "data-directive",
+        "values": [
+          {
+            "position": [
+              3,
+              18,
+            ],
+            "type": "number-expression",
+            "value": {
+              "left": {
+                "left": {
+                  "offset": false,
+                  "position": [
+                    3,
+                    8,
+                  ],
+                  "type": "label",
+                  "value": "LABEL",
+                },
+                "operator": "+",
+                "position": [
+                  3,
+                  12,
+                ],
+                "right": {
+                  "position": [
+                    11,
+                    12,
+                  ],
+                  "type": "number-literal",
+                  "value": 8,
+                },
+                "type": "binary-operation",
+              },
+              "operator": "+",
+              "position": [
+                3,
+                18,
+              ],
+              "right": {
+                "left": {
+                  "position": [
+                    15,
+                    16,
+                  ],
+                  "type": "number-literal",
+                  "value": 4,
+                },
+                "operator": "*",
+                "position": [
+                  15,
+                  18,
+                ],
+                "right": {
+                  "position": [
+                    17,
+                    18,
+                  ],
+                  "type": "number-literal",
+                  "value": 9,
+                },
+                "type": "binary-operation",
+              },
+              "type": "binary-operation",
+            },
+          },
+        ],
+      },
+    ]
+  `);
   expect(parse("DB OFFSET a - OFFSET b")).toMatchInlineSnapshot(`
     [
       {

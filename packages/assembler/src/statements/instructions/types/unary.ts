@@ -166,22 +166,19 @@ export class UnaryInstruction extends InstructionStatement {
 
     // out is NumberExpression
 
-    if (out.value.isLabel()) {
-      // ^ This check is primarily for type-safety
+    const directAddress = out.getAsDirectAddress(store);
+    if (directAddress) {
+      // Is a direct address to a data directive pointed by a label,
+      // like `inc dataLabel` or `inc dataLabel + 1`
 
-      const size = out.isDataDirectiveLabel(store);
-      if (size) {
-        // Is a data label, like `inc dataLabel`
-
-        this.#initialOperation = {
-          mode: "mem-direct",
-          size,
-          // Since doing `inc dataLabel` is equivalent to `inc [OFFSET dataLabel]`,
-          // we'll transform the data label into an offset expression
-          address: NumberExpression.label(out.value.value, true, out.value.position),
-        };
-        return;
-      }
+      this.#initialOperation = {
+        mode: "mem-direct",
+        size: directAddress.size,
+        // Since doing `inc dataLabel` is equivalent to `inc [OFFSET dataLabel]`,
+        // we'll set the address to the returned expression
+        address: directAddress.expression,
+      };
+      return;
     }
 
     throw new AssemblerError("destination-cannot-be-immediate").at(out);

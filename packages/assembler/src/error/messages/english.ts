@@ -44,8 +44,6 @@ export const english = {
   "label-should-be-a-number": (label: string) => `Label ${label} should point to a EQU declaration or to a instruction. Maybe you ment to write OFFSET ${label}.`,
   // prettier-ignore
   "label-should-be-an-instruction": (label: string) => `Label ${label} should point to a instruction.`,
-  // prettier-ignore
-  "label-should-be-writable": (label: string) => `Label ${label} doesn't point to a writable memory address — should point to a DB or DW declaration.`,
   "missing-org": "No ORG before this instruction — cannot determine its location in memory.",
   // prettier-ignore
   "must-have-one-or-more-values": (directive: string) => `${directive} must have at least one value.`,

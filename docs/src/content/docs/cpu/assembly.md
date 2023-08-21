@@ -113,7 +113,12 @@ org 2000h
 mov dato, 6h
 ; Equivalente a
 ; mov byte ptr [1000h], 6h
+mov dato+1, 6h
+; Equivalente a
+; mov byte ptr [1001h], 6h
 ```
+
+En este caso, la etiqueta `dato` hace referencia a la dirección de memoria `1000h`. Por lo tanto, `dato+1` hace referencia a la dirección de memoria `1001h`. Esto funcionará siempre y cuando el operando sea de la forma `etiqueta +/- constante`. Por ejemplo, `dato+bx` no funcionará, pero `dato - 6*8 + offset otra_etiqueta` sí (pero no es recomendable; se recomienda utilizar `etiqueta +/- número` para una mejor lectura y entendimiento del código).
 
 ### Valores inmediatos
 

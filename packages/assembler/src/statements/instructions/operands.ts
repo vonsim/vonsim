@@ -4,7 +4,7 @@ import type { Position } from "@vonsim/common/position";
 import { AssemblerError } from "../../error";
 import type { GlobalStore } from "../../global-store";
 import type { Token } from "../../lexer/tokens";
-import type { NumberExpression } from "../../number-expression";
+import { NumberExpression } from "../../number-expression";
 import { Register, WORD_REGISTERS } from "../../types";
 
 /**
@@ -120,22 +120,83 @@ export class NumberExpressionOperand extends Operand {
   }
 
   /**
-   * If the label points to a DB or DW directive without an offset,
-   * this method returns the size of the data directive.
+   * If the expression is a label (with an optional offset) pointing to a memory address,
+   * WITHOUT an offset, this method returns the size of the data directive and a copy
+   * of the NumberExpression with the offset set to true.
    * Otherwise, it returns false.
+   *
+   * Examples:
+   * ```vonsim
+   * org 1000h
+   * letras db "abcd"
+   *
+   * org 2000h
+   * mov al, letras     ; copies "a" to al
+   * mov al, letras + 1 ; copies "b" to al
+   * mov al, letras + 2 ; copies "c" to al
+   * ```
+   *
+   * for each of the `mov` instructions, this method returns:
+   * ```ts
+   * { size: 8, value: { type: "label", value: "LETRAS", offset: true } }
+   * { size: 8, value: { type: "binary-operation", operator: "+", left: { type: "label", value: "LETRAS", offset: true }, right: { type: "number-literal", value: 1 } } }
+   * { size: 8, value: { type: "binary-operation", operator: "+", left: { type: "label", value: "LETRAS", offset: true }, right: { type: "number-literal", value: 2 } } }
+   * ```
    */
-  isDataDirectiveLabel(store: GlobalStore): ByteSize | false {
-    if (!this.value.isLabel()) return false;
-    const label = this.value;
+  getAsDirectAddress(store: GlobalStore) {
+    return NumberExpressionOperand.recursiveGetAsDirectAddress(this.value, store);
+  }
 
-    if (label.offset) return false;
+  /**
+   * Recursively checks if the expression is a direct address. See {@link NumberExpressionOperand.getAsDirectAddress}.
+   */
+  private static recursiveGetAsDirectAddress(
+    expression: NumberExpression,
+    store: GlobalStore,
+  ): { size: ByteSize; expression: NumberExpression } | false {
+    if (expression.isLabel()) {
+      const label = expression;
 
-    if (!store.labelExists(label.value)) {
-      throw new AssemblerError("label-not-found", label.value).at(this.position);
+      if (label.offset) return false;
+
+      if (!store.labelExists(label.value)) {
+        throw new AssemblerError("label-not-found", label.value).at(expression.position);
+      }
+
+      const type = store.getLabelType(label.value)!;
+      const size = type === "DB" ? 8 : type === "DW" ? 16 : false;
+      if (!size) return false;
+      return { size, expression: NumberExpression.label(label.value, true, expression.position) };
+    } else if (expression.isBinaryOperation()) {
+      // Just allow the label to be on the left side of the binary operation
+      // and to be added to a number literal
+      // Notice that this if also checks for the case (label + 2) * 3, because
+      // the multiplication will be evaluated first (because it appears before on
+      // the expression tree).
+      if (expression.operator !== "+" && expression.operator !== "-") return false;
+
+      // Look for the leftmost label
+      const left = NumberExpressionOperand.recursiveGetAsDirectAddress(expression.left, store);
+      if (!left) return false;
+
+      // Found a label on the leftmost side of the expression
+      return {
+        size: left.size,
+        expression: NumberExpression.binaryOperation(
+          left.expression,
+          expression.operator,
+          expression.right,
+          expression.position,
+        ),
+      };
     }
 
-    const type = store.getLabelType(label.value)!;
-    return type === "DB" ? 8 : type === "DW" ? 16 : false;
+    // Any other type of expression is not a direct address
+    // (e.g. (label + 2) * 3)
+    // When traversing down the expression tree, the only valid expressions
+    // are binary operations and one final label.
+
+    return false;
   }
 
   toJSON() {
