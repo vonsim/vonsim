@@ -1,5 +1,9 @@
 ---
 title: PUSHF
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/pushf.png }
 ---
 
 Esta instrucción apila el registro [`FLAGS`](/docs/cpu/#flags) en la [pila](/docs/cpu/#pila). Los [_flags_](/docs/cpu/#flags) no se modifican.

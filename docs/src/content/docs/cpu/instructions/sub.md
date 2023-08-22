@@ -1,5 +1,9 @@
 ---
 title: SUB
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/sub.png }
 ---
 
 Esta instrucción le resta el operando fuente al operando destino y guarda el resultado en el operando destino. El operando fuente no se modifica.

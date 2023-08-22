@@ -1,5 +1,8 @@
 ---
 title: "CPU: Conceptos generales"
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/cpu.png }
 ---
 
 El procesador que utiliza este entorno de simulación está basado en el **Intel 8088**. Puede ver más sobre la arquitectura original del mismo en su [hoja de especificaciones](https://www.ceibo.com/eng/datasheets/Intel-8088-Data-Sheet.pdf).

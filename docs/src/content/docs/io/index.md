@@ -1,5 +1,8 @@
 ---
 title: "E/S: Conceptos generales"
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/io.png }
 ---
 
 Por defecto, los únicos componentes conectados al bus la [CPU](/docs/cpu/) y la [memoria principal](/docs/memory/). El simulador puede configurarse para conectar [módulos](/docs/io/modules/) de entrada/salida al bus y otros [dispositivos](/docs/io/devices/). Estos se encuentrar agrupados en conjuntos o configuraciones:

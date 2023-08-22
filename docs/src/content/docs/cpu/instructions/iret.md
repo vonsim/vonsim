@@ -1,5 +1,9 @@
 ---
 title: IRET
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/iret.png }
 ---
 
 Esta instrucción retorna de una [rutina de interrupción](/docs/cpu/#interrupciones).

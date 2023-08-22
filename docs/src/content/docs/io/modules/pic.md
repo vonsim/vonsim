@@ -1,5 +1,8 @@
 ---
 title: PIC
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/io/modules/pic.png }
 ---
 
 El _programmable interrupt controller_ (PIC) es un módulo que se encuentra entre los dispositvos que emiten [interrupciones](/docs/cpu/#interrupciones) y la CPU. Como la CPU tiene solo una línea de entrada, este dispositivo se encarga de recibir interrupciones de múltiples dispositivos y multiplexar sus pedidos en esta única línea.

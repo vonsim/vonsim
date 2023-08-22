@@ -1,5 +1,12 @@
 ---
 title: Teclas y luces
+head:
+  - tag: meta
+    attrs:
+      {
+        property: og:image,
+        content: https://vonsim.github.io/docs/og/io/devices/switches-and-leds.png,
+      }
 ---
 
 Las teclas o interruptores están conectados al puerto `PA`/`CA` del [PIO](/docs/io/modules/pio/) y son dispositivos de entrada. Al cambiar su estado, estos se reflejarán en `PA` (si el PIO está configurado correctamente). Si se altera `PA`, los cambios no se verán reflejados en las teclas (no se mueven solas, por así decirlo).

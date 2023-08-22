@@ -1,5 +1,9 @@
 ---
 title: STI
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/sti.png }
 ---
 
 Esta instrucción habilita las [interrupciones](/docs/cpu/#interrupciones) por hardware, cambiando la [_flag_](/docs/cpu/#flags) `IF=1`.

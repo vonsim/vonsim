@@ -1,5 +1,8 @@
 ---
 title: OR
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/or.png }
 ---
 
 Esta instrucción reliza la operación lógica OR bit a bit entre el operando destino y el operando fuente (destino OR fuente). El resultado se guarda en el operando destino. El operando fuente no se modifica.

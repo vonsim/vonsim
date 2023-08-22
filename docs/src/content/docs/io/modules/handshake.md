@@ -1,5 +1,9 @@
 ---
 title: Handshake
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/io/modules/handshake.png }
 ---
 
 El _handshake_ es un dispotivo diseñado con el fin de facilitar la comunicación con las [impresoras Centronics](/docs/io/devices/printer/). Está basado en el PPI 8255 de Intel en su modo "1", pero con algunas modificaciones para simplificar su funcionamiento.

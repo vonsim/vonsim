@@ -1,5 +1,9 @@
 ---
 title: NOP
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/nop.png }
 ---
 
 Esta instrucción no hace nada. Los [_flags_](/docs/cpu/#flags) no se modifican.

@@ -1,5 +1,9 @@
 ---
 title: NEG
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/neg.png }
 ---
 
 Esta instrucción realiza el complemento a dos del operando destino, es decir, lo niega. El resultado se almacena en el operando destino.

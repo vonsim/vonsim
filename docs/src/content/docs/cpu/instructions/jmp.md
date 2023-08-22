@@ -1,5 +1,9 @@
 ---
 title: JMP
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/jmp.png }
 ---
 
 Esta instrucción salta incondicionalmente. Los [_flags_](/docs/cpu/#flags) no se modifican.

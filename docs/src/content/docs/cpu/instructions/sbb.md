@@ -1,5 +1,9 @@
 ---
 title: SBB
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/sbb.png }
 ---
 
 Esta instrucción le resta el operando fuente al operando destino y guarda el resultado en el operando destino. Si `CF=1`, entonces se resta `1` al resultado. El operando fuente no se modifica.

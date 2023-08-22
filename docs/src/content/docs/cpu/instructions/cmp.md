@@ -1,5 +1,9 @@
 ---
 title: CMP
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/cmp.png }
 ---
 
 Esta instrucción le resta el operando fuente al operando destino. El ninguno de los operandos no se modifica.

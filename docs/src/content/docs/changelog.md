@@ -1,5 +1,8 @@
 ---
 title: Notas de versión
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/changelog.png }
 ---
 
 ### 22 de agosto de 2023

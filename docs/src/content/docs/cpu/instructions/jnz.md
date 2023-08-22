@@ -1,5 +1,9 @@
 ---
 title: JNZ
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/jnz.png }
 ---
 
 Esta instrucción salta solo sí `ZF=0`. Los [_flags_](/docs/cpu/#flags) no se modifican.

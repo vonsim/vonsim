@@ -1,5 +1,8 @@
 ---
 title: Impresora
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/io/devices/printer.png }
 ---
 
 El simulador cuenta con una impresora con un puerto paralelo tipo _Centronics_. Esta cuenta con papel y un _buffer_.

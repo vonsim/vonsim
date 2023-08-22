@@ -1,5 +1,9 @@
 ---
 title: INT
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/int.png }
 ---
 
 Esta instrucción emite una [interrupción](/docs/cpu/#interrupciones) por software. El [_flag_](/docs/cpu/#flags) `IF` cambia a `0` obligatoriamente porque se va a ejecutar una interrupción. Los demás _flags_ no se modifican.

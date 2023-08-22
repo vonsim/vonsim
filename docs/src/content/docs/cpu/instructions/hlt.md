@@ -1,5 +1,9 @@
 ---
 title: HLT
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/hlt.png }
 ---
 
 Esta instrucción finaliza la ejecución del programa.

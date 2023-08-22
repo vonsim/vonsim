@@ -1,5 +1,9 @@
 ---
 title: PUSH
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/push.png }
 ---
 
 Esta instrucción apila un elemento en la [pila](/docs/cpu/#pila). El operando fuente no se modifica. Los [_flags_](/docs/cpu/#flags) no se modifican.

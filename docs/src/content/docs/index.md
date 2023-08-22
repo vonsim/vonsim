@@ -1,5 +1,8 @@
 ---
 title: ¿Qué es VonSim?
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/index.png }
 ---
 
 VonSim es una herramienta destinada a la enseñanza y aprendizaje de arquitectura y organización de computadoras. Consta de un entorno para desarrollar programas en [lenguaje ensamblador](/docs/cpu/assembly/) (_Assembly_ o _Assembler_) y de un simulador para los mismos.

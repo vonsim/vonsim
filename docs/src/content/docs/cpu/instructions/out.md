@@ -1,5 +1,9 @@
 ---
 title: OUT
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/out.png }
 ---
 
 Esta instrucción escribe un byte en la [memoria E/S](/docs/io/modules/). Los [_flags_](/docs/cpu/#flags) no se modifican.

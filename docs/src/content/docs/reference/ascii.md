@@ -1,5 +1,8 @@
 ---
 title: Tabla ASCII
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/ascii.png }
 ---
 
 Tabla ASCII utilizada por VonSim.

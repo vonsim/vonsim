@@ -1,5 +1,9 @@
 ---
 title: ADD
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/add.png }
 ---
 
 Esta instrucción suma dos operandos y guarda el resultado en el operando destino. El operando fuente no se modifica.

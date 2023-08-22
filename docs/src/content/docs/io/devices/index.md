@@ -1,5 +1,8 @@
 ---
 title: Listado
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/io/devices.png }
 ---
 
 VonSim cuenta con los siguientes dispotiivos:

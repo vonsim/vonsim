@@ -1,5 +1,9 @@
 ---
 title: RET
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/ret.png }
 ---
 
 Esta instrucción retorna de una [subrutina](/docs/cpu/#subrutinas). Los [_flags_](/docs/cpu/#flags) no se modifican.

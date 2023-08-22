@@ -1,5 +1,8 @@
 ---
 title: Memoria principal
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/memory.png }
 ---
 
 El simulador cuenta con una memoria principal de almacenamiento. Esta memoria cuenta con 32 kB de espacio (`0000h` hasta `7FFFh`) y los programas y datos se almacenan en ella. Nótese que, al contrario que en el procesador Intel 8088, la memoria principal no está dividida en segmentos. Por eso, el programador debe tener cuidado de no sobrepasar los límites de la memoria ni que otros programas sobreescriban su código o datos.

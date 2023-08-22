@@ -1,5 +1,9 @@
 ---
 title: XOR
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/xor.png }
 ---
 
 Esta instrucción reliza la operación lógica XOR bit a bit entre el operando destino y el operando fuente (destino XOR fuente). El resultado se guarda en el operando destino. El operando fuente no se modifica.

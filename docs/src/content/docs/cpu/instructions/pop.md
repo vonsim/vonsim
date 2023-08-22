@@ -1,5 +1,9 @@
 ---
 title: POP
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/pop.png }
 ---
 
 Esta instrucción desapila el elemento en el tope en la [pila](/docs/cpu/#pila) y lo almacena en el operando destino. Los [_flags_](/docs/cpu/#flags) no se modifican.

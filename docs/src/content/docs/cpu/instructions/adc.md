@@ -1,5 +1,9 @@
 ---
 title: ADC
+head:
+  - tag: meta
+    attrs:
+      { property: og:image, content: https://vonsim.github.io/docs/og/cpu/instructions/adc.png }
 ---
 
 Esta instrucción suma dos operandos y guarda el resultado en el operando destino. Si `CF=1`, entonces se suma `1` al resultado. El operando fuente no se modifica.

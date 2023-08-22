@@ -1,5 +1,8 @@
 ---
 title: Teclado
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/io/devices/keyboard.png }
 ---
 
 El teclado es un dispositivo de entrada que permite al usuario ingresar caracteres al sistema. La forma de comunicarse con el teclado es mediante una [llamada al sistema](/docs/cpu/#llamadas-al-sistema). Esto es así por simplicidad, ya que un teclado real es mucho más complejo.

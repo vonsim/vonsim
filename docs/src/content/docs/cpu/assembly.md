@@ -1,5 +1,8 @@
 ---
 title: Lenguaje ensamblador
+head:
+  - tag: meta
+    attrs: { property: og:image, content: https://vonsim.github.io/docs/og/cpu/assembly.png }
 ---
 
 El lenguaje ensamblador (o lenguaje _assembly_) utilizado por el simulador se escribe de la siguiente manera:
