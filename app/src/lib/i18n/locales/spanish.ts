@@ -118,7 +118,7 @@ export const spanish: Locale = {
       cell: address => `Celda ${MemoryAddress.format(address)}`,
       "fix-address": "Fijar dirección",
       "unfix-address": "Desfijar dirección",
-      "address-must-be-integer": "El valor de inicio debe ser un número entero.",
+      "address-must-be-integer": "El valor de inicio debe ser un número entero hexadecimal.",
       "address-out-of-range": `El valor de inicio debe ser menor o igual a ${maxAddress}.`,
     },
 

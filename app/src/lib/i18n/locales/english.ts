@@ -118,7 +118,7 @@ export const english = {
       cell: (address: MemoryAddressLike) => `Cell ${MemoryAddress.format(address)}`,
       "fix-address": "Fix address",
       "unfix-address": "Unfix address",
-      "address-must-be-integer": "Start address must be an integer.",
+      "address-must-be-integer": "Start address must be an hexadecimal integer.",
       "address-out-of-range": `Start address must be less or equal to ${maxAddress}.`,
     },
 

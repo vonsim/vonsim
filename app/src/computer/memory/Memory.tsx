@@ -24,7 +24,7 @@ export function Memory() {
   const [inputValue, setInputValue] = useState("");
 
   const updateFixedAddress = useCallback(() => {
-    const match = /^(\d+)[Hh]?$/.exec(inputValue);
+    const match = /^([\da-f]+)h?$/i.exec(inputValue);
     if (!match || !match[1]) {
       toast({ title: translate("computer.memory.address-must-be-integer"), variant: "error" });
       return;
