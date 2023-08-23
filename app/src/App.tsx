@@ -12,9 +12,11 @@ import { ToastAction } from "@/components/ui/Toast";
 import { ComputerContainer } from "@/computer";
 import { Editor } from "@/editor";
 import { useTranslate } from "@/lib/i18n";
+import { useLanguage } from "@/lib/settings";
 import { toast } from "@/lib/toast";
 
 export default function App() {
+  const lang = useLanguage();
   const translate = useTranslate();
   const isMobile = useMedia("(max-width: 640px)"); // tailwind sm breakpoint
 
@@ -36,7 +38,7 @@ export default function App() {
   });
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-stone-900 text-white">
+    <div className="flex h-screen w-screen flex-col bg-stone-900 text-white" lang={lang}>
       <Header />
 
       {isMobile ? <MobileLayout /> : <DesktopLayout />}
