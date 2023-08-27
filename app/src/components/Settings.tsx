@@ -252,6 +252,26 @@ export function Settings({ className }: { className?: string }) {
           />
         </div>
       </Setting>
+
+      <hr className="border-stone-600" />
+
+      <div className="flex justify-end p-4">
+        <button
+          className="inline-flex items-center gap-1 text-sm text-red-500 transition-colors hover:text-red-400"
+          onClick={() =>
+            setSettings(prev => ({
+              ...defaultSettings,
+              // Keep language because, why would you want to reset it?
+              language: prev.language,
+              // Keep devices because it could break the simulation
+              devices: prev.devices,
+            }))
+          }
+        >
+          <span className="icon-[lucide--trash-2] h-4 w-4" />
+          {translate("settings.reset")}
+        </button>
+      </div>
     </div>
   );
 }

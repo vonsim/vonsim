@@ -195,6 +195,8 @@ export const spanish: Locale = {
       invert: "Invertir",
       saturation: "Saturación",
     },
+
+    reset: "Restablecer configuración",
   },
 
   footer: {

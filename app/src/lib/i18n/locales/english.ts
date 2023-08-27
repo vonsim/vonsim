@@ -195,6 +195,8 @@ export const english = {
       invert: "Invert",
       saturation: "Saturation",
     },
+
+    reset: "Reset settings",
   },
 
   footer: {
