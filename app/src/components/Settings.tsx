@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/Select";
 import { Slider } from "@/components/ui/Slider";
 import { Switch } from "@/components/ui/Switch";
+import { stopAllAnimations } from "@/computer/shared/animate";
 import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 import { DATA_ON_LOAD_VALUES, DEVICES, useSettings } from "@/lib/settings";
@@ -127,7 +128,10 @@ export function Settings({ className }: { className?: string }) {
         <Switch
           className="ml-8"
           checked={settings.animations}
-          onCheckedChange={value => setSettings(prev => ({ ...prev, animations: value }))}
+          onCheckedChange={value => {
+            setSettings(prev => ({ ...prev, animations: value }));
+            if (value === false) stopAllAnimations();
+          }}
         />
       </Setting>
 
