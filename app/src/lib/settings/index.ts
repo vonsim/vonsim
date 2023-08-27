@@ -67,3 +67,17 @@ const speedsAtom = atom(get => {
   };
 });
 export const useSpeeds = () => useAtomValue(speedsAtom);
+
+const filtersAtom = atom(get => {
+  const settings = get(settingsAtom);
+
+  return [
+    `brightness(${settings.filterBightness})`,
+    `contrast(${settings.filterContrast})`,
+    `invert(${settings.filterInvert ? 1 : 0})`,
+    `saturate(${settings.filterSaturation})`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+});
+export const useFilters = () => useAtomValue(filtersAtom);

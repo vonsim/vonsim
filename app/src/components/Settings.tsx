@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/Switch";
 import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 import { DATA_ON_LOAD_VALUES, DEVICES, useSettings } from "@/lib/settings";
+import { defaultSettings } from "@/lib/settings/schema";
 
 export const settingsOpenAtom = atom(false);
 
@@ -187,6 +188,69 @@ export function Settings({ className }: { className?: string }) {
             max: 500,
           })}
         />
+      </Setting>
+
+      <hr className="border-stone-600" />
+
+      <Setting>
+        <SettingInfo>
+          <SettingTitle>
+            <span className="icon-[lucide--contrast] h-6 w-6" />
+            {translate("settings.filters.label")}
+          </SettingTitle>
+          <SettingSubtitle>
+            {translate("settings.filters.description")}
+            <button
+              className="mt-1 block text-mantis-400 transition-colors hover:text-mantis-300"
+              onClick={() =>
+                setSettings(prev => ({
+                  ...prev,
+                  filterBightness: defaultSettings.filterBightness,
+                  filterContrast: defaultSettings.filterContrast,
+                  filterInvert: defaultSettings.filterInvert,
+                  filterSaturation: defaultSettings.filterSaturation,
+                }))
+              }
+            >
+              {translate("settings.filters.revert")}
+            </button>
+          </SettingSubtitle>
+        </SettingInfo>
+
+        <div className="ml-8 grid w-64 grid-cols-[min-content,auto] items-center gap-2">
+          <span className="text-xs">{translate("settings.filters.brightness")}</span>
+          <Slider
+            value={[settings.filterBightness]}
+            onValueChange={([value]) => setSettings(prev => ({ ...prev, filterBightness: value }))}
+            min={0}
+            max={5}
+            step={0.05}
+          />
+
+          <span className="text-xs">{translate("settings.filters.contrast")}</span>
+          <Slider
+            value={[settings.filterContrast]}
+            onValueChange={([value]) => setSettings(prev => ({ ...prev, filterContrast: value }))}
+            min={0}
+            max={5}
+            step={0.05}
+          />
+
+          <span className="text-xs">{translate("settings.filters.invert")}</span>
+          <Switch
+            checked={settings.filterInvert}
+            onCheckedChange={value => setSettings(prev => ({ ...prev, filterInvert: value }))}
+          />
+
+          <span className="text-xs">{translate("settings.filters.saturation")}</span>
+          <Slider
+            value={[settings.filterSaturation]}
+            onValueChange={([value]) => setSettings(prev => ({ ...prev, filterSaturation: value }))}
+            min={0}
+            max={5}
+            step={0.05}
+          />
+        </div>
       </Setting>
     </div>
   );

@@ -185,6 +185,16 @@ export const english = {
       clockSpeed: "Clock speed",
       printerSpeed: "Printer speed",
     },
+
+    filters: {
+      label: "Filters",
+      description: "Filters applied to the page. Useful when you're using a projector.",
+      revert: "Revert to default filters",
+      brightness: "Brightness",
+      contrast: "Contrast",
+      invert: "Invert",
+      saturation: "Saturation",
+    },
   },
 
   footer: {

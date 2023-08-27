@@ -185,6 +185,16 @@ export const spanish: Locale = {
       clockSpeed: "Velocidad del reloj",
       printerSpeed: "Velocidad de impresión",
     },
+
+    filters: {
+      label: "Filtros",
+      description: "Filtros aplicados a la página. Útil cuando se usa un proyector.",
+      revert: "Revertir a los valores por defecto",
+      brightness: "Brillo",
+      contrast: "Contraste",
+      invert: "Invertir",
+      saturation: "Saturación",
+    },
   },
 
   footer: {

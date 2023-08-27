@@ -45,6 +45,14 @@ export const settingsSchema = z.object({
    * to print a character.
    */
   printerSpeed: z.number().min(500).max(20000).catch(5000),
+
+  /**
+   * CSS filter applied to the page.
+   */
+  filterBightness: z.number().min(0).catch(1),
+  filterContrast: z.number().min(0).catch(1),
+  filterInvert: z.boolean().catch(false),
+  filterSaturation: z.number().min(0).catch(1),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
