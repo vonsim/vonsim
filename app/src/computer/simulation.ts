@@ -167,6 +167,14 @@ async function dispatch(...args: Action) {
         });
         resetState(simulator.getComputerState());
 
+        // Track event
+        umami.track("Start CPU", {
+          until,
+          devices: getSettings().devices,
+          language: getSettings().language,
+          animations: getSettings().animations ? "yes" : "no",
+        });
+
         store.set(simulationAtom, { type: "running", until, waitingForInput: false });
 
         startThread(simulator.startCPU());
