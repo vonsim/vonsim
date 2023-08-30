@@ -52,6 +52,9 @@ export const useSettings = () => useAtom(settingsAtom);
 const languageAtom = atom(get => get(settingsAtom).language);
 export const useLanguage = () => useAtomValue(languageAtom);
 
+const editorFontSizeAtom = atom(get => get(settingsAtom).editorFontSize);
+export const useEditorFontSize = () => useAtomValue(editorFontSizeAtom);
+
 const dataOnLoadAtom = atom(get => get(settingsAtom).dataOnLoad);
 export const useDataOnLoad = () => useAtomValue(dataOnLoadAtom);
 

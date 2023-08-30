@@ -10,6 +10,11 @@ export const settingsSchema = z.object({
   language: z.enum(LANGUAGES).catch(getDefaultLanguage),
 
   /**
+   * Font size of the editor. Default is 14.
+   */
+  editorFontSize: z.number().int().min(8).max(64).catch(14),
+
+  /**
    * Value of {@link ComputerOptions.data}.
    */
   dataOnLoad: z.enum(DATA_ON_LOAD_VALUES).catch("randomize"),

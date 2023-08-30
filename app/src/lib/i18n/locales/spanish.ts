@@ -151,6 +151,12 @@ export const spanish: Locale = {
       label: "Idioma",
     },
 
+    editorFontSize: {
+      label: "Tamaño de fuente del editor",
+      increase: "Aumentar",
+      decrease: "Disminuir",
+    },
+
     dataOnLoad: {
       label: "Memoria al cargar",
       description: "Qué hacer con la memoria al cargar un nuevo programa.",

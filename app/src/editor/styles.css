@@ -2,7 +2,7 @@
   @apply h-full w-full bg-stone-800 text-white;
 
   .cm-scroller {
-    @apply overflow-auto font-mono text-sm scrollbar-stone-700;
+    @apply overflow-auto font-mono scrollbar-stone-700;
   }
 
   .cm-activeLine {
@@ -51,7 +51,7 @@
   }
 
   .cm-tooltip {
-    @apply border border-stone-600 bg-stone-900 text-sm max-w-sm leading-tight text-white rounded-lg font-sans font-light overflow-hidden shadow;
+    @apply border border-stone-600 bg-stone-900 max-w-sm leading-tight text-white rounded-lg font-sans font-light overflow-y-auto scrollbar-stone-700 shadow;
   }
 
   .cm-diagnostic-error {

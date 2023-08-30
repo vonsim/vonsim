@@ -151,6 +151,12 @@ export const english = {
       label: "Language",
     },
 
+    editorFontSize: {
+      label: "Editor font size",
+      increase: "Increase font size",
+      decrease: "Decrease font size",
+    },
+
     dataOnLoad: {
       label: "Data on load",
       description: "What to do with the memory when loading a new program.",

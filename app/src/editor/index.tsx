@@ -15,6 +15,8 @@ import { vscodeKeymap } from "@replit/codemirror-vscode-keymap";
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
 
+import { useEditorFontSize } from "@/lib/settings";
+
 import { getSavedProgram, syncStatePlugin } from "./files";
 import { lineHighlightField, readOnly } from "./methods";
 import { StatusBar } from "./StatusBar";
@@ -34,6 +36,7 @@ import { VonSim } from "./vonsim";
 
 export function Editor({ className }: { className?: string }) {
   const [element, setElement] = useState<HTMLElement>();
+  const fontSize = useEditorFontSize();
 
   const ref = useCallback((node: HTMLElement | null) => {
     if (!node) return;
@@ -101,7 +104,14 @@ export function Editor({ className }: { className?: string }) {
 
   return (
     <div className={clsx("flex flex-col", className)}>
-      <div ref={ref} className="grow overflow-auto font-mono" />
+      <div
+        ref={ref}
+        className="grow overflow-auto font-mono"
+        style={{
+          fontSize: `${fontSize}px`,
+          lineHeight: 1.25,
+        }}
+      />
       <StatusBar />
     </div>
   );
