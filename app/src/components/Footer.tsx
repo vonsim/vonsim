@@ -24,7 +24,7 @@ export function Footer() {
       </a>
       <span className="px-2">&middot;</span>
       <a
-        href="https://github.com/vonsim/vonsim/issues/new?labels=new+version"
+        href="https://github.com/vonsim/vonsim/issues/new"
         className="transition-colors hover:text-stone-400"
         target="_blank"
         rel="noopener noreferrer"
