@@ -63,7 +63,7 @@ export default defineConfig({
           label: "Referencia",
           autogenerate: { directory: "reference" },
         },
-        { label: "Notas de version", link: "/changelog/" },
+        { label: "Notas de versión", link: "/changelog/" },
       ],
 
       customCss: ["./src/styles/custom.css"],
