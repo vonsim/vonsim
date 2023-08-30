@@ -120,6 +120,8 @@ export const spanish: Locale = {
       "unfix-address": "Desfijar dirección",
       "address-must-be-integer": "El valor de inicio debe ser un número entero hexadecimal.",
       "address-out-of-range": `El valor de inicio debe ser menor o igual a ${maxAddress}.`,
+      "address-increment": "Incrementar dirección (Page Up)",
+      "address-decrement": "Decrementar dirección (Page Down)",
     },
 
     "chip-select": {

@@ -120,6 +120,8 @@ export const english = {
       "unfix-address": "Unfix address",
       "address-must-be-integer": "Start address must be an hexadecimal integer.",
       "address-out-of-range": `Start address must be less or equal to ${maxAddress}.`,
+      "address-increment": "Increment address (Page Up)",
+      "address-decrement": "Decrement address (Page Down)",
     },
 
     "chip-select": {

@@ -3,6 +3,7 @@ import type { Byte } from "@vonsim/common/byte";
 import clsx from "clsx";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useId, useState } from "react";
+import { useKey } from "react-use";
 
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
@@ -18,6 +19,7 @@ export function Memory() {
 
   const memory = useAtomValue(memoryShownAtom);
   const halfMemory = Math.ceil(memory.length / 2);
+  const operatingAddress = useAtomValue(operatingAddressAtom);
   const [fixedAddress, setFixedAddress] = useAtom(fixedAddressAtom);
 
   const inputId = useId();
@@ -41,6 +43,48 @@ export function Memory() {
     setFixedAddress(MemoryAddress.from(value));
   }, [translate, inputValue, setFixedAddress]);
 
+  const pageUp = useCallback(() => {
+    try {
+      const current = fixedAddress ?? operatingAddress;
+      let nextValue = current.value + memory.length;
+      if (nextValue === MemoryAddress.MAX_ADDRESS + 1) nextValue -= 1;
+      const next = MemoryAddress.from(nextValue);
+      setInputValue(next.toString());
+      setFixedAddress(next);
+    } catch (error) {
+      console.error("Invalid PageUp");
+    }
+  }, [operatingAddress, fixedAddress, setFixedAddress, memory.length]);
+  useKey(
+    "PageUp",
+    ev => {
+      ev.preventDefault();
+      pageUp();
+    },
+    undefined,
+    [pageUp],
+  );
+
+  const pageDown = useCallback(() => {
+    try {
+      const current = fixedAddress ?? operatingAddress;
+      const next = MemoryAddress.from(current.value - memory.length);
+      setInputValue(next.toString());
+      setFixedAddress(next);
+    } catch (error) {
+      console.error("Invalid PageUp");
+    }
+  }, [operatingAddress, fixedAddress, setFixedAddress, memory.length]);
+  useKey(
+    "PageDown",
+    ev => {
+      ev.preventDefault();
+      pageDown();
+    },
+    undefined,
+    [pageUp],
+  );
+
   return (
     <div className="absolute left-[800px] top-0 z-10 h-[460px] w-[250px] rounded-lg border border-stone-600 bg-stone-900 [&_*]:z-20">
       <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl text-white">
@@ -49,28 +93,46 @@ export function Memory() {
 
       <div className="mx-4 my-2">
         <Label htmlFor={inputId}>{translate("computer.memory.fix-address")}</Label>
-        <div className="relative">
-          <Input
-            className="font-mono"
-            placeholder="2000h"
-            type="text"
-            enterKeyHint="go"
-            id={inputId}
-            value={inputValue}
-            onChange={ev => setInputValue(ev.currentTarget.value)}
-            onKeyDown={ev => {
-              if (ev.key === "Enter") updateFixedAddress();
-            }}
-          />
+        <div className="mt-1 flex items-center gap-1">
           <button
-            title={translate("computer.memory.unfix-address")}
-            className={clsx("absolute right-2 top-3", !fixedAddress && "hidden")}
-            onClick={() => {
-              setInputValue("");
-              setFixedAddress(null);
-            }}
+            className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-mantis-500 px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mantis-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            disabled={memory.at(0)!.address.value === MemoryAddress.MIN_ADDRESS}
+            title={translate("computer.memory.address-decrement")}
+            onClick={pageDown}
           >
-            <span className="icon-[lucide--x] h-4 w-4 text-stone-500 transition-colors hover:text-stone-300" />
+            <span className="icon-[lucide--chevron-left] h-4 w-4" />
+          </button>
+          <div className="relative">
+            <Input
+              className="font-mono"
+              placeholder="2000h"
+              type="text"
+              enterKeyHint="go"
+              id={inputId}
+              value={inputValue}
+              onChange={ev => setInputValue(ev.currentTarget.value)}
+              onKeyDown={ev => {
+                if (ev.key === "Enter") updateFixedAddress();
+              }}
+            />
+            <button
+              title={translate("computer.memory.unfix-address")}
+              className={clsx("absolute right-2 top-3", !fixedAddress && "hidden")}
+              onClick={() => {
+                setInputValue("");
+                setFixedAddress(null);
+              }}
+            >
+              <span className="icon-[lucide--x] h-4 w-4 text-stone-500 transition-colors hover:text-stone-300" />
+            </button>
+          </div>
+          <button
+            className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-mantis-500 px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mantis-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            disabled={memory.at(-1)!.address.value === MemoryAddress.MAX_ADDRESS}
+            title={translate("computer.memory.address-decrement")}
+            onClick={pageUp}
+          >
+            <span className="icon-[lucide--chevron-right] h-4 w-4" />
           </button>
         </div>
       </div>
