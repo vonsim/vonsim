@@ -19,7 +19,9 @@ export function Screen() {
         {translate("computer.screen")}
       </span>
 
-      <pre className={styles.screen}>{value}</pre>
+      <div className={styles.container}>
+        <pre className={styles.text}>{value}</pre>
+      </div>
     </div>
   );
 }
