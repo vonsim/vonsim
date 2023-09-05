@@ -46,10 +46,11 @@ Cuando la CPU esté lista para atender la interrupción, comienza el ciclo de _i
 
 1. La CPU responde al `INTR` enviando un pulso por la línea `INTA`.
 2. Al recibir la señal, el PIC marca la línea como _in-service_ en el registro `ISR` y la saca de la cola en el registro `IRR`.
-3. La CPU envía nueva un pulso por la línea `INTA`. Durante este pulso, el PIC envía por el bus de datos el número de interrupción correspondiente a la línea que está siendo atendida.
-4. El PIC apaga la línea `INTR`.
+3. El PIC envía por el bus de datos el número de interrupción correspondiente a la línea que está siendo atendida.
+4. La CPU envía nuevamente un pulso por la línea `INTA`.
+5. El PIC apaga la línea `INTR`.
 
-Luego de, para indicarle al PIC que la la rutina de interrupción terminó, la CPU escribe en la dirección `20h` de la [memoria E/S](/docs/io/modules/) el byte de fin de interrupción o `EOI`, que es, coincidentemente, `20h`. Al leer este byte, el PIC desmarca la línea como _in-service_ en el registro `ISR`. Si hay interrupciones pendientes, el PIC activa la línea `INTR` nuevamente, repitiendo el proceso.
+Para indicarle al PIC que la rutina de interrupción terminó, la CPU escribe en la dirección `20h` de la [memoria E/S](/docs/io/modules/) el byte de fin de interrupción o `EOI`, que es, coincidentemente, `20h`. Al leer este byte, el PIC desmarca la línea como _in-service_ en el registro `ISR`. Si hay interrupciones pendientes, el PIC activa la línea `INTR` nuevamente, repitiendo el proceso.
 
 :::note[Nota]
 Este PIC no soporta interrupciones anidadas. Si una interrupción ocurre mientras otra está siendo atendida, la segunda se encolará en el registro `IRR` y se atenderá cuando la primera termine, sin importar su prioridad.
