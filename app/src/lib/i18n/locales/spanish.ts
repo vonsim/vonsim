@@ -173,6 +173,7 @@ export const spanish: Locale = {
       description: "Qué conjunto de dispositivos usar.",
 
       "no-devices": "Ninguno",
+      "keyboard-and-screen": "Teclado y pantalla",
       "pio-switches-and-leds": "Teclas y luces",
       "pio-printer": "Impresora (PIO)",
       handshake: "Impresora (Handshake)",

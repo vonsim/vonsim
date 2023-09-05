@@ -17,7 +17,7 @@ export type KeyboardEvent =
  * This class is: MUTABLE
  */
 export class Keyboard<
-  TDevices extends "pio-switches-and-leds" | "pio-printer" | "handshake",
+  TDevices extends "keyboard-and-screen" | "pio-switches-and-leds" | "pio-printer" | "handshake",
 > extends Component<TDevices> {
   #lastCharRead: Byte<8> | null = null;
 

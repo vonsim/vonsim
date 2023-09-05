@@ -9,18 +9,18 @@ export function ControlLines() {
 
   const rdPath = [
     "M 380 420 H 800", // CPU -> Memory
-    devices.preset !== "no-devices" && "M 780 420 V 805", // Down
-    devices.preset !== "no-devices" && "M 450 805 H 900", // PIC to PIO/Handshake
-    devices.preset !== "no-devices" && "M 583 805 V 875", // Timer
+    devices.hasIOBus && "M 780 420 V 805", // Down
+    devices.hasIOBus && "M 450 805 H 900", // PIC to PIO/Handshake
+    devices.hasIOBus && "M 583 805 V 875", // Timer
   ]
     .filter(Boolean)
     .join(" ");
 
   const wrPath = [
     "M 380 440 H 800", // CPU -> Memory
-    devices.preset !== "no-devices" && "M 790 440 V 815", // Down
-    devices.preset !== "no-devices" && "M 450 815 H 900", // PIC to PIO/Handshake
-    devices.preset !== "no-devices" && "M 573 815 V 875", // Timer
+    devices.hasIOBus && "M 790 440 V 815", // Down
+    devices.hasIOBus && "M 450 815 H 900", // PIC to PIO/Handshake
+    devices.hasIOBus && "M 573 815 V 875", // Timer
   ]
     .filter(Boolean)
     .join(" ");
@@ -47,7 +47,7 @@ export function ControlLines() {
 
       {/* Chip select */}
 
-      {devices.preset !== "no-devices" && (
+      {devices.hasIOBus && (
         <>
           <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
 
@@ -145,7 +145,7 @@ export function ControlLinesLegends() {
     <>
       <ControlLineLegend className="left-[384px] top-[403px]">rd</ControlLineLegend>
       <ControlLineLegend className="left-[384px] top-[423px]">wr</ControlLineLegend>
-      {devices.preset !== "no-devices" && (
+      {devices.hasIOBus && (
         <>
           <ControlLineLegend className="left-[384px] top-[443px]">io/m</ControlLineLegend>
           <ControlLineLegend className="left-[715px] top-[538px]">

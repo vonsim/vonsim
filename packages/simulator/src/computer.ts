@@ -2,7 +2,13 @@ import type { Program } from "@vonsim/assembler";
 import type { JsonObject, Simplify } from "type-fest";
 
 import { CPU } from "./cpu";
-import { Handshake, NoDevices, PIOPrinter, PIOSwitchesAndLeds } from "./io/configurations";
+import {
+  Handshake,
+  KeyboardAndScreen,
+  NoDevices,
+  PIOPrinter,
+  PIOSwitchesAndLeds,
+} from "./io/configurations";
 import { Memory } from "./memory";
 
 export type ComputerOptions<TDevices extends DevicesConfiguration = DevicesConfiguration> = {
@@ -12,6 +18,7 @@ export type ComputerOptions<TDevices extends DevicesConfiguration = DevicesConfi
 
 export type DevicesMap = {
   "no-devices": NoDevices;
+  "keyboard-and-screen": KeyboardAndScreen;
   "pio-switches-and-leds": PIOSwitchesAndLeds;
   "pio-printer": PIOPrinter;
   handshake: Handshake;
@@ -26,6 +33,7 @@ export type DevicesConfiguration = Simplify<keyof DevicesMap>;
  * It can be initialized with a program and one of multiple devices configurations,
  * represented as a IOInterface. Those cannot be changed after initialization. Those are:
  * - `no-devices`: {@link NoDevices}
+ * - `keyboard-screen`: {@link KeyboardAndScreen}
  * - `pio-switches-and-leds`: {@link PIOSwitchesAndLeds}
  * - `pio-printer`: {@link PIOPrinter}
  * - `handshake`: {@link Handshake}
@@ -49,6 +57,12 @@ export class Computer<TDevices extends DevicesConfiguration = DevicesConfigurati
       case "no-devices": {
         // @ts-expect-error ensured by `TDevices` and `options`
         this.io = new NoDevices(init);
+        break;
+      }
+
+      case "keyboard-and-screen": {
+        // @ts-expect-error ensured by `TDevices` and `options`
+        this.io = new KeyboardAndScreen(init);
         break;
       }
 

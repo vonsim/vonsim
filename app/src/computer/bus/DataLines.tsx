@@ -6,18 +6,18 @@ export function DataLines() {
 
   const addressPath = [
     "M 699 349 H 800", // CPU -> Memory
-    devices.preset !== "no-devices" && "M 725 349 V 770", // Down
-    devices.preset !== "no-devices" && "M 450 770 H 900", // PIC to PIO/Handshake
-    devices.preset !== "no-devices" && "M 618 770 V 875", // Timer
+    devices.hasIOBus && "M 725 349 V 770", // Down
+    devices.hasIOBus && "M 450 770 H 900", // PIC to PIO/Handshake
+    devices.hasIOBus && "M 618 770 V 875", // Timer
   ]
     .filter(Boolean)
     .join(" ");
 
   const dataPath = [
     "M 687 249 H 800", // CPU -> Memory
-    devices.preset !== "no-devices" && "M 765 249 V 790", // Down
-    devices.preset !== "no-devices" && "M 450 790 H 900", // PIC to PIO/Handshake
-    devices.preset !== "no-devices" && "M 598 790 V 875", // Timer
+    devices.hasIOBus && "M 765 249 V 790", // Down
+    devices.hasIOBus && "M 450 790 H 900", // PIC to PIO/Handshake
+    devices.hasIOBus && "M 598 790 V 875", // Timer
   ]
     .filter(Boolean)
     .join(" ");

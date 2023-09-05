@@ -285,6 +285,10 @@ export function useSimulation() {
   const devices = useMemo(
     () => ({
       preset: devicesPreset,
+      hasIOBus:
+        devicesPreset === "pio-switches-and-leds" ||
+        devicesPreset === "pio-printer" ||
+        devicesPreset === "handshake",
 
       clock:
         devicesPreset === "pio-switches-and-leds" ||
@@ -295,6 +299,7 @@ export function useSimulation() {
         devicesPreset === "pio-printer" ||
         devicesPreset === "handshake",
       keyboard:
+        devicesPreset === "keyboard-and-screen" ||
         devicesPreset === "pio-switches-and-leds" ||
         devicesPreset === "pio-printer" ||
         devicesPreset === "handshake",
@@ -307,6 +312,7 @@ export function useSimulation() {
       pio: devicesPreset === "pio-switches-and-leds" || devicesPreset === "pio-printer",
       printer: devicesPreset === "pio-printer" || devicesPreset === "handshake",
       screen:
+        devicesPreset === "keyboard-and-screen" ||
         devicesPreset === "pio-switches-and-leds" ||
         devicesPreset === "pio-printer" ||
         devicesPreset === "handshake",
