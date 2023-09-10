@@ -3,6 +3,7 @@ import { forEachWithErrors } from "@vonsim/common/loops";
 
 import { AssemblerError } from "./error";
 import type { Constant, Statement } from "./statements";
+import { reservedAddressesForSyscalls } from "./syscalls";
 
 type LabelsMap = Map<
   string,
@@ -130,6 +131,10 @@ export class GlobalStore {
 
           if (occupiedMemory.has(address.value)) {
             throw new AssemblerError("occupied-address", address).at(statement);
+          }
+
+          if (reservedAddressesForSyscalls.has(address.value)) {
+            throw new AssemblerError("reserved-address", address).at(statement);
           }
 
           occupiedMemory.add(address.value);

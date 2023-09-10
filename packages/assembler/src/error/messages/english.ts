@@ -51,6 +51,8 @@ export const english = {
   "occupied-address": (address: MemoryAddress) => `This instruction would be placed in address ${address}, which is already occupied.`,
   "offset-only-with-data-directive": "OFFSET can only be use with data directives.",
   // prettier-ignore
+  "reserved-address": (address: MemoryAddress) => `This instruction would be placed in address ${address}, which is reserved by the system.`,
+  // prettier-ignore
   "size-mismatch": (src: ByteSize, out: ByteSize) => `The source (${src}-bit) and destination (${out}-bit) must be the same size.`,
   "unexpected-error": (err: unknown) => `Unexpected error: ${String(err)}`,
   // prettier-ignore

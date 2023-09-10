@@ -99,4 +99,5 @@ export function assemble(source: string): AssembleResult {
 
 export type * from "./statements";
 export { unassigned } from "./statements";
+export * from "./syscalls";
 export * from "./types";

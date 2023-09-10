@@ -5,7 +5,7 @@ import { Component, ComponentInit } from "../component";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 import { InstructionType, statementToInstruction } from "./instructions";
-import { handleSyscall, isSyscall } from "./syscalls";
+import { getSyscallNumber, handleSyscall } from "./syscalls";
 import type {
   ByteRegister,
   Flag,
@@ -111,9 +111,10 @@ export class CPU extends Component {
     while (true) {
       // Gets the instruction at the current IP from `this.#instructions`
       const IP = this.#registers.IP;
-      if (isSyscall(IP)) {
+      const syscallNumber = getSyscallNumber(IP);
+      if (syscallNumber !== null) {
         // Syscall
-        const continueExecuting = yield* handleSyscall(this.computer, IP);
+        const continueExecuting = yield* handleSyscall(this.computer, syscallNumber);
         if (!continueExecuting) return;
       } else {
         const instruction = this.#instructions.get(IP.unsigned);

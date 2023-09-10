@@ -95,14 +95,16 @@ Y así se comienza a ejecutar la rutina de interrupción. Estas tienen el mismo 
 
 ### Llamadas al sistema
 
-El simulador permite realizar llamadas al sistema o _syscalls_. En el simulador, estas llamadas son realizadas idénticamente a las interrupciones. Antes de cargar un programa en memoria, se almacenan direcciones de memoria especiales en el vector de interrupciones. Estas direcciones corresponden a las rutinas de las _syscalls_. Los números de interrupción asociados a estas llamadas son:
+El simulador permite realizar llamadas al sistema o _syscalls_. En el simulador, estas llamadas son realizadas idénticamente a las interrupciones. Así, para realizar una _syscall_ basta con interrumpir a la CPU con el número de interrupción correspondiente. Estos números son:
 
 - `INT 0`: termina la ejecución del programa, equivalente a la instrucción [`HLT`](/docs/cpu/instructions/hlt/);
 - `INT 3`: incia el modo de depuración (_breakpoint_);
 - `INT 6`: lee un carácter del [teclado](/docs/io/devices/keyboard/);
 - `INT 7`: escribe una cadena de caracteres en [pantalla](/docs/io/devices/screen/).
 
-Además, las direcciones asociadas a estas llamadas son `8000h`, `8003h`, `8006h` y `8007h` respectivamente, que no son modificables por el usuario. Nótese que el programa podría modificar el vector de interrupciones e invalidar las llamadas al sistema. También podría posicionar en el `IP` una de las direcciones especiales y la llamada al sistema se ejecutaría de igual manera. Lo único necesario para que la _syscall_ se ejecute es que se ejecute la dirección de la rutina asociada.
+Las direcciones del vector de interrupciones asociadas a estos números están protegidas por el sistema, impidiendo que el usuario las modifique.
+
+El contenido de estas rutinas se encuentran almacenadas en el [monitor del sistema](/docs/memory/) en las direcciones `A000h`, `A300h`, `A600h` y `A700h` respectivamente.
 
 ---
 

@@ -48,6 +48,8 @@ export const spanish: Messages = {
   "occupied-address": address => `Esta instrucción sería colocada en la dirección ${MemoryAddress.format(address)}, la cual ya está ocupada.`,
   "offset-only-with-data-directive": "OFFSET solo puede ser usado con variables.",
   // prettier-ignore
+  "reserved-address": address => `Esta instrucción sería colocada en la dirección ${MemoryAddress.format(address)}, la cual ya está reservada por el sistema.`,
+  // prettier-ignore
   "size-mismatch": (src, out) => `La fuente (${src} bits) y el destino (${out} bits) deben ser del mismo tamaño.`,
   "unexpected-error": err => `Error inesperado: ${String(err)}`,
   // prettier-ignore

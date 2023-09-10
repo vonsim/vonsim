@@ -1,24 +1,20 @@
+import { SyscallNumber, syscalls } from "@vonsim/assembler";
 import { Byte } from "@vonsim/common/byte";
 
 import type { Computer } from "../computer";
 import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 
-// https://vonsim.github.io/docs/cpu/#llamadas-al-sistema
-export const syscallsAddresses = {
-  0: 0x8000,
-  3: 0x8003,
-  6: 0x8006,
-  7: 0x8007,
-} as const;
-
 /**
  * @see {@link https://vonsim.github.io/docs/cpu/#llamadas-al-sistema}.
  * @param address Address
- * @returns true if address points to a syscall, false otherwise.
+ * @returns if address points to a syscall,  returns the syscall number. null otherwise.
  */
-export function isSyscall(address: Byte<16>) {
-  return Object.values(syscallsAddresses).includes(address.unsigned);
+export function getSyscallNumber(address: Byte<16>): SyscallNumber | null {
+  for (const [n, addr] of syscalls) {
+    if (addr.unsigned === address.unsigned) return n;
+  }
+  return null;
 }
 
 /**
@@ -30,21 +26,24 @@ export function isSyscall(address: Byte<16>) {
  * ---
  * Called by the CPU ({@link CPU.run}).
  */
-export function* handleSyscall(computer: Computer, address: Byte<16>): EventGenerator<boolean> {
-  switch (address.unsigned) {
-    case syscallsAddresses[0]: {
+export function* handleSyscall(
+  computer: Computer,
+  syscall: SyscallNumber,
+): EventGenerator<boolean> {
+  switch (syscall) {
+    case 0: {
       // INT 0 - Halt
       yield { type: "cpu:int.0" };
       return false; // Halt
     }
 
-    case syscallsAddresses[3]: {
+    case 3: {
       // INT 3 - Breakpoint
       yield { type: "cpu:int.3" };
       return true;
     }
 
-    case syscallsAddresses[6]: {
+    case 6: {
       // INT 6 - Read character from the keyboard and store it in [BX]
       yield { type: "cpu:int.6" };
 
@@ -67,7 +66,7 @@ export function* handleSyscall(computer: Computer, address: Byte<16>): EventGene
       break;
     }
 
-    case syscallsAddresses[7]: {
+    case 7: {
       // INT 7 - Write string to the screen, starting from [BX] and of length AL
       yield { type: "cpu:int.7" };
 

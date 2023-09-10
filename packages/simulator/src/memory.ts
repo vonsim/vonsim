@@ -1,10 +1,9 @@
-import { unassigned } from "@vonsim/assembler";
+import { syscalls, unassigned } from "@vonsim/assembler";
 import { MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
 import { Component, ComponentInit } from "./component";
-import { syscallsAddresses } from "./cpu/syscalls";
 import { SimulatorError } from "./error";
 import type { EventGenerator } from "./events";
 
@@ -47,9 +46,8 @@ export class Memory extends Component {
     }
 
     // Load syscalls addresses into memory
-    for (const [number, address] of Object.entries(syscallsAddresses)) {
-      const bytes = Byte.fromUnsigned(address, 16);
-      this.#buffer.set(bytes.toUint8Array(), Number(number) * 4); // Interrupt vector position
+    for (const [number, address] of syscalls) {
+      this.#buffer.set(address.toUint8Array(), Number(number) * 4); // Interrupt vector position
     }
 
     // Load data directives into memory
