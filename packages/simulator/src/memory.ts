@@ -15,7 +15,10 @@ export type MemoryOperation =
   | { type: "memory:write.ok"; address: MemoryAddress; value: Byte<8> }
   | {
       type: "memory:write.error";
-      error: SimulatorError<"address-has-instruction"> | SimulatorError<"address-out-of-range">;
+      error:
+        | SimulatorError<"address-has-instruction">
+        | SimulatorError<"address-is-reserved">
+        | SimulatorError<"address-out-of-range">;
     };
 
 /**
@@ -33,6 +36,7 @@ export class Memory extends Component {
   static readonly SIZE = MemoryAddress.MAX_ADDRESS + 1;
 
   #buffer: Uint8Array;
+  #codeMemory: Set<number>;
   #reservedMemory: Set<number>;
 
   constructor(options: ComponentInit) {
@@ -46,8 +50,15 @@ export class Memory extends Component {
     }
 
     // Load syscalls addresses into memory
+    this.#reservedMemory = new Set();
     for (const [number, address] of syscalls) {
-      this.#buffer.set(address.toUint8Array(), Number(number) * 4); // Interrupt vector position
+      const start = number * 4; // Interrupt vector position
+      this.#buffer.set(address.toUint8Array(), start);
+      this.#buffer.set(Byte.zero(16).toUint8Array(), start + 2);
+      this.#reservedMemory.add(start);
+      this.#reservedMemory.add(start + 1);
+      this.#reservedMemory.add(start + 2);
+      this.#reservedMemory.add(start + 3);
     }
 
     // Load data directives into memory
@@ -60,11 +71,11 @@ export class Memory extends Component {
     }
 
     // Load instructions into memory
-    this.#reservedMemory = new Set();
+    this.#codeMemory = new Set();
     for (const instruction of options.program.instructions) {
       this.#buffer.set(instruction.toBytes(), instruction.start.value);
       for (let i = 0; i < instruction.length; i++) {
-        this.#reservedMemory.add(instruction.start.value + i);
+        this.#codeMemory.add(instruction.start.value + i);
       }
     }
   }
@@ -115,10 +126,18 @@ export class Memory extends Component {
       return false;
     }
 
-    if (this.#reservedMemory.has(address)) {
+    if (this.#codeMemory.has(address)) {
       yield {
         type: "memory:write.error",
         error: new SimulatorError("address-has-instruction", address),
+      };
+      return false;
+    }
+
+    if (this.#reservedMemory.has(address)) {
+      yield {
+        type: "memory:write.error",
+        error: new SimulatorError("address-is-reserved", address),
       };
       return false;
     }

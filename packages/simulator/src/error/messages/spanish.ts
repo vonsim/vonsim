@@ -6,7 +6,9 @@ const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
 
 export const spanish: Messages = {
   // prettier-ignore
-  "address-has-instruction": address => `La dirección de memoria ${MemoryAddress.format(address)} tiene una instrucción, y no se puede leer ni escribir.`,
+  "address-has-instruction": address => `La dirección de memoria ${MemoryAddress.format(address)} tiene una instrucción, y no se puede escribir.`,
+  // prettier-ignore
+  "address-is-reserved": address => `La dirección de memoria ${MemoryAddress.format(address)} está reservada, y no se puede escribir.`,
   // prettier-ignore
   "address-out-of-range": address => `La dirección de memoria ${MemoryAddress.format(address)} está fuera de rango (dirección máxima de memoria: ${maxAddress}).`,
   "device-not-connected": (device: string) => `"${device}" no está conectado a la computadora.`,
