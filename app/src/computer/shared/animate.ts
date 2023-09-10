@@ -61,11 +61,16 @@ export async function anim(
   if (status.type === "paused") {
     await new Promise<void>(resolve => {
       const unsubscribe = store.sub(simulationAtom, () => {
-        unsubscribe();
-        resolve();
+        const status = store.get(simulationAtom);
+        if (status.type !== "paused") {
+          unsubscribe();
+          resolve();
+        }
       });
     });
-    // recall anim with the same arguments
+    // recall anim with the same arguments.
+    // If the simulation is stopped, the first condition will be true and the function will return.
+    // If the simulation is running, the second condition will be true and the function will continue.
     return await anim(animations, config);
   }
 
@@ -117,7 +122,11 @@ export const resumeAllAnimations = () => runningAnimations.forEach(key => getSpr
 export function stopAllAnimations() {
   // Stop running animations. After stopped, `getSpring(key).start()`
   // from `anim()` will resolve and the key will be removed from the set.
-  runningAnimations.forEach(key => getSpring(key).stop(true));
+  runningAnimations.forEach(key => {
+    const spring = getSpring(key);
+    spring.stop(true);
+    if (spring.isPaused) spring.resume();
+  });
   // Subtle delay to enusre all springs are being reset correctly
   setTimeout(() => resetAllSprings(), 10);
 }
