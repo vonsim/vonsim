@@ -10,7 +10,7 @@ VonSim cuenta con los siguientes dispotiivos:
 - [Tecla F10](/docs/io/devices/f10/)
 - [Reloj](/docs/io/devices/clock/)
 - [Teclado](/docs/io/devices/keyboard/) y [pantalla](/docs/io/devices/screen/)
-- [Teclas y luces](/docs/io/devices/switches-and-leds/)
+- [Llaves y luces](/docs/io/devices/switches-and-leds/)
 - [Impresora Centronics](/docs/io/devices/printer/)
 
 ---

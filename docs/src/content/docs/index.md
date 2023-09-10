@@ -14,7 +14,7 @@ Está [basado](/docs/cpu/) en el procesador 8088 de Intel, y cuenta con:
 - un bus de direcciones de 16 bits y un bus de datos de 8 bits;
 - interrupciones por software (como lectura del teclado y escritura en pantalla);
 - interrupciones por hardware con un [PIC](/docs/io/modules/pic/);
-- múltiples [dispositivos](/docs/io/devices/): reloj, teclas, leds y una impresora centronics.
+- múltiples [dispositivos](/docs/io/devices/): reloj, llaves, leds y una impresora centronics.
 
 Estos dispositivos están inspirados por sus análogos especificados por la iAPX 88 (o familia 8088) de Intel. Estos son un conjunto de dispositivos diseñados por Intel para su buen funcionamiento en conjunto con el procesador 8088. Más detalles pueden encontrarse en el [manual de usuario de iAPX 88 (1981)](http://www.bitsavers.org/components/intel/_dataBooks/1981_iAPX_86_88_Users_Manual.pdf).
 

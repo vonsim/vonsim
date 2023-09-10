@@ -138,7 +138,7 @@ export const spanish: Locale = {
     leds: "Leds",
     printer: { name: "Impresora", buffer: "Buffer" },
     screen: "Pantalla",
-    switches: "Teclas",
+    switches: "Llaves",
 
     handshake: { name: "Handshake", data: "Dato", state: "Estado" },
     pic: "PIC",
@@ -174,7 +174,7 @@ export const spanish: Locale = {
 
       "no-devices": "Ninguno",
       "keyboard-and-screen": "Teclado y pantalla",
-      "pio-switches-and-leds": "Teclas y luces",
+      "pio-switches-and-leds": "Llaves y luces",
       "pio-printer": "Impresora (PIO)",
       handshake: "Impresora (Handshake)",
     },
