@@ -109,14 +109,16 @@ async function startThread(generator: EventGenerator): Promise<void> {
       await handleEvent(event.value);
 
       if (event.value.type === "cpu:cycle.update" || event.value.type === "cpu:cycle.interrupt") {
-        if (status.until === "cycle-change") pauseSimulation();
-        else if (!settings.animations) {
+        if (status.until === "cycle-change") {
+          pauseSimulation();
+        } else if (!settings.animations) {
           // If animations are disabled, wait for some time to not overwhelm the CPU
           await new Promise(resolve => setTimeout(resolve, settings.executionUnit));
         }
       } else if (event.value.type === "cpu:cycle.end") {
-        if (status.until === "end-of-instruction") pauseSimulation();
-        else if (!settings.animations) {
+        if (status.until === "cycle-change" || status.until === "end-of-instruction") {
+          pauseSimulation();
+        } else if (!settings.animations) {
           // If animations are disabled, wait for some time to not overwhelm the CPU
           await new Promise(resolve => setTimeout(resolve, settings.executionUnit));
         }
