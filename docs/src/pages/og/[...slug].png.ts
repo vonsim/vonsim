@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 
-import type { APIContext, EndpointOutput, GetStaticPathsResult } from "astro";
+import type { APIContext, GetStaticPathsResult } from "astro";
 import { getCollection, getEntryBySlug } from "astro:content";
-import satori, { Font } from "satori";
+import satori, { type Font } from "satori";
 import { html } from "satori-html";
 import sharp from "sharp";
 
@@ -35,7 +35,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 }
 
 // https://docs.astro.build/en/core-concepts/endpoints/#params-and-dynamic-routing
-export async function get({ params }: APIContext): Promise<EndpointOutput> {
+export async function GET({ params }: APIContext): Promise<Response> {
   const entry = (await getEntryBySlug("docs", params.slug!))!;
 
   const markup = html`
@@ -69,8 +69,7 @@ export async function get({ params }: APIContext): Promise<EndpointOutput> {
 
   const png = await sharp(Buffer.from(svg)).png().toBuffer();
 
-  return {
-    body: png,
-    encoding: "binary",
-  };
+  return new Response(png, {
+    headers: { "Content-Type": "image/png" },
+  });
 }
