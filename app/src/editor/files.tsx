@@ -24,6 +24,7 @@ const programAtom = atomWithStorage(
   { unstable_getOnInit: true },
 );
 
+export const useSavedProgram = () => useAtomValue(programAtom);
 export const getSavedProgram = () => store.get(programAtom);
 
 export const syncStatePlugin = ViewPlugin.fromClass(

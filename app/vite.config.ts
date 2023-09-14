@@ -1,3 +1,5 @@
+import { execSync } from "node:child_process";
+
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -27,7 +29,18 @@ export default defineConfig({
       },
     }),
   ],
+  define: {
+    __COMMIT_HASH__: JSON.stringify(getCommitHash()),
+  },
   resolve: {
     alias: { "@/": "/src/" },
   },
 });
+
+function getCommitHash() {
+  try {
+    return execSync("git rev-parse --short HEAD", { encoding: "utf-8" }).toString().trim();
+  } catch {
+    return "unknown";
+  }
+}

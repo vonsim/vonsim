@@ -1,36 +1,9 @@
 import { IOAddress, MemoryAddress } from "@vonsim/common/address";
+import dedent from "dedent";
 
 import type { Locale } from "..";
 
 const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
-
-const example = `; ¡Bienvenido a VonSim!
-; Este es un ejemplo de código que calcula los primeros
-; n números de la sucesión de Fibonacci, y se guardan a
-; partir de la posición 1000h de la memoria.
-
-     n  equ 10    ; Calcula los primeros 10 números
-
-        org 1000h
-inicio  db 1
-
-        org 2000h
-        mov bx, offset inicio + 1
-        mov al, 0
-        mov ah, inicio
-
-bucle:  cmp bx, offset inicio + n
-        jns fin
-        mov cl, ah
-        add cl, al
-        mov al, ah
-        mov ah, cl
-        mov [bx], cl
-        inc bx
-        jmp bucle
-fin:    hlt
-        end
-`;
 
 export const spanish: Locale = {
   generics: {
@@ -56,7 +29,6 @@ export const spanish: Locale = {
   },
 
   editor: {
-    example,
     lintSummary: n =>
       n === 0 ? "Listo para compilar" : n === 1 ? "Hay un error" : `Hay ${n} errores`,
     files: {
@@ -69,6 +41,34 @@ export const spanish: Locale = {
       "save-as": "Guardar como",
       "save-error": "Error al guardar el archivo",
     },
+    example: dedent`
+      ; ¡Bienvenido a VonSim!
+      ; Este es un ejemplo de código que calcula los primeros
+      ; n números de la sucesión de Fibonacci, y se guardan a
+      ; partir de la posición 1000h de la memoria.
+      
+           n  equ 10    ; Calcula los primeros 10 números
+      
+              org 1000h
+      inicio  db 1
+      
+              org 2000h
+              mov bx, offset inicio + 1
+              mov al, 0
+              mov ah, inicio
+      
+      bucle:  cmp bx, offset inicio + n
+              jns fin
+              mov cl, ah
+              add cl, al
+              mov al, ah
+              mov ah, cl
+              mov [bx], cl
+              inc bx
+              jmp bucle
+      fin:    hlt
+              end
+    `,
   },
 
   control: {
@@ -210,7 +210,36 @@ export const spanish: Locale = {
 
   footer: {
     documentation: "Documentación",
-    "report-issue": "Reportar un error",
     copyright: "III-LIDI, FI, UNLP",
+
+    issue: {
+      report: "Reportar un error",
+      body: (settings, program) => dedent`
+        <!-- Por favor, describa el problema que está teniendo en la mayor cantidad de detalle posible. -->
+        <!-- Por sobre todo, agregue los pasos para reproducir el problema. -->
+
+        <details>
+          <summary>Información extra (POR FAVOR, NO BORRAR)</summary>
+
+          **Versión**: [${__COMMIT_HASH__}](https://github.com/vonsim/vonsim/commit/${__COMMIT_HASH__})
+
+          #### Programa
+
+          \`\`\`asm
+          ${program
+            .split("\n")
+            .map(line => line.trim())
+            .join("\n")}
+          \`\`\`
+
+          #### Configuración
+
+          ${Object.entries(settings)
+            .map(([key, value]) => `- **${key}**: ${value}`)
+            .join("\n          ")}
+          
+        </details>
+      `,
+    },
   },
 };

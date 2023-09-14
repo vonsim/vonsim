@@ -5,3 +5,5 @@
 interface Window {
   codemirror: import("@codemirror/view").EditorView | null;
 }
+
+declare const __COMMIT_HASH__: string;

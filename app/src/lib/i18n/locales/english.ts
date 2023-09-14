@@ -1,35 +1,8 @@
 import { IOAddress, IOAddressLike, MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
 import type { BaseLocale } from "@vonsim/common/i18n";
+import dedent from "dedent";
 
 const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
-
-const example = `; Welcome to VonSim!
-; This is an example program that calculates the first
-; n numbers of the Fibonacci sequence, and stores them
-; starting at memory position 1000h.
-
-     n  equ 10    ; Calculate the first 10 numbers
-
-        org 1000h
-start   db 1
-
-        org 2000h
-        mov bx, offset start + 1
-        mov al, 0
-        mov ah, start
-
-loop:   cmp bx, offset start + n
-        jns finish
-        mov cl, ah
-        add cl, al
-        mov al, ah
-        mov ah, cl
-        mov [bx], cl
-        inc bx
-        jmp loop
-finish: hlt
-        end
-`;
 
 export const english = {
   generics: {
@@ -56,7 +29,6 @@ export const english = {
   },
 
   editor: {
-    example,
     lintSummary: (n: number) =>
       n === 0 ? "Ready to compile" : n === 1 ? "There's an error" : `There're ${n} errors`,
     files: {
@@ -69,6 +41,34 @@ export const english = {
       "save-as": "Save file as",
       "save-error": "Error saving file",
     },
+    example: dedent`
+      ; Welcome to VonSim!
+      ; This is an example program that calculates the first
+      ; n numbers of the Fibonacci sequence, and stores them
+      ; starting at memory position 1000h.
+      
+           n  equ 10    ; Calculate the first 10 numbers
+      
+              org 1000h
+      start   db 1
+      
+              org 2000h
+              mov bx, offset start + 1
+              mov al, 0
+              mov ah, start
+      
+      loop:   cmp bx, offset start + n
+              jns finish
+              mov cl, ah
+              add cl, al
+              mov al, ah
+              mov ah, cl
+              mov [bx], cl
+              inc bx
+              jmp loop
+      finish: hlt
+              end
+    `,
   },
 
   control: {
@@ -210,7 +210,36 @@ export const english = {
 
   footer: {
     documentation: "Documentation",
-    "report-issue": "Report an issue",
     copyright: "III-LIDI, FI, UNLP",
+
+    issue: {
+      report: "Report an issue",
+      body: (settings: Record<string, string | number | boolean>, program: string) => dedent`
+        <!-- Please describe the problem you are having in as much detail as possible. -->
+        <!-- Most importantly, add the steps to reproduce the problem. -->
+
+        <details>
+          <summary>Debug info (PLEASE, DO NOT DELETE)</summary>
+
+          **Version**: [${__COMMIT_HASH__}](https://github.com/vonsim/vonsim/commit/${__COMMIT_HASH__})
+
+          #### Program
+
+          \`\`\`asm
+          ${program
+            .split("\n")
+            .map(line => line.trim())
+            .join("\n")}
+          \`\`\`
+
+          #### Settings
+
+          ${Object.entries(settings)
+            .map(([key, value]) => `- **${key}**: ${value}`)
+            .join("\n          ")}
+          
+        </details>
+      `,
+    },
   },
 } satisfies BaseLocale;
