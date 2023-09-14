@@ -1,5 +1,6 @@
 import { Byte } from "@vonsim/common/byte";
 
+import type { ComponentInit } from "../../../component";
 import type { EventGenerator } from "../../../events";
 import { GenericPIO, PIOPort } from "../../modules/pio";
 
@@ -14,6 +15,12 @@ import { GenericPIO, PIOPort } from "../../modules/pio";
  * This class is: MUTABLE
  */
 export class PIO extends GenericPIO<"pio-printer"> {
+  constructor(options: ComponentInit<"pio-printer">) {
+    super(options);
+    // Strobe line always starts as low
+    this.PA = this.PA.withBit(1, false);
+  }
+
   /**
    * Returns the data as output in the B port.
    * @returns The data as output in the B port.
