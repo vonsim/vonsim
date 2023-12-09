@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
+import { posthog } from "@/lib/posthog";
 import { getSettings, useDevices } from "@/lib/settings";
 import { toast } from "@/lib/toast";
 
@@ -170,7 +171,7 @@ async function dispatch(...args: Action) {
         resetState(simulator.getComputerState());
 
         // Track event
-        umami.track("Start CPU", {
+        posthog.capture("Start CPU", {
           until,
           devices: getSettings().devices,
           language: getSettings().language,
