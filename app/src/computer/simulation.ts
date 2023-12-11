@@ -171,12 +171,17 @@ async function dispatch(...args: Action) {
         resetState(simulator.getComputerState());
 
         // Track event
-        posthog.capture("Start CPU", {
-          until,
-          devices: getSettings().devices,
-          language: getSettings().language,
-          animations: getSettings().animations ? "yes" : "no",
-        });
+        const event = [
+          "Start CPU",
+          {
+            until,
+            devices: getSettings().devices,
+            language: getSettings().language,
+            animations: getSettings().animations ? "yes" : "no",
+          },
+        ] as const;
+        umami.track(...event);
+        posthog.capture(...event);
 
         store.set(simulationAtom, { type: "running", until, waitingForInput: false });
 

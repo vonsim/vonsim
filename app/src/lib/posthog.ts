@@ -5,6 +5,7 @@ const client =
     api_host: "https://eu.posthog.com",
     autocapture: false,
     capture_pageview: true,
+    persistence: "memory",
   }) || posthog;
 
 export { client as posthog };
