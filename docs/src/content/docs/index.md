@@ -47,7 +47,8 @@ entre otras de la [Facultad de Informática](https://info.unlp.edu.ar/) de la [U
 
 VonSim se basa en el trabajo previo de Rubén de Diego Martínez para la Universidad Politécnica de Madrid. El simulador original se llamaba MSX88 y fue desarrollado en 1988. Algunas referencias:
 
-- [Manual de Usuario del MSX88 (v3.0)](/docs/msx88/Manual-MSX88.pdf)
+- [Manual de Usuario del MSX88 (v3.0)](/docs/msx88/Manual-MSX88-v3.pdf)
+- [Manual de Usuario del MSX88 (v4.0)](/docs/msx88/Manual-MSX88-v4.pdf)
 - [Set de instrucciones del MSX88](/docs/msx88/set-instr-MSX88.PDF)
 - [Paper de presentación del MSX88](/docs/msx88/msx88-original-paper.pdf)
 - [MSX88 v3.1 (con DOSBox)](/docs/msx88/MSX88Portable.zip)
