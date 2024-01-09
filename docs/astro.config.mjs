@@ -1,12 +1,13 @@
-import { fileURLToPath } from "node:url";
-
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
+
+import vonsimLang from "./src/assets/vonsim.tmLanguage.json";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://vonsim.github.io",
   base: "/docs/",
+  trailingSlash: "always",
 
   integrations: [
     starlight({
@@ -95,15 +96,7 @@ export default defineConfig({
   // Markdown configuration: https://docs.astro.build/en/reference/configuration-reference/#markdown-options
   markdown: {
     shikiConfig: {
-      langs: [
-        {
-          id: "vonsim",
-          scopeName: "source.asm.vonsim",
-          displayName: "asm",
-          aliases: ["vonsim", "asm"],
-          path: fileURLToPath(new URL("./src/assets/vonsim.tmLanguage.json", import.meta.url)),
-        },
-      ],
+      langs: [vonsimLang],
       theme: "vitesse-dark", // best approximation of the theme
     },
   },

@@ -2,7 +2,7 @@
   font-family: "Chivo";
   font-style: normal;
   font-weight: 100 900;
-  src: url("/fonts/chivo/Chivo[wght].ttf") format("truetype-variations");
+  src: url("/docs/fonts/chivo/Chivo[wght].ttf") format("truetype-variations");
   font-named-instance: "Regular";
 }
 
@@ -10,7 +10,7 @@
   font-family: "Chivo";
   font-style: italic;
   font-weight: 100 900;
-  src: url("/fonts/chivo/Chivo-Italic[wght].ttf") format("truetype-variations");
+  src: url("/docs/fonts/chivo/Chivo-Italic[wght].ttf") format("truetype-variations");
   font-named-instance: "Italic";
 }
 
@@ -18,7 +18,7 @@
   font-family: "JetBrains Mono";
   font-style: normal;
   font-weight: 100 800;
-  src: url("/fonts/jetbrains-mono/JetBrainsMono[wght].woff2") format("woff2-variations");
+  src: url("/docs/fonts/jetbrains-mono/JetBrainsMono[wght].woff2") format("woff2-variations");
   font-named-instance: "Regular";
 }
 
@@ -26,7 +26,7 @@
   font-family: "JetBrains Mono";
   font-style: italic;
   font-weight: 100 800;
-  src: url("/fonts/jetbrains-mono/JetBrainsMono-Italic[wght].woff2") format("woff2-variations");
+  src: url("/docs/fonts/jetbrains-mono/JetBrainsMono-Italic[wght].woff2") format("woff2-variations");
   font-named-instance: "Italic";
 }
 

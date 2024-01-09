@@ -11,11 +11,11 @@
     "build": "pnpm --dir packages/scripts run build"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
   },
   "devDependencies": {
-    "prettier": "^3.0.3",
-    "turbo": "^1.10.13"
+    "prettier": "^3.1.1",
+    "turbo": "^1.11.3"
   }
 }
