@@ -42,7 +42,7 @@ export const settingsAtom = atomWithStorage<Settings>(
       return () => window?.removeEventListener("storage", listener);
     },
   },
-  { unstable_getOnInit: true },
+  { getOnInit: true },
 );
 
 export const getSettings = () => store.get(settingsAtom);

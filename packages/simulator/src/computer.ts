@@ -95,7 +95,10 @@ export class Computer<TDevices extends DevicesConfiguration = DevicesConfigurati
     return {
       cpu: this.cpu.toJSON(),
       memory: this.memory.toJSON(),
-      io: this.io.toJSON(),
+      // This is safe because `TDevices` is ensured to be a key of `DevicesMap`
+      // Nonetheless, this worked without the assertion with TypeScript v5.2.2,
+      // but stopped working with v5.3.3. I don't know why.
+      io: this.io.toJSON() as ReturnType<DevicesMap[DevicesConfiguration]["toJSON"]>,
     } satisfies JsonObject;
   }
 }

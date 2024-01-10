@@ -21,7 +21,7 @@ const programAtom = atomWithStorage(
   "vonsim-program",
   translate(getSettings().language, "editor.example"),
   undefined,
-  { unstable_getOnInit: true },
+  { getOnInit: true },
 );
 
 export const useSavedProgram = () => useAtomValue(programAtom);
