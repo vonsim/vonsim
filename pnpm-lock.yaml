@@ -96,8 +96,8 @@ importers:
         specifier: ^2.6.1
         version: 2.6.1(@types/react@18.2.47)(react@18.2.0)
       posthog-js:
-        specifier: ^1.97.0
-        version: 1.97.0
+        specifier: ^1.97.1
+        version: 1.97.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -108,8 +108,8 @@ importers:
         specifier: ^1.0.8
         version: 1.0.8(react-dom@18.2.0)(react@18.2.0)
       react-simple-keyboard:
-        specifier: ^3.7.62
-        version: 3.7.62(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^3.7.63
+        version: 3.7.63(react-dom@18.2.0)(react@18.2.0)
       react-use:
         specifier: ^17.4.2
         version: 17.4.2(react-dom@18.2.0)(react@18.2.0)
@@ -121,8 +121,8 @@ importers:
         version: 3.22.4
     devDependencies:
       '@iconify/json':
-        specifier: ^2.2.166
-        version: 2.2.166
+        specifier: ^2.2.167
+        version: 2.2.167
       '@iconify/tailwind':
         specifier: ^0.1.4
         version: 0.1.4
@@ -196,8 +196,8 @@ importers:
   docs:
     devDependencies:
       '@astrojs/starlight':
-        specifier: ^0.15.2
-        version: 0.15.2(astro@4.1.1)
+        specifier: ^0.15.3
+        version: 0.15.3(astro@4.1.1)
       astro:
         specifier: ^4.1.1
         version: 4.1.1(typescript@5.3.3)
@@ -297,8 +297,8 @@ importers:
         version: 8.0.1
     devDependencies:
       '@types/node':
-        specifier: ^20.10.7
-        version: 20.10.7
+        specifier: ^20.10.8
+        version: 20.10.8
       '@vonsim/tsconfig':
         specifier: workspace:^
         version: link:../tsconfig
@@ -449,8 +449,8 @@ packages:
       zod: 3.22.4
     dev: true
 
-  /@astrojs/starlight@0.15.2(astro@4.1.1):
-    resolution: {integrity: sha512-HGs8IWAVsJI2wc8eIotXNavM3LDi6RVeGHI0PqsP4jdK0qB3mXC8VIBMaeSYP9ySUbX2JwNTdJgp3jDfrXtopA==}
+  /@astrojs/starlight@0.15.3(astro@4.1.1):
+    resolution: {integrity: sha512-4lyVwn0SEOHN6fRS++hYLjPa/Ax6uw2g29z/Y9n1oWwGxnly0R1T1GsSXfciGE0o2fCLzbFLx8KffS/OZWUwIw==}
     peerDependencies:
       astro: ^4.0.0
     dependencies:
@@ -462,7 +462,6 @@ packages:
       astro: 4.1.1(typescript@5.3.3)
       astro-expressive-code: 0.30.2(astro@4.1.1)
       bcp-47: 2.1.0
-      execa: 8.0.1
       hast-util-select: 6.0.2
       hastscript: 8.0.0
       mdast-util-directive: 3.0.0
@@ -2271,8 +2270,8 @@ packages:
   /@humanwhocodes/object-schema@2.0.1:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
 
-  /@iconify/json@2.2.166:
-    resolution: {integrity: sha512-Cq+t8xOBWU2Dt+bECLvGnF6yxj5hEEF5rmHiEvVR68flgcmG6/ph5xDr9+YWqT3Ita1WxDtj5lVWxoEe/c+U3A==}
+  /@iconify/json@2.2.167:
+    resolution: {integrity: sha512-5VFebxiHKApn9U9IFuBniJ0BSlDfDhkyNsWIVGYwBT9jSW2HSQJhybnuBh8EiEi2KL3l8NF7QP86RrJfWgRsNA==}
     dependencies:
       '@iconify/types': 2.0.0
       pathe: 1.1.1
@@ -3956,8 +3955,8 @@ packages:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
     dev: true
 
-  /@types/node@20.10.7:
-    resolution: {integrity: sha512-fRbIKb8C/Y2lXxB5eVMj4IU7xpdox0Lh8bUPEdtLysaylsml1hOOx1+STloRs/B9nf7C6kPRmmg/V7aQW7usNg==}
+  /@types/node@20.10.8:
+    resolution: {integrity: sha512-f8nQs3cLxbAFc00vEU59yf9UyGUftkPaLGfvbVOIDdx2i1b8epBqj2aNGyP19fiyXWvlmZ7qC1XLjAzw/OKIeA==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -3984,7 +3983,7 @@ packages:
   /@types/resolve@1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 20.10.7
+      '@types/node': 20.10.8
     dev: true
 
   /@types/sax@1.2.7:
@@ -5360,7 +5359,7 @@ packages:
       object.assign: 4.1.5
       regexp.prototype.flags: 1.5.1
       safe-array-concat: 1.0.1
-      safe-regex-test: 1.0.0
+      safe-regex-test: 1.0.1
       string.prototype.trim: 1.2.8
       string.prototype.trimend: 1.0.7
       string.prototype.trimstart: 1.0.7
@@ -6864,7 +6863,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.10.7
+      '@types/node': 20.10.8
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -8325,8 +8324,8 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /posthog-js@1.97.0:
-    resolution: {integrity: sha512-kp1xGrL5m4MbVKpF33E5qDqWE4wl/D843W3un4QEe2V4dSvAmpRfP0t0X4EyM79ALZ3EDE+SGbJWdVQEJo9ldA==}
+  /posthog-js@1.97.1:
+    resolution: {integrity: sha512-N5r7sm4EiSxBgFTZuReR7wvHgzK/UkPbIsy/nZuIexLD+oa94ZQFNY/i1o8utDNmXHFWVKv4rwFmzRmPZYc8Zw==}
     dependencies:
       fflate: 0.4.8
     dev: false
@@ -8481,8 +8480,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /react-simple-keyboard@3.7.62(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-ImpIhOwtTUUD3CprfkfyQjT5qyN5JsKzTfjYQX5XQLni0L5jnP/qOk0LJKCfK+0FkBg1pUHZQVlVI46XsI3mYA==}
+  /react-simple-keyboard@3.7.63(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-6HHAzg5p8xZWTrCILn5LAHtEm6TIPp9UDC2qQ3AEio2uRcrikj2hcedeCGbBbKxqutkk+etp6/Xo9Z7yIpk0xg==}
     peerDependencies:
       react: ^16.0.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
@@ -8947,6 +8946,15 @@ packages:
     dependencies:
       call-bind: 1.0.2
       get-intrinsic: 1.2.1
+      is-regex: 1.1.4
+    dev: true
+
+  /safe-regex-test@1.0.1:
+    resolution: {integrity: sha512-Y5NejJTTliTyY4H7sipGqY+RX5P87i3F7c4Rcepy72nq+mNLhIsD0W4c7kEmduMDQCSqtPsXPlSTsFhh2LQv+g==}
+    engines: {node: '>= 0.4'}
+    dependencies:
+      call-bind: 1.0.5
+      get-intrinsic: 1.2.2
       is-regex: 1.1.4
 
   /safer-buffer@2.1.2:
