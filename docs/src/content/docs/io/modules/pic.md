@@ -20,8 +20,8 @@ Las líneas están conectadas a los siguientes dispositivos:
 | Línea  | Módulo/Disp.                             |
 | :----: | :--------------------------------------- |
 | `INT0` | [Tecla F10](/docs/io/devices/f10/)       |
-| `INT1` | [Timer](/docs/io/devices/timer/)         |
-| `INT2` | [Handshake](/docs/io/devices/handshake/) |
+| `INT1` | [Timer](/docs/io/modules/timer/)         |
+| `INT2` | [Handshake](/docs/io/modules/handshake/) |
 | `INT3` | --                                       |
 | `INT4` | --                                       |
 | `INT5` | --                                       |
