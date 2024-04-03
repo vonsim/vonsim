@@ -74,7 +74,7 @@ export default defineConfig({
           attrs: {
             async: true,
             defer: true,
-            src: "https://umami.juanm04.com/script.js",
+            src: "https://umami.jms.ar/script.js",
             "data-website-id": "7ed03e0b-660d-4c86-ba49-1e58f5981823",
             "data-do-not-track": "true",
           },
