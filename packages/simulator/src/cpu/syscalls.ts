@@ -40,7 +40,8 @@ export function* handleSyscall(
     case 3: {
       // INT 3 - Breakpoint
       yield { type: "cpu:int.3" };
-      return true;
+      // Doesn't return -- retrieves machine state
+      break;
     }
 
     case 6: {
