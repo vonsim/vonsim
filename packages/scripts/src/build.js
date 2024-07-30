@@ -8,7 +8,7 @@
 
 import fs from "node:fs/promises";
 
-import { $ } from "execa";
+import { execa } from "execa";
 
 const rootDir = new URL("../../..", import.meta.url);
 const distDir = new URL("./dist/", rootDir);
@@ -22,12 +22,20 @@ if (await fs.stat(distDir).catch(() => false)) {
 
 console.info("\n\n========= Building @vonsim/app =========\n");
 const appDir = new URL("./app/", rootDir);
-await $({ cwd: appDir })`pnpm run build`.pipeStdout(process.stdout).pipeStderr(process.stderr);
+await execa({
+  cwd: appDir,
+  stdout: process.stdout,
+  stderr: process.stdout,
+})`pnpm run build`;
 await fs.rename(new URL("./dist/", appDir), distDir);
 
 console.info("\n\n========= Building @vonsim/docs =========\n");
 const docsDir = new URL("./docs/", rootDir);
-await $({ cwd: docsDir })`pnpm run build`.pipeStdout(process.stdout).pipeStderr(process.stderr);
+await execa({
+  cwd: docsDir,
+  stdout: process.stdout,
+  stderr: process.stdout,
+})`pnpm run build`;
 await fs.rename(new URL("./dist/", docsDir), new URL("./docs/", distDir));
 
 await fs.rename(new URL("./docs/404.html", distDir), new URL("./404.html", distDir));

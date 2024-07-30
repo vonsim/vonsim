@@ -12,10 +12,11 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "pnpm": ">=8.0.0"
+    "pnpm": ">=9.0.0"
   },
+  "packageManager": "pnpm@9.6.0",
   "devDependencies": {
-    "prettier": "^3.1.1",
-    "turbo": "^1.11.3"
+    "prettier": "^3.3.3",
+    "turbo": "^2.0.9"
   }
 }

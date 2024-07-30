@@ -11,14 +11,14 @@
     "astro": "astro"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.4.1",
+    "@astrojs/check": "^0.8.3",
     "@astrojs/starlight": "^0.15.3",
-    "astro": "^4.1.1",
-    "eslint": "^8.56.0",
+    "astro": "^4.12.2",
+    "eslint": "^9.8.0",
     "eslint-config-vonsim": "workspace:^",
-    "satori": "^0.10.11",
+    "satori": "^0.10.14",
     "satori-html": "^0.3.2",
-    "sharp": "^0.33.1",
-    "typescript": "~5.3.3"
+    "sharp": "^0.33.4",
+    "typescript": "~5.5.4"
   }
 }
