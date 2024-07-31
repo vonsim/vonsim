@@ -1,30 +1,21 @@
 import type { Program } from "@vonsim/assembler";
-import type { JsonObject, Simplify } from "type-fest";
+import type { JsonObject } from "type-fest";
 
 import { CPU } from "./cpu";
-import {
-  Handshake,
-  KeyboardAndScreen,
-  NoDevices,
-  PIOPrinter,
-  PIOSwitchesAndLeds,
-} from "./io/configurations";
+import { IOInterface } from "./io";
 import { Memory } from "./memory";
 
-export type ComputerOptions<TDevices extends DevicesConfiguration = DevicesConfiguration> = {
+export type ComputerOptions = {
   program: Program;
-  devices: TDevices;
+  devices: DevicesConfiguration;
 } & ({ data: "clean" | "randomize" } | { data: "unchanged"; previous: Computer });
 
-export type DevicesMap = {
-  "no-devices": NoDevices;
-  "keyboard-and-screen": KeyboardAndScreen;
-  "pio-switches-and-leds": PIOSwitchesAndLeds;
-  "pio-printer": PIOPrinter;
-  handshake: Handshake;
+export type DevicesConfiguration = {
+  keyboardAndScreen: boolean;
+  pic: boolean; // includes clock, f10 and timer
+  pio: null | "switches-and-leds" | "printer";
+  handshake: null | "printer";
 };
-
-export type DevicesConfiguration = Simplify<keyof DevicesMap>;
 
 /**
  * The computer is the main class of the simulator.
@@ -43,62 +34,23 @@ export type DevicesConfiguration = Simplify<keyof DevicesMap>;
  * ---
  * This class is: MUTABLE
  */
-export class Computer<TDevices extends DevicesConfiguration = DevicesConfiguration> {
+export class Computer {
   readonly cpu: CPU;
   readonly memory: Memory;
-  readonly io: DevicesMap[TDevices];
+  readonly io: IOInterface;
 
-  constructor(options: ComputerOptions<TDevices>) {
+  constructor(options: ComputerOptions) {
     const init = { computer: this, ...options } as const;
     this.cpu = new CPU(init);
     this.memory = new Memory(init);
-
-    switch (options.devices) {
-      case "no-devices": {
-        // @ts-expect-error ensured by `TDevices` and `options`
-        this.io = new NoDevices(init);
-        break;
-      }
-
-      case "keyboard-and-screen": {
-        // @ts-expect-error ensured by `TDevices` and `options`
-        this.io = new KeyboardAndScreen(init);
-        break;
-      }
-
-      case "pio-switches-and-leds": {
-        // @ts-expect-error ensured by `TDevices` and `options`
-        this.io = new PIOSwitchesAndLeds(init);
-        break;
-      }
-
-      case "pio-printer": {
-        // @ts-expect-error ensured by `TDevices` and `options`
-        this.io = new PIOPrinter(init);
-        break;
-      }
-
-      case "handshake": {
-        // @ts-expect-error ensured by `TDevices` and `options`
-        this.io = new Handshake(init);
-        break;
-      }
-
-      default: {
-        const _exhaustiveCheck: never = options.devices;
-        throw new Error(`Unknown devices configuration: ${_exhaustiveCheck}`);
-      }
-    }
+    this.io = new IOInterface(init);
   }
 
   toJSON() {
     return {
       cpu: this.cpu.toJSON(),
       memory: this.memory.toJSON(),
-      // This is safe because `TDevices` is ensured to be a key of `DevicesMap`
-      // Nonetheless, this worked without the assertion with TypeScript v5.2.2,
-      // but stopped working with v5.3.3. I don't know why.
-      io: this.io.toJSON() as ReturnType<DevicesMap[DevicesConfiguration]["toJSON"]>,
+      io: this.io.toJSON(),
     } satisfies JsonObject;
   }
 }

@@ -2,9 +2,10 @@ import type { IOAddressLike } from "@vonsim/common/address";
 import { Byte } from "@vonsim/common/byte";
 import type { JsonObject } from "type-fest";
 
-import type { ComponentInit } from "../../../component";
-import type { EventGenerator } from "../../../events";
-import { IOModule } from "../../module";
+import type { ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
+import { Printer } from "../devices/printer";
+import { IOModule } from "../module";
 
 export type HandshakeRegister = "DATA" | "STATE";
 
@@ -35,20 +36,46 @@ export type HandshakeOperation =
  * ---
  * This class is: MUTABLE
  */
-export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
+export class Handshake extends IOModule<HandshakeRegister> {
   #DATA: Byte<8>;
   #STATE: Byte<8>;
 
-  constructor(options: ComponentInit<"handshake">) {
+  /**
+   * Printer connected to a Handshake.
+   *
+   * @see
+   * - {@link Printer}.
+   * - {@link https://vonsim.github.io/docs/io/devices/printer/#imprimir-con-handshake}.
+   *
+   * ---
+   * This class is: MUTABLE
+   */
+  readonly printer: Printer;
+
+  constructor(options: ComponentInit) {
     super(options);
-    if (options.data === "unchanged" && "handshake" in options.previous.io) {
-      this.#DATA = Byte.zero(8);
-    } else if (options.data === "randomize") {
+    if (options.data === "randomize") {
       this.#DATA = Byte.random(8);
     } else {
       this.#DATA = Byte.zero(8);
     }
     this.#STATE = Byte.zero(8);
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+    this.printer = new (class extends Printer {
+      *readData(): EventGenerator<Byte<8>> {
+        const char = self.#DATA;
+        yield { type: "printer:data.read", char };
+        return char;
+      }
+
+      *updateBusy(busy: boolean): EventGenerator {
+        if (busy) yield { type: "printer:busy.on" };
+        else yield { type: "printer:busy.off" };
+        yield* self.updateBusy(busy);
+      }
+    })(options);
   }
 
   /**
@@ -57,13 +84,6 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
    */
   get interrupts(): boolean {
     return this.#STATE.bit(7);
-  }
-
-  /**
-   * @returns The value of the DATA register. Consumed by the printer.
-   */
-  get DATA(): Byte<8> {
-    return this.#DATA;
   }
 
   chipSelect(address: IOAddressLike): HandshakeRegister | null {
@@ -91,24 +111,24 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
     if (register === "DATA") {
       this.#DATA = value;
       yield { type: "handshake:register.update", register, value };
-      yield* this.computer.io.printer.setStrobe(true);
-      yield* this.computer.io.printer.setStrobe(false);
+      yield* this.printer.setStrobe(true);
+      yield* this.printer.setStrobe(false);
     } else if (register === "STATE") {
-      value = value.withBit(0, this.computer.io.printer.busy);
+      value = value.withBit(0, this.printer.busy);
       this.#STATE = value;
       yield { type: "handshake:register.update", register, value };
 
       // If CPU sent state with bit 1 set, send strobe to printer
       if (this.#STATE.bit(1)) {
-        yield* this.computer.io.printer.setStrobe(true);
-        yield* this.computer.io.printer.setStrobe(false);
+        yield* this.printer.setStrobe(true);
+        yield* this.printer.setStrobe(false);
         this.#STATE = this.#STATE.withBit(1, false);
         yield { type: "handshake:register.update", register, value: this.#STATE };
       } else {
         // In any other case, check if printer is ready
-        if (this.interrupts && !this.computer.io.printer.busy) {
+        if (this.interrupts && !this.printer.busy) {
           yield { type: "handshake:int.on" };
-          yield* this.computer.io.pic.interrupt(2);
+          if (this.computer.io.pic) yield* this.computer.io.pic.interrupt(2);
         } else {
           yield { type: "handshake:int.off" };
         }
@@ -134,7 +154,7 @@ export class Handshake extends IOModule<HandshakeRegister, "handshake"> {
 
     if (this.interrupts && !busy) {
       yield { type: "handshake:int.on" };
-      yield* this.computer.io.pic.interrupt(2);
+      if (this.computer.io.pic) yield* this.computer.io.pic.interrupt(2);
     } else {
       yield { type: "handshake:int.off" };
     }

@@ -30,19 +30,16 @@ export type PrinterEvent =
  * ---
  * These classes are: MUTABLE
  */
-export abstract class GenericPrinter<
-  TDevices extends "pio-printer" | "handshake",
-> extends Component<TDevices> {
+export abstract class Printer extends Component {
   static readonly BUFFER_SIZE = 5;
 
   #buffer: Byte<8>[];
   #paper: string;
   #lastStrobe = false;
 
-  constructor(options: ComponentInit<TDevices>) {
+  constructor(options: ComponentInit) {
     super(options);
-    this.computer = options.computer;
-    if (options.data === "unchanged" && "printer" in options.previous.io) {
+    if (options.data === "unchanged" && options.previous.io.printer) {
       this.#buffer = options.previous.io.printer.#buffer;
       this.#paper = options.previous.io.printer.#paper;
       this.#lastStrobe = options.previous.io.printer.#lastStrobe;
@@ -59,7 +56,7 @@ export abstract class GenericPrinter<
    * @returns The character read from the data bus.
    *
    * ---
-   * Called by {@link GenericPrinter.setStrobe}.
+   * Called by {@link Printer.setStrobe}.
    */
   abstract readData(): EventGenerator<Byte<8>>;
 
@@ -69,7 +66,7 @@ export abstract class GenericPrinter<
    * @param busy Whether the buffer just became full or not.
    *
    * ---
-   * Called by {@link GenericPrinter.setStrobe} and {@link GenericPrinter.print}.
+   * Called by {@link Printer.setStrobe} and {@link Printer.print}.
    */
   abstract updateBusy(busy: boolean): EventGenerator;
 
@@ -77,7 +74,7 @@ export abstract class GenericPrinter<
    * Returns whether the buffer is full or not.
    */
   get busy() {
-    return this.#buffer.length >= GenericPrinter.BUFFER_SIZE;
+    return this.#buffer.length >= Printer.BUFFER_SIZE;
   }
 
   /**
@@ -134,7 +131,7 @@ export abstract class GenericPrinter<
     const [first, ...rest] = this.#buffer;
     this.#buffer = rest;
     yield { type: "printer:buffer.pop", char: first };
-    if (rest.length === GenericPrinter.BUFFER_SIZE - 1) yield* this.updateBusy(false);
+    if (rest.length === Printer.BUFFER_SIZE - 1) yield* this.updateBusy(false);
 
     if (first.unsigned === 12) {
       // Character is a form feed

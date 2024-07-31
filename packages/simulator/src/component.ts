@@ -4,18 +4,16 @@ import type { Computer, ComputerOptions, DevicesConfiguration } from "./computer
 
 export type { DevicesConfiguration };
 
-export type ComponentInit<TDevices extends DevicesConfiguration = DevicesConfiguration> = {
-  computer: Computer<TDevices>;
-} & ComputerOptions<TDevices>;
+export type ComponentInit = { computer: Computer } & ComputerOptions;
 
 /**
  * This is the base class for all components.
  * A "component" is a part of the computer that can be interacted with.
  */
-export abstract class Component<TDevices extends DevicesConfiguration = DevicesConfiguration> {
-  protected computer: Computer<TDevices>;
+export abstract class Component {
+  protected readonly computer: Computer;
 
-  constructor(options: ComponentInit<TDevices>) {
+  constructor(options: ComponentInit) {
     this.computer = options.computer;
   }
 

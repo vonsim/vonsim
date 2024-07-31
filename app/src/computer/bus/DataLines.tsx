@@ -6,24 +6,26 @@ export function DataLines() {
 
   const addressPath = [
     "M 699 349 H 800", // CPU -> Memory
-    devices.hasIOBus && "M 725 349 V 770", // Down
-    devices.hasIOBus && "M 450 770 H 900", // PIC to PIO/Handshake
-    devices.hasIOBus && "M 618 770 V 875", // Timer
+    devices.pic && "M 725 349 V 770 H 450",
+    devices.pio && "M 725 349 V 670 H 900",
+    devices.timer && "M 725 349 V 770 H 618 V 875",
+    devices.handshake && "M 725 349 V 980 H 900",
   ]
     .filter(Boolean)
     .join(" ");
 
   const dataPath = [
     "M 687 249 H 800", // CPU -> Memory
-    devices.hasIOBus && "M 765 249 V 790", // Down
-    devices.hasIOBus && "M 450 790 H 900", // PIC to PIO/Handshake
-    devices.hasIOBus && "M 598 790 V 875", // Timer
+    devices.pic && "M 765 249 V 790 H 450",
+    devices.pio && "M 765 249 V 690 H 900",
+    devices.timer && "M 765 249 V 790 H 598 V 875",
+    devices.handshake && "M 765 249 V 1000 H 900",
   ]
     .filter(Boolean)
     .join(" ");
 
   return (
-    <svg className="pointer-events-none absolute inset-0 z-[5] h-full w-full">
+    <svg className="pointer-events-none absolute inset-0 z-[5] size-full">
       {/* Data lines */}
       <path
         className="fill-none stroke-stone-900 stroke-[14px]"

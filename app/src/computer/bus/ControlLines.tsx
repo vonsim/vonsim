@@ -9,18 +9,20 @@ export function ControlLines() {
 
   const rdPath = [
     "M 380 420 H 800", // CPU -> Memory
-    devices.hasIOBus && "M 780 420 V 805", // Down
-    devices.hasIOBus && "M 450 805 H 900", // PIC to PIO/Handshake
-    devices.hasIOBus && "M 583 805 V 875", // Timer
+    devices.pic && "M 780 420 V 805 H 450",
+    devices.pio && "M 780 420 V 705 H 900",
+    devices.timer && "M 780 420 V 805 H 583 V 875",
+    devices.handshake && "M 780 420 V 1015 H 900",
   ]
     .filter(Boolean)
     .join(" ");
 
   const wrPath = [
     "M 380 440 H 800", // CPU -> Memory
-    devices.hasIOBus && "M 790 440 V 815", // Down
-    devices.hasIOBus && "M 450 815 H 900", // PIC to PIO/Handshake
-    devices.hasIOBus && "M 573 815 V 875", // Timer
+    devices.pic && "M 790 440 V 815 H 450",
+    devices.pio && "M 790 440 V 715 H 900",
+    devices.timer && "M 790 440 V 815 H 573 V 875",
+    devices.handshake && "M 790 440 V 1025 H 900",
   ]
     .filter(Boolean)
     .join(" ");
@@ -28,7 +30,7 @@ export function ControlLines() {
   const memPath = "M 750 545 H 860 V 460";
 
   return (
-    <svg className="pointer-events-none absolute inset-0 z-[15] h-full w-full">
+    <svg className="pointer-events-none absolute inset-0 z-[15] size-full">
       <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={rdPath} />
       <animated.path
         className="fill-none stroke-[4px]"
@@ -67,8 +69,8 @@ export function ControlLines() {
 
       {devices.pic && <ControlLine springs="bus.pic" d="M 521 595 V 730 H 450" />}
       {devices.timer && <ControlLine springs="bus.timer" d="M 563 595 V 875" />}
-      {devices.pio && <ControlLine springs="bus.pio" d="M 612 595 V 730 H 900" />}
-      {devices.handshake && <ControlLine springs="bus.handshake" d="M 635 595 V 730 H 900" />}
+      {devices.pio && <ControlLine springs="bus.pio" d="M 612 595 V 630 H 900" />}
+      {devices.handshake && <ControlLine springs="bus.handshake" d="M 710 595 V 950 H 900" />}
 
       {/* CPU/PIC */}
 
@@ -82,33 +84,33 @@ export function ControlLines() {
       {/* Interrupt lines */}
 
       {devices.pic && devices.f10 && <ControlLine springs="bus.int0" d="M 145 950 V 900" />}
-      {devices.pic && devices.timer && <ControlLine springs="bus.int1" d="M 500 955 H 400 V 900" />}
+      {devices.pic && devices.timer && <ControlLine springs="bus.int1" d="M 475 955 H 400 V 900" />}
       {devices.pic && devices.handshake && (
-        <ControlLine springs="bus.int2" d="M 930 866 V 1050 H 300 V 900" />
+        <ControlLine springs="bus.int2" d="M 900 1075 H 300 V 900" />
       )}
 
       {/* Other devices */}
 
-      {devices.preset === "pio-switches-and-leds" && (
+      {devices.pio === "switches-and-leds" && (
         <>
-          <ControlLine springs="bus.switches->pio" d="M 1300 768 H 1120" />
-          <ControlLine springs="bus.pio->leds" d="M 1120 858 H 1300" />
+          <ControlLine springs="bus.switches->pio" d="M 1300 668 H 1120" />
+          <ControlLine springs="bus.pio->leds" d="M 1120 758 H 1300" />
         </>
       )}
 
-      {devices.preset === "pio-printer" && (
+      {devices.pio === "printer" && (
         <>
-          <ControlLine springs="bus.printer.strobe" d="M 1120 767 H 1250" />
-          <ControlLine springs="bus.printer.busy" d="M 1250 782 H 1120" />
-          <ControlLine springs="bus.printer.data" d="M 1120 837 H 1250" />
+          <ControlLine springs="bus.printer.strobe" d="M 1120 667 H 1225 V 992 H 1300" />
+          <ControlLine springs="bus.printer.busy" d="M 1300 1007 H 1210 V 682 H 1120" />
+          <ControlLine springs="bus.printer.data" d="M 1120 737 H 1175 V 1062 H 1300" />
         </>
       )}
 
-      {devices.preset === "handshake" && (
+      {devices.handshake === "printer" && (
         <>
-          <ControlLine springs="bus.printer.strobe" d="M 1120 767 H 1250" />
-          <ControlLine springs="bus.printer.busy" d="M 1250 782 H 1120" />
-          <ControlLine springs="bus.printer.data" d="M 1120 837 H 1250" />
+          <ControlLine springs="bus.printer.strobe" d="M 1120 992 H 1300" />
+          <ControlLine springs="bus.printer.busy" d="M 1300 1007 H 1120" />
+          <ControlLine springs="bus.printer.data" d="M 1120 1062 H 1300" />
         </>
       )}
     </svg>
@@ -170,7 +172,7 @@ export function ControlLinesLegends() {
         </ControlLineLegend>
       )}
       {devices.handshake && (
-        <ControlLineLegend className="left-[600px] top-[573px]">
+        <ControlLineLegend className="left-[675px] top-[573px]">
           {translate("computer.chip-select.handshake")}
         </ControlLineLegend>
       )}
@@ -184,9 +186,9 @@ export function ControlLinesLegends() {
 
       {devices.printer && (
         <>
-          <ControlLineLegend className="left-[1260px] top-[758px]">strobe</ControlLineLegend>
-          <ControlLineLegend className="left-[1260px] top-[773px]">busy</ControlLineLegend>
-          <ControlLineLegend className="left-[1260px] top-[828px]">data</ControlLineLegend>
+          <ControlLineLegend className="left-[1310px] top-[983px]">strobe</ControlLineLegend>
+          <ControlLineLegend className="left-[1310px] top-[998px]">busy</ControlLineLegend>
+          <ControlLineLegend className="left-[1310px] top-[1053px]">data</ControlLineLegend>
         </>
       )}
     </>

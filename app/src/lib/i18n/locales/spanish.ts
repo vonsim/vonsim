@@ -170,13 +170,24 @@ export const spanish: Locale = {
 
     devices: {
       label: "Dispositivos",
-      description: "Qué conjunto de dispositivos usar.",
+      description: "Qué dispositivos deben estar habilitados.",
 
-      "no-devices": "Ninguno",
       "keyboard-and-screen": "Teclado y pantalla",
-      "pio-switches-and-leds": "Llaves y luces",
-      "pio-printer": "Impresora (PIO)",
-      handshake: "Impresora (Handshake)",
+      pic: {
+        label: "PIC",
+        description: "También agrega un timer y la tecla F10.",
+      },
+      pio: {
+        label: "PIO",
+        "switches-and-leds": "Llaves y luces",
+        printer: "Impresora",
+        null: "Desconectado",
+      },
+      handshake: {
+        label: "Handshake",
+        printer: "Impresora",
+        null: "Desconectado",
+      },
     },
 
     animations: {
@@ -234,9 +245,9 @@ export const spanish: Locale = {
 
           #### Configuración
 
-          ${Object.entries(settings)
-            .map(([key, value]) => `- **${key}**: ${value}`)
-            .join("\n          ")}
+          \`\`\`json
+          ${JSON.stringify(settings, null, 2)}
+          \`\`\`
           
         </details>
       `,

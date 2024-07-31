@@ -1,22 +1,42 @@
 import { Byte } from "@vonsim/common/byte";
 
-import type { EventGenerator } from "../../../events";
-import { GenericPIO, PIOPort } from "../../modules/pio";
+import { ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
+import { Leds } from "../devices/leds";
+import { Switches } from "../devices/switches";
+import { PIO, PIOPort } from "../modules/pio";
 
 /**
  * PIO (for the switches and leds).
  *
  * @see
- * - {@link GenericPIO}.
+ * - {@link PIO}.
  * - {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
  *
  * ---
  * This class is: MUTABLE
  */
-export class PIO extends GenericPIO<"pio-switches-and-leds"> {
+export class PIOSwitchesAndLeds extends PIO {
+  readonly leds: Leds;
+  readonly switches: Switches;
+
+  constructor(options: ComponentInit) {
+    super(options);
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+    this.leds = new (class extends Leds {})(options);
+    this.switches = new (class extends Switches {
+      *toggle(index: number): EventGenerator {
+        yield* super.toggle(index);
+        yield* self.updatePort("A");
+      }
+    })(options);
+  }
+
   *updatePort(port: PIOPort): EventGenerator {
     if (port === "A") {
-      const switches = this.computer.io.switches.state.unsigned;
+      const switches = this.switches.state.unsigned;
       let PA = this.PA.unsigned;
       const CA = this.CA.unsigned;
 
@@ -47,7 +67,7 @@ export class PIO extends GenericPIO<"pio-switches-and-leds"> {
       // shall be only the ones set by the PIO, where the CB is 0 (output).
 
       PB = PB & ~CB;
-      yield* this.computer.io.leds.update(Byte.fromUnsigned(PB, 8));
+      yield* this.leds.update(Byte.fromUnsigned(PB, 8));
     }
   }
 }

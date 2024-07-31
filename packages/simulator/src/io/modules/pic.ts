@@ -34,9 +34,7 @@ export type PICOperation =
  * ---
  * This class is: MUTABLE
  */
-export class PIC<
-  TDevices extends "pio-switches-and-leds" | "pio-printer" | "handshake",
-> extends IOModule<PICRegister, TDevices> {
+export class PIC extends IOModule<PICRegister> {
   static readonly LINES = 8 satisfies ByteSize;
 
   #IMR: Byte<8>;
@@ -44,13 +42,13 @@ export class PIC<
   #ISR: Byte<8>;
   #lines: Byte<8>[];
 
-  constructor(options: ComponentInit<TDevices>) {
+  constructor(options: ComponentInit) {
     super(options);
     this.#IMR = Byte.fromUnsigned(0xff, 8);
     this.#IRR = Byte.fromUnsigned(0x00, 8);
     this.#ISR = Byte.fromUnsigned(0x00, 8);
 
-    if (options.data === "unchanged" && "pic" in options.previous.io) {
+    if (options.data === "unchanged" && options.previous.io.pic) {
       this.#lines = options.previous.io.pic.#lines;
     } else if (options.data === "randomize") {
       this.#lines = new Array(PIC.LINES).fill(Byte.zero(8)).map(() => Byte.random(8));

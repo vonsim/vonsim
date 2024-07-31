@@ -1,24 +1,43 @@
 import { Byte } from "@vonsim/common/byte";
 
-import type { ComponentInit } from "../../../component";
-import type { EventGenerator } from "../../../events";
-import { GenericPIO, PIOPort } from "../../modules/pio";
+import type { ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
+import { Printer } from "../devices/printer";
+import { PIO, PIOPort } from "../modules/pio";
 
 /**
  * PIO (for the printer).
  *
  * @see
- * - {@link GenericPIO}.
+ * - {@link PIO}.
  * - {@link https://vonsim.github.io/docs/io/devices/printer/#imprimir-con-pio}.
  *
  * ---
  * This class is: MUTABLE
  */
-export class PIO extends GenericPIO<"pio-printer"> {
-  constructor(options: ComponentInit<"pio-printer">) {
+export class PIOPrinter extends PIO {
+  readonly printer: Printer;
+
+  constructor(options: ComponentInit) {
     super(options);
     // Strobe line always starts as low
     this.PA = this.PA.withBit(1, false);
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+    this.printer = new (class extends Printer {
+      *readData(): EventGenerator<Byte<8>> {
+        const char = self.readData();
+        yield { type: "printer:data.read", char };
+        return char;
+      }
+
+      *updateBusy(busy: boolean): EventGenerator {
+        if (busy) yield { type: "printer:busy.on" };
+        else yield { type: "printer:busy.off" };
+        yield* self.updatePort("A");
+      }
+    })(options);
   }
 
   /**
@@ -46,7 +65,7 @@ export class PIO extends GenericPIO<"pio-printer"> {
 
     let PA = this.PA.unsigned;
     const CA = this.CA.unsigned;
-    const busy = this.computer.io.printer.busy;
+    const busy = this.printer.busy;
 
     // Since 1 = input
     // PA & ~CA
@@ -74,7 +93,7 @@ export class PIO extends GenericPIO<"pio-printer"> {
     // If the value is the same as the previous one, Printer.setStrobe
     // won't fire any event.
     if (this.line("A", 1) === "output") {
-      yield* this.computer.io.printer.setStrobe(this.PA.bit(1));
+      yield* this.printer.setStrobe(this.PA.bit(1));
     }
   }
 }

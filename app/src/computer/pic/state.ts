@@ -20,7 +20,7 @@ export const linesAtoms: ByteAtom<8>[] = [
 ];
 
 export function resetPICState(computer: ComputerState) {
-  if (!("pic" in computer.io)) return;
+  if (!computer.io.pic) return;
 
   store.set(IMRAtom, Byte.fromUnsigned(computer.io.pic.IMR, 8));
   store.set(IRRAtom, Byte.fromUnsigned(computer.io.pic.IRR, 8));

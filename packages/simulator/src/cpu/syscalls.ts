@@ -48,7 +48,7 @@ export function* handleSyscall(
       // INT 6 - Read character from the keyboard and store it in [BX]
       yield { type: "cpu:int.6" };
 
-      if (!("keyboard" in computer.io)) {
+      if (!computer.io.keyboard) {
         yield { type: "cpu:error", error: new SimulatorError("device-not-connected", "keyboard") };
         return false;
       }
@@ -71,7 +71,7 @@ export function* handleSyscall(
       // INT 7 - Write string to the screen, starting from [BX] and of length AL
       yield { type: "cpu:int.7" };
 
-      if (!("screen" in computer.io)) {
+      if (!computer.io.screen) {
         yield { type: "cpu:error", error: new SimulatorError("device-not-connected", "screen") };
         return false;
       }

@@ -1,7 +1,7 @@
 import type { Language } from "@vonsim/common/i18n";
 import { z } from "zod";
 
-import { DATA_ON_LOAD_VALUES, DEVICES, LANGUAGES } from "./consts";
+import { DATA_ON_LOAD_VALUES, LANGUAGES } from "./consts";
 
 export const settingsSchema = z.object({
   /**
@@ -22,7 +22,14 @@ export const settingsSchema = z.object({
   /**
    * Value of {@link ComputerOptions.devices}.
    */
-  devices: z.enum(DEVICES).catch("no-devices"),
+  devices: z
+    .object({
+      keyboardAndScreen: z.boolean(),
+      pic: z.boolean(),
+      pio: z.enum(["switches-and-leds", "printer"]).nullable(),
+      handshake: z.enum(["printer"]).nullable(),
+    })
+    .catch({ keyboardAndScreen: false, pic: false, pio: null, handshake: null }),
 
   /**
    * Disable animations for faster running. Only affects animations affected

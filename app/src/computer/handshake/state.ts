@@ -8,7 +8,7 @@ export const DATAAtom = atom(Byte.zero(8));
 export const STATEAtom = atom(Byte.zero(8));
 
 export function resetHandshakeState(computer: ComputerState) {
-  if (!("handshake" in computer.io)) return;
+  if (!computer.io.handshake) return;
 
   store.set(DATAAtom, Byte.fromUnsigned(computer.io.handshake.DATA, 8));
   store.set(STATEAtom, Byte.fromUnsigned(computer.io.handshake.STATE, 8));

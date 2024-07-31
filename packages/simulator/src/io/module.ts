@@ -1,7 +1,7 @@
 import type { IOAddressLike } from "@vonsim/common/address";
 import type { Byte } from "@vonsim/common/byte";
 
-import { Component, DevicesConfiguration } from "../component";
+import { Component } from "../component";
 import type { EventGenerator } from "../events";
 
 /**
@@ -13,10 +13,7 @@ import type { EventGenerator } from "../events";
  * ---
  * These classes are: MUTABLE
  */
-export abstract class IOModule<
-  TRegister extends string,
-  TDevices extends DevicesConfiguration = DevicesConfiguration,
-> extends Component<TDevices> {
+export abstract class IOModule<TRegister extends string> extends Component {
   /**
    * Given an address, returns whether that address is
    * in the range of the IO module and which register

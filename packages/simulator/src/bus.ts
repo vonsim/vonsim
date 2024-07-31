@@ -1,5 +1,5 @@
 import type { SimulatorError } from "./error";
-import type { HandshakeRegister } from "./io/configurations/handshake/handshake";
+import type { HandshakeRegister } from "./io/modules/handshake";
 import type { PICRegister } from "./io/modules/pic";
 import type { PIORegister } from "./io/modules/pio";
 import type { TimerRegister } from "./io/modules/timer";

@@ -8,7 +8,7 @@ export const bufferAtom = atom<Byte<8>[]>([]);
 export const paperAtom = atom("");
 
 export function resetPrinterState(computer: ComputerState) {
-  if (!("printer" in computer.io)) return;
+  if (!computer.io.printer) return;
 
   store.set(
     bufferAtom,

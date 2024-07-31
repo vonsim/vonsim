@@ -287,48 +287,24 @@ async function startPrinter(): Promise<void> {
 export function useSimulation() {
   const status = useAtomValue(simulationAtom);
 
-  const devicesPreset = useDevices();
+  const settings = useDevices();
   const devices = useMemo(
     () => ({
-      preset: devicesPreset,
-      hasIOBus:
-        devicesPreset === "pio-switches-and-leds" ||
-        devicesPreset === "pio-printer" ||
-        devicesPreset === "handshake",
+      hasIOBus: settings.pic || settings.pio !== null || settings.handshake !== null,
 
-      clock:
-        devicesPreset === "pio-switches-and-leds" ||
-        devicesPreset === "pio-printer" ||
-        devicesPreset === "handshake",
-      f10:
-        devicesPreset === "pio-switches-and-leds" ||
-        devicesPreset === "pio-printer" ||
-        devicesPreset === "handshake",
-      keyboard:
-        devicesPreset === "keyboard-and-screen" ||
-        devicesPreset === "pio-switches-and-leds" ||
-        devicesPreset === "pio-printer" ||
-        devicesPreset === "handshake",
-      handshake: devicesPreset === "handshake",
-      leds: devicesPreset === "pio-switches-and-leds",
-      pic:
-        devicesPreset === "pio-switches-and-leds" ||
-        devicesPreset === "pio-printer" ||
-        devicesPreset === "handshake",
-      pio: devicesPreset === "pio-switches-and-leds" || devicesPreset === "pio-printer",
-      printer: devicesPreset === "pio-printer" || devicesPreset === "handshake",
-      screen:
-        devicesPreset === "keyboard-and-screen" ||
-        devicesPreset === "pio-switches-and-leds" ||
-        devicesPreset === "pio-printer" ||
-        devicesPreset === "handshake",
-      switches: devicesPreset === "pio-switches-and-leds",
-      timer:
-        devicesPreset === "pio-switches-and-leds" ||
-        devicesPreset === "pio-printer" ||
-        devicesPreset === "handshake",
+      clock: settings.pic,
+      f10: settings.pic,
+      keyboard: settings.keyboardAndScreen,
+      handshake: settings.handshake,
+      leds: settings.pio === "switches-and-leds",
+      pic: settings.pic,
+      pio: settings.pio,
+      printer: settings.pio === "printer" || settings.handshake === "printer",
+      screen: settings.keyboardAndScreen,
+      switches: settings.pio === "switches-and-leds",
+      timer: settings.pic,
     }),
-    [devicesPreset],
+    [settings],
   );
 
   return { status, dispatch, devices };

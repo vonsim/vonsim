@@ -8,7 +8,7 @@ export const CONTAtom = atom(Byte.zero(8));
 export const COMPAtom = atom(Byte.zero(8));
 
 export function resetTimerState(computer: ComputerState) {
-  if (!("timer" in computer.io)) return;
+  if (!computer.io.timer) return;
 
   store.set(CONTAtom, Byte.fromUnsigned(computer.io.timer.CONT, 8));
   store.set(COMPAtom, Byte.fromUnsigned(computer.io.timer.COMP, 8));

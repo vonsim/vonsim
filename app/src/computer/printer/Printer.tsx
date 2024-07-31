@@ -21,7 +21,7 @@ export function Printer() {
   if (!devices.printer) return null;
 
   return (
-    <div className="absolute left-[1250px] top-[750px] z-10 flex h-min w-80 flex-col rounded-lg border border-stone-600 bg-stone-900 pl-16 [&_*]:z-20">
+    <div className="absolute left-[1300px] top-[975px] z-10 flex h-min w-80 flex-col rounded-lg border border-stone-600 bg-stone-900 pl-16 [&_*]:z-20">
       <div className={styles.printer} title={translate("computer.printer.name")}>
         <div className={styles.shadow} />
         <div className={styles.sides} />

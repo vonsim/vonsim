@@ -10,7 +10,7 @@ export const CAAtom = atom(Byte.zero(8));
 export const CBAtom = atom(Byte.zero(8));
 
 export function resetPIOState(computer: ComputerState) {
-  if (!("pio" in computer.io)) return;
+  if (!computer.io.pio) return;
 
   store.set(PAAtom, Byte.fromUnsigned(computer.io.pio.PA, 8));
   store.set(PBAtom, Byte.fromUnsigned(computer.io.pio.PB, 8));

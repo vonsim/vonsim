@@ -1,6 +1,7 @@
 import { IOAddress, IOAddressLike, MemoryAddress, MemoryAddressLike } from "@vonsim/common/address";
 import type { BaseLocale } from "@vonsim/common/i18n";
 import dedent from "dedent";
+import type { JsonValue } from "type-fest";
 
 const maxAddress = MemoryAddress.from(MemoryAddress.MAX_ADDRESS).toString();
 
@@ -170,13 +171,24 @@ export const english = {
 
     devices: {
       label: "Devices",
-      description: "Which preset of devices to use.",
+      description: "Which devices should be enabled.",
 
-      "no-devices": "No devices",
       "keyboard-and-screen": "Keyboard and screen",
-      "pio-switches-and-leds": "Switches and LEDs",
-      "pio-printer": "Printer (PIO)",
-      handshake: "Printer (Handshake)",
+      pic: {
+        label: "PIC",
+        description: "Also adds a timer and the F10 key.",
+      },
+      pio: {
+        label: "PIO",
+        "switches-and-leds": "Switches and LEDs",
+        printer: "Printer",
+        null: "Disconnected",
+      },
+      handshake: {
+        label: "Handshake",
+        printer: "Printer",
+        null: "Disconnected",
+      },
     },
 
     animations: {
@@ -214,7 +226,7 @@ export const english = {
 
     issue: {
       report: "Report an issue",
-      body: (settings: Record<string, string | number | boolean>, program: string) => dedent`
+      body: (settings: JsonValue, program: string) => dedent`
         <!-- Please describe the problem you are having in as much detail as possible. -->
         <!-- Most importantly, add the steps to reproduce the problem. -->
 
@@ -234,9 +246,9 @@ export const english = {
 
           #### Settings
 
-          ${Object.entries(settings)
-            .map(([key, value]) => `- **${key}**: ${value}`)
-            .join("\n          ")}
+          \`\`\`json
+          ${JSON.stringify(settings, null, 2)}
+          \`\`\`
           
         </details>
       `,

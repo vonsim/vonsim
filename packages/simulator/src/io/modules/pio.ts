@@ -4,6 +4,9 @@ import type { JsonObject } from "type-fest";
 
 import type { ComponentInit } from "../../component";
 import type { EventGenerator } from "../../events";
+import type { Leds } from "../devices/leds";
+import type { Printer } from "../devices/printer";
+import type { Switches } from "../devices/switches";
 import { IOModule } from "../module";
 
 export type PIOPort = "A" | "B";
@@ -34,21 +37,49 @@ export type PIOOperation =
  * ---
  * These classes are: MUTABLE
  */
-export abstract class GenericPIO<
-  TDevices extends "pio-switches-and-leds" | "pio-printer",
-> extends IOModule<PIORegister, TDevices> {
+export abstract class PIO extends IOModule<PIORegister> {
   protected PA: Byte<8>;
   protected PB: Byte<8>;
   protected CA: Byte<8>;
   protected CB: Byte<8>;
 
-  constructor(options: ComponentInit<TDevices>) {
+  /**
+   * Led lights. These are only modified by the PIO, not the user.
+   *
+   * @see {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+   *
+   * ---
+   * This class is: MUTABLE
+   */
+  readonly leds: Leds | null = null;
+  /**
+   * Printer connected to a PIO. It's declared here just for TypeScript purposes.
+   *
+   * @see
+   * - {@link Printer}.
+   * - {@link https://vonsim.github.io/docs/io/devices/printer/#imprimir-con-pio}.
+   *
+   * ---
+   * This class is: MUTABLE
+   */
+  readonly printer: Printer | null = null;
+  /**
+   * Led lights. These are only modified by the PIO, not the user.
+   *
+   * @see {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+   *
+   * ---
+   * This class is: MUTABLE
+   */
+  readonly switches: Switches | null = null;
+
+  constructor(options: ComponentInit) {
     super(options);
-    if (options.data === "unchanged" && "pio" in options.previous.io) {
-      this.PA = (options.previous.io.pio as GenericPIO<TDevices>).PA;
-      this.PB = (options.previous.io.pio as GenericPIO<TDevices>).PB;
-      this.CA = (options.previous.io.pio as GenericPIO<TDevices>).CA;
-      this.CB = (options.previous.io.pio as GenericPIO<TDevices>).CB;
+    if (options.data === "unchanged" && options.previous.io.pio) {
+      this.PA = options.previous.io.pio.PA;
+      this.PB = options.previous.io.pio.PB;
+      this.CA = options.previous.io.pio.CA;
+      this.CB = options.previous.io.pio.CB;
     } else if (options.data === "randomize") {
       this.PA = Byte.random(8);
       this.PB = Byte.random(8);
@@ -107,7 +138,7 @@ export abstract class GenericPIO<
    * and the state of the PIO.
    *
    * ---
-   * Called by the device connected to the port and {@link GenericPIO.write}.
+   * Called by the device connected to the port and {@link PIO.write}.
    */
   abstract updatePort(port: PIOPort): EventGenerator;
 
@@ -118,7 +149,7 @@ export abstract class GenericPIO<
    * @see {@link https://vonsim.github.io/docs/io/modules/pio/}.
    *
    * ---
-   * Called by {@link GenericPIO.updatePort}.
+   * Called by {@link PIO.updatePort}.
    */
   protected line(port: PIOPort, index: number): "input" | "output" {
     // 0 = output, 1 = input

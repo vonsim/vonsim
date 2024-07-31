@@ -1,8 +1,8 @@
 import { Byte } from "@vonsim/common/byte";
 import type { JsonValue } from "type-fest";
 
-import { Component, ComponentInit } from "../../../component";
-import type { EventGenerator } from "../../../events";
+import { Component, ComponentInit } from "../../component";
+import type { EventGenerator } from "../../events";
 
 export type SwitchesEvent = { type: "switches:toggle"; index: number };
 
@@ -14,13 +14,12 @@ export type SwitchesEvent = { type: "switches:toggle"; index: number };
  * ---
  * This class is: MUTABLE
  */
-export class Switches extends Component<"pio-switches-and-leds"> {
+export abstract class Switches extends Component {
   #state: Byte<8>;
 
-  constructor(options: ComponentInit<"pio-switches-and-leds">) {
+  constructor(options: ComponentInit) {
     super(options);
-    this.computer = options.computer;
-    if (options.data === "unchanged" && "switches" in options.previous.io) {
+    if (options.data === "unchanged" && options.previous.io.switches) {
       this.#state = options.previous.io.switches.#state;
     } else if (options.data === "randomize") {
       this.#state = Byte.random(8);
@@ -42,8 +41,6 @@ export class Switches extends Component<"pio-switches-and-leds"> {
   *toggle(index: number): EventGenerator {
     this.#state = this.#state.withBit(index, !this.#state.bit(index));
     yield { type: "switches:toggle", index };
-
-    yield* this.computer.io.pio.updatePort("A");
   }
 
   toJSON() {
