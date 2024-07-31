@@ -55,7 +55,7 @@
     "@vitejs/plugin-react-swc": "^3.7.0",
     "@vonsim/tsconfig": "workspace:^",
     "autoprefixer": "^10.4.19",
-    "eslint": "^9.8.0",
+    "eslint": "^8.57.0",
     "eslint-config-vonsim": "workspace:^",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
