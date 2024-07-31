@@ -28,7 +28,7 @@ export function ComputerContainer() {
   const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative size-full">
       <TransformWrapper
         minScale={0.3}
         initialScale={0.75}

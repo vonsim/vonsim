@@ -20,7 +20,7 @@ const SelectTrigger = forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <span className="icon-[lucide--chevron-down] h-4 w-4 opacity-50" />
+      <span className="icon-[lucide--chevron-down] size-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -34,7 +34,7 @@ const SelectContent = forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={clsx(
-        "relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-stone-600 bg-stone-900 text-white shadow-md",
+        "relative z-50 min-w-32 overflow-hidden rounded-md border border-stone-600 bg-stone-900 text-white shadow-md",
         className,
       )}
       position={position}

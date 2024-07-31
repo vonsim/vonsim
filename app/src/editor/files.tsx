@@ -248,24 +248,24 @@ export function FileHandler() {
           )}
         >
           {fileHandle ? fileHandle.name : translate("editor.files.no-file")}
-          {unsavedChanges && <span className="ml-1 h-2 w-2 rounded-full bg-current" />}
+          {unsavedChanges && <span className="ml-1 size-2 rounded-full bg-current" />}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64" align="start">
         <DropdownMenuItem onClick={openFile}>
-          <span className="icon-[lucide--file-search-2] mr-2 h-4 w-4" />
+          <span className="icon-[lucide--file-search-2] mr-2 size-4" />
           {translate("editor.files.open")}
           <div className="grow" />
           <kbd className="text-stone-600">Ctrl+O</kbd>
         </DropdownMenuItem>
         <DropdownMenuItem disabled={!unsavedChanges} onClick={saveFile}>
-          <span className="icon-[lucide--save] mr-2 h-4 w-4" />
+          <span className="icon-[lucide--save] mr-2 size-4" />
           {translate("editor.files.save")}
           <div className="grow" />
           <kbd className="text-stone-600">Ctrl+S</kbd>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={saveFileAs}>
-          <span className="icon-[lucide--save-all] mr-2 h-4 w-4" />
+          <span className="icon-[lucide--save-all] mr-2 size-4" />
           {translate("editor.files.save-as")}
           <div className="grow" />
           <kbd className="text-stone-600">Ctrl+Shift+S</kbd>

@@ -100,7 +100,7 @@ export function Memory() {
             title={translate("computer.memory.address-decrement")}
             onClick={pageDown}
           >
-            <span className="icon-[lucide--chevron-left] h-4 w-4" />
+            <span className="icon-[lucide--chevron-left] size-4" />
           </button>
           <div className="relative">
             <Input
@@ -123,7 +123,7 @@ export function Memory() {
                 setFixedAddress(null);
               }}
             >
-              <span className="icon-[lucide--x] h-4 w-4 text-stone-500 transition-colors hover:text-stone-300" />
+              <span className="icon-[lucide--x] size-4 text-stone-500 transition-colors hover:text-stone-300" />
             </button>
           </div>
           <button
@@ -132,7 +132,7 @@ export function Memory() {
             title={translate("computer.memory.address-decrement")}
             onClick={pageUp}
           >
-            <span className="icon-[lucide--chevron-right] h-4 w-4" />
+            <span className="icon-[lucide--chevron-right] size-4" />
           </button>
         </div>
       </div>

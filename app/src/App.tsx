@@ -70,7 +70,7 @@ function DesktopLayout() {
         tagName="section"
         className="rounded-lg border border-stone-600 bg-stone-800"
       >
-        <Editor className="h-full w-full" />
+        <Editor className="size-full" />
       </Panel>
       <PanelResizeHandle className="w-2" />
       <Panel
@@ -92,7 +92,7 @@ function DesktopLayout() {
             tagName="section"
             className="rounded-lg border border-stone-600 bg-stone-800"
           >
-            <Settings className="h-full w-full" />
+            <Settings className="size-full" />
           </Panel>
         </>
       )}
@@ -117,7 +117,7 @@ function MobileLayout() {
       <>
         <TabsContent value="editor" asChild>
           <section className="mx-2 grow overflow-hidden rounded-lg border border-stone-600 bg-stone-800 data-[state=inactive]:hidden">
-            <Editor className="h-full w-full" />
+            <Editor className="size-full" />
           </section>
         </TabsContent>
         <TabsContent value="computer" asChild>
@@ -127,7 +127,7 @@ function MobileLayout() {
         </TabsContent>
         <TabsContent value="settings" asChild>
           <section className="mx-2 grow overflow-hidden rounded-lg border border-stone-600 bg-stone-800 data-[state=inactive]:hidden">
-            <Settings className="h-full w-full" />
+            <Settings className="size-full" />
           </section>
         </TabsContent>
 
@@ -136,14 +136,14 @@ function MobileLayout() {
             value="editor"
             className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
           >
-            <span className="icon-[lucide--file-terminal] mr-2 h-4 w-4" />
+            <span className="icon-[lucide--file-terminal] mr-2 size-4" />
             {translate("control.tabs.editor")}
           </TabsTrigger>
           <TabsTrigger
             value="computer"
             className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
           >
-            <span className="icon-[lucide--computer] mr-2 h-4 w-4" />
+            <span className="icon-[lucide--computer] mr-2 size-4" />
             {translate("control.tabs.computer")}
           </TabsTrigger>
         </TabsList>

@@ -44,7 +44,7 @@ export function PIC() {
 
       <hr className="mb-2 border-stone-600" />
 
-      <div className="grid h-full w-full grid-cols-4 items-center">
+      <div className="grid size-full grid-cols-4 items-center">
         {linesAtoms.map((atom, i) => (
           <Register
             key={i}

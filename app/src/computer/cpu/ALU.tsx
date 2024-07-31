@@ -64,7 +64,7 @@ export function ALU() {
       </svg>
 
       <animated.span
-        className="icon-[lucide--settings] absolute left-[242px] top-[103px] block h-6 w-6 text-stone-300"
+        className="icon-[lucide--settings] absolute left-[242px] top-[103px] block size-6 text-stone-300"
         style={{
           transform: getSpring("cpu.alu.cog").rot.to(t => `rotate(${t * 60}deg)`),
         }}

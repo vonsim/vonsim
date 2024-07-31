@@ -70,7 +70,7 @@ const ToastClose = forwardRef<
     toast-close=""
     {...props}
   >
-    <span className="icon-[lucide--x] block h-4 w-4" />
+    <span className="icon-[lucide--x] block size-4" />
   </ToastPrimitives.Close>
 ));
 ToastClose.displayName = ToastPrimitives.Close.displayName;

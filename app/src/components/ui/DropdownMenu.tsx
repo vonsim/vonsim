@@ -30,7 +30,7 @@ const DropdownMenuSubTrigger = forwardRef<
     {...props}
   >
     {children}
-    <span className="icon-[lucide--chevron-right] ml-auto block h-4 w-4" />
+    <span className="icon-[lucide--chevron-right] ml-auto block size-4" />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
@@ -42,7 +42,7 @@ const DropdownMenuSubContent = forwardRef<
   <DropdownMenuPrimitive.SubContent
     ref={ref}
     className={clsx(
-      "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-stone-900 p-1 text-white shadow-lg transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+      "z-50 min-w-32 overflow-hidden rounded-md border bg-stone-900 p-1 text-white shadow-lg transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
       className,
     )}
     {...props}
@@ -59,7 +59,7 @@ const DropdownMenuContent = forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={clsx(
-        "z-50 min-w-[8rem] overflow-hidden rounded-md border border-stone-600 bg-stone-900 p-1 text-white shadow-md transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+        "z-50 min-w-32 overflow-hidden rounded-md border border-stone-600 bg-stone-900 p-1 text-white shadow-md transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
         className,
       )}
       {...props}
@@ -99,9 +99,9 @@ const DropdownMenuCheckboxItem = forwardRef<
     checked={checked}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute left-2 flex size-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <span className="icon-[lucide--check] h-4 w-4" />
+        <span className="icon-[lucide--check] size-4" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -121,9 +121,9 @@ const DropdownMenuRadioItem = forwardRef<
     )}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute left-2 flex size-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <span className="icon-[lucide--circle-dot] block h-4 w-4" />
+        <span className="icon-[lucide--circle-dot] block size-4" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
