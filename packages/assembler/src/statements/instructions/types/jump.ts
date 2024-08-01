@@ -20,16 +20,16 @@ type JumpInstructionName =
 
 /**
  * JumpInstruction:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/call/ | CALL}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jz/ | JZ}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jnz/ | JNZ}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/js/ | JS}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jns/ | JNS}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jc/ | JC}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jnc/ | JNC}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jo/ | JO}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jno/ | JNO}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jmp/ | JMP}
+ * - {@link https://vonsim.github.io/en/computer/instructions/call | CALL}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jz | JZ}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jnz | JNZ}
+ * - {@link https://vonsim.github.io/en/computer/instructions/js | JS}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jns | JNS}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jc | JC}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jnc | JNC}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jo | JO}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jno | JNO}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jmp | JMP}
  *
  * These instructions needs one operand: a label to jump to.
  * The label must be an instruction label.
@@ -53,13 +53,13 @@ export class JumpInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/codification
    */
   readonly length = 3;
 
   /**
    * Returns the bytes of the instruction.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/codification
    */
   toBytes(): Uint8Array {
     const bytes: number[] = [];
@@ -99,8 +99,8 @@ export class JumpInstruction extends InstructionStatement {
       ...(this.#address
         ? { address: this.#address.toJSON() }
         : this.#jumpTo
-        ? { jumpTo: this.#jumpTo }
-        : { operands: this.operands.map(o => o.toJSON()) }),
+          ? { jumpTo: this.#jumpTo }
+          : { operands: this.operands.map(o => o.toJSON()) }),
     };
   }
 

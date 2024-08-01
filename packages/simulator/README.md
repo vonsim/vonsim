@@ -1,6 +1,6 @@
 # `@vonsim/simulator`
 
-This package contains all the logic of the simulator. Given an assembled program (see `@vonsim/assembler`), it executes it. The computer simulated has a [CPU](./src/cpu/index.ts), [memory](./src/memory.ts) and [I/O devices](./src/io/configurations/index.ts) (specs [here](https://vonsim.github.io/docs/)).
+This package contains all the logic of the simulator. Given an assembled program (see `@vonsim/assembler`), it executes it. The computer simulated has a [CPU](./src/cpu/index.ts), [memory](./src/memory.ts) and [I/O devices](./src/io/configurations/index.ts) (specs [here](https://vonsim.github.io/en)).
 
 ## Simulation and events
 

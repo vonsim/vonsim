@@ -27,7 +27,7 @@ export type TimerOperation =
  *
  * Interrupt line: INT1
  *
- * @see {@link https://vonsim.github.io/docs/io/modules/timer/}.
+ * @see {@link https://vonsim.github.io/en/io/modules/timer}.
  *
  * ---
  * This class is: MUTABLE

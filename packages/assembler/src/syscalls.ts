@@ -3,7 +3,7 @@ import { Byte } from "@vonsim/common/byte";
 /**
  * This is a map of syscall numbers to their addresses.
  *
- * @see {@link https://vonsim.github.io/docs/cpu/#llamadas-al-sistema}.
+ * @see {@link https://vonsim.github.io/en/computer/cpu#llamadas-al-sistema}.
  */
 export const syscalls = [
   [0, Byte.fromUnsigned(0xa000, 16)],

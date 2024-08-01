@@ -8,14 +8,14 @@ type ZeroaryInstructionName = "PUSHF" | "POPF" | "RET" | "IRET" | "CLI" | "STI" 
 
 /**
  * ZeroaryInstruction:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/pushf/ | PUSHF}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/popf/ | POPF}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/ret/ | RET}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/iret/ | IRET}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/cli/ | CLI}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/sti/ | STI}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/nop/ | NOP}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/hlt/ | HLT}
+ * - {@link https://vonsim.github.io/en/computer/instructions/pushf | PUSHF}
+ * - {@link https://vonsim.github.io/en/computer/instructions/popf | POPF}
+ * - {@link https://vonsim.github.io/en/computer/instructions/ret | RET}
+ * - {@link https://vonsim.github.io/en/computer/instructions/iret | IRET}
+ * - {@link https://vonsim.github.io/en/computer/instructions/cli | CLI}
+ * - {@link https://vonsim.github.io/en/computer/instructions/sti | STI}
+ * - {@link https://vonsim.github.io/en/computer/instructions/nop | NOP}
+ * - {@link https://vonsim.github.io/en/computer/instructions/hlt | HLT}
  *
  * These instructions don't have operands.
  *
@@ -36,13 +36,13 @@ export class ZeroaryInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/codification
    */
   readonly length = 1;
 
   /**
    * Returns the bytes of the instruction.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/codification
    */
   toBytes(): Uint8Array {
     const opcodes: { [key in ZeroaryInstructionName]: number } = {

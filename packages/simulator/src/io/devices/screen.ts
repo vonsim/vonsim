@@ -10,7 +10,7 @@ export type ScreenEvent = { type: "screen:send-char"; char: Byte<8>; output: str
  * This component displays text on an screen, given by the CPU
  * with an `INT 7` syscall.
  *
- * @see {@link https://vonsim.github.io/docs/io/devices/screen/}.
+ * @see {@link https://vonsim.github.io/en/io/devices/screen}.
  *
  * ---
  * This class is: MUTABLE
@@ -40,7 +40,7 @@ export class Screen extends Component {
 
   /**
    * Sends a character to the screen.
-   * @see {@link https://vonsim.github.io/docs/io/devices/screen/}.
+   * @see {@link https://vonsim.github.io/en/io/devices/screen}.
    *
    * ---
    * Called by the CPU.

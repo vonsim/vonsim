@@ -7,14 +7,14 @@ import type { PartialFlags } from "../types";
 
 /**
  * ALU binary instructions:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/add/ | ADD}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/adc/ | ADC}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/sub/ | SUB}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/sbb/ | SBB}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/cmp/ | CMP}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/and/ | AND}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/or/ | OR}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/xor/ | XOR}
+ * - {@link https://vonsim.github.io/en/computer/instructions/add | ADD}
+ * - {@link https://vonsim.github.io/en/computer/instructions/adc | ADC}
+ * - {@link https://vonsim.github.io/en/computer/instructions/sub | SUB}
+ * - {@link https://vonsim.github.io/en/computer/instructions/sbb | SBB}
+ * - {@link https://vonsim.github.io/en/computer/instructions/cmp | CMP}
+ * - {@link https://vonsim.github.io/en/computer/instructions/and | AND}
+ * - {@link https://vonsim.github.io/en/computer/instructions/or | OR}
+ * - {@link https://vonsim.github.io/en/computer/instructions/xor | XOR}
  *
  * @see {@link Instruction}
  *
@@ -157,8 +157,8 @@ export class ALUBinaryInstruction extends Instruction<
           this.name === "AND"
             ? left.signed & right.signed
             : this.name === "OR"
-            ? left.signed | right.signed
-            : left.signed ^ right.signed;
+              ? left.signed | right.signed
+              : left.signed ^ right.signed;
 
         result = Byte.fromSigned(signed, size) as AnyByte;
         flags.CF = false;

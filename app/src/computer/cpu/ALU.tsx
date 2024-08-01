@@ -12,7 +12,7 @@ export function ALU() {
   const FLAGS = useAtomValue(registerAtoms.FLAGS);
   const operation = useAtomValue(aluOperationAtom);
 
-  // https://vonsim.github.io/docs/cpu/#flags
+  // https://vonsim.github.io/en/computer/cpu#flags
   const CF = FLAGS.bit(0);
   const ZF = FLAGS.bit(6);
   const SF = FLAGS.bit(7);

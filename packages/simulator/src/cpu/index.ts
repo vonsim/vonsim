@@ -20,7 +20,7 @@ import { parseRegister } from "./utils";
 
 /**
  * The CPU.
- * @see {@link https://vonsim.github.io/docs/cpu/}
+ * @see {@link https://vonsim.github.io/en/computer/cpu}
  *
  * It has internal registers, a memory address buffer (MAR) and a
  * memory buffer register (MBR).

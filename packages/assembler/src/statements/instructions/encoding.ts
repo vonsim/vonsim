@@ -3,7 +3,7 @@ import type { Register } from "../../types";
 /**
  * Returns the encoded register to be used in the instruction bytes.
  * @param reg The register to get the bits for.
- * @see https://vonsim.github.io/docs/reference/codification/
+ * @see https://vonsim.github.io/en/reference/codification
  */
 export function registerToBits(reg: Register): number {
   switch (reg) {

@@ -1,15 +1,16 @@
 import { useSavedProgram } from "@/editor/files";
 import { useTranslate } from "@/lib/i18n";
-import { useSettings } from "@/lib/settings";
+import { useLanguage, useSettings } from "@/lib/settings";
 
 export function Footer() {
+  const lang = useLanguage();
   const translate = useTranslate();
   const issueLink = useIssueLink();
 
   return (
     <footer className="px-2 py-1 text-center text-xs tracking-wider text-stone-500">
       <a
-        href="/docs"
+        href={`/${lang}`}
         className="transition-colors hover:text-stone-400"
         target="_blank"
         rel="noopener noreferrer"
@@ -37,7 +38,7 @@ export function Footer() {
       <span className="px-2 max-sm:hidden">&middot;</span>
       <br className="sm:hidden" />
       <a
-        href="/docs#licencia"
+        href={lang === "es" ? "/es#licencia" : "/en#license"}
         className="transition-colors hover:text-stone-400"
         target="_blank"
         rel="noopener noreferrer"

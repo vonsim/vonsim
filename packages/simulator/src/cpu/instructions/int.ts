@@ -3,7 +3,7 @@ import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
 
 /**
- * {@link https://vonsim.github.io/docs/cpu/instructions/int/ | INT} instruction.
+ * {@link https://vonsim.github.io/en/computer/instructions/int | INT} instruction.
  *
  * @see {@link Instruction}
  *

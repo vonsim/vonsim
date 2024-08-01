@@ -31,7 +31,7 @@ export type HandshakeOperation =
  *
  * Interrupt line: INT2
  *
- * @see {@link https://vonsim.github.io/docs/io/modules/handshake/}.
+ * @see {@link https://vonsim.github.io/en/io/modules/handshake}.
  *
  * ---
  * This class is: MUTABLE
@@ -80,7 +80,7 @@ export class Handshake extends IOModule<HandshakeRegister> {
 
   /**
    * @returns Whether the interrupt is enabled or not (boolean).
-   * @see {@link https://vonsim.github.io/docs/io/modules/handshake/}.
+   * @see {@link https://vonsim.github.io/en/io/modules/handshake}.
    */
   get interrupts(): boolean {
     return this.#STATE.bit(7);
@@ -143,7 +143,7 @@ export class Handshake extends IOModule<HandshakeRegister> {
   /**
    * Updates the value of the busy flag.
    * If interrups are enabled, then an interrupt will be fired.
-   * @see {@link https://vonsim.github.io/docs/io/modules/handshake/}.
+   * @see {@link https://vonsim.github.io/en/io/modules/handshake}.
    *
    * ---
    * Called by the printer when the buffer changes to/from full.

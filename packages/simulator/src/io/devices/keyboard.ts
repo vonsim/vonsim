@@ -11,7 +11,7 @@ export type KeyboardEvent =
  * This component reads characters from the keyboard and writes
  * to memory when the CPU calls an `INT 6` syscall.
  *
- * @see {@link https://vonsim.github.io/docs/io/devices/keyboard/}.
+ * @see {@link https://vonsim.github.io/en/io/devices/keyboard}.
  *
  * ---
  * This class is: MUTABLE
@@ -22,7 +22,7 @@ export class Keyboard extends Component {
   /**
    * Reads a character from the keyboard (outside).
    * @returns The character read as a Byte<8>.
-   * @see {@link https://vonsim.github.io/docs/io/devices/keyboard/}.
+   * @see {@link https://vonsim.github.io/en/io/devices/keyboard}.
    *
    * ---
    * Called by the CPU.
@@ -46,7 +46,7 @@ export class Keyboard extends Component {
   /**
    * Saves a character from the keyboard (outside).
    * @returns The character read as a Byte<8>.
-   * @see {@link https://vonsim.github.io/docs/io/devices/console/}.
+   * @see {@link https://vonsim.github.io/en/io/devices/keyboard}.
    *
    * ---
    * Called by the outside.

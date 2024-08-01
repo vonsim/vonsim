@@ -11,7 +11,7 @@ import { PIO, PIOPort } from "../modules/pio";
  *
  * @see
  * - {@link PIO}.
- * - {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+ * - {@link https://vonsim.github.io/en/io/devices/switches-and-leds}.
  *
  * ---
  * This class is: MUTABLE

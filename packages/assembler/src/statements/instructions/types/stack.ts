@@ -10,8 +10,8 @@ type StackInstructionName = "PUSH" | "POP";
 
 /**
  * StackInstruction:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/push/ | PUSH}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/pop/ | POP}
+ * - {@link https://vonsim.github.io/en/computer/instructions/push | PUSH}
+ * - {@link https://vonsim.github.io/en/computer/instructions/pop | POP}
  *
  * These instructions need one operand:
  * - `out`: the destination operand
@@ -35,13 +35,13 @@ export class StackInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/codification
    */
   readonly length = 1;
 
   /**
    * Returns the bytes of the instruction.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/codification
    */
   toBytes(): Uint8Array {
     const opcodes: { [key in StackInstructionName]: number } = {

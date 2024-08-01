@@ -15,7 +15,7 @@ MemoryAddress.from(-1); // RangeError
 
 ## `@vonsim/common/ascii`
 
-This package exports utilities for converting between ASCII and binary, using a common encoding defined in by the [VonSim specification](https://vonsim.github.io/docs/reference/ascii/).
+This package exports utilities for converting between ASCII and binary, using a common encoding defined in by the [VonSim specification](https://vonsim.github.io/en/reference/ascii).
 
 ## `@vonsim/common/byte`
 

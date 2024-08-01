@@ -4,10 +4,10 @@ import { Instruction } from "../instruction";
 
 /**
  * Stack instructions:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/push/ | PUSH}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/pop/ | POP}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/pushf/ | PUSHF}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/popf/ | POPF}
+ * - {@link https://vonsim.github.io/en/computer/instructions/push | PUSH}
+ * - {@link https://vonsim.github.io/en/computer/instructions/pop | POP}
+ * - {@link https://vonsim.github.io/en/computer/instructions/pushf | PUSHF}
+ * - {@link https://vonsim.github.io/en/computer/instructions/popf | POPF}
  *
  * @see {@link Instruction}
  *

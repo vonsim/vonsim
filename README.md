@@ -36,7 +36,7 @@ Also, there some support packages that are used by the packages above:
 - [`@vonsim/scripts`](./packages/scripts/): Scripts for development and building.
 - [`@vonsim/tsconfig`](./packages/tsconfig/): The TypeScript configuration for this project.
 
-Finally, the [documentation](https://vonsim.github.io/docs/) is inside [`@vonsim/docs`](./docs/).
+Finally, the [documentation](https://vonsim.github.io/en/) is inside [`@vonsim/docs`](./docs/).
 
 ### Notes for developers
 

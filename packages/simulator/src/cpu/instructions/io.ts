@@ -7,8 +7,8 @@ import { Instruction } from "../instruction";
 
 /**
  * I/O instructions:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/in/ | IN}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/out/ | OUT}
+ * - {@link https://vonsim.github.io/en/computer/instructions/in | IN}
+ * - {@link https://vonsim.github.io/en/computer/instructions/out | OUT}
  *
  * @see {@link Instruction}
  *

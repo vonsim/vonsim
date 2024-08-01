@@ -29,7 +29,7 @@ export type PICOperation =
  * - 23h: ISR
  * - 24h to 2Bh: INT0 to INT7
  *
- * @see {@link https://vonsim.github.io/docs/io/modules/pic/}.
+ * @see {@link https://vonsim.github.io/en/io/modules/pic}.
  *
  * ---
  * This class is: MUTABLE

@@ -22,7 +22,7 @@ export type AssembleResult = AssembleResultSuccess | AssembleResultError;
  * Assembles the source code into a program.
  *
  * The source code must be a valid assembly program as described in the
- * {@link https://vonsim.github.io/docs/cpu/assembly/ | documentation}.
+ * {@link https://vonsim.github.io/en/computer/assembly | documentation}.
  *
  * It should never throw an error, but it can return a list of errors.
  */
