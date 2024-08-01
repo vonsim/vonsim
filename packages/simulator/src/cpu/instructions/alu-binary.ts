@@ -31,27 +31,34 @@ export class ALUBinaryInstruction extends Instruction<
   #formatOperands(): string[] {
     const { mode, out, src } = this.operation;
 
+    const formatMemoryAccess = (
+      access: Exclude<typeof this.operation, { out: string }>["out"],
+    ): string => {
+      if (access.mode === "direct") return access.address.toString();
+
+      let out = "BX";
+      if (access.offset) {
+        if (access.offset.signed > 0) {
+          out += `+${access.offset.toString("hex")}h`;
+        } else {
+          const positive = Byte.fromUnsigned(-access.offset.signed, access.offset.size);
+          out += `-${positive.toString("hex")}h`;
+        }
+      }
+      return out;
+    };
+
     switch (mode) {
       case "reg<-reg":
         return [out, src];
-
-      case "reg<-mem": {
-        const addr = src.mode === "direct" ? src.address.toString() : "BX";
-        return [out, `[${addr}]`];
-      }
-
+      case "reg<-mem":
+        return [out, `[${formatMemoryAccess(src)}]`];
       case "reg<-imd":
         return [out, `${src.toString("hex")}h`];
-
-      case "mem<-reg": {
-        const addr = out.mode === "direct" ? out.address.toString() : "BX";
-        return [`[${addr}]`, src];
-      }
-
-      case "mem<-imd": {
-        const addr = out.mode === "direct" ? out.address.toString() : "BX";
-        return [`[${addr}]`, `${src.toString("hex")}h`];
-      }
+      case "mem<-reg":
+        return [`[${formatMemoryAccess(out)}]`, src];
+      case "mem<-imd":
+        return [`[${formatMemoryAccess(out)}]`, `${src.toString("hex")}h`];
 
       default: {
         const _exhaustiveCheck: never = mode;
@@ -69,7 +76,14 @@ export class ALUBinaryInstruction extends Instruction<
         name: this.name,
         position: this.position,
         operands: this.#formatOperands(),
-        willUse: { ri: mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd" },
+        willUse: {
+          ri: mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd",
+          id:
+            ((mode === "mem<-reg" || mode === "mem<-imd") &&
+              out.mode === "indirect" &&
+              out.offset !== null) ||
+            (mode === "reg<-mem" && src.mode === "indirect" && src.offset !== null),
+        },
       },
     };
 
@@ -94,6 +108,13 @@ export class ALUBinaryInstruction extends Instruction<
       } else {
         // Move BX to ri
         yield* computer.cpu.copyWordRegister("BX", "ri");
+        if (out.offset) {
+          // Fetch offset
+          yield* this.consumeInstruction(computer, "id.l");
+          yield* this.consumeInstruction(computer, "id.h");
+          // Add offset to BX
+          yield* computer.cpu.updateWordRegister("ri", ri => ri.add(out.offset!.signed));
+        }
       }
 
       // Read value from memory
@@ -125,6 +146,13 @@ export class ALUBinaryInstruction extends Instruction<
       } else {
         // Move BX to ri
         yield* computer.cpu.copyWordRegister("BX", "ri");
+        if (src.offset) {
+          // Fetch offset
+          yield* this.consumeInstruction(computer, "id.l");
+          yield* this.consumeInstruction(computer, "id.h");
+          // Add offset to BX
+          yield* computer.cpu.updateWordRegister("ri", ri => ri.add(src.offset!.signed));
+        }
       }
 
       // Read value from memory
@@ -157,8 +185,8 @@ export class ALUBinaryInstruction extends Instruction<
           this.name === "AND"
             ? left.signed & right.signed
             : this.name === "OR"
-            ? left.signed | right.signed
-            : left.signed ^ right.signed;
+              ? left.signed | right.signed
+              : left.signed ^ right.signed;
 
         result = Byte.fromSigned(signed, size) as AnyByte;
         flags.CF = false;

@@ -32,8 +32,19 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
         return [`[${addr}]`];
       }
 
-      case "mem-indirect":
-        return ["[BX]"];
+      case "mem-indirect": {
+        let addr = "BX";
+        const offset = this.operation.offset;
+        if (offset) {
+          if (offset.signed > 0) {
+            addr += `+${offset.toString("hex")}h`;
+          } else {
+            const positive = Byte.fromUnsigned(-offset.signed, offset.size);
+            addr += `-${positive.toString("hex")}h`;
+          }
+        }
+        return [`[${addr}]`];
+      }
 
       default: {
         const _exhaustiveCheck: never = this.operation;
@@ -51,6 +62,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
         operands: this.#formatOperands(),
         willUse: {
           ri: this.operation.mode === "mem-direct" || this.operation.mode === "mem-indirect",
+          id: this.operation.mode === "mem-indirect" && this.operation.offset !== null,
         },
       },
     };
@@ -79,6 +91,14 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       } else {
         // Move BX to ri
         yield* computer.cpu.copyWordRegister("BX", "ri");
+        if (this.operation.offset) {
+          // Fetch offset
+          yield* this.consumeInstruction(computer, "id.l");
+          yield* this.consumeInstruction(computer, "id.h");
+          // Add offset to BX
+          const offset = this.operation.offset.signed;
+          yield* computer.cpu.updateWordRegister("ri", ri => ri.add(offset));
+        }
       }
 
       // Read value from memory

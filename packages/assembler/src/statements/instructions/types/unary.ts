@@ -1,5 +1,5 @@
 import { MemoryAddress } from "@vonsim/common/address";
-import type { ByteSize } from "@vonsim/common/byte";
+import { Byte, ByteSize } from "@vonsim/common/byte";
 import type { Position } from "@vonsim/common/position";
 
 import { AssemblerError } from "../../../error";
@@ -15,13 +15,13 @@ type UnaryInstructionName = "NEG" | "INC" | "DEC" | "NOT";
 type InitialOperation =
   | { mode: "reg"; size: ByteSize; reg: Register }
   | { mode: "mem-direct"; size: ByteSize; address: NumberExpression }
-  | { mode: "mem-indirect"; size: ByteSize };
+  | { mode: "mem-indirect"; size: ByteSize; offset: NumberExpression | null };
 
 type Operation =
   | { mode: "reg"; size: 8; reg: ByteRegister }
   | { mode: "reg"; size: 16; reg: WordRegister }
   | { mode: "mem-direct"; size: ByteSize; address: MemoryAddress }
-  | { mode: "mem-indirect"; size: ByteSize };
+  | { mode: "mem-indirect"; size: ByteSize; offset: Byte<16> | null };
 
 /**
  * UnaryInstruction:
@@ -68,6 +68,8 @@ export class UnaryInstruction extends InstructionStatement {
     let length = 2;
     if (mode === "mem-direct") {
       length += 2; // 2-byte address
+    } else if (mode === "mem-indirect" && this.#initialOperation.offset) {
+      length += 2; // 2-byte offset
     }
 
     return length;
@@ -106,7 +108,14 @@ export class UnaryInstruction extends InstructionStatement {
       }
 
       case "mem-indirect": {
-        bytes[1] = 0b11010000;
+        const offset = this.operation.offset;
+        if (offset) {
+          bytes[1] = 0b11100000;
+          bytes.push(offset.low.unsigned);
+          bytes.push(offset.high.unsigned);
+        } else {
+          bytes[1] = 0b11010000;
+        }
         break;
       }
 
@@ -160,7 +169,7 @@ export class UnaryInstruction extends InstructionStatement {
         throw new AssemblerError("unknown-size").at(out);
       }
 
-      this.#initialOperation = { mode: "mem-indirect", size: out.size };
+      this.#initialOperation = { mode: "mem-indirect", size: out.size, offset: out.offset };
       return;
     }
 
@@ -212,7 +221,16 @@ export class UnaryInstruction extends InstructionStatement {
       }
 
       case "mem-indirect": {
-        this.#operation = { mode: "mem-indirect", size: op.size };
+        let offset: Byte<16> | null = null;
+        if (op.offset) {
+          const computed = op.offset.evaluate(store);
+          if (!Byte.fitsSigned(computed, 16)) {
+            throw new AssemblerError("value-out-of-range", computed, 16).at(op.offset);
+          }
+          offset = Byte.fromSigned(computed, 16);
+        }
+
+        this.#operation = { mode: "mem-indirect", size: op.size, offset };
         return;
       }
 

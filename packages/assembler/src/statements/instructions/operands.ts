@@ -75,7 +75,11 @@ export class IndirectAddressOperand extends Operand {
   readonly type = "indirect-address";
   readonly size: ByteSize | "auto";
 
-  constructor(size: "BYTE" | "WORD" | undefined, position: Position) {
+  constructor(
+    size: "BYTE" | "WORD" | undefined,
+    position: Position,
+    readonly offset: NumberExpression | null,
+  ) {
     super(position);
     if (size) this.size = size === "BYTE" ? 8 : 16;
     else this.size = "auto";
