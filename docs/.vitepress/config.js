@@ -57,6 +57,7 @@ export default defineConfig({
   ],
 
   assetsDir: "assets/docs",
+  ignoreDeadLinks: true, // Until english is fully translated
 
   async transformHead({ pageData, siteConfig }) {
     const titleTemplate = pageData.titleTemplate ?? siteConfig.userConfig.titleTemplate;
