@@ -7,7 +7,9 @@
  */
 
 import fs from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 
+import cpy from "cpy";
 import { execa } from "execa";
 
 const rootDir = new URL("../../..", import.meta.url);
@@ -36,8 +38,6 @@ await execa({
   stdout: process.stdout,
   stderr: process.stdout,
 })`pnpm run build`;
-await fs.rename(new URL("./dist/", docsDir), new URL("./docs/", distDir));
-
-await fs.rename(new URL("./docs/404.html", distDir), new URL("./404.html", distDir));
+await cpy("docs/.vitepress/dist/**/*", "dist/", { cwd: fileURLToPath(rootDir), overwrite: false });
 
 console.info("\n\nDone");

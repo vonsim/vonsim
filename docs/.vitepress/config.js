@@ -56,6 +56,8 @@ export default defineConfig({
     ],
   ],
 
+  assetsDir: "assets/docs",
+
   async transformHead({ pageData, siteConfig }) {
     const titleTemplate = pageData.titleTemplate ?? siteConfig.userConfig.titleTemplate;
     if (
