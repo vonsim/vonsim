@@ -40,4 +40,17 @@ await execa({
 })`pnpm run build`;
 await cpy("docs/.vitepress/dist/**/*", "dist/", { cwd: fileURLToPath(rootDir), overwrite: false });
 
+console.info("\n\n========= Adding redirects =========\n");
+const docsRedirect = `<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>VonSim docs</title>
+  <meta http-equiv="refresh" content="0; URL=https://vonsim.github.io/es/">
+  <link rel="canonical" href="https://vonsim.github.io/es/"></link>
+</head>
+<body>
+  <p><a href="https://vonsim.github.io/es/">VonSim docs</a></p>
+</body>`;
+await fs.writeFile(new URL("./docs.html", distDir), docsRedirect);
+
 console.info("\n\nDone");
