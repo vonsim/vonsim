@@ -1,8 +1,4 @@
----
-title: POP
----
-
-# {{ $frontmatter.title }}
+# POP
 
 Esta instrucción desapila el elemento en el tope en la [pila](../cpu#pila) y lo almacena en el operando destino. Los [_flags_](../cpu#flags) no se modifican.
 

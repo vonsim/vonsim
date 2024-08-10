@@ -1,8 +1,4 @@
----
-title: Pantalla
----
-
-# {{ $frontmatter.title }}
+# Pantalla
 
 La pantalla es un dispositivo de salida que permite mostrar caracteres. La forma de comunicarse con la pantalla es mediante una [llamada al sistema](../../computer/cpu#llamadas-al-sistema). Esto es así por simplicidad, ya que una pantalla real es mucho más compleja.
 

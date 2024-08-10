@@ -1,8 +1,4 @@
----
-title: JNS
----
-
-# {{ $frontmatter.title }}
+# JNS
 
 Esta instrucción salta solo sí `SF=0`. Los [_flags_](../cpu#flags) no se modifican.
 

@@ -1,8 +1,4 @@
----
-title: SUB
----
-
-# {{ $frontmatter.title }}
+# SUB
 
 Esta instrucción le resta el operando fuente al operando destino y guarda el resultado en el operando destino. El operando fuente no se modifica.
 

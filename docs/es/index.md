@@ -1,8 +1,4 @@
----
-title: ¿Qué es VonSim?
----
-
-# {{ $frontmatter.title }}
+# ¿Qué es VonSim?
 
 VonSim es una herramienta destinada a la enseñanza y aprendizaje de arquitectura y organización de computadoras. Consta de un entorno para desarrollar programas en [lenguaje ensamblador](./computer/assembly) (_Assembly_ o _Assembler_) y de un simulador para los mismos.
 
@@ -51,7 +47,7 @@ VonSim se basa en el trabajo previo de Rubén de Diego Martínez para la Univers
 - [Set de instrucciones del MSX88](/msx88/set-instr-MSX88.PDF)
 - [Paper de presentación del MSX88](/msx88/msx88-original-paper.pdf)
 - [MSX88 v3.1 (con DOSBox)](/msx88/MSX88Portable.zip)
-- [MSX88 v4.0 (portado)](/msx88/msx88_2017.rar){target="_self"}
+- [MSX88 v4.0 (portado)](/msx88/msx88_2017.rar){target="\_self"}
 - [Apunte sobre interrupciones](/msx88/apunte-interrupciones.pdf)
 
 ### Licencia

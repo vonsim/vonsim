@@ -1,8 +1,4 @@
----
-title: IN
----
-
-# {{ $frontmatter.title }}
+# IN
 
 Esta instrucción obtiene un byte de la [memoria E/S](../../io/modules/index) y lo almacena en el operando destino. Los [_flags_](../cpu#flags) no se modifican.
 

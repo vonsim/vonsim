@@ -1,8 +1,4 @@
----
-title: SBB
----
-
-# {{ $frontmatter.title }}
+# SBB
 
 Esta instrucción le resta el operando fuente al operando destino y guarda el resultado en el operando destino. Si `CF=1`, entonces se resta `1` al resultado. El operando fuente no se modifica.
 

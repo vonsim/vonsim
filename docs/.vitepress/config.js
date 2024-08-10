@@ -1,6 +1,6 @@
 // @ts-check
 
-import { defineConfig } from "vitepress";
+import { createMarkdownRenderer, defineConfig } from "vitepress";
 
 import { generateOpenGraphs } from "./opengraph.js";
 import { en } from "./locales/en.js";
@@ -83,6 +83,12 @@ export default defineConfig({
   },
 
   async buildEnd(siteConfig) {
-    await generateOpenGraphs(new URL(`file://${siteConfig.outDir}/`));
+    const md = await createMarkdownRenderer(
+      siteConfig.srcDir,
+      siteConfig.markdown,
+      siteConfig.site.base,
+      siteConfig.logger,
+    );
+    await generateOpenGraphs(md, new URL(`file://${siteConfig.outDir}/`));
   },
 });

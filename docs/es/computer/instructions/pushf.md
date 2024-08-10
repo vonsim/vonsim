@@ -1,8 +1,4 @@
----
-title: PUSHF
----
-
-# {{ $frontmatter.title }}
+# PUSHF
 
 Esta instrucción apila el registro [`FLAGS`](../cpu#flags) en la [pila](../cpu#pila). Los [_flags_](../cpu#flags) no se modifican.
 

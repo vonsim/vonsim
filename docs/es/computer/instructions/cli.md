@@ -1,8 +1,4 @@
----
-title: CLI
----
-
-# {{ $frontmatter.title }}
+# CLI
 
 Esta instrucción inhabilita las [interrupciones](../cpu#interrupciones) por hardware, cambiando la [_flag_](../cpu#flags) `IF=0`.
 

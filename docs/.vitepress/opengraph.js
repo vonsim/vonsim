@@ -29,11 +29,12 @@ const chivo = {
 };
 
 /**
+ * @param {import("vitepress").MarkdownRenderer} md
  * @param {URL} outDir
  * @returns {Promise<void>}
  */
-export async function generateOpenGraphs(outDir) {
-  const pages = await createContentLoader("**/*.md").load();
+export async function generateOpenGraphs(md, outDir) {
+  const pages = await createContentLoader("**/*.md", { includeSrc: true }).load();
   for (const page of pages) {
     if (page.url.includes("404")) continue;
 
@@ -41,7 +42,13 @@ export async function generateOpenGraphs(outDir) {
       .replace(/\/$/, "/index.html")
       .replace(/\.html$/, ".png")
       .replace(/^\//, "");
-    const title = page.frontmatter.title;
+
+    const env = {};
+    md.render(page.src ?? "", env);
+    const title = env.title;
+    if (typeof title !== "string") {
+      console.warn(`[opengraph] No title found for ${page.url}`);
+    }
 
     const markup = html`
       <div

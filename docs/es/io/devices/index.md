@@ -1,8 +1,4 @@
----
-title: Listado de dispositivos
----
-
-# {{ $frontmatter.title }}
+# Listado de dispositivos
 
 VonSim cuenta con los siguientes dispotiivos:
 

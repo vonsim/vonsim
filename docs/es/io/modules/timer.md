@@ -1,8 +1,4 @@
----
-title: Timer
----
-
-# {{ $frontmatter.title }}
+# Timer
 
 El _timer_ es un módulo que cuenta con dos registos internos:
 

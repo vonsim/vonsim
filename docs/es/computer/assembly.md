@@ -1,8 +1,4 @@
----
-title: Lenguaje ensamblador
----
-
-# {{ $frontmatter.title }}
+# Lenguaje ensamblador
 
 El lenguaje ensamblador (o lenguaje _assembly_) utilizado por el simulador se escribe de la siguiente manera:
 

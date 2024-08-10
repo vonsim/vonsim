@@ -1,8 +1,4 @@
----
-title: DEC
----
-
-# {{ $frontmatter.title }}
+# DEC
 
 Esta instrucción resta uno al operando destino y almacena el resultado en el mismo operando.
 

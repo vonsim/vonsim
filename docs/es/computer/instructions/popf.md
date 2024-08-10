@@ -1,8 +1,4 @@
----
-title: POPF
----
-
-# {{ $frontmatter.title }}
+# POPF
 
 Esta instrucción desapila el elemento en el tope en la [pila](../cpu#pila) y lo almacena en el registro [`FLAGS`](../cpu#flags). Los [_flags_](../cpu#flags) se modificarán acordemente.
 

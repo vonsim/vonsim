@@ -1,8 +1,4 @@
----
-title: Handshake
----
-
-# {{ $frontmatter.title }}
+# Handshake
 
 El _handshake_ es un dispotivo diseñado con el fin de facilitar la comunicación con las [impresoras Centronics](../devices/printer). Está basado en el PPI 8255 de Intel en su modo "1", pero con algunas modificaciones para simplificar su funcionamiento.
 

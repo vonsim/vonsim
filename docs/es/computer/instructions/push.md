@@ -1,8 +1,4 @@
----
-title: PUSH
----
-
-# {{ $frontmatter.title }}
+# PUSH
 
 Esta instrucción apila un elemento en la [pila](../cpu#pila). El operando fuente no se modifica. Los [_flags_](../cpu#flags) no se modifican.
 

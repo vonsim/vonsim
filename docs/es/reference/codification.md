@@ -1,8 +1,4 @@
----
-title: Codificación
----
-
-# {{ $frontmatter.title }}
+# Codificación
 
 Aquí se denota la codificación en binario de cada una de las instrucciones del simulador. Pese a que el set de instrucciones esté basado en el de Intel 8088, la codificación se simplificado con fines prácticos y didácticos.
 

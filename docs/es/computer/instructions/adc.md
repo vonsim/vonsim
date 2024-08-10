@@ -1,8 +1,4 @@
----
-title: ADC
----
-
-# {{ $frontmatter.title }}
+# ADC
 
 Esta instrucción suma dos operandos y guarda el resultado en el operando destino. Si `CF=1`, entonces se suma `1` al resultado. El operando fuente no se modifica.
 

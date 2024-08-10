@@ -1,8 +1,4 @@
----
-title: PIO
----
-
-# {{ $frontmatter.title }}
+# PIO
 
 El _programmed input-output_ (PIO) es un módulo que hace de interfaz para conectar dispositivos genéricos al CPU. Está basado en el PPI 8255 de Intel en su modo "0", pero con algunas modificaciones para simplificar su funcionamiento.
 

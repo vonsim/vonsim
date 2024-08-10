@@ -1,8 +1,4 @@
----
-title: JC
----
-
-# {{ $frontmatter.title }}
+# JC
 
 Esta instrucción salta solo sí `CF=1`. Los [_flags_](../cpu#flags) no se modifican.
 

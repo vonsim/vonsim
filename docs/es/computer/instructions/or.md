@@ -1,8 +1,4 @@
----
-title: OR
----
-
-# {{ $frontmatter.title }}
+# OR
 
 Esta instrucción reliza la operación lógica OR bit a bit entre el operando destino y el operando fuente (destino OR fuente). El resultado se guarda en el operando destino. El operando fuente no se modifica.
 

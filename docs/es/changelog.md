@@ -1,8 +1,4 @@
----
-title: Notas de versión
----
-
-# {{ $frontmatter.title }}
+# Notas de versión
 
 ### 22 de agosto de 2023
 

@@ -1,8 +1,4 @@
----
-title: XOR
----
-
-# {{ $frontmatter.title }}
+# XOR
 
 Esta instrucción reliza la operación lógica XOR bit a bit entre el operando destino y el operando fuente (destino XOR fuente). El resultado se guarda en el operando destino. El operando fuente no se modifica.
 

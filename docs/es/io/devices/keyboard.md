@@ -1,8 +1,4 @@
----
-title: Teclado
----
-
-# {{ $frontmatter.title }}
+# Teclado
 
 El teclado es un dispositivo de entrada que permite al usuario ingresar caracteres al sistema. La forma de comunicarse con el teclado es mediante una [llamada al sistema](../../computer/cpu#llamadas-al-sistema). Esto es así por simplicidad, ya que un teclado real es mucho más complejo.
 

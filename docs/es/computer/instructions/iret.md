@@ -1,8 +1,4 @@
----
-title: IRET
----
-
-# {{ $frontmatter.title }}
+# IRET
 
 Esta instrucción retorna de una [rutina de interrupción](../cpu#interrupciones).
 

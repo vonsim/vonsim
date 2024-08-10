@@ -1,8 +1,4 @@
----
-title: AND
----
-
-# {{ $frontmatter.title }}
+# AND
 
 Esta instrucción reliza la operación lógica AND bit a bit entre el operando destino y el operando fuente (destino AND fuente). El resultado se guarda en el operando destino. El operando fuente no se modifica.
 

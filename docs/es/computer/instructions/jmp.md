@@ -1,8 +1,4 @@
----
-title: JMP
----
-
-# {{ $frontmatter.title }}
+# JMP
 
 Esta instrucción salta incondicionalmente. Los [_flags_](../cpu#flags) no se modifican.
 

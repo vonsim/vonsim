@@ -1,8 +1,4 @@
----
-title: RET
----
-
-# {{ $frontmatter.title }}
+# RET
 
 Esta instrucción retorna de una [subrutina](../cpu#subrutinas). Los [_flags_](../cpu#flags) no se modifican.
 

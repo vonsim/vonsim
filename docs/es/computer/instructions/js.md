@@ -1,8 +1,4 @@
----
-title: JS
----
-
-# {{ $frontmatter.title }}
+# JS
 
 Esta instrucción salta solo sí `SF=1`. Los [_flags_](../cpu#flags) no se modifican.
 

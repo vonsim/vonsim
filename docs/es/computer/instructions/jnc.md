@@ -1,8 +1,4 @@
----
-title: JNC
----
-
-# {{ $frontmatter.title }}
+# JNC
 
 Esta instrucción salta solo sí `CF=0`. Los [_flags_](../cpu#flags) no se modifican.
 

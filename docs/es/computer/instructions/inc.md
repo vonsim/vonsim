@@ -1,8 +1,4 @@
----
-title: INC
----
-
-# {{ $frontmatter.title }}
+# INC
 
 Esta instrucción suma uno al operando destino y almacena el resultado en el mismo operando.
 

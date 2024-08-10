@@ -1,8 +1,4 @@
----
-title: JNO
----
-
-# {{ $frontmatter.title }}
+# JNO
 
 Esta instrucción salta solo sí `OF=0`. Los [_flags_](../cpu#flags) no se modifican.
 

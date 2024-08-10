@@ -1,8 +1,4 @@
----
-title: NOT
----
-
-# {{ $frontmatter.title }}
+# NOT
 
 Esta instrucción realiza la operación lógica NOT sobre el operando destino (NOT destino). El resultado se almacena en el operando destino.
 

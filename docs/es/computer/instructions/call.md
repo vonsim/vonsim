@@ -1,8 +1,4 @@
----
-title: CALL
----
-
-# {{ $frontmatter.title }}
+# CALL
 
 Esta instrucción inicializa una [subrutina](../cpu#subrutinas). Los [_flags_](../cpu#flags) no se modifican.
 

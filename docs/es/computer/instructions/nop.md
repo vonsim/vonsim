@@ -1,8 +1,4 @@
----
-title: NOP
----
-
-# {{ $frontmatter.title }}
+# NOP
 
 Esta instrucción no hace nada. Los [_flags_](../cpu#flags) no se modifican.
 

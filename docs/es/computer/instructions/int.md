@@ -1,8 +1,4 @@
----
-title: INT
----
-
-# {{ $frontmatter.title }}
+# INT
 
 Esta instrucción emite una [interrupción](../cpu#interrupciones) por software. El [_flag_](../cpu#flags) `IF` cambia a `0` obligatoriamente porque se va a ejecutar una interrupción. Los demás _flags_ no se modifican.
 

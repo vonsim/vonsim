@@ -1,8 +1,4 @@
----
-title: MOV
----
-
-# {{ $frontmatter.title }}
+# MOV
 
 Esta instrucción copia el operando fuente en el operando destino. El operando fuente no se modifica. Los [_flags_](../cpu#flags) no se modifican.
 

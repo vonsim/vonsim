@@ -1,8 +1,4 @@
----
-title: OUT
----
-
-# {{ $frontmatter.title }}
+# OUT
 
 Esta instrucción escribe un byte en la [memoria E/S](../../io/modules/index). Los [_flags_](../cpu#flags) no se modifican.
 

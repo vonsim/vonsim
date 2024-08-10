@@ -1,8 +1,4 @@
----
-title: Llaves y luces
----
-
-# {{ $frontmatter.title }}
+# Llaves y luces
 
 Las llaves o interruptores están conectados al puerto `PA`/`CA` del [PIO](../modules/pio) y son dispositivos de entrada. Al cambiar su estado, estos se reflejarán en `PA` (si el PIO está configurado correctamente). Si se altera `PA`, los cambios no se verán reflejados en las llaves (no se mueven solas, por así decirlo).
 

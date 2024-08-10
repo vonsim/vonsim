@@ -1,8 +1,4 @@
----
-title: "E/S: Conceptos generales"
----
-
-# {{ $frontmatter.title }}
+# E/S: Conceptos generales
 
 Por defecto, los únicos componentes conectados al bus la [CPU](../computer/cpu) y la [memoria principal](../computer/memory). El simulador puede configurarse para conectar [módulos](./modules/index) de entrada/salida al bus y otros [dispositivos](./devices/index). Estos se encuentrar agrupados en conjuntos o configuraciones:
 

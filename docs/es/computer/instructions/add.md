@@ -1,8 +1,4 @@
----
-title: ADD
----
-
-# {{ $frontmatter.title }}
+# ADD
 
 Esta instrucción suma dos operandos y guarda el resultado en el operando destino. El operando fuente no se modifica.
 

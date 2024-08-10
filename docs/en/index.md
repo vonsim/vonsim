@@ -1,8 +1,4 @@
----
-title: What is VonSim?
----
-
-# {{ $frontmatter.title }}
+# What is VonSim?
 
 VonSim is a tool designed for teaching and learning computer architecture and organization. It consists of an environment for developing programs in [assembly language](./computer/assembly) and a simulator for them.
 
@@ -51,7 +47,7 @@ VonSim is based on the previous work of Rubén de Diego Martínez for the Polyte
 - [MSX88 Instruction Set](/msx88/set-instr-MSX88.PDF)
 - [MSX88 Presentation Paper](/msx88/msx88-original-paper.pdf)
 - [MSX88 v3.1 (with DOSBox)](/msx88/MSX88Portable.zip)
-- [MSX88 v4.0 (ported)](/msx88/msx88_2017.rar){target="_self"}
+- [MSX88 v4.0 (ported)](/msx88/msx88_2017.rar){target="\_self"}
 - [Notes on interrupts](/msx88/apunte-interrupciones.pdf)
 
 ### License

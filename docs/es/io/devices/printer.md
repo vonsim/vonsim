@@ -1,8 +1,4 @@
----
-title: Impresora
----
-
-# {{ $frontmatter.title }}
+# Impresora
 
 El simulador cuenta con una impresora con un puerto paralelo tipo _Centronics_. Esta cuenta con papel y un _buffer_.
 

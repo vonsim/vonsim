@@ -1,8 +1,4 @@
----
-title: Memoria E/S
----
-
-# {{ $frontmatter.title }}
+# Memoria E/S
 
 La memoria de entrada/salida se encuentra aislada de la memoria principal. Es decir, para acceder a ella se utilizan exclusivamente las instrucciones [`IN`](../../computer/instructions/in) y [`OUT`](../../computer/instructions/out). Cuando se quiere acceder a un módulo de entrada/salida, la [CPU](../../computer/cpu) activa la señal `IO/M`, lo que causa que un selector de chips (_chip select_) lea la dirección del bus del direcciones y envíe la señal de lectura/escritura al módulo correspondiente.
 

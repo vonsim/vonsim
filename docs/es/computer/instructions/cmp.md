@@ -1,8 +1,4 @@
----
-title: CMP
----
-
-# {{ $frontmatter.title }}
+# CMP
 
 Esta instrucción le resta el operando fuente al operando destino. El ninguno de los operandos no se modifica.
 

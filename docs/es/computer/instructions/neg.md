@@ -1,8 +1,4 @@
----
-title: NEG
----
-
-# {{ $frontmatter.title }}
+# NEG
 
 Esta instrucción realiza el complemento a dos del operando destino, es decir, lo niega. El resultado se almacena en el operando destino.
 

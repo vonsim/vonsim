@@ -1,8 +1,4 @@
----
-title: HLT
----
-
-# {{ $frontmatter.title }}
+# HLT
 
 Esta instrucción finaliza la ejecución del programa.
 

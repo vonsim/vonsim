@@ -1,8 +1,4 @@
----
-title: Tabla ASCII
----
-
-# {{ $frontmatter.title }}
+# Tabla ASCII
 
 Tabla ASCII utilizada por VonSim, mostrando sus representaciones en decimal, hexadecimal y carácter según el estándar Unicode.
 
