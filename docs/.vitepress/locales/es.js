@@ -1,6 +1,6 @@
 // @ts-check
 
-import { sidebarInstructions } from "../shared.js";
+import { localSearch, sidebarInstructions } from "../shared.js";
 
 /** @type {import("vitepress").LocaleSpecificConfig<import("vitepress").DefaultTheme.Config>} */
 export const es = {
@@ -30,32 +30,27 @@ export const es = {
     },
     outline: { label: "En esta página" },
     returnToTopLabel: "Volver arriba",
-    search: {
-      provider: "local",
-      options: {
-        translations: {
-          button: {
-            buttonText: "Buscar",
-            buttonAriaLabel: "Buscar",
-          },
-          modal: {
-            backButtonTitle: "Cerrar búsqueda",
-            displayDetails: "Mostrar lista detallada",
-            footer: {
-              closeKeyAriaLabel: "escape",
-              closeText: "para cerrar",
-              navigateDownKeyAriaLabel: "flecha abajo",
-              navigateText: "para navegar",
-              navigateUpKeyAriaLabel: "flecha arriba",
-              selectKeyAriaLabel: "enter",
-              selectText: "para seleccionar",
-            },
-            noResultsText: "No se encontraron resultados para",
-            resetButtonTitle: "Limpiar búsqueda",
-          },
-        },
+    search: localSearch({
+      button: {
+        buttonText: "Buscar",
+        buttonAriaLabel: "Buscar",
       },
-    },
+      modal: {
+        backButtonTitle: "Cerrar búsqueda",
+        displayDetails: "Mostrar lista detallada",
+        footer: {
+          closeKeyAriaLabel: "escape",
+          closeText: "para cerrar",
+          navigateDownKeyAriaLabel: "flecha abajo",
+          navigateText: "para navegar",
+          navigateUpKeyAriaLabel: "flecha arriba",
+          selectKeyAriaLabel: "enter",
+          selectText: "para seleccionar",
+        },
+        noResultsText: "No se encontraron resultados para",
+        resetButtonTitle: "Limpiar búsqueda",
+      },
+    }),
     sidebar: {
       "/es/": {
         base: "/es/",

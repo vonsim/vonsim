@@ -5,6 +5,7 @@ import { createMarkdownRenderer, defineConfig } from "vitepress";
 import { generateOpenGraphs } from "./opengraph.js";
 import { en } from "./locales/en.js";
 import { es } from "./locales/es.js";
+import { localSearch } from "./shared.js";
 import vonsimLang from "./vonsim.tmLanguage.json";
 
 // https://vitepress.dev/reference/site-config
@@ -29,7 +30,7 @@ export default defineConfig({
       linkLabel: "go to home",
       linkText: "JMP home",
     },
-    search: { provider: "local" },
+    search: localSearch(),
     socialLinks: [{ icon: "github", link: "https://github.com/vonsim/vonsim" }],
   },
   locales: {

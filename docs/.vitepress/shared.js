@@ -12,3 +12,14 @@ export function sidebarInstructions() {
       return { text: name.toUpperCase(), link: `instructions/${name}` };
     });
 }
+
+/**
+ * @param {import("vitepress").DefaultTheme.LocalSearchOptions["translations"]} translations
+ * @returns {import("vitepress").DefaultTheme.Config["search"]}
+ */
+export function localSearch(translations = undefined) {
+  return {
+    provider: "local",
+    options: { translations },
+  };
+}
