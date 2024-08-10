@@ -37,10 +37,8 @@ export default defineConfig({
     es: { ...es, label: "Español" },
   },
   markdown: {
-    shikiSetup: async shiki => {
-      // @ts-ignore
-      await shiki.loadLanguage(vonsimLang);
-    },
+    // @ts-ignore
+    languages: [vonsimLang],
   },
   head: [
     ["link", { rel: "icon", href: "/logo.svg" }],
