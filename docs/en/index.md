@@ -36,7 +36,7 @@ with assistance from
 
 for the courses of
 
-- [Computer Organization](http://weblidi.info.unlp.edu.ar/catedras/organiza/),
+- [Computer Organization](http://weblidi.info.unlp.edu.ar/catedras/organizacion/),
 - [Computer Architecture](http://weblidi.info.unlp.edu.ar/catedras/arquitecturaP2003/),
 - [Concepts of Computer Architecture](http://weblidi.info.unlp.edu.ar/catedras/ConArqCom/),
 

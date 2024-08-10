@@ -36,7 +36,7 @@ con ayuda de
 
 para las cátedras de
 
-- [Organización de computadoras](http://weblidi.info.unlp.edu.ar/catedras/organiza/),
+- [Organización de computadoras](http://weblidi.info.unlp.edu.ar/catedras/organizacion/),
 - [Arquitectura de computadoras](http://weblidi.info.unlp.edu.ar/catedras/arquitecturaP2003/),
 - [Conceptos de arquitectura de computadoras](http://weblidi.info.unlp.edu.ar/catedras/ConArqCom/),
 
