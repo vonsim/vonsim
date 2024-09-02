@@ -35,6 +35,7 @@ Aquí se listan todas las instrucciones que soporta el simulador. Cada instrucci
 | [`OR dest, fuente`](./or)   | Operación _dest_ OR _fuente_ bit a bit  |  0   |  X   |  X   |  --  |  0   |
 | [`XOR dest, fuente`](./xor) | Operación _dest_ XOR _fuente_ bit a bit |  0   |  X   |  X   |  --  |  0   |
 | [`NOT dest`](./not)         | Operación NOT _dest_ bit a bit          |  0   |  X   |  X   |  --  |  0   |
+| [`TEST dest, fuente`](./test) | Operación _dest_ AND _fuente_ bit a bit, solo flags    |  X   |  X   |  X   |  --  |  X   |
 
 ### Instrucciones de transferencia de control
 

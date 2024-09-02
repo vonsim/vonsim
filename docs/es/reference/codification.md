@@ -43,6 +43,7 @@ A lo largo de la codificación se usan las siguientes abreviaturas:
 |    `SUB`    | `100 0110 w` |
 |    `SBB`    | `100 0111 w` |
 |    `CMP`    | `100 1000 w` |
+|    `TEST`   | `100 1001 w` |
 
 Estas instrucciones reciben dos operandos y soportan varios modos de direccionamiento. Esta información está codificada en el bit `d` y el segundo byte de la instrucción según la siguiente tabla:
 

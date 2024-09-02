@@ -47,6 +47,7 @@ export const INSTRUCTIONS = [
   "AND",
   "OR",
   "XOR",
+  "TEST",
   // Control transfer
   "CALL",
   "JMP",
