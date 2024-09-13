@@ -1,4 +1,4 @@
-        # TEST
+# TEST
 
 Esta instrucción reliza la operación lógica AND bit a bit entre el operando destino y el operando fuente (destino AND fuente). El resultado de la operación lógica no se guarda.
 
