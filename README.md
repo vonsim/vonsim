@@ -12,16 +12,16 @@
 
 # VonSim
 
-VonSim is a tool designed for teaching and learning computer architecture. It consists of an environment for developing programs in [assembly language](./computer/assembly) and a simulator for them.
+VonSim is a tool designed for teaching and learning computer architecture. It consists of an environment for developing programs in assembly language and a simulator for them.
 
-It is [based](./computer/cpu) on the Intel 8088 processor and features:
+It is based on the Intel 8088 processor and features:
 
 - four 16-bit general-purpose registers;
-- a [main memory](./computer/memory) of 32 kB;
+- a main memory of 32 kB;
 - a 16-bit address bus and an 8-bit data bus;
 - software interrupts (such as keyboard input and screen output);
-- hardware interrupts with a [PIC](./io/modules/pic) (Programmable Interrupt Controller);
-- multiple [devices](./io/devices/index): clock, switches, LEDs, and a Centronics printer.
+- hardware interrupts with a PIC (Programmable Interrupt Controller);
+- multiple devices: clock, switches, LEDs, and a Centronics printer.
 
 These devices are inspired by their counterparts specified in Intel's iAPX 88 (or 8088 family). These are a set of devices designed by Intel to work seamlessly with the 8088 processor. More details can be found in the [iAPX 88 User's Manual (1981)](http://www.bitsavers.org/components/intel/8086/1981_iAPX_86_88_Users_Manual.pdf).
 
@@ -57,7 +57,7 @@ Also, there some support packages that are used by the packages above:
 
 Finally, the [documentation](https://vonsim.github.io/en/) is inside [`@vonsim/docs`](./docs/).
 
-### Notes for developers
+### Visual Studio Code Extension
 
 When using [Visual Studio Code](https://code.visualstudio.com/), you can use the [recommended extensions](./.vscode/extensions.json) to get the best experience. Some extensions might have trouble finding the `tailwind.config.ts` file for auto-completion and linting. This can be solved by creating a `.vscode/settings.json` file with the following content:
 
