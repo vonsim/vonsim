@@ -66,7 +66,7 @@ export const es = {
                 text: "Instrucciones",
                 link: "instructions/",
                 collapsed: true,
-                items: sidebarInstructions(),
+                items: sidebarInstructions("es"),
               },
             ],
           },

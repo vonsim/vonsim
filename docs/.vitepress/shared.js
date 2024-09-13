@@ -2,8 +2,11 @@
 
 import fs from "node:fs";
 
-export function sidebarInstructions() {
-  const dir = new URL("../es/computer/instructions/", import.meta.url);
+/**
+ * @param {string} lang
+ */
+export function sidebarInstructions(lang) {
+  const dir = new URL(`../${lang}/computer/instructions/`, import.meta.url);
   const files = fs.readdirSync(dir);
   return files
     .filter(f => f.endsWith(".md") && f !== "index.md")
