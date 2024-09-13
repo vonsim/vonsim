@@ -62,7 +62,7 @@ export const en = {
             text: "Reference",
             items: [
               { text: "ASCII Table", link: "reference/ascii" },
-              { text: "Codification", link: "reference/codification" },
+              { text: "Encoding", link: "reference/encoding" },
               { text: "Release Notes", link: "changelog" },
             ],
           },

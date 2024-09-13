@@ -49,7 +49,7 @@ export class IOInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see https://vonsim.github.io/en/reference/codification
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   get length(): number {
     if (!this.#initialOperation) throw new Error("Instruction not validated");
@@ -60,7 +60,7 @@ export class IOInstruction extends InstructionStatement {
 
   /**
    * Returns the bytes of the instruction.
-   * @see https://vonsim.github.io/en/reference/codification
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   toBytes(): Uint8Array {
     const bytes: number[] = [];
