@@ -25,9 +25,8 @@ It is based on the Intel 8088 processor and features:
 
 These devices are inspired by their counterparts specified in Intel's iAPX 88 (or 8088 family). These are a set of devices designed by Intel to work seamlessly with the 8088 processor. More details can be found in the [iAPX 88 User's Manual (1981)](http://www.bitsavers.org/components/intel/8086/1981_iAPX_86_88_Users_Manual.pdf).
 
-::: warning Simplifications
-This simulator is not intended to be a faithful emulator of the 8088. On the contrary, it aims to be a tool for teaching computer architecture. Therefore, multiple simplifications have been made compared to the 8088 that would make it difficult to use in a real environment. Likewise, the instruction set is much smaller than that of the 8088, and its encoding is simpler.
-:::
+> [!WARNING]
+> This simulator is not intended to be a faithful emulator of the 8088. On the contrary, it aims to be a tool for teaching computer architecture. Therefore, multiple simplifications have been made compared to the 8088 that would make it difficult to use in a real environment. Likewise, the instruction set is much smaller than that of the 8088, and its encoding is simpler.
 
 ## How to contribute
 
