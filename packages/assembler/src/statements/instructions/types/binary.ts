@@ -10,7 +10,17 @@ import { registerToBits } from "../encoding";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
-type BinaryInstructionName = "MOV" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP" | "AND" | "OR" | "XOR" | "TEST";
+type BinaryInstructionName =
+  | "MOV"
+  | "ADD"
+  | "ADC"
+  | "SUB"
+  | "SBB"
+  | "CMP"
+  | "AND"
+  | "OR"
+  | "XOR"
+  | "TEST";
 
 type InitialMemoryAccess = { mode: "direct"; address: NumberExpression } | { mode: "indirect" };
 
@@ -127,8 +137,8 @@ export class BinaryInstruction extends InstructionStatement {
       ADC: 0b100_0101_0,
       SUB: 0b100_0110_0,
       SBB: 0b100_0111_0,
-      CMP: 0b100_1000_0,
-      TEST: 0b100_1001_0,
+      CMP: 0b101_0110_0,
+      TEST: 0b101_0001_0,
     };
     bytes[0] = opcodes[this.instruction];
 
