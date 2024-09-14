@@ -1,6 +1,6 @@
 # Encoding
 
-This section describes the binary encoding of each of the simulator's instructions. Although the instruction set is based on Intel 8088, the encoding has been simplified for practical and educational purposes.
+This section describes the binary encoding of each of the simulator's instructions. Although the instruction set is based on that of the Intel 8088, the encoding has been simplified for practical and educational purposes.
 
 ## Acronyms and abbreviations
 
@@ -32,9 +32,7 @@ Throughout the encoding, the following abbreviations are used:
 - **xxx-low** refers to the least significant part (LSB) of a word or a byte.
 - **xxx-high** refers to the most significant part (MSB) of a word.
 
----
-
-### Basic Binary instructions
+## ALU Binary Instructions
 
 | Instruction |    Opcode    |
 | :---------: | :----------: |
@@ -50,24 +48,23 @@ Throughout the encoding, the following abbreviations are used:
 
 These instructions receive two operands and support various addressing modes. This information is encoded in the `d` bit and the second byte of the instruction according to the following table:
 
-| Destination                        | Source                              | Second byte | Following bytes                          |
-| :--------------------------------- | :---------------------------------- | :---------: | :--------------------------------------- |
-| Register                           | Register                            | `00RRRrrr`  | —                                        |
-| Register                           | Memory (direct)                     | `01000rrr`  | addr-low, addr-high                      |
-| Register                           | Memory (indirect)                   | `01010rrr`  | —                                        |
-| Register                           | Memory (indirect with displacement) | `01100rrr`  | disp-low, disp-high                      |
-| Register                           | Immediate                           | `01001rrr`  | data-low, data-high                      |
-| Memory (direct)                    | Register                            | `11000rrr`  | addr-low, addr-high                      |
-| Memory (indirect)                  | Register                            | `11010rrr`  | —                                        |
-| Memory (indirect with displacement)| Register                            | `11100rrr`  | disp-low, disp-high                      |
-| Memory (direct)                    | Immediate                           | `11001000`  | addr-low, addr-high, data-low, data-high |
-| Memory (indirect)                  | Immediate                           | `11011000`  | data-low, data-high                      |
-| Memory (indirect with displacement)| Immediate                           | `11101000`  | disp-low, disp-high, data-low, data-high |
+| Destination                         | Source                              | Second byte | Following bytes                          |
+| :---------------------------------- | :---------------------------------- | :---------: | :--------------------------------------- |
+| Register                            | Register                            | `00RRRrrr`  | —                                        |
+| Register                            | Memory (direct)                     | `01000rrr`  | addr-low, addr-high                      |
+| Register                            | Memory (indirect)                   | `01010rrr`  | —                                        |
+| Register                            | Memory (indirect with displacement) | `01100rrr`  | disp-low, disp-high                      |
+| Register                            | Immediate                           | `01001rrr`  | data-low, data-high                      |
+| Memory (direct)                     | Register                            | `11000rrr`  | addr-low, addr-high                      |
+| Memory (indirect)                   | Register                            | `11010rrr`  | —                                        |
+| Memory (indirect with displacement) | Register                            | `11100rrr`  | disp-low, disp-high                      |
+| Memory (direct)                     | Immediate                           | `11001000`  | addr-low, addr-high, data-low, data-high |
+| Memory (indirect)                   | Immediate                           | `11011000`  | data-low, data-high                      |
+| Memory (indirect with displacement) | Immediate                           | `11101000`  | disp-low, disp-high, data-low, data-high |
 
 For instructions with a register as an operand, `rrr` encodes this register. In the case of register to register, `RRR` encodes the source register and `rrr` the destination register.
 
----
-## Unary Instructions
+## ALU Unary Instructions
 
 | Instruction |    Opcode    |
 | :---------: | :----------: |
@@ -78,16 +75,14 @@ For instructions with a register as an operand, `rrr` encodes this register. In 
 
 These instructions receive one operand and support various addressing modes. This information is encoded in the second byte of the instruction according to the following table:
 
-| Destination                        | Second byte | Following bytes    |
-| :--------------------------------- | :---------: | :----------------- |
-| Register                           | `00000rrr`  | —                  |
-| Memory (direct)                    | `11000000`  | addr-low, addr-high|
-| Memory (indirect)                  | `11010000`  | —                  |
-| Memory (indirect with displacement)| `11100000`  | disp-low, disp-high|
+| Destination                         | Second byte | Following bytes     |
+| :---------------------------------- | :---------: | :------------------ |
+| Register                            | `00000rrr`  | —                   |
+| Memory (direct)                     | `11000000`  | addr-low, addr-high |
+| Memory (indirect)                   | `11010000`  | —                   |
+| Memory (indirect with displacement) | `11100000`  | disp-low, disp-high |
 
----
-
-## I/O Instructions 
+## I/O Instructions
 
 | Instruction |    Opcode    |
 | :---------: | :----------: |
@@ -99,9 +94,7 @@ The `p` bit encodes
 - if the port is fixed (`p=0`), which will have to be provided in the next byte (maximum port: 255),
 - or if the port is variable (`p=1`), in which case the value stored in the `DX` register will be used as the port.
 
----
-
-## Stack Instructions 
+## Stack Instructions
 
 | Instruction |   Opcode    |
 | :---------: | :---------: |
@@ -112,9 +105,7 @@ The `p` bit encodes
 
 `rrr` always represents a 16-bit register.
 
----
-
-## Jump Instructions 
+## Jump Instructions
 
 | Instruction |   Opcode    |
 | :---------: | :---------: |
@@ -132,10 +123,7 @@ The `p` bit encodes
 
 After the opcode, these instructions (except `RET`) receive an absolute memory address (which occupies two bytes).
 
----
-
-## Interrupt Related Instructions 
-
+## Interrupt Related Instructions
 
 | Instruction |   Opcode    |
 | :---------: | :---------: |
@@ -146,9 +134,7 @@ After the opcode, these instructions (except `RET`) receive an absolute memory a
 
 After the opcode, `INT` receives the instruction number (occupies one byte).
 
----
-
-## Misc Instructions 
+## Misc Instructions
 
 | Instruction |   Opcode    |
 | :---------: | :---------: |

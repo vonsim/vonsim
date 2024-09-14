@@ -9,10 +9,10 @@ With the call `INT 7`, a string of characters is written to the screen. It recei
 
 ```vonsim
 org 1000h
-cadena db "Hello!"
+string db "Hello!"
 
 org 2000h
-mov bx, offset cadena
+mov bx, offset string
 mov al, 5
 int 7
 ; "Hello!" (without quotes) is printed on the screen.
@@ -25,4 +25,3 @@ There are three special characters:
 - The backspace character (`BS`, 8 in decimal) erases the previous character;
 - The line feed character (`LF`, 10 in decimal) effectively prints a line break — useful for not printing everything on a single line;
 - The form feed character (`FF`, 12 in decimal) clears the screen.
-

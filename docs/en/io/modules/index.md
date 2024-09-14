@@ -1,32 +1,32 @@
-# Memoria E/S
+# I/O Memory
 
-La memoria de entrada/salida se encuentra aislada de la memoria principal. Es decir, para acceder a ella se utilizan exclusivamente las instrucciones [`IN`](../../computer/instructions/in) y [`OUT`](../../computer/instructions/out). Cuando se quiere acceder a un módulo de entrada/salida, la [CPU](../../computer/cpu) activa la señal `IO/M`, lo que causa que un selector de chips (_chip select_) lea la dirección del bus del direcciones y envíe la señal de lectura/escritura al módulo correspondiente.
+The input/output memory is isolated from the main memory. In other words, it can only be accessed using the [`IN`](../../computer/instructions/in) and [`OUT`](../../computer/instructions/out) instructions. When access to an input/output module is required, the [CPU](../../computer/cpu) activates the `IO/M` signal, which causes a chip select to read the address from the address bus and send the read/write signal to the corresponding module.
 
-El rango de direcciones de la memoria de entrada/salida es de `00h` hasta `FFh` (256 direcciones).
+The address range for the input/output memory is from `00h` to `FFh` (256 addresses).
 
-## Registros de E/S
+## I/O Registers
 
-Estos son las registros de entrada/salida disponibles en el simulador, todos de 8 bits:
+These are the input/output registers available in the simulator, all 8 bits wide:
 
-| Dirección | Nombre  | Módulo                   |
-| :-------: | :-----: | :----------------------- |
-|   `10h`   | `CONT`  | [Timer](./timer)         |
-|   `11h`   | `COMP`  | [Timer](./timer)         |
-|   `20h`   |  `EOI`  | [PIC](./pic)             |
-|   `21h`   |  `IMR`  | [PIC](./pic)             |
-|   `22h`   |  `IRR`  | [PIC](./pic)             |
-|   `23h`   |  `ISR`  | [PIC](./pic)             |
-|   `24h`   | `INT0`  | [PIC](./pic)             |
-|   `25h`   | `INT1`  | [PIC](./pic)             |
-|   `26h`   | `INT2`  | [PIC](./pic)             |
-|   `27h`   | `INT3`  | [PIC](./pic)             |
-|   `28h`   | `INT4`  | [PIC](./pic)             |
-|   `29h`   | `INT5`  | [PIC](./pic)             |
-|   `2Ah`   | `INT6`  | [PIC](./pic)             |
-|   `2Bh`   | `INT7`  | [PIC](./pic)             |
-|   `30h`   |  `PA`   | [PIO](./pio)             |
-|   `31h`   |  `PB`   | [PIO](./pio)             |
-|   `32h`   |  `CA`   | [PIO](./pio)             |
-|   `33h`   |  `CB`   | [PIO](./pio)             |
-|   `40h`   | `DATA`  | [Handshake](./handshake) |
-|   `41h`   | `STATE` | [Handshake](./handshake) |
+| Address |  Name   | Module                   |
+| :-----: | :-----: | :----------------------- |
+|  `10h`  | `CONT`  | [Timer](./timer)         |
+|  `11h`  | `COMP`  | [Timer](./timer)         |
+|  `20h`  |  `EOI`  | [PIC](./pic)             |
+|  `21h`  |  `IMR`  | [PIC](./pic)             |
+|  `22h`  |  `IRR`  | [PIC](./pic)             |
+|  `23h`  |  `ISR`  | [PIC](./pic)             |
+|  `24h`  | `INT0`  | [PIC](./pic)             |
+|  `25h`  | `INT1`  | [PIC](./pic)             |
+|  `26h`  | `INT2`  | [PIC](./pic)             |
+|  `27h`  | `INT3`  | [PIC](./pic)             |
+|  `28h`  | `INT4`  | [PIC](./pic)             |
+|  `29h`  | `INT5`  | [PIC](./pic)             |
+|  `2Ah`  | `INT6`  | [PIC](./pic)             |
+|  `2Bh`  | `INT7`  | [PIC](./pic)             |
+|  `30h`  |  `PA`   | [PIO](./pio)             |
+|  `31h`  |  `PB`   | [PIO](./pio)             |
+|  `32h`  |  `CA`   | [PIO](./pio)             |
+|  `33h`  |  `CB`   | [PIO](./pio)             |
+|  `40h`  | `DATA`  | [Handshake](./handshake) |
+|  `41h`  | `STATE` | [Handshake](./handshake) |

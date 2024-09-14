@@ -47,7 +47,7 @@ VonSim se basa en el trabajo previo de Rubén de Diego Martínez para la Univers
 - [Set de instrucciones del MSX88](/msx88/set-instr-MSX88.PDF)
 - [Paper de presentación del MSX88](/msx88/msx88-original-paper.pdf)
 - [MSX88 v3.1 (con DOSBox)](/msx88/MSX88Portable.zip)
-- [MSX88 v4.0 (portado)](/msx88/msx88_2017.rar){target="\_self"}
+- [MSX88 v4.0 (portado)](/msx88/msx88_2017.rar){target="_self"}
 - [Apunte sobre interrupciones](/msx88/apunte-interrupciones.pdf)
 
 ### Licencia

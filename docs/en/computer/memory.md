@@ -1,9 +1,3 @@
-Certainly! I'll translate this section about the main memory for you.
-
-
-
-Here's the English translation:
-
 # Main Memory
 
 The simulator has a main storage memory. This memory covers the address space from `0000h` to `FFFFh`. The lower half (`0000h` to `7FFFh`) is reserved for the user: programs and data are stored here. The upper half (`8000h` to `FFFFh`) is reserved for a very simple operating system (called _monitor_) that allows the user to interact with various devices (see [system calls](./cpu#system-calls)).

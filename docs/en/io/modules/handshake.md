@@ -1,21 +1,21 @@
 # Handshake
 
-El _handshake_ es un dispotivo diseñado con el fin de facilitar la comunicación con las [impresoras Centronics](../devices/printer). Está basado en el PPI 8255 de Intel en su modo "1", pero con algunas modificaciones para simplificar su funcionamiento.
+The _handshake_ is a device designed to facilitate communication with [Centronics printers](../devices/printer). It is based on Intel's PPI 8255 in "mode 1", but with some modifications to simplify its operation.
 
-Este cuenta con dos registros de 8 bits:
+It has two 8-bit registers:
 
-- el registro de datos (dirección `40h` de la [memoria E/S](./index)),
-- y el registro de estado (dirección `41h` de la [memoria E/S](./index)).
+- the data register (address `40h` in the [I/O memory](./index)),
+- and the status register (address `41h` in the [I/O memory](./index)).
 
-Específicamente,
+Specifically,
 
 ```
-Datos  = DDDD DDDD
-Estado = I___ __SB
+Data   = DDDD DDDD
+Status = I___ __SB
 ```
 
-En el registro de datos se almacenará carácter a imprimir, expresado en ASCII. Cada vez que la CPU escriba sobre ese registro, el _handshake_ se encargará de realizar un flanco ascendente en el _strobe_ para que el carácter se imprima automáticamente.
+The character to be printed, expressed in ASCII, will be stored in the data register. Each time the CPU writes to this register, the _handshake_ will generate a rising edge on the _strobe_ to automatically print the character.
 
-En el registro de estado, los dos bits menos significativos son el _strobe_ y _busy_ ([leer más sobre los mismos](../devices/printer)), análogamente a como se usan en una impresora conectada con un PIO. La diferencia es que el bit de _busy_ no puede ser modificado por la CPU y el bit de _strobe_ siempre es `0`. Si la CPU trata de escribir un `1` en el bit de _strobe_, este causará un flanco ascendente en el _strobe_, enviando lo almacenado en el registro de datos, y el handshake lo volverá a `0` automáticamente.
+In the status register, the two least significant bits are the _strobe_ and _busy_ ([read more about them](../devices/printer)), analogous to how they are used in a printer connected with a PIO. The difference is that the _busy_ bit cannot be modified by the CPU and the _strobe_ bit is always `0`. If the CPU tries to write a `1` to the _strobe_ bit, this will cause a rising edge on the _strobe_, sending what is stored in the data register, and the handshake will automatically return it to `0`.
 
-Además, el bit más significativo del registro de estado habilita/inhabilita las interrupciones. Si este bit es `1`, mientras la impresora no esté ocupada (`B=0`), el Handshake disparará una interrupción por hardware. Está conectado al puerto `INT2` del [PIC](./pic).
+Additionally, the most significant bit of the status register enables/disables interrupts. If this bit is `1`, while the printer is not busy (`B=0`), the Handshake will trigger a hardware interrupt. It is connected to the `INT2` port of the [PIC](./pic).

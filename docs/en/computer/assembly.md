@@ -1,4 +1,3 @@
-
 # Assembly Language
 
 The assembly language (or _assembly_) used by the simulator is written as follows:
@@ -29,21 +28,21 @@ dw 5      ; DW is the directive to write a word (2 bytes) in memory.
           ; In this case, the word 5 is written at address 1004h.
           ; The byte 05h remains at address 1004h and 00h at 1005h.
 
-etq dw 7  ; 'etq' is a label. It is used to reference a memory address.
+lab dw 7  ; 'lab' is a label. It is used to reference a memory address.
 
 dw ?      ; The symbol ? indicates that the value of the word is unknown. In
           ; this case, nothing is written at addresses 1008h and 1009h.
 
-str db "Hello, World!" ; Text strings can also be written in ASCII,
-                      ; (H=48h, o=6Fh, l=6Ch, a=61h, ...). In this case, the
-                      ; string will be stored starting from address 100Ah.
-                      ; 48h will be at 100Ah, 6Fh at 100Bh, 6Ch at 100Ch, etc.
-                      ; Strings can only be written with the DB directive.
+str db "Hello, World!"  ; Text strings can also be written in ASCII,
+                        ; (H=48h, o=6Fh, l=6Ch, a=61h, ...). In this case, the
+                        ; string will be stored starting from address 100Ah.
+                        ; 48h will be at 100Ah, 6Fh at 100Bh, 6Ch at 100Ch, etc.
+                        ; Strings can only be written with the DB directive.
 
 db 1, 2, 3, 4 ; Multiple bytes can be written on the same line.
 
-cinco equ 5 ; EQU is the equivalence directive. It is used to define
-            ; constants. In this case, the constant 'cinco' is defined with
+five equ 5  ; EQU is the equivalence directive. It is used to define
+            ; constants. In this case, the constant 'five' is defined with
             ; the value 5. No memory is reserved for this constant.
 
 org 2000h ; All programs start, by convention, at address 2000h.
@@ -114,7 +113,7 @@ mov foo+1, 6h
 ; mov byte ptr [1001h], 6h
 ```
 
-In this case, the label `foo` refers to the memory address `1000h`. Therefore, `foo+1` refers to the memory address `1001h`. This will work as long as the operand is of the form `label +/- constant`. For example, `foo+bx` will not work, but `foo - 6*8 + offset otra_etiqueta` will (though it is not recommended; it is advisable to use `label +/- number` for better readability and understanding of the code).
+In this case, the label `foo` refers to the memory address `1000h`. Therefore, `foo+1` refers to the memory address `1001h`. This will work as long as the operand is of the form `label +/- constant`. For example, `foo+bx` will not work, but `foo - 6*8 + offset another_label` will (though it is not recommended; it is advisable to use `label +/- number` for better readability and understanding of the code).
 
 ### Immediate Values
 
@@ -135,8 +134,8 @@ These immediate values are numbers that can be written as follows:
 13 * (7 - 2)
 'A' + 5
 
-cinco   ; Constants defined with the EQU directive and labels to instructions
-offset etq ; Memory address of the label 'etq' (which defines a DB or DW)
+five   ; Constants defined with the EQU directive and labels to instructions
+offset lab ; Memory address of the label 'lab' (which defines a DB or DW)
 
 offset str + 4 ; Memory address of the string 'str' + 4
 ```
@@ -148,14 +147,14 @@ Note that there is a difference between labels of a `DB` or `DW` directive and l
 ```vonsim
 org 1000h
 str db "Hello, World!"
-str_fin db ?
+str_end db ?
 
-str_fin db offset str_fin - offset str ; == 100Ch - 1000h == Ch == 12
+str_end db offset str_end - offset str ; == 100Ch - 1000h == Ch == 12
 
 ; ---
 
 org 2000h
-mov ax, str_fin ; == mov ax, 12
+mov ax, str_end ; == mov ax, 12
 loop: jmp loop  ; == jmp 2004h
 end
 ```

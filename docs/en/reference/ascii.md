@@ -1,13 +1,12 @@
-# Tabla ASCII
+# ASCII Table
 
 ASCII table used for VonSim. The shows the decimal, hexadecimal and corresponding symbol according to Unicode
-
 
 <table class="vonsim-ascii-table">
 <thead>
 <tr><th colspan="12">
 
-[Reference](https://www.unicode.org/charts/PDF/U0000.pdf)
+Original ASCII table ([reference](https://www.unicode.org/charts/PDF/U0000.pdf))
 
 </th></tr>
 </thead>
@@ -50,7 +49,7 @@ ASCII table used for VonSim. The shows the decimal, hexadecimal and correspondin
 <thead>
 <tr><th colspan="12">
 
-Tabla ASCII extendido ([referencia](https://www.unicode.org/charts/PDF/U0080.pdf))
+Extended ASCII table ([reference](https://www.unicode.org/charts/PDF/U0080.pdf))
 
 </th></tr>
 </thead>

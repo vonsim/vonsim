@@ -1,14 +1,14 @@
 # PIO
 
-El _programmed input-output_ (PIO) es un módulo que hace de interfaz para conectar dispositivos genéricos al CPU. Está basado en el PPI 8255 de Intel en su modo "0", pero con algunas modificaciones para simplificar su funcionamiento.
+The _programmed input-output_ (PIO) is a module that serves as an interface to connect generic devices to the CPU. It is based on Intel's PPI 8255 in "mode 0," but with some modifications to simplify its operation.
 
-Cuenta con dos puertos de 8 bits (A y B) programables. Los registros disponibles son:
+It has two programmable 8-bit ports (A and B). The available registers are:
 
-- `PA` (dirección `30h` de la [memoria E/S](./index)),
-- `PB` (dirección `31h` de la [memoria E/S](./index)),
-- `CA` (dirección `32h` de la [memoria E/S](./index)),
-- y `CB` (dirección `33h` de la [memoria E/S](./index)).
+- `PA` (address `30h` in the [I/O memory](./index)),
+- `PB` (address `31h` in the [I/O memory](./index)),
+- `CA` (address `32h` in the [I/O memory](./index)),
+- and `CB` (address `33h` in the [I/O memory](./index)).
 
-El valor del puerto A se encuentra en el registro `PA` y su configuración en el registro `CA`. El registro `CA` también es de 8 bits y le indica al PIO el modo cada bit: un `0` si es de salida y un `1` si es de entrada. Por ejemplo, para `CA = 00001111b`, los cuatro bits más significativos son de salida y los cuatro menos significativos son de entrada. El puerto B funciona idénticamente.
+The value of port A is stored in the `PA` register, and its configuration is stored in the `CA` register. The `CA` register is also 8 bits and tells the PIO the mode of each bit: a `0` if it's an output, and a `1` if it's an input. For example, with `CA = 00001111b`, the four most significant bits are outputs, and the four least significant bits are inputs. Port B works in the same way.
 
-El PIO puede estar conectado a [llaves y luces](../devices/switches-and-leds) o a una [impresora](../devices/printer).
+The PIO can be connected to [switches and LEDs](../devices/switches-and-leds) or to a [printer](../devices/printer).

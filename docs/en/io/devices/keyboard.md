@@ -6,15 +6,16 @@ With the call `INT 6`, the execution of the code is halted until a key is presse
 
 ```vonsim
 org 1000h
-car db ?
+char db ?
 
 org 2000h
-mov bx, offset car
+mov bx, offset char
 int 6
 ; The user types a character
 int 0
 end
 
-; The character written is stored in 'car'.
+; The character written is stored in 'char'.
 ; For example, if the user pressed the 'a' key, then
-; the value 61h is stored in 'car'.
+; the value 61h is stored in 'char'.
+```

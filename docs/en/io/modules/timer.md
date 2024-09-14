@@ -1,10 +1,10 @@
 # Timer
 
-El _timer_ es un módulo que cuenta con dos registos internos:
+The _timer_ is a module that consists of two internal registers:
 
-- el registro `CONT` (dirección `10h` de la [memoria E/S](./index)),
-- y el registro `COMP` (dirección `11h` de la [memoria E/S](./index)).
+- the `CONT` register (address `10h` in the [I/O memory](./index)),
+- and the `COMP` register (address `11h` in the [I/O memory](./index)).
 
-Cuando el [reloj](../devices/clock) hace tic, se incrementa el registro `CONT` en uno. Cuando el registro `CONT` coincide con el registro `COMP`, se dispara una interrupción por la línea `INT1` del [PIC](./pic).
+When the [clock](../devices/clock) ticks, the `CONT` register increments by one. When the `CONT` register matches the `COMP` register, an interrupt is triggered via the `INT1` line of the [PIC](./pic).
 
-Está basado en el PIT 8253 de Intel, pero con algunas modificaciones para simplificar su funcionamiento.
+It is based on Intel's 8253 PIT, but with some modifications to simplify its operation.

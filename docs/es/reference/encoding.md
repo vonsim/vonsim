@@ -1,6 +1,8 @@
 # Codificación
 
-Aquí se denota la codificación en binario de cada una de las instrucciones del simulador. Pese a que el set de instrucciones esté basado en el de Intel 8088, la codificación se simplificado con fines prácticos y didácticos.
+Aquí se denota la codificación en binario de cada una de las instrucciones del simulador. Pese a que el set de instrucciones esté basado en el del Intel 8088, la codificación se simplificado con fines prácticos y didácticos.
+
+## Acrónimos y abreviaciones
 
 A lo largo de la codificación se usan las siguientes abreviaturas:
 
@@ -30,7 +32,7 @@ A lo largo de la codificación se usan las siguientes abreviaturas:
 - **xxx-low** se refiere a la parte menos significativa (LSB) de un word o a un byte.
 - **xxx-high** se refiere a la marte más significativa (MSB) de un word.
 
----
+## Instrucciones binarias de la ALU
 
 | Instrucción |    Opcode    |
 | :---------: | :----------: |
@@ -62,7 +64,7 @@ Estas instrucciones reciben dos operandos y soportan varios modos de direccionam
 
 Para las instrucciones con un registro como operando, `rrr` codifica este registro. En el caso registro a registro, `RRR` codifica el registro fuente y `rrr` el registro destino.
 
----
+## Instrucciones unarias de la ALU
 
 | Instrucción |    Opcode    |
 | :---------: | :----------: |
@@ -80,7 +82,7 @@ Estas instrucciones reciben un operando y soportan varios modos de direccionamie
 | Memoria (indirecto)                    |  `11010000`  | —                   |
 | Memoria (indirecto con desplazamiento) |  `11100000`  | desp-low, desp-high |
 
----
+## Instrucciones de E/S
 
 | Instrucción |    Opcode    |
 | :---------: | :----------: |
@@ -92,7 +94,7 @@ El bit `p` codifica
 - si el puerto es fijo (`p=0`), el cual se tendrá que proveer en el siguiente byte (puerto máximo: 255),
 - o si el puerto es variable (`p=1`), caso en el cual se usará el valor almacenado en el registro `DX` como puerto.
 
----
+## Instrucciones relacionadas a la pila
 
 | Instrucción |   Opcode    |
 | :---------: | :---------: |
@@ -103,7 +105,7 @@ El bit `p` codifica
 
 `rrr` siempre representa un registro de 16 bits.
 
----
+## Instrucciones de salto
 
 | Instrucción |   Opcode    |
 | :---------: | :---------: |
@@ -121,7 +123,7 @@ El bit `p` codifica
 
 Luego del opcode, estas instrucciones (salvo `RET`) reciben una dirección absoluta de memoria (que ocupa dos bytes).
 
----
+## Instrucciones relacionadas a las interrupciones
 
 | Instrucción |   Opcode    |
 | :---------: | :---------: |
@@ -132,7 +134,7 @@ Luego del opcode, estas instrucciones (salvo `RET`) reciben una dirección absol
 
 Luego del opcode, `INT` recibe el número de instrucción (ocupa un byte).
 
----
+## Otras instrucciones
 
 | Instrucción |   Opcode    |
 | :---------: | :---------: |

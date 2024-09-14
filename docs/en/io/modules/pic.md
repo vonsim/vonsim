@@ -1,56 +1,56 @@
 # PIC
 
-El _programmable interrupt controller_ (PIC) es un módulo que se encuentra entre los dispositvos que emiten [interrupciones](../../computer/cpu#interrupciones) y la CPU. Como la CPU tiene solo una línea de entrada, este dispositivo se encarga de recibir interrupciones de múltiples dispositivos y multiplexar sus pedidos en esta única línea.
+The _programmable interrupt controller_ (PIC) is a module located between devices that issue [interrupts](../../computer/cpu#interrupts) and the CPU. Since the CPU has only one input line, this device is responsible for receiving interrupts from multiple devices and multiplexing their requests into this single line.
 
-Está basado en el PIC 8259A de Intel, pero con algunas modificaciones para simplificar su funcionamiento.
+It is based on Intel's 8259A PIC, but with some modifications to simplify its operation.
 
-## Líneas
+## Lines
 
-El PIC cuenta con 8 líneas: de la `INT0` a la `INT7` (no todas son utilizadas). Cada línea tiene un registro de 8 bits en la memoria E/S relacionado. La línea `INT0` tiene la dirección `24h`, la línea `INT1` tiene la dirección `25h`, y así hasta la línea `INT7`, con la dirección `2Bh`. En cada uno de estos registros se almacena el número de interrupción corresponde a cada línea.
+The PIC has 8 lines: from `INT0` to `INT7` (not all are used). Each line has an associated 8-bit register in the I/O memory. The `INT0` line is mapped to address `24h`, the `INT1` line to address `25h`, and so on until `INT7`, which is mapped to address `2Bh`. In each of these registers, the interrupt number corresponding to each line is stored.
 
-Cuando uno de los módulos/dispositvos quiera interrumpir a la CPU, el número de interrupción que PIC enviará será el almacenado en el registro correspondiente a la línea que se interrumpió, independizando así el número de interrupción del número de línea.
+When one of the modules/devices wants to interrupt the CPU, the interrupt number the PIC will send is the one stored in the register corresponding to the line that was triggered, thus decoupling the interrupt number from the line number.
 
-Las líneas están conectadas a los siguientes dispositivos:
+The lines are connected to the following devices:
 
-| Línea  | Módulo/Disp.                |
-| :----: | :-------------------------- |
-| `INT0` | [Tecla F10](../devices/f10) |
-| `INT1` | [Timer](./timer)            |
-| `INT2` | [Handshake](./handshake)    |
-| `INT3` | --                          |
-| `INT4` | --                          |
-| `INT5` | --                          |
-| `INT6` | --                          |
-| `INT7` | --                          |
+|  Line  | Module/Device             |
+| :----: | :------------------------ |
+| `INT0` | [F10 Key](../devices/f10) |
+| `INT1` | [Timer](./timer)          |
+| `INT2` | [Handshake](./handshake)  |
+| `INT3` | --                        |
+| `INT4` | --                        |
+| `INT5` | --                        |
+| `INT6` | --                        |
+| `INT7` | --                        |
 
 ## Control
 
-El PIC cuenta con tres registros adiciones de control. En los siguientes registros, cada bit corresponde con una línea de interrupción: el bit menos significativo corresponde a la línea `INT0` y el más significativo a la línea `INT7`.
+The PIC has three additional control registers. In these registers, each bit corresponds to an interrupt line: the least significant bit corresponds to the `INT0` line, and the most significant bit corresponds to the `INT7` line.
 
-El registro `IMR` o _interrupt mask register_ (dirección `21h` de la [memoria E/S](./index)) es el que se utiliza para enmascarar (o "inhabilitar") líneas de interrupción. Si el bit correspondiente a una línea es `1`, esta línea está enmascarada y no se emitirá la interrupción a la CPU. Si el bit es `0`, la línea está habilitada y se emitirá la interrupción a la CPU. Este puede ser modificado por la CPU.
+The `IMR` or _interrupt mask register_ (address `21h` in the [I/O memory](./index)) is used to mask (or "disable") interrupt lines. If the bit corresponding to a line is set to `1`, that line is masked, and its interrupt will not be sent to the CPU. If the bit is set to `0`, the line is enabled, and its interrupt will be sent to the CPU. This register can be modified by the CPU.
 
-El registro `IRR` o _interrupt request register_ (dirección `22h` de la [memoria E/S](./index)) indica las interrupciones pendientes. Si el bit correspondiente a una línea es `1`, esta línea tiene una interrupción pendiente. Si el bit es `0`, no tiene interrupciones pendientes. Este es modificado por el PIC y es de solo lectura para la CPU.
+The `IRR` or _interrupt request register_ (address `22h` in the [I/O memory](./index)) indicates pending interrupts. If the bit corresponding to a line is `1`, that line has a pending interrupt. If the bit is `0`, there are no pending interrupts. This register is modified by the PIC and is read-only for the CPU.
 
-El registro `ISR` o _in-service register_ (dirección `23h` de la [memoria E/S](./index)) indica qué interrupción está siendo atendida en un instante dado. Si el bit correspondiente a una línea es `1`, esta línea está siendo atendida. Si el bit es `0`, no está siendo atendida. Este es modificado por el PIC y es de solo lectura para la CPU.
+The `ISR` or _in-service register_ (address `23h` in the [I/O memory](./index)) indicates which interrupt is currently being serviced. If the bit corresponding to a line is `1`, that line is being serviced. If the bit is `0`, it is not being serviced. This register is modified by the PIC and is read-only for the CPU.
 
-## Funcionamiento
+## Operation
 
-Cuando una línea de interrupción se activa, el PIC la encola en el registro `IRR`. Si la línea no está enmascarada y no hay otra interrupción siendo atendida (es decir, si `ISR = 00h`), el PIC envía la señal de interrupción a la CPU activando línea `INTR`.
+When an interrupt line is triggered, the PIC queues it in the `IRR` register. If the line is not masked and there is no other interrupt being serviced (i.e., `ISR = 00h`), the PIC sends the interrupt signal to the CPU by activating the `INTR` line.
 
-Cuando la CPU esté lista para atender la interrupción, comienza el ciclo de _interrupt acknowledge_.
+When the CPU is ready to handle the interrupt, it initiates the _interrupt acknowledge_ cycle.
 
-1. La CPU responde al `INTR` enviando un pulso por la línea `INTA`.
-2. Al recibir la señal, el PIC marca la línea como _in-service_ en el registro `ISR` y la saca de la cola en el registro `IRR`.
-3. El PIC envía por el bus de datos el número de interrupción correspondiente a la línea que está siendo atendida.
-4. La CPU envía nuevamente un pulso por la línea `INTA`.
-5. El PIC apaga la línea `INTR`.
+1. The CPU responds to the `INTR` by sending a pulse on the `INTA` line.
+2. Upon receiving the signal, the PIC marks the line as _in-service_ in the `ISR` register and removes it from the queue in the `IRR` register.
+3. The PIC sends the interrupt number corresponding to the serviced line over the data bus.
+4. The CPU sends another pulse on the `INTA` line.
+5. The PIC deactivates the `INTR` line.
 
-Para indicarle al PIC que la rutina de interrupción terminó, la CPU escribe en la dirección `20h` de la [memoria E/S](./index) el byte de fin de interrupción o `EOI`, que es, coincidentemente, `20h`. Al leer este byte, el PIC desmarca la línea como _in-service_ en el registro `ISR`. Si hay interrupciones pendientes, el PIC activa la línea `INTR` nuevamente, repitiendo el proceso.
+To inform the PIC that the interrupt routine has finished, the CPU writes the end-of-interrupt byte or `EOI`, which is coincidentally `20h`, to the `20h` address in the [I/O memory](./index). Upon reading this byte, the PIC unmarks the line as _in-service_ in the `ISR` register. If there are pending interrupts, the PIC activates the `INTR` line again, repeating the process.
 
-::: tip Nota
-Este PIC no soporta interrupciones anidadas. Si una interrupción ocurre mientras otra está siendo atendida, la segunda se encolará en el registro `IRR` y se atenderá cuando la primera termine, sin importar su prioridad.
+::: tip Note
+This PIC does not support nested interrupts. If an interrupt occurs while another is being serviced, the second one will be queued in the `IRR` register and will be handled once the first one finishes, regardless of its priority.
 :::
 
-### Prioridades
+### Priorities
 
-Cuando hay más de una interrupción pendiente, el PIC atiende primero la de mayor prioridad. La prioridad de cada línea está determinada por su número de interrupción. Las líneas con menor número de interrupción tienen mayor prioridad. Por ejemplo, la línea `INT0` tiene mayor prioridad que la línea `INT1`.
+When there is more than one pending interrupt, the PIC services the one with the highest priority first. The priority of each line is determined by its interrupt number. Lines with lower interrupt numbers have higher priority. For example, the `INT0` line has higher priority than the `INT1` line.
