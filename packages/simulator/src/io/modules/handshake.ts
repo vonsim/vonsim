@@ -45,7 +45,7 @@ export class Handshake extends IOModule<HandshakeRegister> {
    *
    * @see
    * - {@link Printer}.
-   * - {@link https://vonsim.github.io/docs/io/devices/printer/#imprimir-con-handshake}.
+   * - {@link https://vonsim.github.io/en/io/devices/printer#printing-with-handshake}.
    *
    * ---
    * This class is: MUTABLE

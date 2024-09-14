@@ -180,7 +180,7 @@ export class PIC extends IOModule<PICRegister> {
    * This method handles the INTR / INTA handshake,
    * starting from (and including) the first INTA signal.
    *
-   * @see {@link https://vonsim.github.io/docs/io/modules/pic/#funcionamiento}.
+   * @see {@link https://vonsim.github.io/en/io/modules/pic#operation}.
    *
    * @returns The interrupt number (8-bits).
    *

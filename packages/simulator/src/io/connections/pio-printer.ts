@@ -10,7 +10,7 @@ import { PIO, PIOPort } from "../modules/pio";
  *
  * @see
  * - {@link PIO}.
- * - {@link https://vonsim.github.io/docs/io/devices/printer/#imprimir-con-pio}.
+ * - {@link https://vonsim.github.io/en/io/devices/printer#printing-with-pio}.
  *
  * ---
  * This class is: MUTABLE
