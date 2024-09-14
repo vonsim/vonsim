@@ -44,7 +44,8 @@ Throughout the encoding, the following abbreviations are used:
 |    `ADC`    | `100 0101 w` |
 |    `SUB`    | `100 0110 w` |
 |    `SBB`    | `100 0111 w` |
-|    `CMP`    | `100 1000 w` |
+|   `TEST`    | `101 0001 w` |
+|    `CMP`    | `101 0110 w` |
 
 These instructions receive two operands and support various addressing modes. This information is encoded in the `d` bit and the second byte of the instruction according to the following table:
 

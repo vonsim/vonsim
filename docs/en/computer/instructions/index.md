@@ -29,12 +29,13 @@ Here is a list of all the instructions supported by the simulator. Each instruct
 
 ### Logical Instructions
 
-| Instruction                 | Description                                      | `CF` | `ZF` | `SF` | `IF` | `OF` |
-| :-------------------------- | :----------------------------------------------- | :--: | :--: | :--: | :--: | :--: |
-| [`AND dest, source`](./and) | Performs bitwise AND between _dest_ and _source_ |  0   |  X   |  X   |  --  |  0   |
-| [`OR dest, source`](./or)   | Performs bitwise OR between _dest_ and _source_  |  0   |  X   |  X   |  --  |  0   |
-| [`XOR dest, source`](./xor) | Performs bitwise XOR between _dest_ and _source_ |  0   |  X   |  X   |  --  |  0   |
-| [`NOT dest`](./not)         | Performs bitwise NOT on _dest_                   |  0   |  X   |  X   |  --  |  0   |
+| Instruction                   | Description                                                  | `CF` | `ZF` | `SF` | `IF` | `OF` |
+| :---------------------------- | :----------------------------------------------------------- | :--: | :--: | :--: | :--: | :--: |
+| [`AND dest, source`](./and)   | Performs bitwise AND between _dest_ and _source_             |  0   |  X   |  X   |  --  |  0   |
+| [`OR dest, source`](./or)     | Performs bitwise OR between _dest_ and _source_              |  0   |  X   |  X   |  --  |  0   |
+| [`XOR dest, source`](./xor)   | Performs bitwise XOR between _dest_ and _source_             |  0   |  X   |  X   |  --  |  0   |
+| [`TEST dest, fuente`](./test) | Performs bitwise AND between _dest_ and _source_, only flags |  0   |  X   |  X   |  --  |  0   |
+| [`NOT dest`](./not)           | Performs bitwise NOT on _dest_                               |  0   |  X   |  X   |  --  |  0   |
 
 ### Control Transfer Instructions
 
