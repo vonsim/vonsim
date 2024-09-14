@@ -1,13 +1,13 @@
 # NOP
 
-Esta instrucción no hace nada. Los [_flags_](../cpu#flags) no se modifican.
+This instruction does nothing. The [_flags_](../cpu#flags) are not affected.
 
-## Uso
+## Usage
 
 ```vonsim
 NOP
 ```
 
-## Codificación
+## Encoding
 
 `00010000`

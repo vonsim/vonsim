@@ -1,32 +1,32 @@
 # CALL
 
-Esta instrucción inicializa una [subrutina](../cpu#subrutinas). Los [_flags_](../cpu#flags) no se modifican.
+This instruction initiates a [subroutine](../cpu#subroutines). The [_flags_](../cpu#flags) are not affected.
 
-Primero, se apila la dirección de retorno (la dirección de la instrucción siguiente a `CALL`) en la [pila](../cpu#pila). Luego, se salta a la dirección de la subrutina, es decir, copia la dirección de salto en `IP`.
+First, it pushes the return address (the address of the instruction following the `CALL`) onto the [stack](../cpu#stack). Then, it jumps to the subroutine address, i.e., copies the jump address into `IP`.
 
-## Uso
+## Usage
 
 ```vonsim
-CALL etiqueta
+CALL label
 ```
 
-_etiqueta_ debe ser una etiqueta que apunta a una instrucción.
+_label_ must be a label that points to an instruction.
 
-### Ejemplo
+### Example
 
 ```vonsim
             org 3000h
-subrutina:  push ax
+subroutine: push ax
             ; --- etc ---
             ret
 
             org 2000h
-            call subrutina ; Válido
-            call 3000h     ; Inválido, debe ser una etiqueta
+            call subroutine ; Valid
+            call 3000h      ; Invalid, must be a label
             hlt
             end
 ```
 
-## Codificación
+## Encoding
 
-`00110001`, _dir-low_, _dir-high_
+`00110001`, _addr-low_, _addr-high_

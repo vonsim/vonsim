@@ -1,15 +1,15 @@
 # PUSHF
 
-Esta instrucción apila el registro [`FLAGS`](../cpu#flags) en la [pila](../cpu#pila). Los [_flags_](../cpu#flags) no se modifican.
+This instruction pushes the [`FLAGS`](../cpu#flags) register onto the [stack](../cpu#stack). The [_flags_](../cpu#flags) are not affected.
 
-Esta instrucción primero decrementa el registro `SP` en 2 y luego almacena el registro `FLAGS` en la dirección apuntada por `SP`.
+This instruction first decrements the `SP` register by 2 and then stores the `FLAGS` register at the address pointed to by `SP`.
 
-## Uso
+## Usage
 
 ```vonsim
 PUSHF
 ```
 
-## Codificación
+## Encoding
 
 `01110000`

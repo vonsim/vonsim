@@ -18,13 +18,13 @@ _dest_ solo puede ser un registro de 16 bits (ver [tipos de operandos](../assemb
 
 Donde `rrr` codifica el registro fuente según esta tabla:
 
-| `rrr` | _fuente_ |
-| :---: | :------: |
-| `000` |   `AX`   |
-| `001` |   `CX`   |
-| `010` |   `DX`   |
-| `011` |   `BX`   |
-| `100` |   `SP`   |
-| `101` |    --    |
-| `110` |    --    |
-| `111` |    --    |
+| `rrr` | _dest_ |
+| :---: | :----: |
+| `000` |  `AX`  |
+| `001` |  `CX`  |
+| `010` |  `DX`  |
+| `011` |  `BX`  |
+| `100` |  `SP`  |
+| `101` |   --   |
+| `110` |   --   |
+| `111` |   --   |

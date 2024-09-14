@@ -1,17 +1,17 @@
 # INT
 
-Esta instrucción emite una [interrupción](../cpu#interrupciones) por software. El [_flag_](../cpu#flags) `IF` cambia a `0` obligatoriamente porque se va a ejecutar una interrupción. Los demás _flags_ no se modifican.
+This instruction triggers a software [interrupt](../cpu#interrupts). The `IF` [_flag_](../cpu#flags) is set to `0` because an interrupt will be executed. The other flags are not affected.
 
-## Uso
+## Usage
 
 ```vonsim
 INT N
 ```
 
-_N_ es el número de interrupción (0-255), que debe ser inmediato (ver [tipos de operandos](../assembly#operandos)).
+_N_ is the interrupt number (0-255), which must be immediate (see [operand types](../assembly#operands)).
 
-Utiliza el mismo mecanismo de vector de interrupciones que las interrupciones por hardware. Generalmente se utiliza para realizar [llamadas al sistema](../cpu#llamadas-al-sistema), pero si se la llama con cualquier otro número, se ejecutará la rutina de interrupción asociada a ese número.
+It uses the same interrupt vector mechanism as hardware interrupts. It is typically used for [system calls](../cpu#system-calls), but if called with any other number, it will execute the interrupt routine associated with that number.
 
-## Codificación
+## Encoding
 
-`00011010`, _número de interrupción_
+`00011010`, _interrupt number_

@@ -1,15 +1,15 @@
 # POPF
 
-Esta instrucción desapila el elemento en el tope en la [pila](../cpu#pila) y lo almacena en el registro [`FLAGS`](../cpu#flags). Los [_flags_](../cpu#flags) se modificarán acordemente.
+This instruction pops the element at the top of the [stack](../cpu#stack) and stores it in the [`FLAGS`](../cpu#flags) register. The [_flags_](../cpu#flags) are modified accordingly.
 
-Esta instrucción primero lee el valor apuntado por `SP` y lo guarda en el registro `FLAGS`, para luego incrementar el registro `SP` en 2.
+This instruction first reads the value pointed to by `SP` and stores it in the `FLAGS` register, then increments the `SP` register by 2.
 
-## Uso
+## Usage
 
 ```vonsim
 POPF
 ```
 
-## Codificación
+## Encoding
 
 `01111000`

@@ -1,36 +1,36 @@
 # INC
 
-Esta instrucción suma uno al operando destino y almacena el resultado en el mismo operando.
+This instruction adds one to the destination operand and stores the result in the same operand.
 
-Los [_flags_](../cpu#flags) se modifican de la siguiente manera:
+The [_flags_](../cpu#flags) are modified as follows:
 
-- Si la suma no entra en el operando destino, entonces `CF=1`. De lo contrario, `CF=0`.
-- Si el resultado es cero, entonces `ZF=1`. De lo contrario, `ZF=0`.
-- Si el el bit más significativo del resultado es `1`, entonces `SF=1`. De lo contrario, `SF=0`.
-- Si el operando es positivo y el resultado negativo, entonces `OF=1`. De lo contrario, `OF=0`.
+- If the result exceeds the size of the destination operand, then `CF=1`. Otherwise, `CF=0`.
+- If the result is zero, then `ZF=1`. Otherwise, `ZF=0`.
+- If the most significant bit of the result is `1`, then `SF=1`. Otherwise, `SF=0`.
+- If the operand is positive and the result is negative, then `OF=1`. Otherwise, `OF=0`.
 
-## Uso
+## Usage
 
 ```vonsim
 INC dest
 ```
 
-_dest_ puede ser un registro o una dirección de memoria (ver [tipos de operandos](../assembly#operandos)).
+_dest_ can be a register or a memory address (see [operand types](../assembly#operands)).
 
-## Codificación
+## Encoding
 
-- Registro  
+- Register  
   `0100010w`, `00000rrr`
-- Memoria (directo)  
-  `0100010w`, `11000000`, _dir-low_, _dir-high_
-- Memoria (indirecto)  
+- Memory (direct)  
+  `0100010w`, `11000000`, _addr-low_, _addr-high_
+- Memory (indirect)  
   `0100010w`, `11010000`
-- Memoria (indirecto con desplazamiento)  
-  `0100010w`, `11100000`, _desp-low_, _desp-high_
+- Memory (indirect with displacement)  
+  `0100010w`, `11100000`, _disp-low_, _disp-high_
 
-Donde `w` es el bit de tamaño de los operandos. `w=0` indica operandos de 8 bits y `w=1` operandos de 16 bits.
+Where `w` is the operand size bit. `w=0` indicates 8-bit operands, and `w=1` indicates 16-bit operands.
 
-`rrr` o `RRR` codifica un registro según la siguiente tabla:
+`rrr` encodes a register according to the following table:
 
 | `rrr` | `w=0` | `w=1` |
 | :---: | :---: | :---: |

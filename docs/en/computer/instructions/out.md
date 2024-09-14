@@ -1,22 +1,22 @@
 # OUT
 
-Esta instrucción escribe un byte en la [memoria E/S](../../io/modules/index). Los [_flags_](../cpu#flags) no se modifican.
+This instruction writes a byte to [I/O memory](../../io/modules/index). The [_flags_](../cpu#flags) are not affected.
 
-## Uso
+## Usage
 
 ```vonsim
-OUT dest, fuente
+OUT dest, source
 ```
 
-_dest_ refiere al puerto o dirección de la memoria E/S. Puede ser un valor inmediato de 8 bits (ver [tipos de operandos](../assembly#operandos)) o el registro `DX`. En el caso de utilizar `DX`, se utilizará la palabra almacenada en el registro como dirección de memoria E/S.
+_dest_ refers to the I/O port or memory address. It can be an 8-bit immediate value (see [operand types](../assembly#operands)) or the `DX` register. If `DX` is used, the word stored in the register will be used as the I/O memory address.
 
-_fuente_ puede ser `AL` o `AX`. Si es `AX`, primero se escribirá del puerto especificado por _dest_ el valor en `AL`, y luego se escribirá en el puerto siguiente el valor de `AH`.
+_source_ can be `AL` or `AX`. If it is `AX`, the value in `AL` will be written to the port specified by _dest_, and then the value in `AH` will be written to the next port.
 
-## Codificación
+## Encoding
 
-- Puerto fijo  
-  `0101010w`, _puerto_
-- Puerto variable  
+- Fixed port  
+  `0101010w`, _port_
+- Variable port  
   `0101011w`
 
-Donde `w` es el bit de tamaño de la entrada. `w=0` indica leer de `AL` y `w=1` de `AX`.
+Where `w` is the input size bit. `w=0` indicates writing from `AL` and `w=1` from `AX`.

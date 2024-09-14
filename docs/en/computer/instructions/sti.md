@@ -1,13 +1,13 @@
 # STI
 
-Esta instrucción habilita las [interrupciones](../cpu#interrupciones) por hardware, cambiando la [_flag_](../cpu#flags) `IF=1`.
+This instruction enables hardware [interrupts](../cpu#interrupts) by setting the [_flag_](../cpu#flags) `IF=1`.
 
-## Uso
+## Usage
 
 ```vonsim
 STI
 ```
 
-## Codificación
+## Encoding
 
 `00011001`

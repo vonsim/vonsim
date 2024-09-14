@@ -1,15 +1,15 @@
 # RET
 
-Esta instrucción retorna de una [subrutina](../cpu#subrutinas). Los [_flags_](../cpu#flags) no se modifican.
+This instruction returns from a [subroutine](../cpu#subroutines). The [_flags_](../cpu#flags) are not affected.
 
-Primero, se desapila el tope de la [pila](../cpu#pila) (que debería contener la dirección de retorno dada por un [`CALL`](./call)). Luego, se salta a la dirección obtenida, es decir, copia la dirección de salto en `IP`.
+First, it pops the top of the [stack](../cpu#stack) (which should contain the return address provided by a [`CALL`](./call)). Then, it jumps to the obtained address, i.e., copies the jump address into `IP`.
 
-## Uso
+## Usage
 
 ```vonsim
 RET
 ```
 
-## Codificación
+## Encoding
 
 `00110011`

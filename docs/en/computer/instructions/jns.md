@@ -1,30 +1,30 @@
 # JNS
 
-Esta instrucción salta solo sí `SF=0`. Los [_flags_](../cpu#flags) no se modifican.
+This instruction jumps only if `SF=0`. The [_flags_](../cpu#flags) are not affected.
 
-De saltar, copiará la dirección de salto en `IP`.
+If a jump occurs, it will copy the jump address into `IP`.
 
-## Uso
+## Usage
 
 ```vonsim
-JNS etiqueta
+JNS label
 ```
 
-_etiqueta_ debe ser una etiqueta que apunta a una instrucción.
+_label_ must be a label that points to an instruction.
 
-### Ejemplo
+### Example
 
 ```vonsim
         org 2000h
-salto:  push ax
+jump:   push ax
         ; --- etc ---
 
-        jns salto ; Válido
-        jns 2000h ; Inválido, debe ser una etiqueta
+        jns jump  ; Valid
+        jns 2000h ; Invalid, must be a label
         hlt
         end
 ```
 
-## Codificación
+## Encoding
 
-`00100101`, _dir-low_, _dir-high_
+`00100101`, _addr-low_, _addr-high_

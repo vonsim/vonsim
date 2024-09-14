@@ -1,24 +1,24 @@
 # PUSH
 
-Esta instrucción apila un elemento en la [pila](../cpu#pila). El operando fuente no se modifica. Los [_flags_](../cpu#flags) no se modifican.
+This instruction pushes an element onto the [stack](../cpu#stack). The source operand is not modified. The [_flags_](../cpu#flags) are not affected.
 
-Esta instrucción primero decrementa el registro `SP` en 2 y luego almacena el operando fuente en la dirección apuntada por `SP`.
+This instruction first decrements the `SP` register by 2 and then stores the source operand at the address pointed to by `SP`.
 
-## Uso
+## Usage
 
 ```vonsim
-PUSH fuente
+PUSH source
 ```
 
-_fuente_ solo puede ser un registro de 16 bits (ver [tipos de operandos](../assembly#operandos)).
+_source_ can only be a 16-bit register (see [operand types](../assembly#operands)).
 
-## Codificación
+## Encoding
 
 `01100rrr`
 
-Donde `rrr` codifica el registro fuente según esta tabla:
+Where `rrr` encodes the source register as follows:
 
-| `rrr` | _fuente_ |
+| `rrr` | _source_ |
 | :---: | :------: |
 | `000` |   `AX`   |
 | `001` |   `CX`   |

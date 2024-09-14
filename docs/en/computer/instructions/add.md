@@ -1,58 +1,58 @@
 # ADD
 
-Esta instrucción suma dos operandos y guarda el resultado en el operando destino. El operando fuente no se modifica.
+This instruction adds two operands and stores the result in the destination operand. The source operand remains unchanged.
 
-Los [_flags_](../cpu#flags) se modifican de la siguiente manera:
+The [_flags_](../cpu#flags) are modified as follows:
 
-- Si la suma no entra en el operando destino, entonces `CF=1`. De lo contrario, `CF=0`.
-- Si el resultado es cero, entonces `ZF=1`. De lo contrario, `ZF=0`.
-- Si el el bit más significativo del resultado es `1`, entonces `SF=1`. De lo contrario, `SF=0`.
-- Si la suma de dos números positivos da un número negativo o la suma de dos números negativos da un número positivo, entonces `OF=1`. De lo contrario, `OF=0`.
+- If the result exceeds the size of the destination operand, then `CF=1`. Otherwise, `CF=0`.
+- If the result is zero, then `ZF=1`. Otherwise, `ZF=0`.
+- If the most significant bit of the result is `1`, then `SF=1`. Otherwise, `SF=0`.
+- If the sum of two positive numbers results in a negative number, or the sum of two negative numbers results in a positive number, then `OF=1`. Otherwise, `OF=0`.
 
-## Uso
+## Usage
 
 ```vonsim
-ADD dest, fuente
+ADD dest, source
 ```
 
-Las combinaciones válidas de _dest_, _fuente_ son:
+The valid combinations for _dest_ and _source_ are:
 
-- Registro, registro
-- Registro, dirección de memoria
-- Registro, inmediato
-- Dirección de memoria, registro
-- Dirección de memoria, inmediato
+- Register, register
+- Register, memory address
+- Register, immediate
+- Memory address, register
+- Memory address, immediate
 
-(Ver [tipos de operandos](../assembly#operandos))
+(See [operand types](../assembly#operands))
 
-## Codificación
+## Encoding
 
-- REGISTRO a registro  
+- REGISTER to register  
   `1000100w`, `00RRRrrr`
-- Memoria (directo) a registro  
-  `1000100w`, `01000rrr`, _dir-low_, _dir-high_
-- Memoria (indirecto) a registro  
+- Memory (direct) to register  
+  `1000100w`, `01000rrr`, _addr-low_, _addr-high_
+- Memory (indirect) to register  
   `1000100w`, `01010rrr`
-- Memoria (indirecto con desplazamiento) a registro  
-  `1000100w`, `01100rrr`, _desp-low_, _desp-high_
-- Inmediato a registro  
-  `1000100w`, `01001rrr`, _dato-low_, _dato-high_
-- Registro a memoria (directo)  
-  `1000100w`, `11000rrr`, _dir-low_, _dir-high_
-- Registro a memoria (indirecto)  
+- Memory (indirect with displacement) to register  
+  `1000100w`, `01100rrr`, _disp-low_, _disp-high_
+- Immediate to register  
+  `1000100w`, `01001rrr`, _data-low_, _data-high_
+- Register to memory (direct)  
+  `1000100w`, `11000rrr`, _addr-low_, _addr-high_
+- Register to memory (indirect)  
   `1000100w`, `11010rrr`
-- Registro a memoria (indirecto con desplazamiento)  
-  `1000100w`, `11100rrr`, _desp-low_, _desp-high_
-- Inmediato a memoria (directo)  
-  `1000100w`, `11001000`, _dir-low_, _dir-high_, _dato-low_, _dato-high_
-- Inmediato a memoria (indirecto)  
-  `1000100w`, `11011000`, _dato-low_, _dato-high_
-- Inmediato a memoria (indirecto con desplazamiento)  
-  `1000100w`, `11101000`, _desp-low_, _desp-high_, _dato-low_, _dato-high_
+- Register to memory (indirect with displacement)  
+  `1000100w`, `11100rrr`, _disp-low_, _disp-high_
+- Immediate to memory (direct)  
+  `1000100w`, `11001000`, _addr-low_, _addr-high_, _data-low_, _data-high_
+- Immediate to memory (indirect)  
+  `1000100w`, `11011000`, _data-low_, _data-high_
+- Immediate to memory (indirect with displacement)  
+  `1000100w`, `11101000`, _disp-low_, _disp-high_, _data-low_, _data-high_
 
-Donde `w` es el bit de tamaño de los operandos. `w=0` indica operandos de 8 bits y `w=1` operandos de 16 bits. Cuando `w=0`, _dato-high_ es obviado (la longitud de la instrucción es de un byte menos).
+Where `w` is the operand size bit. `w=0` indicates 8-bit operands, and `w=1` indicates 16-bit operands. When `w=0`, _data-high_ is omitted (the instruction length is one byte shorter).
 
-`rrr` o `RRR` codifica un registro según la siguiente tabla:
+`rrr` or `RRR` encodes a register according to the following table:
 
 | `rrr` | `w=0` | `w=1` |
 | :---: | :---: | :---: |

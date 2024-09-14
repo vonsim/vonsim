@@ -1,30 +1,30 @@
 # POP
 
-Esta instrucción desapila el elemento en el tope en la [pila](../cpu#pila) y lo almacena en el operando destino. Los [_flags_](../cpu#flags) no se modifican.
+This instruction pops the element at the top of the [stack](../cpu#stack) and stores it in the destination operand. The [_flags_](../cpu#flags) are not affected.
 
-Esta instrucción primero lee el valor apuntado por `SP` y lo guarda en el operando destino, para luego incrementar el registro `SP` en 2.
+This instruction first reads the value pointed to by `SP` and stores it in the destination operand, then increments the `SP` register by 2.
 
-## Uso
+## Usage
 
 ```vonsim
 POP dest
 ```
 
-_dest_ solo puede ser un registro de 16 bits (ver [tipos de operandos](../assembly#operandos)).
+_dest_ can only be a 16-bit register (see [operand types](../assembly#operands)).
 
-## Codificación
+## Encoding
 
 `01101rrr`
 
-Donde `rrr` codifica el registro fuente según esta tabla:
+Where `rrr` encodes the destination register as follows:
 
-| `rrr` | _fuente_ |
-| :---: | :------: |
-| `000` |   `AX`   |
-| `001` |   `CX`   |
-| `010` |   `DX`   |
-| `011` |   `BX`   |
-| `100` |   `SP`   |
-| `101` |    --    |
-| `110` |    --    |
-| `111` |    --    |
+| `rrr` | _dest_ |
+| :---: | :----: |
+| `000` |  `AX`  |
+| `001` |  `CX`  |
+| `010` |  `DX`  |
+| `011` |  `BX`  |
+| `100` |  `SP`  |
+| `101` |   --   |
+| `110` |   --   |
+| `111` |   --   |

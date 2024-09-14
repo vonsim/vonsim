@@ -1,30 +1,30 @@
 # JNC
 
-Esta instrucción salta solo sí `CF=0`. Los [_flags_](../cpu#flags) no se modifican.
+This instruction jumps only if `CF=0`. The [_flags_](../cpu#flags) are not affected.
 
-De saltar, copiará la dirección de salto en `IP`.
+If a jump occurs, it will copy the jump address into `IP`.
 
-## Uso
+## Usage
 
 ```vonsim
-JNC etiqueta
+JNC label
 ```
 
-_etiqueta_ debe ser una etiqueta que apunta a una instrucción.
+_label_ must be a label that points to an instruction.
 
-### Ejemplo
+### Example
 
 ```vonsim
         org 2000h
-salto:  push ax
+jump:   push ax
         ; --- etc ---
 
-        jnc salto ; Válido
-        jnc 2000h ; Inválido, debe ser una etiqueta
+        jnc jump  ; Valid
+        jnc 2000h ; Invalid, must be a label
         hlt
         end
 ```
 
-## Codificación
+## Encoding
 
-`00100001`, _dir-low_, _dir-high_
+`00100001`, _addr-low_, _addr-high_

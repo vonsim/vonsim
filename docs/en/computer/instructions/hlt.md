@@ -1,13 +1,13 @@
 # HLT
 
-Esta instrucción finaliza la ejecución del programa.
+This instruction halts the execution of the program.
 
-## Uso
+## Usage
 
 ```vonsim
 HLT
 ```
 
-## Codificación
+## Encoding
 
 `00010001`
