@@ -1,5 +1,13 @@
 # Notas de versión
 
+### 31 de julio de 2024
+
+Se cambió la forma de agregar dispositivos. El usuario ya no elige configuraciones sino que puede escoger los dispositivos arbritariamente.
+
+### 10 de septiembre de 2023
+
+Las direcciones del vector de interrupciones utilizadas por el sistema ahora se encuentran protegidas. Si el usuario intenta escribirlas, se producirá un error.
+
 ### 22 de agosto de 2023
 
 ¡Lanzamiento de la nueva versión de VonSim! Con respecto a la versión anterior, esta versión incluye:

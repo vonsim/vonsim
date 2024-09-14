@@ -7,7 +7,7 @@ import { store } from "@/lib/jotai";
 export const switchesAtom = atom(Byte.zero(8));
 
 export function resetSwitchesState(computer: ComputerState) {
-  if (!computer.io.switches) return;
+  if (computer.io.switches === null) return;
 
   store.set(switchesAtom, Byte.fromUnsigned(computer.io.switches, 8));
 }

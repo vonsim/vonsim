@@ -53,13 +53,13 @@ export class JumpInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see https://vonsim.github.io/en/reference/codification
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   readonly length = 3;
 
   /**
    * Returns the bytes of the instruction.
-   * @see https://vonsim.github.io/en/reference/codification
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   toBytes(): Uint8Array {
     const bytes: number[] = [];

@@ -66,7 +66,7 @@ export const es = {
                 text: "Instrucciones",
                 link: "instructions/",
                 collapsed: true,
-                items: sidebarInstructions(),
+                items: sidebarInstructions("es"),
               },
             ],
           },
@@ -105,7 +105,7 @@ export const es = {
             text: "Referencia",
             items: [
               { text: "Tabla ASCII", link: "reference/ascii" },
-              { text: "Codificación", link: "reference/codification" },
+              { text: "Codificación", link: "reference/encoding" },
               { text: "Notas de versión", link: "changelog" },
             ],
           },

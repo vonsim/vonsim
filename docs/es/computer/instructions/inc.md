@@ -30,7 +30,7 @@ _dest_ puede ser un registro o una dirección de memoria (ver [tipos de operando
 
 Donde `w` es el bit de tamaño de los operandos. `w=0` indica operandos de 8 bits y `w=1` operandos de 16 bits.
 
-`rrr` o `RRR` codifica un registro según la siguiente tabla:
+`rrr` codifica un registro según la siguiente tabla:
 
 | `rrr` | `w=0` | `w=1` |
 | :---: | :---: | :---: |

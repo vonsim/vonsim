@@ -6,7 +6,7 @@ import { SimulatorError } from "../error";
 import type { EventGenerator } from "../events";
 
 /**
- * @see {@link https://vonsim.github.io/docs/cpu/#llamadas-al-sistema}.
+ * @see {@link https://vonsim.github.io/en/computer/cpu#system-calls}.
  * @param address Address
  * @returns if address points to a syscall,  returns the syscall number. null otherwise.
  */
@@ -19,7 +19,7 @@ export function getSyscallNumber(address: Byte<16>): SyscallNumber | null {
 
 /**
  * Executes the desired syscall.
- * @see {@link https://vonsim.github.io/docs/cpu/#llamadas-al-sistema}.
+ * @see {@link https://vonsim.github.io/en/computer/cpu#system-calls}.
  * @param address Syscall address ({@link syscallsAddresses})
  * @returns Whether the operation was successful.
  *
