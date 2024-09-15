@@ -20,8 +20,8 @@ type Operation =
 
 /**
  * IOInstruction:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/in/ | IN}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/out/ | OUT}
+ * - {@link https://vonsim.github.io/en/computer/instructions/in | IN}
+ * - {@link https://vonsim.github.io/en/computer/instructions/out | OUT}
  *
  * These instructions need two operands:
  * - the register `AL` or `AX`
@@ -49,7 +49,7 @@ export class IOInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   get length(): number {
     if (!this.#initialOperation) throw new Error("Instruction not validated");
@@ -60,7 +60,7 @@ export class IOInstruction extends InstructionStatement {
 
   /**
    * Returns the bytes of the instruction.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   toBytes(): Uint8Array {
     const bytes: number[] = [];

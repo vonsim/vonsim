@@ -4,16 +4,16 @@ import { Instruction } from "../instruction";
 
 /**
  * Jump instructions:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jc/ | JC}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jnc/ | JNC}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jz/ | JZ}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jnz/ | JNZ}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/js/ | JS}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jns/ | JNS}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jo/ | JO}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jno/ | JNO}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/jmp/ | JMP}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/call/ | CALL}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jc | JC}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jnc | JNC}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jz | JZ}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jnz | JNZ}
+ * - {@link https://vonsim.github.io/en/computer/instructions/js | JS}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jns | JNS}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jo | JO}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jno | JNO}
+ * - {@link https://vonsim.github.io/en/computer/instructions/jmp | JMP}
+ * - {@link https://vonsim.github.io/en/computer/instructions/call | CALL}
  *
  * @see {@link Instruction}
  *

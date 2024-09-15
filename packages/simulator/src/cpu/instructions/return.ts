@@ -4,8 +4,8 @@ import { Instruction } from "../instruction";
 
 /**
  * Return instructions:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/ret/ | RET}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/iret/ | IRET}
+ * - {@link https://vonsim.github.io/en/computer/instructions/ret | RET}
+ * - {@link https://vonsim.github.io/en/computer/instructions/iret | IRET}
  *
  * @see {@link Instruction}
  *

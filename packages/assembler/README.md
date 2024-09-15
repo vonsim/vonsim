@@ -1,6 +1,6 @@
 # `@vonsim/assembler`
 
-This package contains the assembler: a tool that converts a program written in plain text to a list of instructions that can be executed by the simulator. You can read more about the assembly language [here](https://vonsim.github.io/docs/cpu/assembly/).
+This package contains the assembler: a tool that converts a program written in plain text to a list of instructions that can be executed by the simulator. You can read more about the assembly language [here](https://vonsim.github.io/en/computer/assembly).
 
 ## Usage
 

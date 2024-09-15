@@ -7,7 +7,9 @@
  */
 
 import fs from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 
+import cpy from "cpy";
 import { execa } from "execa";
 
 const rootDir = new URL("../../..", import.meta.url);
@@ -36,8 +38,19 @@ await execa({
   stdout: process.stdout,
   stderr: process.stdout,
 })`pnpm run build`;
-await fs.rename(new URL("./dist/", docsDir), new URL("./docs/", distDir));
+await cpy("docs/.vitepress/dist/**/*", "dist/", { cwd: fileURLToPath(rootDir), overwrite: false });
 
-await fs.rename(new URL("./docs/404.html", distDir), new URL("./404.html", distDir));
+console.info("\n\n========= Adding redirects =========\n");
+const docsRedirect = `<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>VonSim docs</title>
+  <meta http-equiv="refresh" content="0; URL=https://vonsim.github.io/es/">
+  <link rel="canonical" href="https://vonsim.github.io/es/"></link>
+</head>
+<body>
+  <p><a href="https://vonsim.github.io/es/">VonSim docs</a></p>
+</body>`;
+await fs.writeFile(new URL("./docs.html", distDir), docsRedirect);
 
 console.info("\n\nDone");

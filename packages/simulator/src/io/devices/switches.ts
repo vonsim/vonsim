@@ -9,7 +9,7 @@ export type SwitchesEvent = { type: "switches:toggle"; index: number };
 /**
  * Switches. These are only modified by the user, not the PIO.
  *
- * @see {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+ * @see {@link https://vonsim.github.io/en/io/devices/switches-and-leds}.
  *
  * ---
  * This class is: MUTABLE

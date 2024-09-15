@@ -7,7 +7,7 @@ export type ClockEvent = { type: "clock:tick" };
  * The clock is a device that sends a signal to the Timer module
  * at a constant rate.
  *
- * @see {@link https://vonsim.github.io/docs/io/devices/clock/}.
+ * @see {@link https://vonsim.github.io/en/io/devices/clock}.
  *
  * ---
  * This class is: IMMUTABLE

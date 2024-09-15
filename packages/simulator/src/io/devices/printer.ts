@@ -25,7 +25,7 @@ export type PrinterEvent =
  * This class is abstract because it can be connected to different modules,
  * but they are share some common functionality.
  *
- * @see {@link https://vonsim.github.io/docs/io/devices/printer/}.
+ * @see {@link https://vonsim.github.io/en/io/devices/printer}.
  *
  * ---
  * These classes are: MUTABLE
@@ -120,7 +120,7 @@ export abstract class Printer extends Component {
 
   /**
    * Prints a character from the buffer.
-   * @see {@link https://vonsim.github.io/docs/io/devices/printer/}.
+   * @see {@link https://vonsim.github.io/en/io/devices/printer}.
    *
    * ---
    * Called by the outside when the printer should print a character.

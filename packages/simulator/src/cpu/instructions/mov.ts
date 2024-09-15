@@ -6,7 +6,7 @@ import { Instruction } from "../instruction";
 import { splitRegister } from "../utils";
 
 /**
- * {@link https://vonsim.github.io/docs/cpu/instructions/mov/ | MOV} instruction.
+ * {@link https://vonsim.github.io/en/computer/instructions/mov | MOV} instruction.
  *
  * @see {@link Instruction}
  *

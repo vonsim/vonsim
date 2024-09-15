@@ -3,22 +3,14 @@
   "license": "CC-BY-SA-4.0",
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "lint": "astro check && eslint --ignore-path .gitignore .",
-    "astro": "astro"
+    "dev": "vitepress dev .",
+    "build": "vitepress build .",
+    "preview": "vitepress preview ."
   },
   "devDependencies": {
-    "@astrojs/check": "^0.8.3",
-    "@astrojs/starlight": "^0.25.3",
-    "astro": "^4.12.3",
-    "eslint": "^8.57.0",
-    "eslint-config-vonsim": "workspace:^",
     "satori": "^0.10.14",
     "satori-html": "^0.3.2",
     "sharp": "^0.33.4",
-    "typescript": "~5.5.4"
+    "vitepress": "^1.3.1"
   }
 }

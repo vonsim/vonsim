@@ -4,10 +4,10 @@ import { Instruction } from "../instruction";
 
 /**
  * Other instructions:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/cli/ | CLI}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/sti/ | STI}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/nop/ | NOP}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/hlt/ | HLT}
+ * - {@link https://vonsim.github.io/en/computer/instructions/cli | CLI}
+ * - {@link https://vonsim.github.io/en/computer/instructions/sti | STI}
+ * - {@link https://vonsim.github.io/en/computer/instructions/nop | NOP}
+ * - {@link https://vonsim.github.io/en/computer/instructions/hlt | HLT}
  *
  * @see {@link Instruction}
  *

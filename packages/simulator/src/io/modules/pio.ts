@@ -32,7 +32,7 @@ export type PIOOperation =
  * This class is abstract because it can be connected to different devices,
  * but they are share some common functionality.
  *
- * @see {@link https://vonsim.github.io/docs/io/modules/pio/}.
+ * @see {@link https://vonsim.github.io/en/io/modules/pio}.
  *
  * ---
  * These classes are: MUTABLE
@@ -46,7 +46,7 @@ export abstract class PIO extends IOModule<PIORegister> {
   /**
    * Led lights. These are only modified by the PIO, not the user.
    *
-   * @see {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+   * @see {@link https://vonsim.github.io/en/io/devices/switches-and-leds}.
    *
    * ---
    * This class is: MUTABLE
@@ -57,7 +57,7 @@ export abstract class PIO extends IOModule<PIORegister> {
    *
    * @see
    * - {@link Printer}.
-   * - {@link https://vonsim.github.io/docs/io/devices/printer/#imprimir-con-pio}.
+   * - {@link https://vonsim.github.io/en/io/devices/printer#printing-with-pio}.
    *
    * ---
    * This class is: MUTABLE
@@ -66,7 +66,7 @@ export abstract class PIO extends IOModule<PIORegister> {
   /**
    * Led lights. These are only modified by the PIO, not the user.
    *
-   * @see {@link https://vonsim.github.io/docs/io/devices/switches-and-leds/}.
+   * @see {@link https://vonsim.github.io/en/io/devices/switches-and-leds}.
    *
    * ---
    * This class is: MUTABLE
@@ -146,7 +146,7 @@ export abstract class PIO extends IOModule<PIORegister> {
    * @param port The port to check.
    * @param index Which line to check (0-7).
    * @returns Whether the line is input or output.
-   * @see {@link https://vonsim.github.io/docs/io/modules/pio/}.
+   * @see {@link https://vonsim.github.io/en/io/modules/pio}.
    *
    * ---
    * Called by {@link PIO.updatePort}.

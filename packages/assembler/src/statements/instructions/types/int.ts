@@ -11,7 +11,7 @@ type IntInstructionName = "INT";
 
 /**
  * IntInstruction:
- * {@link https://vonsim.github.io/docs/cpu/instructions/int/ | INT}
+ * {@link https://vonsim.github.io/en/computer/instructions/int | INT}
  *
  * This instruction needs one operand: an immediate value.
  *
@@ -33,13 +33,13 @@ export class IntInstruction extends InstructionStatement {
 
   /**
    * Returns the length of the instruction in bytes.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   readonly length = 2;
 
   /**
    * Returns the bytes of the instruction.
-   * @see https://vonsim.github.io/docs/reference/codification/
+   * @see https://vonsim.github.io/en/reference/encoding
    */
   toBytes(): Uint8Array {
     return new Uint8Array([0b0001_1010, this.value.unsigned]);
@@ -60,8 +60,8 @@ export class IntInstruction extends InstructionStatement {
       ...(this.#value
         ? { value: this.#value.toJSON() }
         : this.#initialValue
-        ? { initialValue: this.#initialValue.toJSON() }
-        : { operands: this.operands.map(o => o.toJSON()) }),
+          ? { initialValue: this.#initialValue.toJSON() }
+          : { operands: this.operands.map(o => o.toJSON()) }),
     };
   }
 

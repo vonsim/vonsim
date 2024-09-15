@@ -20,7 +20,7 @@ import { parseRegister } from "./utils";
 
 /**
  * The CPU.
- * @see {@link https://vonsim.github.io/docs/cpu/}
+ * @see {@link https://vonsim.github.io/en/computer/cpu}
  *
  * It has internal registers, a memory address buffer (MAR) and a
  * memory buffer register (MBR).
@@ -153,7 +153,7 @@ export class CPU extends Component {
    * This function will push the FLAGS and IP registers to the stack, and set the IF flag to false.
    * Then, will get the interrupt routine address from the interrupt vector table, and set the IP register to that address.
    *
-   * @see {@link https://vonsim.github.io/docs/cpu/#interrupciones}
+   * @see {@link https://vonsim.github.io/en/computer/cpu#interrupts}
    *
    * @param number The interrupt number (0-255).
    * @returns Whether the operation was successful.
@@ -308,7 +308,7 @@ export class CPU extends Component {
 
   /**
    * Returns the value of the specified flag.
-   * @see {@link https://vonsim.github.io/docs/cpu/#flags}
+   * @see {@link https://vonsim.github.io/en/computer/cpu#flags}
    */
   getFlag(flag: Flag): boolean {
     switch (flag) {
@@ -330,7 +330,7 @@ export class CPU extends Component {
   /**
    * Sets the value of the specified flag.
    * @internal
-   * @see {@link https://vonsim.github.io/docs/cpu/#flags}
+   * @see {@link https://vonsim.github.io/en/computer/cpu#flags}
    */
   #setFlag(flag: Flag, value: boolean): void {
     switch (flag) {
@@ -525,7 +525,7 @@ export class CPU extends Component {
   /**
    * Pushes a value to the stack, and updates the SP register.
    * This value should have been previously written to the id register.
-   * @see {@link https://vonsim.github.io/docs/cpu/#pila}
+   * @see {@link https://vonsim.github.io/en/computer/cpu#stack}
    * @param value The value to push to the stack.
    * @returns Whether the operation was successful.
    *
@@ -561,7 +561,7 @@ export class CPU extends Component {
   /**
    * Pops a value from the stack, and updates the SP register.
    * This value will be written to the id register.
-   * @see {@link https://vonsim.github.io/docs/cpu/#pila}
+   * @see {@link https://vonsim.github.io/en/computer/cpu#stack}
    * @returns Whether the operation was successful.
    *
    * ---

@@ -1,0 +1,32 @@
+{
+  "id": "vonsim",
+  "name": "vonsim",
+  "scopeName": "source.asm.vonsim",
+  "uuid": "44a71009-6953-4657-90da-ce1a74389c35",
+  "fileTypes": ["vonsim", "asm"],
+  "patterns": [
+    { "name": "comment.line.asm.vonsim", "match": ";.*" },
+    { "name": "support.function.asm.vonsim", "match": "(?i)\\b(org|end)\\b" },
+    {
+      "name": "entity.name.mnemonic.asm.vonsim",
+      "match": "(?i)\\b(pushf?|popf?|i?ret|cli|sti|nop|hlt|mov|ad[dc]|s[ub]b|cmp|and|x?or|neg|inc|dec|not|call|jn?[cosz]|jmp|in|out|int)\\b"
+    },
+    { "name": "storage.modifier.asm.vonsim", "match": "(?i)\\b(byte|word|ptr|offset)\\b" },
+    {
+      "name": "constant.language.register.asm.vonsim",
+      "match": "(?i)\\b([abcd][lhx]|[is]p|m[ab]r)\\b"
+    },
+    { "name": "storage.type.asm.vonsim", "match": "(?i)\\b(d[bw]|equ)\\b" },
+    { "name": "keyword.operator.arithmetic.asm.vonsim", "match": "([*+-])" },
+    { "name": "keyword.operator.unassigned.asm.vonsim", "match": "(\\?)" },
+    {
+      "name": "constant.numeric.integer.hexadecimal.asm.vonsim",
+      "match": "(?i)\\b(\\d+[\\da-f]*h)\\b"
+    },
+    { "name": "constant.numeric.integer.binary.asm.vonsim", "match": "(?i)\\b([01]+b)\\b" },
+    { "name": "constant.numeric.integer.decimal.asm.vonsim", "match": "\\b(\\d+)\\b" },
+    { "name": "punctuation.asm.vonsim", "match": "([\\(\\),\\[\\]])" },
+    { "name": "string.quoted.single.asm.vonsim", "match": "('[^']')" },
+    { "name": "string.quoted.double.asm.vonsim", "match": "(\"[^\"]*\")" }
+  ]
+}

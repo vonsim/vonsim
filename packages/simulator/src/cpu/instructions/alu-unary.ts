@@ -7,10 +7,10 @@ import type { PartialFlags } from "../types";
 
 /**
  * ALU unary instructions:
- * - {@link https://vonsim.github.io/docs/cpu/instructions/not/ | NOT}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/neg/ | NEG}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/inc/ | INC}
- * - {@link https://vonsim.github.io/docs/cpu/instructions/dec/ | DEC}
+ * - {@link https://vonsim.github.io/en/computer/instructions/not | NOT}
+ * - {@link https://vonsim.github.io/en/computer/instructions/neg | NEG}
+ * - {@link https://vonsim.github.io/en/computer/instructions/inc | INC}
+ * - {@link https://vonsim.github.io/en/computer/instructions/dec | DEC}
  *
  * @see {@link Instruction}
  *

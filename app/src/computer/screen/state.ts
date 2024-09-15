@@ -6,7 +6,7 @@ import { store } from "@/lib/jotai";
 export const screenAtom = atom("");
 
 export function resetScreenState(computer: ComputerState) {
-  if (!computer.io.screen) return;
+  if (computer.io.screen === null) return;
 
   store.set(screenAtom, computer.io.screen);
 }

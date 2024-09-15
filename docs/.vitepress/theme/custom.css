@@ -1,0 +1,55 @@
+@font-face {
+  font-family: "Chivo";
+  font-style: normal;
+  font-weight: 100 900;
+  src: url("./fonts/chivo/Chivo[wght].ttf") format("truetype-variations");
+  font-named-instance: "Regular";
+}
+
+@font-face {
+  font-family: "Chivo";
+  font-style: italic;
+  font-weight: 100 900;
+  src: url("./fonts/chivo/Chivo-Italic[wght].ttf") format("truetype-variations");
+  font-named-instance: "Italic";
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  src: url("./fonts/jetbrains-mono/JetBrainsMono[wght].woff2") format("woff2-variations");
+  font-named-instance: "Regular";
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: italic;
+  font-weight: 100 800;
+  src: url("./fonts/jetbrains-mono/JetBrainsMono-Italic[wght].woff2") format("woff2-variations");
+  font-named-instance: "Italic";
+}
+
+/* Enable footer with sidebar */
+.VPFooter.has-sidebar {
+  display: block !important;
+}
+
+:root {
+  --vp-font-family-base: "Chivo", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --vp-font-family-mono: "JetBrains Mono", ui-monospace, "Menlo", "Monaco", "Consolas",
+    "Liberation Mono", "Courier New", monospace;
+
+  --vp-c-brand-1: #2b4522;
+  --vp-c-brand-2: #4c8435;
+  --vp-c-brand-3: #82bd69;
+  --vp-c-brand-soft: rgba(76, 132, 53, 0.14);
+}
+
+.dark {
+  --vp-c-brand-1: #82bd69;
+  --vp-c-brand-2: #4c8435;
+  --vp-c-brand-3: #2b4522;
+  --vp-c-brand-soft: rgba(76, 132, 53, 0.16);
+}
