@@ -82,13 +82,10 @@ Las direcciones de memoria se pueden expresar de varias formas:
 ```vonsim
 [1234h] ; Dirección de memoria directa
 [bx]    ; Dirección de memoria indirecta
+[bx+43] ; Dirección de memoria indirecta con desplazamiento
 ```
 
-::: tip Nota
-El modo de direccionamiento indirecto con desplazamiento aún no fue implementado.
-:::
-
-En el primer caso, se accede directamente a la dirección de memoria `1234h`. En el segundo caso, se accede a la dirección de memoria almacenada en `BX`. Para el modo de direccionamiento indirecto solo se puede utilizar el registro `BX`. Nótese que el ensamblador no siempre puede inferir si la operación será de 8 o 16 bits. Por ejemplo:
+En el primer caso, se accede directamente a la dirección de memoria `1234h`. En el segundo caso, se accede a la dirección de memoria almacenada en `BX`. Para el modo de direccionamiento indirecto solo se puede utilizar el registro `BX`. Lo mismo aplica al tercer caso, donde se accede a la dirección de memoria almacenada en `BX` con un desplazamiento de `43`; el desplazamiento siempre debe ser la forma `+/- constante`. Nótese que el ensamblador no siempre puede inferir si la operación será de 8 o 16 bits. Por ejemplo:
 
 ```vonsim
 mov [bx], 6h ; ¿Se quiere escribir 06h o 0006h?
