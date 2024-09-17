@@ -1,5 +1,9 @@
 # Notas de versión
 
+### XXX
+
+Se agregó el acceso indirecto a memoria con desplazamiento. Por ejemplo, `mov al, [bx+8]`.
+
 ### 31 de julio de 2024
 
 Se cambió la forma de agregar dispositivos. El usuario ya no elige configuraciones sino que puede escoger los dispositivos arbritariamente.

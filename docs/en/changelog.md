@@ -1,5 +1,9 @@
 # Release Notes
 
+### XXX
+
+Indirect memory access with offset has been added. For example, `mov al, [bx+8]`.
+
 ### July 31, 2024
 
 The method for adding devices has been changed. Users no longer choose configurations but can select devices arbitrarily.
