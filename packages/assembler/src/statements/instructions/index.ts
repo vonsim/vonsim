@@ -38,6 +38,7 @@ export function createInstructionStatement(
     case "AND":
     case "OR":
     case "XOR":
+    case "TEST":
       return new BinaryInstruction(token.type, operands, label, position);
     case "NEG":
     case "INC":

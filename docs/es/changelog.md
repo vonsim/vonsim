@@ -1,5 +1,9 @@
 # Notas de versión
 
+### XXX
+
+Se agregó la instrucción [`TEST`](./computer/instructions/test).
+
 ### 31 de julio de 2024
 
 Se cambió la forma de agregar dispositivos. El usuario ya no elige configuraciones sino que puede escoger los dispositivos arbritariamente.

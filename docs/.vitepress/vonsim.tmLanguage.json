@@ -9,7 +9,7 @@
     { "name": "support.function.asm.vonsim", "match": "(?i)\\b(org|end)\\b" },
     {
       "name": "entity.name.mnemonic.asm.vonsim",
-      "match": "(?i)\\b(pushf?|popf?|i?ret|cli|sti|nop|hlt|mov|ad[dc]|s[ub]b|cmp|and|x?or|neg|inc|dec|not|call|jn?[cosz]|jmp|in|out|int)\\b"
+      "match": "(?i)\\b(pushf?|popf?|i?ret|cli|sti|nop|hlt|mov|ad[dc]|s[ub]b|cmp|and|x?or|test|neg|inc|dec|not|call|jn?[cosz]|jmp|in|out|int)\\b"
     },
     { "name": "storage.modifier.asm.vonsim", "match": "(?i)\\b(byte|word|ptr|offset)\\b" },
     {

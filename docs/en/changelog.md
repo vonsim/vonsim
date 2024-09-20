@@ -1,5 +1,9 @@
 # Release Notes
 
+### XXX
+
+The [`TEST`](./computer/instructions/test) instruction has been added.
+
 ### July 31, 2024
 
 The method for adding devices has been changed. Users no longer choose configurations but can select devices arbitrarily.
