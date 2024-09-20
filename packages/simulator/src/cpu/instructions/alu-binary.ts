@@ -15,6 +15,7 @@ import type { PartialFlags } from "../types";
  * - {@link https://vonsim.github.io/en/computer/instructions/and | AND}
  * - {@link https://vonsim.github.io/en/computer/instructions/or | OR}
  * - {@link https://vonsim.github.io/en/computer/instructions/xor | XOR}
+ * - {@link https://vonsim.github.io/en/computer/instructions/test | TEST}
  *
  * @see {@link Instruction}
  *
@@ -22,7 +23,7 @@ import type { PartialFlags } from "../types";
  * This class is: IMMUTABLE
  */
 export class ALUBinaryInstruction extends Instruction<
-  "AND" | "OR" | "XOR" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP"
+  "AND" | "OR" | "XOR" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP" | "TEST"
 > {
   get operation() {
     return this.statement.operation;
@@ -178,11 +179,12 @@ export class ALUBinaryInstruction extends Instruction<
     switch (this.name) {
       case "AND":
       case "OR":
-      case "XOR": {
+      case "XOR":
+      case "TEST": {
         // When performing bitwise operations, we use signed numbers
         // because we want to preserve the sign bit in JavaScript.
         const signed =
-          this.name === "AND"
+          (this.name === "AND" || this.name === "TEST")
             ? left.signed & right.signed
             : this.name === "OR"
               ? left.signed | right.signed
@@ -245,7 +247,7 @@ export class ALUBinaryInstruction extends Instruction<
 
     yield* computer.cpu.aluExecute(this.name === "CMP" ? "SUB" : this.name, result, flags);
 
-    if (this.name === "CMP") return true; // No writeback
+    if (this.name === "CMP" || this.name === "TEST") return true; // No writeback
 
     yield { type: "cpu:cycle.update", phase: "writeback" };
 

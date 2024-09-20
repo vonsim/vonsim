@@ -1,8 +1,9 @@
 # Release Notes
 
-### XXX
+### September 20, 2024
 
-Indirect memory access with offset has been added. For example, `mov al, [bx+8]`.
+- The [`TEST`](./computer/instructions/test) instruction has been added.
+- Indirect memory access with offset has been added. For example, `mov al, [bx+8]`.
 
 ### July 31, 2024
 

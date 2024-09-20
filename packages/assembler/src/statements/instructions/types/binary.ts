@@ -10,7 +10,17 @@ import { registerToBits } from "../encoding";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
-type BinaryInstructionName = "MOV" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP" | "AND" | "OR" | "XOR";
+type BinaryInstructionName =
+  | "MOV"
+  | "ADD"
+  | "ADC"
+  | "SUB"
+  | "SBB"
+  | "CMP"
+  | "AND"
+  | "OR"
+  | "XOR"
+  | "TEST";
 
 type InitialMemoryAccess =
   | { mode: "direct"; address: NumberExpression }
@@ -50,6 +60,7 @@ type Operation =
  * - {@link https://vonsim.github.io/en/computer/instructions/and | AND}
  * - {@link https://vonsim.github.io/en/computer/instructions/or | OR}
  * - {@link https://vonsim.github.io/en/computer/instructions/xor | XOR}
+ * - {@link https://vonsim.github.io/en/computer/instructions/test | TEST}
  *
  * These instructions need two operands:
  * - `out`: the destination operand (left operand)
@@ -136,7 +147,8 @@ export class BinaryInstruction extends InstructionStatement {
       ADC: 0b100_0101_0,
       SUB: 0b100_0110_0,
       SBB: 0b100_0111_0,
-      CMP: 0b100_1000_0,
+      CMP: 0b101_0110_0,
+      TEST: 0b101_0001_0,
     };
     bytes[0] = opcodes[this.instruction];
 
