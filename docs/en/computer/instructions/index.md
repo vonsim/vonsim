@@ -1,5 +1,7 @@
 # Instruction Set
 
+<a href="/en/computer/instructions.pdf" download="VonSim Instruction Set.pdf">Download as PDF (A5 size)</a>
+
 Here is a list of all the instructions supported by the simulator. Each instruction includes a brief description and a table showing the flags it modifies. If there is a "0" or "1," it means the flag is set to `0` or `1` respectively. If there is an "X," it means the flag is modified accordingly. If there is nothing, the flag is not modified.
 
 ### Data Transfer Instructions

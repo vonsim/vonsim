@@ -1,5 +1,7 @@
 # Set de instrucciones
 
+<a href="/es/computer/instructions.pdf" download="Set de instrucciones del simulador VonSim.pdf">Descargar en formato PDF (tamaño A5)</a>
+
 Aquí se listan todas las instrucciones que soporta el simulador. Cada instrucción tiene una breve descripción, una tabla con los flags que modifica. Si hay un "0" o un "1", significa que el flag se modifica a `0` o `1` respectivamente. Si hay una "X", significa que lo modifica según corresponda. Si no hay nada, significa que el flag no se modifica.
 
 ### Instrucciones de transferencia de datos
