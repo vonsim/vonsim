@@ -226,6 +226,7 @@ export class Parser {
 
       if (this.check(...REGISTERS)) {
         this.consume("BX", new AssemblerError("parser.indirect-addressing-must-be-bx"));
+        const offset = this.check("RIGHT_BRACKET") ? null : this.numberExpression();
         const end = this.consume(
           "RIGHT_BRACKET",
           new AssemblerError("parser.expected-literal-after-literal", "]", "BX"),
@@ -234,6 +235,7 @@ export class Parser {
         return new IndirectAddressOperand(
           sizeToken?.type,
           Position.merge(sizeToken?.position, start.position, end.position),
+          offset,
         );
       } else {
         const expression = this.numberExpression();

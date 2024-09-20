@@ -73,7 +73,6 @@ When using [Visual Studio Code](https://code.visualstudio.com/), you can use the
 - Add Printer w/CDMA
 - Add Printer w/USART
 - Add I/O modules for screen and keyboard
-- Implement indirect access with offset
 
 ## License
 

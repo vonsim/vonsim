@@ -27,7 +27,7 @@ Throughout the encoding, the following abbreviations are used:
   | `111` | `BH`  |   —   |
 
 - **data** refers to the byte/word of immediate data. For instructions where `w=0`, **data-high** is ignored.
-- **disp** refers to the word of a displacement (always in 2's complement).
+- **disp** refers to the word of a offset/displacement (always in 2's complement).
 - **addr** refers to the word of an address.
 - **xxx-low** refers to the least significant part (LSB) of a word or a byte.
 - **xxx-high** refers to the most significant part (MSB) of a word.
@@ -49,19 +49,19 @@ Throughout the encoding, the following abbreviations are used:
 
 These instructions receive two operands and support various addressing modes. This information is encoded in the `d` bit and the second byte of the instruction according to the following table:
 
-| Destination                         | Source                              | Second byte | Following bytes                          |
-| :---------------------------------- | :---------------------------------- | :---------: | :--------------------------------------- |
-| Register                            | Register                            | `00RRRrrr`  | —                                        |
-| Register                            | Memory (direct)                     | `01000rrr`  | addr-low, addr-high                      |
-| Register                            | Memory (indirect)                   | `01010rrr`  | —                                        |
-| Register                            | Memory (indirect with displacement) | `01100rrr`  | disp-low, disp-high                      |
-| Register                            | Immediate                           | `01001rrr`  | data-low, data-high                      |
-| Memory (direct)                     | Register                            | `11000rrr`  | addr-low, addr-high                      |
-| Memory (indirect)                   | Register                            | `11010rrr`  | —                                        |
-| Memory (indirect with displacement) | Register                            | `11100rrr`  | disp-low, disp-high                      |
-| Memory (direct)                     | Immediate                           | `11001000`  | addr-low, addr-high, data-low, data-high |
-| Memory (indirect)                   | Immediate                           | `11011000`  | data-low, data-high                      |
-| Memory (indirect with displacement) | Immediate                           | `11101000`  | disp-low, disp-high, data-low, data-high |
+| Destination                   | Source                        | Second byte | Following bytes                          |
+| :---------------------------- | :---------------------------- | :---------: | :--------------------------------------- |
+| Register                      | Register                      | `00RRRrrr`  | —                                        |
+| Register                      | Memory (direct)               | `01000rrr`  | addr-low, addr-high                      |
+| Register                      | Memory (indirect)             | `01010rrr`  | —                                        |
+| Register                      | Memory (indirect with offset) | `01100rrr`  | disp-low, disp-high                      |
+| Register                      | Immediate                     | `01001rrr`  | data-low, data-high                      |
+| Memory (direct)               | Register                      | `11000rrr`  | addr-low, addr-high                      |
+| Memory (indirect)             | Register                      | `11010rrr`  | —                                        |
+| Memory (indirect with offset) | Register                      | `11100rrr`  | disp-low, disp-high                      |
+| Memory (direct)               | Immediate                     | `11001000`  | addr-low, addr-high, data-low, data-high |
+| Memory (indirect)             | Immediate                     | `11011000`  | data-low, data-high                      |
+| Memory (indirect with offset) | Immediate                     | `11101000`  | disp-low, disp-high, data-low, data-high |
 
 For instructions with a register as an operand, `rrr` encodes this register. In the case of register to register, `RRR` encodes the source register and `rrr` the destination register.
 
@@ -76,12 +76,12 @@ For instructions with a register as an operand, `rrr` encodes this register. In 
 
 These instructions receive one operand and support various addressing modes. This information is encoded in the second byte of the instruction according to the following table:
 
-| Destination                         | Second byte | Following bytes     |
-| :---------------------------------- | :---------: | :------------------ |
-| Register                            | `00000rrr`  | —                   |
-| Memory (direct)                     | `11000000`  | addr-low, addr-high |
-| Memory (indirect)                   | `11010000`  | —                   |
-| Memory (indirect with displacement) | `11100000`  | disp-low, disp-high |
+| Destination                   | Second byte | Following bytes     |
+| :---------------------------- | :---------: | :------------------ |
+| Register                      | `00000rrr`  | —                   |
+| Memory (direct)               | `11000000`  | addr-low, addr-high |
+| Memory (indirect)             | `11010000`  | —                   |
+| Memory (indirect with offset) | `11100000`  | disp-low, disp-high |
 
 ## I/O Instructions
 

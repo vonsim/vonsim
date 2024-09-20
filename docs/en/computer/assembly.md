@@ -79,13 +79,10 @@ Memory addresses can be expressed in several ways:
 ```vonsim
 [1234h] ; Direct memory address
 [bx]    ; Indirect memory address
+[bx+43] ; Indirect memory address with offset
 ```
 
-::: tip Note
-The indirect addressing mode with displacement has not yet been implemented.
-:::
-
-In the first case, it accesses the memory address `1234h` directly. In the second case, it accesses the memory address stored in `BX`. For the indirect addressing mode, only the `BX` register can be used. Note that the assembler cannot always infer whether the operation will be 8 or 16 bits. For example:
+In the first case, it accesses the memory address `1234h` directly. In the second case, it accesses the memory address stored in `BX`. For the indirect addressing mode, only the `BX` register can be used. The same applies to the third case, where it accesses the memory address stored in `BX` displaced by `43`; the offset must be of the form `+/- constant`. Note that the assembler cannot always infer whether the operation will be 8 or 16 bits. For example:
 
 ```vonsim
 mov [bx], 6h ; Is it intended to write 06h or 0006h?

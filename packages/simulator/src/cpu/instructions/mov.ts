@@ -1,3 +1,5 @@
+import { Byte } from "@vonsim/common/byte";
+
 import type { Computer } from "../../computer";
 import type { EventGenerator } from "../../events";
 import { Instruction } from "../instruction";
@@ -19,27 +21,34 @@ export class MOVInstruction extends Instruction<"MOV"> {
   #formatOperands(): string[] {
     const { mode, out, src } = this.operation;
 
+    const formatMemoryAccess = (
+      access: Exclude<typeof this.operation, { out: string }>["out"],
+    ): string => {
+      if (access.mode === "direct") return access.address.toString();
+
+      let out = "BX";
+      if (access.offset) {
+        if (access.offset.signed > 0) {
+          out += `+${access.offset.toString("hex")}h`;
+        } else {
+          const positive = Byte.fromUnsigned(-access.offset.signed, access.offset.size);
+          out += `-${positive.toString("hex")}h`;
+        }
+      }
+      return out;
+    };
+
     switch (mode) {
       case "reg<-reg":
         return [out, src];
-
-      case "reg<-mem": {
-        const addr = src.mode === "direct" ? src.address.toString() : "BX";
-        return [out, `[${addr}]`];
-      }
-
+      case "reg<-mem":
+        return [out, `[${formatMemoryAccess(src)}]`];
       case "reg<-imd":
         return [out, `${src.toString("hex")}h`];
-
-      case "mem<-reg": {
-        const addr = out.mode === "direct" ? out.address.toString() : "BX";
-        return [`[${addr}]`, src];
-      }
-
-      case "mem<-imd": {
-        const addr = out.mode === "direct" ? out.address.toString() : "BX";
-        return [`[${addr}]`, `${src.toString("hex")}h`];
-      }
+      case "mem<-reg":
+        return [`[${formatMemoryAccess(out)}]`, src];
+      case "mem<-imd":
+        return [`[${formatMemoryAccess(out)}]`, `${src.toString("hex")}h`];
 
       default: {
         const _exhaustiveCheck: never = mode;
@@ -59,7 +68,11 @@ export class MOVInstruction extends Instruction<"MOV"> {
         operands: this.#formatOperands(),
         willUse: {
           ri: mode === "reg<-mem" || mode === "mem<-reg" || mode === "mem<-imd",
-          id: mode === "reg<-mem" || mode === "reg<-imd" || mode === "mem<-imd",
+          id:
+            mode === "reg<-mem" ||
+            mode === "reg<-imd" ||
+            mode === "mem<-imd" ||
+            (mode === "mem<-reg" && out.mode === "indirect" && out.offset !== null),
         },
       },
     };
@@ -77,15 +90,21 @@ export class MOVInstruction extends Instruction<"MOV"> {
       this.operation.mode === "mem<-reg" ||
       this.operation.mode === "mem<-imd"
     ) {
-      const mode =
-        this.operation.mode === "reg<-mem" ? this.operation.src.mode : this.operation.out.mode;
-      if (mode === "direct") {
+      const mem = this.operation.mode === "reg<-mem" ? this.operation.src : this.operation.out;
+      if (mem.mode === "direct") {
         // Fetch memory address
         yield* super.consumeInstruction(computer, "ri.l");
         yield* super.consumeInstruction(computer, "ri.h");
       } else {
         // Move BX to ri
         yield* computer.cpu.copyWordRegister("BX", "ri");
+        if (mem.offset) {
+          // Fetch offset
+          yield* this.consumeInstruction(computer, "id.l");
+          yield* this.consumeInstruction(computer, "id.h");
+          // Add offset to BX
+          yield* computer.cpu.updateWordRegister("ri", ri => ri.add(mem.offset!.signed));
+        }
       }
     }
     if (this.operation.mode === "reg<-imd" || this.operation.mode === "mem<-imd") {

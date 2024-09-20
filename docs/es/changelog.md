@@ -1,8 +1,9 @@
 # Notas de versión
 
-### XXX
+### 20 de septiembre de 2024
 
-Se agregó la instrucción [`TEST`](./computer/instructions/test).
+- Se agregó la instrucción [`TEST`](./computer/instructions/test).
+- Se agregó el acceso indirecto a memoria con desplazamiento. Por ejemplo, `mov al, [bx+8]`.
 
 ### 31 de julio de 2024
 

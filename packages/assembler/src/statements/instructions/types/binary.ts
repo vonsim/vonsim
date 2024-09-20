@@ -22,7 +22,9 @@ type BinaryInstructionName =
   | "XOR"
   | "TEST";
 
-type InitialMemoryAccess = { mode: "direct"; address: NumberExpression } | { mode: "indirect" };
+type InitialMemoryAccess =
+  | { mode: "direct"; address: NumberExpression }
+  | { mode: "indirect"; offset: NumberExpression | null };
 
 type InitialOperation =
   | { mode: "reg<-reg"; size: ByteSize; out: Register; src: Register }
@@ -31,7 +33,9 @@ type InitialOperation =
   | { mode: "mem<-reg"; size: ByteSize; out: InitialMemoryAccess; src: Register }
   | { mode: "mem<-imd"; size: ByteSize; out: InitialMemoryAccess; src: NumberExpression };
 
-type MemoryAccess = { mode: "direct"; address: MemoryAddress } | { mode: "indirect" };
+type MemoryAccess =
+  | { mode: "direct"; address: MemoryAddress }
+  | { mode: "indirect"; offset: Byte<16> | null };
 
 type Operation =
   | { mode: "reg<-reg"; size: 8; out: ByteRegister; src: ByteRegister }
@@ -107,6 +111,12 @@ export class BinaryInstruction extends InstructionStatement {
     ) {
       length += 2; // 2-byte address
     }
+    if (
+      (mode === "reg<-mem" && src.mode === "indirect" && src.offset) ||
+      ((mode === "mem<-reg" || mode === "mem<-imd") && out.mode === "indirect" && out.offset)
+    ) {
+      length += 2; // 2-byte offset
+    }
     if (mode === "reg<-imd" || mode === "mem<-imd") {
       length += size / 8; // imd size
     }
@@ -157,6 +167,10 @@ export class BinaryInstruction extends InstructionStatement {
           bytes[1] = 0b01000_000; // 01000rrr
           bytes.push(src.address.byte.low.unsigned);
           bytes.push(src.address.byte.high.unsigned);
+        } else if (src.offset) {
+          bytes[1] = 0b01100_000; // 01100rrr
+          bytes.push(src.offset.low.unsigned);
+          bytes.push(src.offset.high.unsigned);
         } else {
           bytes[1] = 0b01010_000; // 01010rrr
         }
@@ -177,6 +191,10 @@ export class BinaryInstruction extends InstructionStatement {
           bytes[1] = 0b11000_000; // 11000rrr
           bytes.push(out.address.byte.low.unsigned);
           bytes.push(out.address.byte.high.unsigned);
+        } else if (out.offset) {
+          bytes[1] = 0b11100_000; // 11100rrr
+          bytes.push(out.offset.low.unsigned);
+          bytes.push(out.offset.high.unsigned);
         } else {
           bytes[1] = 0b11010_000; // 11010rrr
         }
@@ -189,6 +207,10 @@ export class BinaryInstruction extends InstructionStatement {
           bytes[1] = 0b11001000;
           bytes.push(out.address.byte.low.unsigned);
           bytes.push(out.address.byte.high.unsigned);
+        } else if (out.offset) {
+          bytes[1] = 0b11101000;
+          bytes.push(out.offset.low.unsigned);
+          bytes.push(out.offset.high.unsigned);
         } else {
           bytes[1] = 0b11011000;
         }
@@ -265,7 +287,7 @@ export class BinaryInstruction extends InstructionStatement {
           mode: "reg<-mem",
           size: out.size,
           out: out.value,
-          src: { mode: "indirect" },
+          src: { mode: "indirect", offset: src.offset },
         };
         return;
       }
@@ -312,7 +334,7 @@ export class BinaryInstruction extends InstructionStatement {
 
       if (out.isIndirectAddress()) {
         size = out.size;
-        address = { mode: "indirect" };
+        address = { mode: "indirect", offset: out.offset };
       } else if (out.isDirectAddress()) {
         size = out.size;
         address = { mode: "direct", address: out.value };
@@ -380,18 +402,31 @@ export class BinaryInstruction extends InstructionStatement {
 
     const { mode, size, out, src } = this.#initialOperation;
 
-    const evaluateAddress = (expr: NumberExpression): MemoryAddress => {
-      const computed = expr.evaluate(store);
-      if (!MemoryAddress.inRange(computed)) {
-        throw new AssemblerError("address-out-of-range", computed).at(expr);
-      }
+    const evaluateMemoryAccess = (op: InitialMemoryAccess): MemoryAccess => {
+      if (op.mode === "direct") {
+        const computed = op.address.evaluate(store);
+        if (!MemoryAddress.inRange(computed)) {
+          throw new AssemblerError("address-out-of-range", computed).at(op.address);
+        }
 
-      const address = MemoryAddress.from(computed);
-      if (store.addressIsReserved(address)) {
-        throw new AssemblerError("address-has-code", address).at(expr);
-      }
+        const address = MemoryAddress.from(computed);
+        if (store.addressIsReserved(address)) {
+          throw new AssemblerError("address-has-code", address).at(op.address);
+        }
 
-      return address;
+        return { mode: "direct", address };
+      } else {
+        let offset: Byte<16> | null = null;
+        if (op.offset) {
+          const computed = op.offset.evaluate(store);
+          if (!Byte.fitsSigned(computed, 16)) {
+            throw new AssemblerError("value-out-of-range", computed, 16).at(op.offset);
+          }
+          offset = Byte.fromSigned(computed, 16);
+        }
+
+        return { mode: "indirect", offset };
+      }
     };
 
     switch (mode) {
@@ -405,10 +440,7 @@ export class BinaryInstruction extends InstructionStatement {
           mode,
           size,
           out,
-          src:
-            src.mode === "direct"
-              ? { mode: "direct", address: evaluateAddress(src.address) }
-              : { mode: "indirect" },
+          src: evaluateMemoryAccess(src),
         } as Operation;
         return;
       }
@@ -427,10 +459,7 @@ export class BinaryInstruction extends InstructionStatement {
         this.#operation = {
           mode,
           size,
-          out:
-            out.mode === "direct"
-              ? { mode: "direct", address: evaluateAddress(out.address) }
-              : { mode: "indirect" },
+          out: evaluateMemoryAccess(out),
           src,
         } as Operation;
         return;
@@ -446,10 +475,7 @@ export class BinaryInstruction extends InstructionStatement {
         this.#operation = {
           mode,
           size,
-          out:
-            out.mode === "direct"
-              ? { mode: "direct", address: evaluateAddress(out.address) }
-              : { mode: "indirect" },
+          out: evaluateMemoryAccess(out),
           src: byte,
         } as Operation;
         return;
