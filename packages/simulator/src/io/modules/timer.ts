@@ -20,6 +20,7 @@ export type TimerOperation =
 /**
  * The timer is a module connected to a clock that interrupts the CPU
  * when a certain amount of time has passed.
+ * It starts counting after the first write to the CONT register.
  *
  * Reserved addresses:
  * - 10h: CONT
@@ -35,6 +36,7 @@ export type TimerOperation =
 export class Timer extends IOModule<TimerRegister> {
   #CONT: Byte<8>;
   #COMP: Byte<8>;
+  #started = false;
 
   constructor(options: ComponentInit) {
     super(options);
@@ -64,9 +66,14 @@ export class Timer extends IOModule<TimerRegister> {
   *write(register: TimerRegister, value: Byte<8>): EventGenerator {
     yield { type: "timer:write", register, value };
 
-    if (register === "CONT") this.#CONT = value;
-    else if (register === "COMP") this.#COMP = value;
-    else return register; // Exhaustive check
+    if (register === "CONT") {
+      this.#CONT = value;
+      this.#started = true;
+    } else if (register === "COMP") {
+      this.#COMP = value;
+    } else {
+      return register; // Exhaustive check
+    }
 
     yield { type: "timer:register.update", register, value };
     yield { type: "timer:write.ok" };
@@ -79,6 +86,8 @@ export class Timer extends IOModule<TimerRegister> {
    * Called by the clock.
    */
   *tick(): EventGenerator {
+    if (!this.#started) return;
+
     const value = this.#CONT.unsigned === Byte.maxValue(8) ? Byte.zero(8) : this.#CONT.add(1);
 
     this.#CONT = value;
