@@ -282,6 +282,14 @@ async function startPrinter(): Promise<void> {
     await anim({ key: "printer.printing.opacity", to: 0 }, { duration: 1, easing: "easeInSine" });
     startThread(simulator.devices.printer.print()!);
   }
+
+  const simulation = store.get(simulationAtom);
+  if (simulation.type === "stopped" && !simulation.error) {
+    const generator = simulator.devices.printer.flush()!;
+    for (const event of generator) {
+      handleEvent(event);
+    }
+  }
 }
 
 export function useSimulation() {

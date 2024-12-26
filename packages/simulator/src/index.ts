@@ -97,6 +97,10 @@ export class Simulator {
           if (this.#computer.io.printer) return this.#computer.io.printer.print();
           else console.warn("No printer connected to the computer!");
         },
+        flush: () => {
+          if (this.#computer.io.printer) return this.#computer.io.printer.flush();
+          else console.warn("No printer connected to the computer!");
+        },
       },
       screen: {
         connected: () => this.#computer.io.screen !== null,

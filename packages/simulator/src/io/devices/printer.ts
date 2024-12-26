@@ -143,6 +143,26 @@ export abstract class Printer extends Component {
     }
   }
 
+  /**
+   * Prints all the characters in the buffer at once.
+   *
+   * ---
+   * Called by the outside when the simulation is stopped.
+   */
+  *flush(): EventGenerator {
+    for (const byte of this.#buffer) {
+      yield { type: "printer:buffer.pop", char: byte };
+      if (byte.unsigned === 12) {
+        // Character is a form feed
+        yield* this.clear();
+      } else {
+        const char = decimalToChar(byte.unsigned)!;
+        this.#paper += char;
+        yield { type: "printer:paper.print", char };
+      }
+    }
+  }
+
   toJSON() {
     return {
       paper: this.#paper,
