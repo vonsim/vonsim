@@ -53,6 +53,14 @@ export default defineConfig({
         "data-do-not-track": "true",
       },
     ],
+    [
+      "script",
+      {
+        defer: "true",
+        "data-site-id": "vonsim.github.io",
+        src: "https://assets.onedollarstats.com/tracker.js",
+      },
+    ],
   ],
 
   assetsDir: "assets/docs",
