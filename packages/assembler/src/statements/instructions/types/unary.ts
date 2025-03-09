@@ -82,7 +82,7 @@ export class UnaryInstruction extends InstructionStatement {
   toBytes(): Uint8Array {
     const bytes: number[] = [];
 
-    const opcodes: { [key in UnaryInstructionName]: number } = {
+    const opcodes: Record<UnaryInstructionName, number> = {
       NOT: 0b0100_000_0,
       NEG: 0b0100_001_0,
       INC: 0b0100_010_0,

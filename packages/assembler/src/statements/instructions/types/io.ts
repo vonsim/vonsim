@@ -65,7 +65,7 @@ export class IOInstruction extends InstructionStatement {
   toBytes(): Uint8Array {
     const bytes: number[] = [];
 
-    const opcodes: { [key in IOInstructionName]: number } = {
+    const opcodes: Record<IOInstructionName, number> = {
       IN: 0b0101_00_00,
       OUT: 0b0101_01_00,
     };

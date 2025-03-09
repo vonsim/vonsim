@@ -64,7 +64,7 @@ export class JumpInstruction extends InstructionStatement {
   toBytes(): Uint8Array {
     const bytes: number[] = [];
 
-    const opcodes: { [key in JumpInstructionName]: number } = {
+    const opcodes: Record<JumpInstructionName, number> = {
       JC: 0b0010_0000,
       JNC: 0b0010_0001,
       JZ: 0b0010_0010,

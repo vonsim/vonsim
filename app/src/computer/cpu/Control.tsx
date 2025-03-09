@@ -78,10 +78,10 @@ export function Control() {
             statusKey === "stopped-error"
               ? "bg-red-500"
               : statusKey === "waiting-for-input"
-              ? "bg-amber-600"
-              : statusKey === "int6" || statusKey === "int7"
-              ? "bg-blue-600"
-              : "bg-stone-900",
+                ? "bg-amber-600"
+                : statusKey === "int6" || statusKey === "int7"
+                  ? "bg-blue-600"
+                  : "bg-stone-900",
           )}
         >
           {translate(`computer.cpu.status.${statusKey}`)}

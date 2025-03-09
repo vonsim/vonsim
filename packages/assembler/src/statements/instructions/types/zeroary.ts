@@ -45,7 +45,7 @@ export class ZeroaryInstruction extends InstructionStatement {
    * @see https://vonsim.github.io/en/reference/encoding
    */
   toBytes(): Uint8Array {
-    const opcodes: { [key in ZeroaryInstructionName]: number } = {
+    const opcodes: Record<ZeroaryInstructionName, number> = {
       PUSHF: 0b0111_0000,
       POPF: 0b0111_1000,
       RET: 0b0011_0011,

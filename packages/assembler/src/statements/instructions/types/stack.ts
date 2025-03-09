@@ -44,7 +44,7 @@ export class StackInstruction extends InstructionStatement {
    * @see https://vonsim.github.io/en/reference/encoding
    */
   toBytes(): Uint8Array {
-    const opcodes: { [key in StackInstructionName]: number } = {
+    const opcodes: Record<StackInstructionName, number> = {
       PUSH: 0b01100_000,
       POP: 0b01101_000,
     };

@@ -86,11 +86,11 @@ type AnyIsEqual<T1, T2> = T1 extends T2 ? (IsEqual<T1, T2> extends true ? true :
 type PathImpl<K extends string | number, V, EndType, TraversedTypes> = V extends EndType
   ? `${K}`
   : // Check so that we don't recurse into the same type
-  // by ensuring that the types are mutually assignable
-  // mutually required to avoid false positives of subtypes
-  true extends AnyIsEqual<TraversedTypes, V>
-  ? `${K}`
-  : `${K}` | `${K}.${PathInternal<V, EndType, TraversedTypes | V>}`;
+    // by ensuring that the types are mutually assignable
+    // mutually required to avoid false positives of subtypes
+    true extends AnyIsEqual<TraversedTypes, V>
+    ? `${K}`
+    : `${K}` | `${K}.${PathInternal<V, EndType, TraversedTypes | V>}`;
 
 /**
  * Helper type for recursively constructing paths through a type.
@@ -133,19 +133,19 @@ type ArrayPathImpl<K extends string | number, V, EndType, TraversedTypes> = V ex
     ? string
     : never
   : V extends readonly (infer U)[]
-  ? U extends EndType
-    ? IsAny<V> extends true
-      ? string
-      : never
-    : // Check so that we don't recurse into the same type
-    // by ensuring that the types are mutually assignable
-    // mutually required to avoid false positives of subtypes
-    true extends AnyIsEqual<TraversedTypes, V>
-    ? never
-    : `${K}` | `${K}.${ArrayPathInternal<V, EndType, TraversedTypes | V>}`
-  : true extends AnyIsEqual<TraversedTypes, V>
-  ? never
-  : `${K}.${ArrayPathInternal<V, EndType, TraversedTypes | V>}`;
+    ? U extends EndType
+      ? IsAny<V> extends true
+        ? string
+        : never
+      : // Check so that we don't recurse into the same type
+        // by ensuring that the types are mutually assignable
+        // mutually required to avoid false positives of subtypes
+        true extends AnyIsEqual<TraversedTypes, V>
+        ? never
+        : `${K}` | `${K}.${ArrayPathInternal<V, EndType, TraversedTypes | V>}`
+    : true extends AnyIsEqual<TraversedTypes, V>
+      ? never
+      : `${K}.${ArrayPathInternal<V, EndType, TraversedTypes | V>}`;
 
 /**
  * Helper type for recursively constructing paths through a type.
@@ -198,17 +198,17 @@ export type PathValue<
         ? PathValue<T[K], R, EndType>
         : never
       : K extends `${ArrayKey}`
-      ? T extends readonly (infer V)[]
-        ? PathValue<V, R & Path<V, EndType>, EndType>
+        ? T extends readonly (infer V)[]
+          ? PathValue<V, R & Path<V, EndType>, EndType>
+          : never
         : never
-      : never
     : P extends keyof T
-    ? T[P]
-    : P extends `${ArrayKey}`
-    ? T extends readonly (infer V)[]
-      ? V
-      : never
-    : never
+      ? T[P]
+      : P extends `${ArrayKey}`
+        ? T extends readonly (infer V)[]
+          ? V
+          : never
+        : never
   : never;
 
 /**

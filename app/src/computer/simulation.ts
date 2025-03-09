@@ -87,7 +87,6 @@ function resetState(state: ComputerState) {
  */
 async function startThread(generator: EventGenerator): Promise<void> {
   try {
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const status = store.get(simulationAtom);
       const settings = getSettings();

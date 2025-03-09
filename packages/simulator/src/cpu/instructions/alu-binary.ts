@@ -184,7 +184,7 @@ export class ALUBinaryInstruction extends Instruction<
         // When performing bitwise operations, we use signed numbers
         // because we want to preserve the sign bit in JavaScript.
         const signed =
-          (this.name === "AND" || this.name === "TEST")
+          this.name === "AND" || this.name === "TEST"
             ? left.signed & right.signed
             : this.name === "OR"
               ? left.signed | right.signed

@@ -36,6 +36,7 @@ export function vonsim({ gitignore }, ...extras) {
       rules: {
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/consistent-type-definitions": "off",
         "import/first": "error",
         "import/newline-after-import": "error",

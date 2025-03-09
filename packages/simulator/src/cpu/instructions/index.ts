@@ -44,7 +44,9 @@ export function statementToInstruction(statement: InstructionStatement): Instruc
     case "CMP":
     case "TEST":
       return new ALUBinaryInstruction(
-        statement as PickInstruction<"AND" | "OR" | "XOR" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP"| "TEST">,
+        statement as PickInstruction<
+          "AND" | "OR" | "XOR" | "ADD" | "ADC" | "SUB" | "SBB" | "CMP" | "TEST"
+        >,
       );
     case "NOT":
     case "NEG":

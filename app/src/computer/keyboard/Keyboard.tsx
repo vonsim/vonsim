@@ -87,7 +87,7 @@ const displays = {
     "{lock}": "Bloq Mayús ⇪",
     "{space}": "Espacio",
   },
-} satisfies { [key in Language]: Record<string, string> };
+} satisfies Record<Language, Record<string, string>>;
 
 const accentDeadKeys = "Á É Í Ó Ú á é í ó ú \u0301";
 const diaeresisDeadKeys = "Ü ü \u0308";
@@ -131,7 +131,6 @@ export function Keyboard() {
       </span>
 
       <SimpleKeyboard
-        // eslint-disable-next-line tailwindcss/no-custom-classname
         theme={clsx(
           "hg-theme-vonsim",
           `hg-shift-${shift}`,

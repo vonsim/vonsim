@@ -138,7 +138,7 @@ export class BinaryInstruction extends InstructionStatement {
     const { mode, size, out, src } = this.operation;
     const bytes: number[] = [];
 
-    const opcodes: { [key in BinaryInstructionName]: number } = {
+    const opcodes: Record<BinaryInstructionName, number> = {
       MOV: 0b100_0000_0,
       AND: 0b100_0001_0,
       OR: 0b100_0010_0,

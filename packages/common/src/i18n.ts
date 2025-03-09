@@ -5,13 +5,8 @@ import getFromPath, { PathValue, TerminalPath } from "./paths";
 type LocaleValue = string | ((...context: any) => string);
 export type BaseLocale = { [key: string]: LocaleValue | BaseLocale };
 export type LocaleCode<Locale extends BaseLocale> = TerminalPath<Locale, LocaleValue>;
-export type LocaleContext<Locale extends BaseLocale, Code extends LocaleCode<Locale>> = PathValue<
-  Locale,
-  Code,
-  LocaleValue
-> extends (...context: infer A) => string
-  ? A
-  : [];
+export type LocaleContext<Locale extends BaseLocale, Code extends LocaleCode<Locale>> =
+  PathValue<Locale, Code, LocaleValue> extends (...context: infer A) => string ? A : [];
 
 export const LANGUAGES = ["en", "es"] as const;
 

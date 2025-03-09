@@ -191,7 +191,7 @@ export class CPU extends Component {
   toJSON() {
     const registers = Object.entries(this.#registers).reduce(
       (acc, [reg, value]) => ({ ...acc, [reg]: value.toJSON() }),
-      {} as { [key in PhysicalRegister]: number },
+      {} as Record<PhysicalRegister, number>,
     );
 
     return {

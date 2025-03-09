@@ -171,8 +171,8 @@ class BinaryOperation extends NumberExpression {
     return this.operator === "+"
       ? this.left.evaluate(store) + this.right.evaluate(store)
       : this.operator === "-"
-      ? this.left.evaluate(store) - this.right.evaluate(store)
-      : this.left.evaluate(store) * this.right.evaluate(store);
+        ? this.left.evaluate(store) - this.right.evaluate(store)
+        : this.left.evaluate(store) * this.right.evaluate(store);
   }
 
   toJSON() {

@@ -58,10 +58,6 @@ export class StringDirectiveValue extends DataDirectiveValue {
 
 export class UnassignedDirectiveValue extends DataDirectiveValue {
   readonly type = "unassigned";
-
-  constructor(position: Position) {
-    super(position);
-  }
 }
 
 export class NumberExpressionDirectiveValue extends DataDirectiveValue {

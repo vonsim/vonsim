@@ -51,7 +51,7 @@ export function Memory() {
       const next = MemoryAddress.from(nextValue);
       setInputValue(next.toString());
       setFixedAddress(next);
-    } catch (error) {
+    } catch {
       console.error("Invalid PageUp");
     }
   }, [operatingAddress, fixedAddress, setFixedAddress, memory.length]);
@@ -71,7 +71,7 @@ export function Memory() {
       const next = MemoryAddress.from(current.value - memory.length);
       setInputValue(next.toString());
       setFixedAddress(next);
-    } catch (error) {
+    } catch {
       console.error("Invalid PageUp");
     }
   }, [operatingAddress, fixedAddress, setFixedAddress, memory.length]);

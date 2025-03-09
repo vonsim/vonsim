@@ -120,14 +120,14 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
             event.phase === "execute"
               ? "executing"
               : event.phase === "writeback"
-              ? "writeback"
-              : event.next === "fetch-operands"
-              ? "fetching-operands"
-              : event.next === "execute"
-              ? "executing"
-              : event.next === "writeback"
-              ? "writeback"
-              : prev.phase,
+                ? "writeback"
+                : event.next === "fetch-operands"
+                  ? "fetching-operands"
+                  : event.next === "execute"
+                    ? "executing"
+                    : event.next === "writeback"
+                      ? "writeback"
+                      : prev.phase,
         };
       });
       return;

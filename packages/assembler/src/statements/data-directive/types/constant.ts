@@ -1,10 +1,7 @@
-import type { Position } from "@vonsim/common/position";
-
 import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import type { NumberExpression } from "../../../number-expression";
 import { DataDirectiveStatement } from "../statement";
-import type { DataDirectiveValue } from "../value";
 
 /**
  * A constant.
@@ -37,10 +34,6 @@ export class Constant extends DataDirectiveStatement {
   #status: "not-processed" | "processing" | "processed" = "not-processed";
   #initialValue: NumberExpression | null = null;
   #value: number | null = null;
-
-  constructor(values: DataDirectiveValue[], label: string | null, position: Position) {
-    super(values, label, position);
-  }
 
   toJSON() {
     return {
