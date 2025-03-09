@@ -1,9 +1,11 @@
+@reference "#tailwind-main";
+
 /* Based on https://css-tricks.com/old-timey-terminal-styling/ */
 .container {
-  @apply relative h-48 rounded-lg border border-stone-600 m-4;
+  @apply relative m-4 h-48 rounded-lg border border-stone-600;
 
-  background-color: theme(colors.stone.900);
-  background-image: radial-gradient(theme(colors.mantis.500 / 75%), theme(colors.stone.900) 120%);
+  background-color: var(--color-stone-900);
+  background-image: radial-gradient(--theme(--color-mantis-500 / 75%), var(--color-stone-900) 120%);
   text-shadow: 0 0 5px #c8c8c8;
 
   &::after {
@@ -20,7 +22,7 @@
 }
 
 .text {
-  @apply whitespace-pre-wrap break-all font-mono text-lg text-white max-h-48 p-1 overflow-auto scrollbar-stone-800;
+  @apply scrollbar-stone-800 max-h-48 overflow-auto whitespace-pre-wrap break-all p-1 font-mono text-lg text-white;
 
   ::selection {
     background-color: #0080ff;

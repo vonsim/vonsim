@@ -1,3 +1,5 @@
+@reference "#tailwind-main";
+
 /* Based on https://www.joshwcomeau.com/animation/3d-button/#mobile-enhancements-8 */
 .printer {
   @apply relative m-2;
@@ -12,10 +14,10 @@
   @apply absolute inset-0 rounded-xl;
   background: linear-gradient(
     to left,
-    theme(colors.zinc.500) 0%,
-    theme(colors.zinc.400) 8%,
-    theme(colors.zinc.400) 92%,
-    theme(colors.zinc.500) 100%
+    var(--color-zinc-500) 0%,
+    var(--color-zinc-400) 8%,
+    var(--color-zinc-400) 92%,
+    var(--color-zinc-500) 100%
   );
 }
 
@@ -31,9 +33,9 @@
     @apply mx-auto flex h-16 w-40 items-end bg-zinc-900 px-2 pb-1;
 
     .paper {
-      @apply w-full whitespace-pre-wrap break-all bg-zinc-50 font-mono text-lg p-1;
-      color: theme(colors.zinc.900);
-      text-shadow: 0 0 2px theme(colors.zinc.500);
+      @apply w-full whitespace-pre-wrap break-all bg-zinc-50 p-1 font-mono text-lg;
+      color: var(--color-zinc-900);
+      text-shadow: 0 0 2px var(--color-zinc-500);
     }
   }
 }

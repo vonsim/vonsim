@@ -11,7 +11,7 @@ const ToastViewport = forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={clsx(
-      "fixed inset-x-0 top-12 z-[100] mx-auto flex max-h-screen w-full flex-col p-4 md:max-w-[420px]",
+      "fixed inset-x-0 top-12 z-100 mx-auto flex max-h-screen w-full flex-col p-4 md:max-w-[420px]",
       className,
     )}
     {...props}
@@ -48,8 +48,8 @@ const ToastAction = forwardRef<
   <ToastPrimitives.Action
     ref={ref}
     className={clsx(
-      "inline-flex h-8 shrink-0 items-center justify-center rounded-md bg-mantis-500 px-3 text-sm font-medium ring-offset-stone-900 transition-colors hover:bg-mantis-400 focus:outline-none focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-      "group-data-[variant=error]:border group-data-[variant=error]:border-white/40 group-data-[variant=error]:hover:border-white/30  group-data-[variant=error]:hover:bg-red-700 group-data-[variant=error]:hover:text-white group-data-[variant=error]:focus:ring-white",
+      "inline-flex h-8 shrink-0 items-center justify-center rounded-md bg-mantis-500 px-3 text-sm font-medium ring-offset-stone-900 transition-colors hover:bg-mantis-400 focus:outline-hidden focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+      "group-data-[variant=error]:border group-data-[variant=error]:border-white/40 hover:group-data-[variant=error]:border-white/30  hover:group-data-[variant=error]:bg-red-700 hover:group-data-[variant=error]:text-white focus:group-data-[variant=error]:ring-white",
       className,
     )}
     {...props}
@@ -64,7 +64,7 @@ const ToastClose = forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={clsx(
-      "text-current/50 absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity hover:text-current focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-data-[variant=error]:text-red-300 group-data-[variant=error]:hover:text-red-50 group-data-[variant=error]:focus:ring-red-400 group-data-[variant=error]:focus:ring-offset-red-600",
+      "text-current/50 absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity hover:text-current focus:opacity-100 focus:outline-hidden focus:ring-2 group-hover:opacity-100 group-data-[variant=error]:text-red-300 hover:group-data-[variant=error]:text-red-50 focus:group-data-[variant=error]:ring-red-400 focus:group-data-[variant=error]:ring-offset-red-600",
       className,
     )}
     toast-close=""

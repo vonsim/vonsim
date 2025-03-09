@@ -1,5 +1,7 @@
 import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -9,6 +11,7 @@ export default defineConfig({
   appType: "mpa",
   plugins: [
     react(),
+    tailwindcss(),
     VitePWA({
       registerType: "prompt",
       includeAssets: ["fonts/**/*", "favicon.svg", "icon-192.png", "icon-512.png"],
@@ -33,7 +36,10 @@ export default defineConfig({
     __COMMIT_HASH__: JSON.stringify(getCommitHash()),
   },
   resolve: {
-    alias: { "@/": "/src/" },
+    alias: {
+      "@/": "/src/",
+      "#tailwind-main": fileURLToPath(new URL("./src/styles/main.css", import.meta.url)),
+    },
   },
 });
 

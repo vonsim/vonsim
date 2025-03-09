@@ -1,14 +1,15 @@
-/* Class names taken from react-simple-keyboard/build/css/index.css */
+@reference "#tailwind-main";
 
+/* Class names taken from react-simple-keyboard/build/css/index.css */
 .hg-theme-vonsim {
-  @apply bg-stone-900 rounded-lg font-sans overflow-hidden px-1 py-2 touch-manipulation select-none w-full text-sm;
+  @apply w-full touch-manipulation select-none overflow-hidden rounded-lg bg-stone-900 px-1 py-2 font-sans text-sm;
 
   button.hg-button {
     @apply border-0 outline-0;
   }
 
   .hg-button {
-    @apply flex flex-grow items-center justify-center bg-stone-800 border-b border-stone-700 rounded-md shadow-sm cursor-pointer h-8 p-1;
+    @apply shadow-xs flex h-8 grow cursor-pointer items-center justify-center rounded-md border-b border-stone-700 bg-stone-800 p-1;
 
     span {
       @apply pointer-events-none;

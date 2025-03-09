@@ -32,7 +32,7 @@ export const lineHighlightField = StateField.define({
 });
 
 const lineHighlightMark = Decoration.line({
-  class: "!bg-mantis-400/10",
+  class: "bg-mantis-400/10!",
 });
 
 export function highlightLine(pos: number | null) {

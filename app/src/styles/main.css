@@ -1,6 +1,67 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    Chivo, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+
+  --color-mantis-50: #f6faf3;
+  --color-mantis-100: #e9f5e3;
+  --color-mantis-200: #d3eac8;
+  --color-mantis-300: #afd89d;
+  --color-mantis-400: #82bd69;
+  --color-mantis-500: #61a146;
+  --color-mantis-600: #4c8435;
+  --color-mantis-700: #3d692c;
+  --color-mantis-800: #345427;
+  --color-mantis-900: #2b4522;
+  --color-mantis-950: #13250e;
+
+  --stroke-width-bus: 10px;
+
+  --ease-realistic: cubic-bezier(0.3, 0.7, 0.4, 1);
+  --ease-realistic-bounce: cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@import "./tailwindcss-animate.css";
+@plugin "@iconify/tailwind4";
+
+@utility scrollbar-* {
+  &::-webkit-scrollbar {
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-corner {
+    border-radius: 9999px;
+    border-style: solid;
+    border-width: 4px;
+    border-color: transparent;
+    background-color: --value(--color- *);
+    background-clip: content-box;
+    padding: 1px;
+  }
+}
 
 @layer base {
   * {
@@ -10,12 +71,9 @@
 }
 
 .computer-background {
-  background-color: theme(colors.stone.800);
-  background-image: radial-gradient(
-      circle at 12.5px 12.5px,
-      theme(colors.stone.600) 2%,
-      transparent 0%
-    ),
-    radial-gradient(circle at 37.5px 37.5px, theme(colors.stone.600) 2%, transparent 0%);
+  background-color: var(--color-stone-800);
+  background-image:
+    radial-gradient(circle at 12.5px 12.5px, var(--color-stone-600) 2%, transparent 0%),
+    radial-gradient(circle at 37.5px 37.5px, var(--color-stone-600) 2%, transparent 0%);
   background-size: 50px 50px;
 }

@@ -41,11 +41,11 @@ export function Register({
         >
           <span className="mr-2 font-bold">{name}</span>
           {high && (
-            <span className="mr-0.5 rounded bg-stone-900 p-0.5 font-light">
+            <span className="mr-0.5 rounded-sm bg-stone-900 p-0.5 font-light">
               {high.toString("hex")}
             </span>
           )}
-          <span className="rounded bg-stone-900 p-0.5 font-light">{low.toString("hex")}</span>
+          <span className="rounded-sm bg-stone-900 p-0.5 font-light">{low.toString("hex")}</span>
         </animated.button>
       </PopoverTrigger>
 

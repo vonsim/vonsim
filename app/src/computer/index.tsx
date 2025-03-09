@@ -36,7 +36,7 @@ export function ComputerContainer() {
         doubleClick={{ disabled: true }}
         panning={{ excluded: ["input"] }}
       >
-        <TransformComponent wrapperClass="!w-full !h-full" contentClass="!p-[200px]">
+        <TransformComponent wrapperClass="w-full! h-full!" contentClass="p-[200px]!">
           <div className="relative h-[1300px] w-[1900px]">
             <SystemBus />
 

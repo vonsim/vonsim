@@ -345,7 +345,7 @@ export function Settings({ className }: { className?: string }) {
           </SettingSubtitle>
         </SettingInfo>
 
-        <div className="ml-8 grid w-64 grid-cols-[min-content,auto] items-center gap-2">
+        <div className="ml-8 grid w-64 grid-cols-[min-content_auto] items-center gap-2">
           <span className="text-xs">{translate("settings.filters.brightness")}</span>
           <Slider
             value={[settings.filterBightness]}

@@ -11,7 +11,7 @@ export function ZoomControls({
   const translate = useTranslate();
 
   return (
-    <div className="absolute right-2 top-2 flex flex-col rounded-lg border border-stone-600 bg-stone-900 shadow">
+    <div className="absolute right-2 top-2 flex flex-col rounded-lg border border-stone-600 bg-stone-900 shadow-sm">
       <button
         className="m-0.5 flex size-8 items-center justify-center rounded-t-lg text-white transition-colors hover:enabled:bg-stone-800"
         onClick={() => wrapperRef.current?.zoomIn()}

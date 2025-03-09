@@ -9,7 +9,7 @@ export function Clock() {
   const angle = getSpring("clock.angle");
 
   return (
-    <div className="absolute left-[520px] top-[930px] z-10 size-12 rounded-full border border-stone-600 bg-stone-800 p-1 [&_*]:z-20">
+    <div className="absolute left-[520px] top-[930px] z-10 size-12 rounded-full border border-stone-600 bg-stone-800 p-1 **:z-20">
       <svg
         viewBox="0 0 24 24"
         strokeLinecap="round"

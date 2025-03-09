@@ -25,7 +25,7 @@ export function DataLines() {
     .join(" ");
 
   return (
-    <svg className="pointer-events-none absolute inset-0 z-[5] size-full">
+    <svg className="pointer-events-none absolute inset-0 z-5 size-full">
       {/* Data lines */}
       <path
         className="fill-none stroke-stone-900 stroke-[14px]"

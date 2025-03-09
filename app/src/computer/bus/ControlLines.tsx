@@ -30,7 +30,7 @@ export function ControlLines() {
   const memPath = "M 750 545 H 860 V 460";
 
   return (
-    <svg className="pointer-events-none absolute inset-0 z-[15] size-full">
+    <svg className="pointer-events-none absolute inset-0 z-15 size-full">
       <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={rdPath} />
       <animated.path
         className="fill-none stroke-[4px]"
@@ -205,7 +205,7 @@ function ControlLineLegend({
   return (
     <span
       className={clsx(
-        "pointer-events-none absolute z-[15] block font-mono text-xs font-bold tracking-wider text-stone-400",
+        "pointer-events-none absolute z-15 block font-mono text-xs font-bold tracking-wider text-stone-400",
         className,
       )}
     >

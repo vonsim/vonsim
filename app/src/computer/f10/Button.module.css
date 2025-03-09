@@ -1,3 +1,5 @@
+@reference "#tailwind-main";
+
 /* Based on https://www.joshwcomeau.com/animation/3d-button/#mobile-enhancements-8 */
 .pushable {
   @apply relative m-2 cursor-pointer border-none bg-transparent p-0 outline-offset-4;
@@ -9,17 +11,17 @@
     }
 
     &:not(:focus-visible) {
-      @apply outline-none;
+      @apply outline-hidden;
     }
 
     .front {
       transform: translateY(-6px);
-      transition: transform 250ms theme(transitionTimingFunction.realistic-bounce);
+      transition: transform 250ms var(--ease-realistic-bounce);
     }
 
     .shadow {
       transform: translateY(4px);
-      transition: transform 250ms theme(transitionTimingFunction.realistic-bounce);
+      transition: transform 250ms var(--ease-realistic-bounce);
     }
   }
 
@@ -46,24 +48,24 @@
   @apply absolute inset-0 rounded-xl bg-black/25;
   will-change: transform;
   transform: translateY(2px);
-  transition: transform 600ms theme(transitionTimingFunction.realistic);
+  transition: transform 600ms var(--ease-realistic);
 }
 
 .edge {
   @apply absolute inset-0 rounded-xl;
   background: linear-gradient(
     to left,
-    theme(colors.red.900) 0%,
-    theme(colors.red.800) 8%,
-    theme(colors.red.800) 92%,
-    theme(colors.red.900) 100%
+    var(--color-red-900) 0%,
+    var(--color-red-800) 8%,
+    var(--color-red-800) 92%,
+    var(--color-red-900) 100%
   );
 }
 
 .front {
   @apply relative block rounded-xl bg-red-600 px-10 py-3;
-  @apply text-lg font-medium text-white text-center;
+  @apply text-center text-lg font-medium text-white;
   will-change: transform;
   transform: translateY(-4px);
-  transition: transform 600ms theme(transitionTimingFunction.realistic);
+  transition: transform 600ms var(--ease-realistic);
 }
