@@ -5,6 +5,6 @@
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "juanm04.unlp",
-    "zixuanchen.vitest-explorer"
+    "vitest.explorer"
   ]
 }
