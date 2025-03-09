@@ -21,7 +21,7 @@
     }
   },
   "devDependencies": {
-    "prettier": "^3.3.3",
-    "turbo": "^2.0.9"
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4"
   }
 }

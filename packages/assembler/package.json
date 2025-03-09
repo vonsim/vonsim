@@ -17,8 +17,8 @@
     "@vonsim/tsconfig": "workspace:^",
     "eslint": "^8.57.0",
     "eslint-config-vonsim": "workspace:^",
-    "type-fest": "^4.23.0",
-    "typescript": "~5.5.4",
-    "vitest": "^2.0.4"
+    "type-fest": "^4.37.0",
+    "typescript": "~5.8.2",
+    "vitest": "^3.0.8"
   }
 }

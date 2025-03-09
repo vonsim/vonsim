@@ -8,13 +8,13 @@
   },
   "dependencies": {
     "cpy": "^11.1.0",
-    "execa": "^9.3.0"
+    "execa": "^9.5.2"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.13.10",
     "@vonsim/tsconfig": "workspace:^",
     "eslint": "^8.57.0",
     "eslint-config-vonsim": "workspace:^",
-    "typescript": "~5.5.4"
+    "typescript": "~5.8.2"
   }
 }
