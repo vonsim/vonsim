@@ -86,8 +86,8 @@ export function Memory() {
   );
 
   return (
-    <div className="absolute left-[800px] top-0 z-10 h-[460px] w-[250px] rounded-lg border border-stone-600 bg-stone-900 **:z-20">
-      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl text-white">
+    <div className="**:z-20 absolute left-[800px] top-0 z-10 h-[460px] w-[250px] rounded-lg border border-stone-600 bg-stone-900">
+      <span className="bg-mantis-500 block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 px-2 py-1 text-3xl text-white">
         {translate("computer.memory.name")}
       </span>
 
@@ -95,7 +95,7 @@ export function Memory() {
         <Label htmlFor={inputId}>{translate("computer.memory.fix-address")}</Label>
         <div className="mt-1 flex items-center gap-1">
           <button
-            className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-mantis-500 px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-mantis-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            className="bg-mantis-500 focus-visible:outline-hidden focus-visible:ring-mantis-500 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             disabled={memory.at(0)!.address.value === MemoryAddress.MIN_ADDRESS}
             title={translate("computer.memory.address-decrement")}
             onClick={pageDown}
@@ -127,7 +127,7 @@ export function Memory() {
             </button>
           </div>
           <button
-            className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-mantis-500 px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-mantis-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            className="bg-mantis-500 focus-visible:outline-hidden focus-visible:ring-mantis-500 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             disabled={memory.at(-1)!.address.value === MemoryAddress.MAX_ADDRESS}
             title={translate("computer.memory.address-decrement")}
             onClick={pageUp}
@@ -189,7 +189,7 @@ function MemoryCell({ address, value }: { address: MemoryAddress; value: Byte<8>
           {(["hex", "bin", "uint", "int", "safe-ascii"] as const).map(rep => (
             <li key={rep}>
               <b className="font-medium">{translate(`generics.byte-representation.${rep}`)}</b>:{" "}
-              <span className="font-mono text-mantis-400">{value.toString(rep)}</span>
+              <span className="text-mantis-400 font-mono">{value.toString(rep)}</span>
             </li>
           ))}
         </ul>

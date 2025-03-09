@@ -23,7 +23,7 @@ const DropdownMenuSubTrigger = forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={clsx(
-      "flex cursor-default select-none items-center rounded-xs px-2 py-1.5 text-sm outline-hidden focus:bg-mantis-500 data-[state=open]:bg-mantis-500",
+      "rounded-xs outline-hidden focus:bg-mantis-500 data-[state=open]:bg-mantis-500 flex cursor-default select-none items-center px-2 py-1.5 text-sm",
       inset && "pl-8",
       className,
     )}
@@ -77,7 +77,7 @@ const DropdownMenuItem = forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={clsx(
-      "relative flex cursor-default select-none items-center rounded-xs px-2 py-1.5 text-sm outline-hidden transition-colors focus:bg-mantis-500 focus:text-white data-disabled:pointer-events-none data-disabled:opacity-50",
+      "rounded-xs outline-hidden focus:bg-mantis-500 data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center px-2 py-1.5 text-sm transition-colors focus:text-white",
       inset && "pl-8",
       className,
     )}
@@ -93,7 +93,7 @@ const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={clsx(
-      "relative flex cursor-default select-none items-center rounded-xs py-1.5 pl-8 pr-2 text-sm outline-hidden transition-colors focus:bg-mantis-500 focus:text-white data-disabled:pointer-events-none data-disabled:opacity-50",
+      "rounded-xs outline-hidden focus:bg-mantis-500 data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors focus:text-white",
       className,
     )}
     checked={checked}
@@ -116,7 +116,7 @@ const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={clsx(
-      "relative flex cursor-default select-none items-center rounded-xs py-1.5 pl-8 pr-2 text-sm outline-hidden transition-colors focus:bg-mantis-500 focus:text-white data-disabled:pointer-events-none data-disabled:opacity-50",
+      "rounded-xs outline-hidden focus:bg-mantis-500 data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors focus:text-white",
       className,
     )}
     {...props}

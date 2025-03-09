@@ -21,7 +21,7 @@ export function Printer() {
   if (!devices.printer) return null;
 
   return (
-    <div className="absolute left-[1300px] top-[975px] z-10 flex h-min w-80 flex-col rounded-lg border border-stone-600 bg-stone-900 pl-16 **:z-20">
+    <div className="**:z-20 absolute left-[1300px] top-[975px] z-10 flex h-min w-80 flex-col rounded-lg border border-stone-600 bg-stone-900 pl-16">
       <div className={styles.printer} title={translate("computer.printer.name")}>
         <div className={styles.shadow} />
         <div className={styles.sides} />
@@ -52,7 +52,7 @@ export function Printer() {
 
           <div className="mx-auto mt-4 h-1 w-[70%] overflow-hidden rounded-full bg-zinc-600">
             <animated.div
-              className="h-full bg-mantis-400"
+              className="bg-mantis-400 h-full"
               style={{
                 width: getSpring("printer.printing.progress").to(t => `${t * 100}%`),
                 opacity: getSpring("printer.printing.opacity"),

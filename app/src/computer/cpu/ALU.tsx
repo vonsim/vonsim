@@ -23,7 +23,7 @@ export function ALU() {
     <>
       <svg viewBox="0 0 650 500" className="pointer-events-none absolute inset-0">
         <animated.path
-          className="fill-none stroke-mantis-400 stroke-bus"
+          className="stroke-mantis-400 stroke-bus fill-none"
           strokeLinejoin="round"
           d="M 173 85 H 220"
           pathLength={1}
@@ -31,7 +31,7 @@ export function ALU() {
           style={getSpring("cpu.alu.operands")}
         />
         <animated.path
-          className="fill-none stroke-mantis-400 stroke-bus"
+          className="stroke-mantis-400 stroke-bus fill-none"
           strokeLinejoin="round"
           d="M 182 145 H 220"
           pathLength={1}
@@ -39,7 +39,7 @@ export function ALU() {
           style={getSpring("cpu.alu.operands")}
         />
         <animated.path
-          className="fill-none stroke-mantis-400 stroke-bus"
+          className="stroke-mantis-400 stroke-bus fill-none"
           strokeLinejoin="round"
           d="M 272 115 h 28"
           pathLength={1}
@@ -47,7 +47,7 @@ export function ALU() {
           style={getSpring("cpu.alu.results")}
         />
         <animated.path
-          className="fill-none stroke-mantis-400 stroke-bus"
+          className="stroke-mantis-400 stroke-bus fill-none"
           strokeLinejoin="round"
           d="M 250 145 v 46"
           pathLength={1}
@@ -79,7 +79,7 @@ export function ALU() {
 
       {/* Flags */}
       <animated.div
-        className="absolute left-[165px] top-[190px] flex w-min items-center gap-1 rounded-md border border-mantis-400 bg-stone-800 px-2 py-1 font-mono leading-none"
+        className="border-mantis-400 absolute left-[165px] top-[190px] flex w-min items-center gap-1 rounded-md border bg-stone-800 px-2 py-1 font-mono leading-none"
         style={getSpring("cpu.FLAGS")}
       >
         <span className={clsx("rounded-sm p-1 font-light", CF ? "bg-mantis-400" : "bg-stone-900")}>

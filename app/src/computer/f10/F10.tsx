@@ -23,7 +23,7 @@ export function F10() {
   if (!devices.f10) return null;
 
   return (
-    <div className="absolute left-[50px] top-[950px] z-10 flex h-min w-48 flex-col rounded-lg border border-stone-600 bg-stone-900 **:z-20">
+    <div className="**:z-20 absolute left-[50px] top-[950px] z-10 flex h-min w-48 flex-col rounded-lg border border-stone-600 bg-stone-900">
       <button
         className={styles.pushable}
         disabled={status.type !== "running"}

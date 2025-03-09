@@ -11,7 +11,7 @@ const ToastViewport = forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={clsx(
-      "fixed inset-x-0 top-12 z-100 mx-auto flex max-h-screen w-full flex-col p-4 md:max-w-[420px]",
+      "z-100 fixed inset-x-0 top-12 mx-auto flex max-h-screen w-full flex-col p-4 md:max-w-[420px]",
       className,
     )}
     {...props}
@@ -30,7 +30,7 @@ const Toast = forwardRef<
       ref={ref}
       data-variant={variant}
       className={clsx(
-        "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-bottom-full data-[state=open]:slide-in-from-top-full",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-bottom-full data-[state=open]:slide-in-from-top-full group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none",
         variant === "default" && "border border-stone-600 bg-stone-900 text-white",
         variant === "error" && "group bg-red-900 text-red-50",
         className,
@@ -48,8 +48,8 @@ const ToastAction = forwardRef<
   <ToastPrimitives.Action
     ref={ref}
     className={clsx(
-      "inline-flex h-8 shrink-0 items-center justify-center rounded-md bg-mantis-500 px-3 text-sm font-medium ring-offset-stone-900 transition-colors hover:bg-mantis-400 focus:outline-hidden focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-      "group-data-[variant=error]:border group-data-[variant=error]:border-white/40 hover:group-data-[variant=error]:border-white/30  hover:group-data-[variant=error]:bg-red-700 hover:group-data-[variant=error]:text-white focus:group-data-[variant=error]:ring-white",
+      "bg-mantis-500 hover:bg-mantis-400 focus:outline-hidden inline-flex h-8 shrink-0 items-center justify-center rounded-md px-3 text-sm font-medium ring-offset-stone-900 transition-colors focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+      "group-data-[variant=error]:border group-data-[variant=error]:border-white/40 hover:group-data-[variant=error]:border-white/30 hover:group-data-[variant=error]:bg-red-700 hover:group-data-[variant=error]:text-white focus:group-data-[variant=error]:ring-white",
       className,
     )}
     {...props}
@@ -64,7 +64,7 @@ const ToastClose = forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={clsx(
-      "text-current/50 absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity hover:text-current focus:opacity-100 focus:outline-hidden focus:ring-2 group-hover:opacity-100 group-data-[variant=error]:text-red-300 hover:group-data-[variant=error]:text-red-50 focus:group-data-[variant=error]:ring-red-400 focus:group-data-[variant=error]:ring-offset-red-600",
+      "text-current/50 focus:outline-hidden absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity hover:text-current focus:opacity-100 focus:ring-2 group-hover:opacity-100 group-data-[variant=error]:text-red-300 hover:group-data-[variant=error]:text-red-50 focus:group-data-[variant=error]:ring-red-400 focus:group-data-[variant=error]:ring-offset-red-600",
       className,
     )}
     toast-close=""

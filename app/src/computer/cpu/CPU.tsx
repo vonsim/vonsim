@@ -14,8 +14,8 @@ export function CPU() {
   const translate = useTranslate();
 
   return (
-    <div className="absolute left-0 top-0 z-10 h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900 **:z-20">
-      <span className="block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 bg-mantis-500 px-2 py-1 text-3xl text-white">
+    <div className="**:z-20 absolute left-0 top-0 z-10 h-[500px] w-[650px] rounded-lg border border-stone-600 bg-stone-900">
+      <span className="bg-mantis-500 block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 px-2 py-1 text-3xl text-white">
         {translate("computer.cpu.name")}
       </span>
 

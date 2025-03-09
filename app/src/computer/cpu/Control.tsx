@@ -43,7 +43,7 @@ export function Control() {
     <>
       <svg viewBox="0 0 650 500" className="pointer-events-none absolute inset-0">
         <animated.path
-          className="fill-none stroke-mantis-400 stroke-bus"
+          className="stroke-mantis-400 stroke-bus fill-none"
           strokeLinejoin="round"
           d="M 205 300 V 320"
           pathLength={1}
@@ -53,7 +53,7 @@ export function Control() {
       </svg>
 
       <div className="absolute bottom-[172px] left-[30px] flex w-full items-start">
-        <span className="block w-min whitespace-nowrap rounded-t-lg border border-b-0 border-stone-600 bg-mantis-500 px-2 pb-3 pt-1 text-xs tracking-wide text-white">
+        <span className="bg-mantis-500 block w-min whitespace-nowrap rounded-t-lg border border-b-0 border-stone-600 px-2 pb-3 pt-1 text-xs tracking-wide text-white">
           {translate("computer.cpu.control-unit")}
         </span>
       </div>
@@ -63,7 +63,7 @@ export function Control() {
           <span className="text-sm leading-none">{translate("computer.cpu.decoder")}</span>
           <div className="my-1 h-1 w-full overflow-hidden rounded-full bg-stone-600">
             <animated.div
-              className="h-full bg-mantis-400"
+              className="bg-mantis-400 h-full"
               style={{
                 width: getSpring("cpu.decoder.progress.progress").to(t => `${t * 100}%`),
                 opacity: getSpring("cpu.decoder.progress.opacity"),

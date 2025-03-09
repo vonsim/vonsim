@@ -56,7 +56,7 @@ export function Register({
           {(["hex", "bin", "uint", "int", "safe-ascii"] as const).map(rep => (
             <li key={rep}>
               <b className="font-medium">{translate(`generics.byte-representation.${rep}`)}</b>:{" "}
-              <span className="font-mono text-mantis-400">{reg.toString(rep)}</span>
+              <span className="text-mantis-400 font-mono">{reg.toString(rep)}</span>
             </li>
           ))}
         </ul>

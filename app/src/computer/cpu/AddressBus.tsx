@@ -35,7 +35,7 @@ export function AddressBus() {
   return (
     <svg viewBox="0 0 650 500" className="pointer-events-none absolute inset-0">
       <path
-        className="fill-none stroke-stone-700 stroke-bus"
+        className="stroke-bus fill-none stroke-stone-700"
         strokeLinejoin="round"
         d={[
           "M 551 309 H 575 V 349", // IP
@@ -47,7 +47,7 @@ export function AddressBus() {
 
       <animated.path
         d={path}
-        className="fill-none stroke-blue-500 stroke-bus"
+        className="stroke-bus fill-none stroke-blue-500"
         strokeLinejoin="round"
         pathLength={1}
         strokeDasharray={1}

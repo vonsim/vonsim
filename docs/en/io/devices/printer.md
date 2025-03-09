@@ -47,4 +47,3 @@ In addition to common ASCII characters, there are two others that can be useful:
 
 - The line feed character (`LF`, 10 in decimal) effectively prints a line break — useful for not printing everything on a single line.
 - The form feed character (`FF`, 12 in decimal) clears the printer (in other words, it starts a new page).
-

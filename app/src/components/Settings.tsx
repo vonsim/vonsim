@@ -29,7 +29,7 @@ export function Settings({ className }: { className?: string }) {
   const { status } = useSimulation();
 
   return (
-    <div className={clsx("overflow-auto scrollbar-stone-700", className)}>
+    <div className={clsx("scrollbar-stone-700 overflow-auto", className)}>
       <h3 className="flex items-center gap-2 border-b border-stone-600 py-2 pl-4 text-xl font-semibold">
         <span className="icon-[lucide--settings] size-6" /> {translate("settings.title")}
       </h3>
@@ -329,7 +329,7 @@ export function Settings({ className }: { className?: string }) {
           <SettingSubtitle>
             {translate("settings.filters.description")}
             <button
-              className="mt-1 block text-mantis-400 transition-colors hover:text-mantis-300"
+              className="text-mantis-400 hover:text-mantis-300 mt-1 block transition-colors"
               onClick={() =>
                 setSettings(prev => ({
                   ...prev,

@@ -32,13 +32,13 @@ The ALU (Arithmetic Logic Unit) allows performing 8 and 16-bit arithmetic and lo
 
 The `FLAGS` register is a 16-bit register that contains the flags shown in the following table. This register is not directly accessible by the user, but can be modified by ALU operations and conditional jumps can be made based on its values.
 
-| Bit # | Abbreviation | Description       |
-| :---: | :----------: | :---------------- |
-|   0   |     `CF`     | Carry flag        |
-|   6   |     `ZF`     | Zero flag         |
-|   7   |     `SF`     | Sign flag         |
-|   9   |     `IF`     | Interrupt flag    |
-|  11   |     `OF`     | Overflow flag     |
+| Bit # | Abbreviation | Description    |
+| :---: | :----------: | :------------- |
+|   0   |     `CF`     | Carry flag     |
+|   6   |     `ZF`     | Zero flag      |
+|   7   |     `SF`     | Sign flag      |
+|   9   |     `IF`     | Interrupt flag |
+|  11   |     `OF`     | Overflow flag  |
 
 The rest of the bits are reserved / not used.
 

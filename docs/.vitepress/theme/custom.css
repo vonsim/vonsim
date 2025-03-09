@@ -36,10 +36,12 @@
 }
 
 :root {
-  --vp-font-family-base: "Chivo", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --vp-font-family-mono: "JetBrains Mono", ui-monospace, "Menlo", "Monaco", "Consolas",
-    "Liberation Mono", "Courier New", monospace;
+  --vp-font-family-base:
+    "Chivo", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --vp-font-family-mono:
+    "JetBrains Mono", ui-monospace, "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New",
+    monospace;
 
   --vp-c-brand-1: #2b4522;
   --vp-c-brand-2: #4c8435;

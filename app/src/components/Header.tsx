@@ -11,7 +11,7 @@ export function Header() {
 
   return (
     <header className="relative p-2 text-sm text-white">
-      <Controls className=" absolute inset-0" />
+      <Controls className="absolute inset-0" />
 
       <div className="flex items-center justify-between">
         <div className="flex select-none items-center justify-center">
