@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "tsc --noEmit && eslint --ignore-path .gitignore ."
+    "lint": "tsc --noEmit && eslint ."
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.17.0",
@@ -55,11 +55,11 @@
     "@vitejs/plugin-react-swc": "^3.8.0",
     "@vonsim/tsconfig": "workspace:^",
     "autoprefixer": "^10.4.21",
-    "eslint": "^8.57.0",
+    "eslint": "^9.22.0",
     "eslint-config-vonsim": "workspace:^",
-    "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-tailwindcss": "^3.17.4",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.7",
     "tailwindcss-animate": "^1.0.7",

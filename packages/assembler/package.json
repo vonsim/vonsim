@@ -6,7 +6,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "lint": "tsc --noEmit && eslint --ignore-path .gitignore .",
+    "lint": "tsc --noEmit && eslint .",
     "bench": "vitest bench --run",
     "test": "vitest --run --reporter verbose"
   },
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@vonsim/tsconfig": "workspace:^",
-    "eslint": "^8.57.0",
+    "eslint": "^9.22.0",
     "eslint-config-vonsim": "workspace:^",
     "type-fest": "^4.37.0",
     "typescript": "~5.8.2",
