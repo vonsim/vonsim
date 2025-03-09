@@ -169,16 +169,21 @@ async function dispatch(...args: Action) {
         resetState(simulator.getComputerState());
 
         // Track event
-        const event = [
-          "Start CPU",
-          {
-            until,
-            devices: getSettings().devices,
-            language: getSettings().language,
-            animations: getSettings().animations ? "yes" : "no",
-          },
-        ] as const;
-        umami.track(...event);
+        umami.track("Start CPU", {
+          until,
+          devices: getSettings().devices,
+          language: getSettings().language,
+          animations: getSettings().animations ? "yes" : "no",
+        });
+        window.stonks.event("Start CPU", {
+          until,
+          "devices-keyboard": getSettings().devices.keyboardAndScreen ? "yes" : "no",
+          "devices-pio": getSettings().devices.pio ?? "none",
+          "devices-pic": getSettings().devices.pic ? "yes" : "no",
+          "devices-handshake": getSettings().devices.handshake ? "yes" : "no",
+          language: getSettings().language,
+          animations: getSettings().animations ? "yes" : "no",
+        });
 
         store.set(simulationAtom, { type: "running", until, waitingForInput: false });
 

@@ -57,8 +57,7 @@ export default defineConfig({
       "script",
       {
         defer: "true",
-        "data-site-id": "vonsim.github.io",
-        src: "https://assets.onedollarstats.com/tracker.js",
+        src: "https://assets.onedollarstats.com/stonks.js",
       },
     ],
   ],
