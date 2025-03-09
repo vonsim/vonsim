@@ -169,21 +169,25 @@ async function dispatch(...args: Action) {
         resetState(simulator.getComputerState());
 
         // Track event
-        umami.track("Start CPU", {
-          until,
-          devices: getSettings().devices,
-          language: getSettings().language,
-          animations: getSettings().animations ? "yes" : "no",
-        });
-        window.stonks.event("Start CPU", {
-          until,
-          "devices-keyboard": getSettings().devices.keyboardAndScreen ? "yes" : "no",
-          "devices-pio": getSettings().devices.pio ?? "none",
-          "devices-pic": getSettings().devices.pic ? "yes" : "no",
-          "devices-handshake": getSettings().devices.handshake ? "yes" : "no",
-          language: getSettings().language,
-          animations: getSettings().animations ? "yes" : "no",
-        });
+        try {
+          umami.track("Start CPU", {
+            until,
+            devices: getSettings().devices,
+            language: getSettings().language,
+            animations: getSettings().animations ? "yes" : "no",
+          });
+          window.stonks.event("Start CPU", {
+            until,
+            "devices-keyboard": getSettings().devices.keyboardAndScreen ? "yes" : "no",
+            "devices-pio": getSettings().devices.pio ?? "none",
+            "devices-pic": getSettings().devices.pic ? "yes" : "no",
+            "devices-handshake": getSettings().devices.handshake ? "yes" : "no",
+            language: getSettings().language,
+            animations: getSettings().animations ? "yes" : "no",
+          });
+        } catch {
+          console.info("Failed to track event");
+        }
 
         store.set(simulationAtom, { type: "running", until, waitingForInput: false });
 
