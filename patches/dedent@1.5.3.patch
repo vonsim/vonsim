@@ -1,0 +1,32 @@
+diff --git a/dist/dedent.js b/dist/dedent.js
+index eb812ee6b09f02b5eaf7c7bea553e3894bf4c071..aa8c1428eb5a4735f8c43a837abf7132a0ed3c04 100644
+--- a/dist/dedent.js
++++ b/dist/dedent.js
+@@ -28,8 +28,10 @@ function createDedent(options) {
+       }
+       result += next;
+       if (i < values.length) {
++        const mindent = result.match(/([^\S\n]+)\S*$/); // [^\S\n] == all whitespaces except \n
++        const indent = mindent ? mindent[1] : "";
+         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+-        result += values[i];
++        result += String(values[i]).replace(/\n/g, `\n${indent}`);
+       }
+     }
+ 
+diff --git a/dist/dedent.mjs b/dist/dedent.mjs
+index 9e81a5e1267e2dba7eea8dbdd97004c4a595fa51..4578afa3ac0b0be5ade002da8f5e5ba1aa86b6c4 100644
+--- a/dist/dedent.mjs
++++ b/dist/dedent.mjs
+@@ -24,8 +24,10 @@ function createDedent(options) {
+       }
+       result += next;
+       if (i < values.length) {
++        const mindent = result.match(/([^\S\n]+)\S*$/); // [^\S\n] == all whitespaces except \n
++        const indent = mindent ? mindent[1] : "";
+         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+-        result += values[i];
++        result += String(values[i]).replace(/\n/g, `\n${indent}`);
+       }
+     }
+ 

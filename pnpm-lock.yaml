@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  dedent@1.5.3:
+    hash: ynyct4dqyykouyp5vtpkmldkce
+    path: patches/dedent@1.5.3.patch
+
 importers:
 
   .:
@@ -88,7 +93,7 @@ importers:
         version: 2.1.1
       dedent:
         specifier: ^1.5.3
-        version: 1.5.3
+        version: 1.5.3(patch_hash=ynyct4dqyykouyp5vtpkmldkce)
       graphology:
         specifier: ^0.25.4
         version: 0.25.4(graphology-types@0.24.7)
@@ -7819,7 +7824,7 @@ snapshots:
     dependencies:
       ms: 2.1.2
 
-  dedent@1.5.3: {}
+  dedent@1.5.3(patch_hash=ynyct4dqyykouyp5vtpkmldkce): {}
 
   deep-eql@5.0.2: {}
 

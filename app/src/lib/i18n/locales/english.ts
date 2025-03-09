@@ -238,10 +238,7 @@ export const english = {
           #### Program
 
           \`\`\`asm
-          ${program
-            .split("\n")
-            .map(line => line.trim())
-            .join("\n")}
+          ${program}
           \`\`\`
 
           #### Settings

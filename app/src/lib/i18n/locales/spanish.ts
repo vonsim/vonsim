@@ -237,10 +237,7 @@ export const spanish: Locale = {
           #### Programa
 
           \`\`\`asm
-          ${program
-            .split("\n")
-            .map(line => line.trim())
-            .join("\n")}
+          ${program}
           \`\`\`
 
           #### Configuración
