@@ -3,7 +3,11 @@ import type { ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 
 import { useTranslate } from "@/lib/i18n";
 
-export function ZoomControls({ wrapperRef }: { wrapperRef: RefObject<ReactZoomPanPinchRef> }) {
+export function ZoomControls({
+  wrapperRef,
+}: {
+  wrapperRef: RefObject<ReactZoomPanPinchRef | null>;
+}) {
   const translate = useTranslate();
 
   return (

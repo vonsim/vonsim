@@ -17,7 +17,8 @@
   "packageManager": "pnpm@10.5.2",
   "pnpm": {
     "patchedDependencies": {
-      "dedent@1.5.3": "patches/dedent@1.5.3.patch"
+      "dedent@1.5.3": "patches/dedent@1.5.3.patch",
+      "@react-spring/web@9.7.5": "patches/@react-spring__web@9.7.5.patch"
     }
   },
   "devDependencies": {

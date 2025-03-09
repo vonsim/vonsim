@@ -1,0 +1,21 @@
+diff --git a/dist/react-spring_web.modern.d.ts b/dist/react-spring_web.modern.d.ts
+index f647f1b3a0bb9ffe889771ded7323c2cd6072ea6..11b3574b6d4cc044f50dc017968ed0df65250c6a 100644
+--- a/dist/react-spring_web.modern.d.ts
++++ b/dist/react-spring_web.modern.d.ts
+@@ -1,4 +1,4 @@
+-import { ElementType, ForwardRefExoticComponent, ComponentPropsWithRef, CSSProperties } from 'react';
++import { JSX, ElementType, ForwardRefExoticComponent, ComponentPropsWithRef, CSSProperties } from 'react';
+ import { FluidProps, FluidValue } from '@react-spring/shared';
+ import { Merge } from '@react-spring/types';
+ export * from '@react-spring/core';
+@@ -24,8 +24,8 @@ type AnimatedComponent<T extends ElementType> = ForwardRefExoticComponent<Animat
+ }>>;
+ /** The props of an `animated()` component */
+ type AnimatedProps<Props extends object> = {
+-    [P in keyof Props]: P extends 'ref' | 'key' ? Props[P] : AnimatedProp<Props[P]>;
+-};
++    [P in keyof Props]: P extends 'ref' | 'key' | 'children' ? Props[P] : AnimatedProp<Props[P]>;
++} & { children?: React.ReactNode; };
+ type StyleProps = Merge<CSSProperties, TransformProps>;
+ type StylePropKeys = keyof StyleProps;
+ type ValidStyleProps<T extends object> = {
