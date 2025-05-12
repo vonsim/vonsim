@@ -71,7 +71,7 @@ sum3: add ax, bx
 
 ## Interrupciones
 
-El procesador admite interrupciones por hardware y por software, que pueden ser emitidas por el [PIC](../io/modules/pic) o por la instrucción [`INT`](./instructions/int) respectivamente. Para ejecutar interrupciones por hardware, el proesador debe estar habilitado para recibir interrupciones. Esto es, `IF=1` (la _flag_ de interrupciones activada).
+El procesador admite interrupciones por hardware y por software, que pueden ser emitidas por el [PIC](../io/modules/pic) o por la instrucción [`INT`](./instructions/int) respectivamente. Para ejecutar interrupciones por hardware, el procesador debe estar habilitado para recibir interrupciones. Esto es, `IF=1` (la _flag_ de interrupciones activada).
 
 Ambas interrupciones deben propocionar un número de interrupción. En el caso de las interrupciones por software, esta es dada por el operando de la instrucción `INT` ([ver más](./instructions/int)). En el caso de las interrupciones por hardware, esta es dada por el PIC ([ver cómo se obtiene](../io/modules/pic#funcionamiento)). El número de interrupción debe ser un número entre `0` y `255`.
 
