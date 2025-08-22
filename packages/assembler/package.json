@@ -15,10 +15,10 @@
   },
   "devDependencies": {
     "@vonsim/tsconfig": "workspace:^",
-    "eslint": "^9.22.0",
+    "eslint": "^9.33.0",
     "eslint-config-vonsim": "workspace:^",
-    "type-fest": "^4.37.0",
-    "typescript": "~5.8.2",
-    "vitest": "^3.0.8"
+    "type-fest": "^4.41.0",
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4"
   }
 }

@@ -8,9 +8,9 @@
     "preview": "vitepress preview ."
   },
   "devDependencies": {
-    "satori": "^0.12.1",
+    "satori": "^0.16.2",
     "satori-html": "^0.3.2",
-    "sharp": "^0.33.5",
-    "vitepress": "^1.6.3"
+    "sharp": "^0.34.3",
+    "vitepress": "^1.6.4"
   }
 }

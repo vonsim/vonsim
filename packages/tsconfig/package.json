@@ -4,6 +4,6 @@
   "type": "module",
   "dependencies": {
     "@total-typescript/ts-reset": "^0.6.1",
-    "typescript": "~5.8.2"
+    "typescript": "~5.9.2"
   }
 }
