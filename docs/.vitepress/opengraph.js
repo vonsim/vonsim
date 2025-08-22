@@ -67,7 +67,7 @@ export async function generateOpenGraphs(md, outDir) {
           <p tw="text-4xl text-white">Documentación</p>
         </header>
         <main tw="flex flex-col justify-center grow pb-20">
-          <h1 tw="text-8xl text-white font-bold">${title}</h1>
+          <h1 tw="text-8xl text-white font-bold" style="text-wrap: pretty;">${title}</h1>
         </main>
       </div>
     `;
