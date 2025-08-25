@@ -39,7 +39,7 @@ function PauseButton({ shortcut }: { shortcut: string }) {
 
   return (
     <button
-      className="hover:bg-background-2 size-full rounded-md transition-colors"
+      className="hover:bg-background-2 py-1.25 flex size-full flex-col items-center justify-between rounded-md transition-colors"
       onClick={pause}
     >
       <div className="flex items-center justify-center gap-1">
@@ -48,7 +48,7 @@ function PauseButton({ shortcut }: { shortcut: string }) {
           {shortcut}
         </kbd>
       </div>
-      <span className="text-xs">{translate("control.action.pause")}</span>
+      <span className="block text-xs leading-none">{translate("control.action.stop")}</span>
     </button>
   );
 }
@@ -78,7 +78,7 @@ function RunButton({ until, shortcut, icon }: { until: RunUntil; shortcut: strin
 
   return (
     <button
-      className="enabled:hover:bg-background-2 size-full rounded-md transition-colors disabled:opacity-50"
+      className="enabled:hover:bg-background-2 py-1.25 flex size-full flex-col items-center justify-between rounded-md transition-colors disabled:opacity-50"
       onClick={run}
       disabled={status.type === "running"}
     >
@@ -88,7 +88,7 @@ function RunButton({ until, shortcut, icon }: { until: RunUntil; shortcut: strin
           {shortcut}
         </kbd>
       </div>
-      <span className="text-xs">{translate(`control.action.${until}`)}</span>
+      <span className="block text-xs leading-none">{translate(`control.action.${until}`)}</span>
     </button>
   );
 }
@@ -114,17 +114,17 @@ function StopButton() {
 
   return (
     <button
-      className="enabled:hover:bg-background-2 size-full rounded-md transition-colors disabled:opacity-50"
+      className="enabled:hover:bg-background-2 py-1.25 flex size-full flex-col items-center justify-between rounded-md transition-colors disabled:opacity-50"
       onClick={stop}
       disabled={status.type === "stopped"}
     >
       <div className="flex items-center justify-center gap-1">
-        <span className="icon-[lucide--ban] text-destructive size-5" />
+        <span className="icon-[lucide--octagon-x] text-destructive size-5" />
         <kbd className="hidden font-mono text-[0.6rem] leading-none text-stone-600 sm:block dark:text-stone-400">
           F9
         </kbd>
       </div>
-      <span className="text-xs">{translate("control.action.stop")}</span>
+      <span className="block text-xs leading-none">{translate("control.action.abort")}</span>
     </button>
   );
 }

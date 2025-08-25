@@ -100,7 +100,7 @@ const vonsimLanguage = StreamLanguage.define({
 const vonsimHighlighter = syntaxHighlighting(
   HighlightStyle.define([
     { tag: vonsimTags.character, class: "text-orange-600 dark:text-orange-300" },
-    { tag: vonsimTags.comment, class: "text-stone-400 dark:text-stone-500 italic" },
+    { tag: vonsimTags.comment, class: "text-stone-500 italic" },
     { tag: vonsimTags["data-directive"], class: "text-rose-600 dark:text-rose-400/80" },
     // { tag: vonsimTags.identifier, class: "" },
     { tag: vonsimTags.instruction, class: "text-mantis-500 dark:text-mantis-400" },

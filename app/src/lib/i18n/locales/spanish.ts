@@ -76,8 +76,8 @@ export const spanish: Locale = {
       "cycle-change": "Ciclo",
       "end-of-instruction": "Instrucción",
       infinity: "Final",
-      pause: "Pausar",
       stop: "Detener",
+      abort: "Abortar",
     },
     tabs: {
       editor: "Editor",

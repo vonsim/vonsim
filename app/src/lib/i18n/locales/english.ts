@@ -77,8 +77,8 @@ export const english = {
       "cycle-change": "Cycle",
       "end-of-instruction": "Instruction",
       infinity: "End",
-      pause: "Pause",
       stop: "Stop",
+      abort: "Abort",
     },
     tabs: {
       editor: "Editor",
