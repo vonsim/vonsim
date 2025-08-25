@@ -28,8 +28,11 @@ type AssembleResultError = {
 // or a list of Data and Instructions statements
 type AssembleResultSuccess = {
   success: true;
-  data: Data[];
-  instructions: InstructionStatement[];
+  program: {
+    data: Data[];
+    instructions: InstructionStatement[];
+  },
+  metadata: Metadata
 };
 ```
 
@@ -58,3 +61,11 @@ More reasoning about that can be found inside
 - [`src/statements/data-directive/statement.ts`](./src/statements/data-directive/statement.ts),
 - [`src/statements/instructions/statement.ts`](./src/statements/instructions/statement.ts),
 - and [`src/global-store.ts`](./src/global-store.ts).
+
+Finally, if everything is valid, the assembler will return the list of statements, which can then be converted to a list of instructions and data to be loaded into the simulator's memory. Also, it will return some extra metadata given by the user -- hints for the simulator. These take the form of comments in the assembly code, like this:
+
+```asm
+;; devices = false
+```
+
+More about that in [`src/metadata.ts`](./src/metadata.ts).

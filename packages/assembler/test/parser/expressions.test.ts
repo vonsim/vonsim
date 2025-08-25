@@ -169,9 +169,9 @@ it("label", () => {
       },
     ]
   `);
-  expect(() => parse("DB label:")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (3:9)"');
+  expect(() => parse("DB label:")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (3:9)]`);
   expect(() => parse("DB 1abel")).toThrowErrorMatchingInlineSnapshot(
-    '"Invalid decimal number. It should only contain digits. (3:7)"',
+    `[Error: Invalid decimal number. It should only contain digits. (3:7)]`,
   );
 });
 
@@ -208,13 +208,13 @@ it("labels with offset", () => {
     ]
   `);
   expect(() => parse("DB offset")).toThrowErrorMatchingInlineSnapshot(
-    '"Expected label after OFFSET. (9)"',
+    `[Error: Expected label after OFFSET. (9)]`,
   );
   expect(() => parse("DB OFFSET 1")).toThrowErrorMatchingInlineSnapshot(
-    '"Expected label after OFFSET. (10:11)"',
+    `[Error: Expected label after OFFSET. (10:11)]`,
   );
   expect(() => parse("DB OFFSET, label")).toThrowErrorMatchingInlineSnapshot(
-    '"Expected label after OFFSET. (9:10)"',
+    `[Error: Expected label after OFFSET. (9:10)]`,
   );
 });
 
@@ -297,7 +297,7 @@ it("unary", () => {
     ]
   `);
   expect(() => parse("DB --1")).toThrowErrorMatchingInlineSnapshot(
-    '"Ambiguous unary expression detected. Use parentheses to disambiguate. (4:5)"',
+    `[Error: Ambiguous unary expression detected. Use parentheses to disambiguate. (4:5)]`,
   );
 });
 
@@ -817,7 +817,7 @@ it("binary", () => {
       },
     ]
   `);
-  expect(() => parse("DB 2 -* 1")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (6:7)"');
+  expect(() => parse("DB 2 -* 1")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (6:7)]`);
 });
 
 it("parentheses", () => {
@@ -859,10 +859,10 @@ it("parentheses", () => {
       },
     ]
   `);
-  expect(() => parse("DB ()")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (4:5)"');
-  expect(() => parse("DB ())")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (4:5)"');
-  expect(() => parse("DB (()")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (5:6)"');
+  expect(() => parse("DB ()")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (4:5)]`);
+  expect(() => parse("DB ())")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (4:5)]`);
+  expect(() => parse("DB (()")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (5:6)]`);
   expect(() => parse("DB -(+(-()))")).toThrowErrorMatchingInlineSnapshot(
-    '"Expected argument. (9:10)"',
+    `[Error: Expected argument. (9:10)]`,
   );
 });

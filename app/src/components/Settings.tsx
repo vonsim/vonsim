@@ -10,15 +10,11 @@ import {
 } from "@/components/ui/Select";
 import { Slider } from "@/components/ui/Slider";
 import { Switch } from "@/components/ui/Switch";
+import { DATA_ON_LOAD_VALUES } from "@/computer/schemas";
 import { stopAllAnimations } from "@/computer/shared/animate";
 import { useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
-import {
-  DATA_ON_LOAD_VALUES,
-  HANDSHAKE_CONNECTIONS,
-  PIO_CONNECTIONS,
-  useSettings,
-} from "@/lib/settings";
+import { HANDSHAKE_CONNECTIONS, PIO_CONNECTIONS, useSettings } from "@/lib/settings";
 import { defaultSettings } from "@/lib/settings/schema";
 
 export const settingsOpenAtom = atom(false);

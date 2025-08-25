@@ -70,21 +70,21 @@ describe("Characters", () => {
 
   it("only one character", () => {
     expect(() => lex("'str'")).toThrowErrorMatchingInlineSnapshot(
-      '"Character literals can only have one character. (0:5)"',
+      `[Error: Character literals can only have one character. (0:5)]`,
     );
   });
 
   it("unterminated characters", () => {
-    expect(() => lex("'0")).toThrowErrorMatchingInlineSnapshot('"Unterminated character. (0:2)"');
+    expect(() => lex("'0")).toThrowErrorMatchingInlineSnapshot(`[Error: Unterminated character. (0:2)]`);
     expect(() => lex("'asdf")).toThrowErrorMatchingInlineSnapshot(
-      '"Unterminated character. (0:5)"',
+      `[Error: Unterminated character. (0:5)]`,
     );
-    expect(() => lex("'\n'")).toThrowErrorMatchingInlineSnapshot('"Unterminated character. (0:1)"');
+    expect(() => lex("'\n'")).toThrowErrorMatchingInlineSnapshot(`[Error: Unterminated character. (0:1)]`);
   });
 
   it("only ASCII", () => {
     expect(() => lex("'α'")).toThrowErrorMatchingInlineSnapshot(
-      '"Only ASCII character are supported for characters literals and strings. (1:2)"',
+      `[Error: Only ASCII character are supported for characters literals and strings. (1:2)]`,
     );
   });
 });
@@ -94,7 +94,7 @@ describe("Strings", () => {
     expect(lex('"My string"')).toMatchInlineSnapshot(`
       [
         {
-          "lexeme": "\\"My string\\"",
+          "lexeme": ""My string"",
           "position": [
             0,
             11,
@@ -117,7 +117,7 @@ describe("Strings", () => {
     expect(lex('"My string with extra "quotes""')).toMatchInlineSnapshot(`
       [
         {
-          "lexeme": "\\"My string with extra \\"",
+          "lexeme": ""My string with extra "",
           "position": [
             0,
             23,
@@ -133,7 +133,7 @@ describe("Strings", () => {
           "type": "IDENTIFIER",
         },
         {
-          "lexeme": "\\"\\"",
+          "lexeme": """",
           "position": [
             29,
             31,
@@ -154,13 +154,13 @@ describe("Strings", () => {
 
   it("unterminated strings", () => {
     expect(() => lex('"My unterminated string')).toThrowErrorMatchingInlineSnapshot(
-      '"Unterminated string. (0:23)"',
+      `[Error: Unterminated string. (0:23)]`,
     );
   });
 
   it("only ASCII", () => {
     expect(() => lex('"My Unicode string αβγ"')).toThrowErrorMatchingInlineSnapshot(
-      '"Only ASCII character are supported for characters literals and strings. (19:20)"',
+      `[Error: Only ASCII character are supported for characters literals and strings. (19:20)]`,
     );
   });
 });
@@ -231,16 +231,16 @@ describe("Numbers", () => {
 
   it("decimal with hex characters", () => {
     expect(() => lex("4a")).toThrowErrorMatchingInlineSnapshot(
-      '"Invalid decimal number. It should only contain digits. (0:2)"',
+      `[Error: Invalid decimal number. It should only contain digits. (0:2)]`,
     );
   });
 
   it("no decimal points", () => {
     expect(() => lex("1.2")).toThrowErrorMatchingInlineSnapshot(
-      '"Unexpected character \\".\\". (1:2)"',
+      `[Error: Unexpected character ".". (1:2)]`,
     );
     expect(() => lex(".1")).toThrowErrorMatchingInlineSnapshot(
-      '"Unexpected character \\".\\". (0:1)"',
+      `[Error: Unexpected character ".". (0:1)]`,
     );
   });
 
@@ -289,10 +289,10 @@ describe("Numbers", () => {
 
   it("invalid binary", () => {
     expect(() => lex("02b")).toThrowErrorMatchingInlineSnapshot(
-      '"Invalid binary number. It should only contain 0s and 1s. (0:3)"',
+      `[Error: Invalid binary number. It should only contain 0s and 1s. (0:3)]`,
     );
     expect(() => lex("60b")).toThrowErrorMatchingInlineSnapshot(
-      '"Invalid binary number. It should only contain 0s and 1s. (0:3)"',
+      `[Error: Invalid binary number. It should only contain 0s and 1s. (0:3)]`,
     );
   });
 

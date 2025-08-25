@@ -1,7 +1,9 @@
 import { TupleToUnion } from "type-fest";
 import { z } from "zod";
 
-import { DATA_ON_LOAD_VALUES, LANGUAGES, THEMES } from "./consts";
+import { DATA_ON_LOAD_VALUES, devicesSchema } from "@/computer/schemas";
+
+import { LANGUAGES, THEMES } from "./consts";
 
 type Language = TupleToUnion<typeof LANGUAGES>;
 type Theme = TupleToUnion<typeof THEMES>;
@@ -30,14 +32,12 @@ export const settingsSchema = z.object({
   /**
    * Value of {@link ComputerOptions.devices}.
    */
-  devices: z
-    .object({
-      keyboardAndScreen: z.boolean(),
-      pic: z.boolean(),
-      pio: z.enum(["switches-and-leds", "printer"]).nullable(),
-      handshake: z.enum(["printer"]).nullable(),
-    })
-    .catch({ keyboardAndScreen: false, pic: false, pio: null, handshake: null }),
+  devices: devicesSchema.catch({
+    keyboardAndScreen: false,
+    pic: false,
+    pio: null,
+    handshake: null,
+  }),
 
   /**
    * Disable animations for faster running. Only affects animations affected

@@ -9,7 +9,7 @@ const parse = (input: string) => new Parser(lex(input)).parse();
 describe("ORG", () => {
   it("must have a value", () => {
     expect(() => parse("ORG")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected address after ORG. (3)"',
+      `[Error: Expected address after ORG. (3)]`,
     );
   });
   it("accepts any number literal", () => {
@@ -40,12 +40,12 @@ describe("ORG", () => {
   });
   it("doesn't accept negatives", () => {
     expect(() => parse("ORG -10")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected address after ORG. (4:5)"',
+      `[Error: Expected address after ORG. (4:5)]`,
     );
   });
   it("doesn't accept labels", () => {
     expect(() => parse("ORG label")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected address after ORG. (4:9)"',
+      `[Error: Expected address after ORG. (4:9)]`,
     );
   });
 });
@@ -53,19 +53,19 @@ describe("ORG", () => {
 describe("END", () => {
   it("only one END", () => {
     expect(() => parse("END\nEND")).toThrowErrorMatchingInlineSnapshot(
-      '"END must be the last statement. (0:3)"',
+      `[Error: END must be the last statement. (0:3)]`,
     );
     expect(() => parse("END END")).toThrowErrorMatchingInlineSnapshot(
-      '"END must be the last statement. (0:3)"',
+      `[Error: END must be the last statement. (0:3)]`,
     );
     expect(() => parse("ORG 1000h\nEND\nMOV AX, BX\nEND")).toThrowErrorMatchingInlineSnapshot(
-      '"END must be the last statement. (10:13)"',
+      `[Error: END must be the last statement. (10:13)]`,
     );
   });
 
   it("END must be the last instruction", () => {
     expect(() => parse("ORG 1000h\nEND\nMOV AX, BX")).toThrowErrorMatchingInlineSnapshot(
-      '"END must be the last statement. (10:13)"',
+      `[Error: END must be the last statement. (10:13)]`,
     );
     expect(parse("END")).toMatchInlineSnapshot(`
       [
@@ -117,16 +117,16 @@ describe("END", () => {
 describe("Labels", () => {
   it("one label per line", () => {
     expect(() => parse("data data DB 1")).toThrowErrorMatchingInlineSnapshot(
-      '"Unexpected identifier. You may have forgotten a colon (:) to make it a label. (0:4)"',
+      `[Error: Unexpected identifier. You may have forgotten a colon (:) to make it a label. (0:4)]`,
     );
     expect(() => parse("label: label: HLT")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected instruction after label, got LABEL. (7:13)"',
+      `[Error: Expected instruction after label, got LABEL. (7:13)]`,
     );
     expect(() => parse("label: data HLT")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected instruction after label, got IDENTIFIER. (7:11)"',
+      `[Error: Expected instruction after label, got IDENTIFIER. (7:11)]`,
     );
     expect(() => parse("data label: HLT")).toThrowErrorMatchingInlineSnapshot(
-      '"Unexpected identifier. You may have forgotten a colon (:) to make it a label. (0:4)"',
+      `[Error: Unexpected identifier. You may have forgotten a colon (:) to make it a label. (0:4)]`,
     );
     expect(parse("DATA DB 1\ndata2 DW 1")).toMatchInlineSnapshot(`
       [
@@ -188,7 +188,7 @@ describe("Labels", () => {
 
   it("no colon for data directives", () => {
     expect(() => parse("data: DB 1")).toThrowErrorMatchingInlineSnapshot(
-      '"Expected instruction after label, got DB. (6:8)"',
+      `[Error: Expected instruction after label, got DB. (6:8)]`,
     );
     expect(parse("data DB 1")).toMatchInlineSnapshot(`
       [
@@ -224,7 +224,7 @@ describe("Labels", () => {
 
   it("colon for data directives", () => {
     expect(() => parse("label HLT")).toThrowErrorMatchingInlineSnapshot(
-      '"Unexpected identifier. You may have forgotten a colon (:) to make it a label. (0:5)"',
+      `[Error: Unexpected identifier. You may have forgotten a colon (:) to make it a label. (0:5)]`,
     );
     expect(parse("label: HLT")).toMatchInlineSnapshot(`
       [

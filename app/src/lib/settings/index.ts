@@ -7,7 +7,7 @@ import { defaultSettings, Settings, settingsSchema } from "./schema";
 
 export * from "./consts";
 
-export const settingsAtom = atomWithStorage<Settings>(
+const settingsAtom = atomWithStorage<Settings>(
   "vonsim-settings",
   defaultSettings,
   {
@@ -46,6 +46,8 @@ export const settingsAtom = atomWithStorage<Settings>(
 );
 
 export const getSettings = () => store.get(settingsAtom);
+export const setSettings = (settings: Partial<Settings>) =>
+  store.set(settingsAtom, prev => ({ ...prev, ...settings }));
 
 export const useSettings = () => useAtom(settingsAtom);
 

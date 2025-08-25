@@ -7,9 +7,9 @@ const lex = (input: string) => new Scanner(input).scanTokens();
 const parse = (input: string) => new Parser(lex(input)).parse();
 
 it("no arguments", () => {
-  expect(() => parse("DB")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (2)"');
-  expect(() => parse("DW")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (2)"');
-  expect(() => parse("equ")).toThrowErrorMatchingInlineSnapshot('"Expected argument. (3)"');
+  expect(() => parse("DB")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (2)]`);
+  expect(() => parse("DW")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (2)]`);
+  expect(() => parse("equ")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (3)]`);
 });
 
 it("strings", () => {
@@ -107,10 +107,10 @@ it("strings", () => {
     ]
   `);
   expect(() => parse('DB OFFSET "str"')).toThrowErrorMatchingInlineSnapshot(
-    '"Expected label after OFFSET. (10:15)"',
+    `[Error: Expected label after OFFSET. (10:15)]`,
   );
   expect(() => parse('DB "str" + 1')).toThrowErrorMatchingInlineSnapshot(
-    '"Expected end of statement. (9:10)"',
+    `[Error: Expected end of statement. (9:10)]`,
   );
 });
 
@@ -174,6 +174,6 @@ it("unassigned", () => {
     ]
   `);
   expect(() => parse("DW ??")).toThrowErrorMatchingInlineSnapshot(
-    '"Expected end of statement. (4:5)"',
+    `[Error: Expected end of statement. (4:5)]`,
   );
 });

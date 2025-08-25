@@ -3,6 +3,7 @@ import { forEachWithErrors } from "@vonsim/common/loops";
 import { AssemblerError } from "./error";
 import { GlobalStore } from "./global-store";
 import { Scanner } from "./lexer/scanner";
+import { getMetadataFromProgram, Metadata } from "./metadata";
 import { Parser } from "./parser";
 import type { Data, InstructionStatement } from "./statements";
 
@@ -11,7 +12,7 @@ export type Program = {
   instructions: InstructionStatement[];
 };
 
-export type AssembleResultSuccess = { success: true } & Program;
+export type AssembleResultSuccess = { success: true; program: Program; metadata: Metadata };
 export type AssembleResultError = {
   success: false;
   errors: AssemblerError<any>[];
@@ -91,7 +92,10 @@ export function assemble(source: string): AssembleResult {
     );
     if (errors.length > 0) return { success: false, errors };
 
-    return { success: true, data, instructions };
+    // If all succeded, check for metadata as comments
+    const metadata = getMetadataFromProgram(source);
+
+    return { success: true, program: { data, instructions }, metadata };
   } catch (error) {
     return { success: false, errors: [AssemblerError.from(error)] };
   }

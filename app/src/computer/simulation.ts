@@ -9,10 +9,11 @@ import { ComputerState, EventGenerator, Simulator, SimulatorError } from "@vonsi
 import { atom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
+import { DEVICES_SCHEMA_KEYS, devicesSchema } from "@/computer/schemas";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
-import { getSettings, useDevices } from "@/lib/settings";
+import { getSettings, setSettings, useDevices } from "@/lib/settings";
 import { toast } from "@/lib/toast";
 
 import { cycleAtom, resetCPUState } from "./cpu/state";
@@ -161,11 +162,22 @@ async function dispatch(...args: Action) {
 
         setReadOnly(true);
 
+        // Update settings
+        const devices = { ...getSettings().devices };
+        for (const key of DEVICES_SCHEMA_KEYS) {
+          const parsed = devicesSchema.shape[key].safeParse(result.metadata[key]);
+          if (parsed.success) {
+            // @ts-expect-error this works fine, thanks to `DEVICES_SCHEMA_KEYS` being described manually
+            devices[key] = parsed.data;
+          }
+        }
+        setSettings({ devices });
+
         // Reset the simulator
         simulator.loadProgram({
-          program: result,
+          program: result.program,
           data: getSettings().dataOnLoad,
-          devices: getSettings().devices,
+          devices,
         });
         resetState(simulator.getComputerState());
 
@@ -173,16 +185,16 @@ async function dispatch(...args: Action) {
         try {
           umami.track("Start CPU", {
             until,
-            devices: getSettings().devices,
+            devices,
             language: getSettings().language,
             animations: getSettings().animations ? "yes" : "no",
           });
           window.stonks.event("Start CPU", {
             until,
-            "devices-keyboard": getSettings().devices.keyboardAndScreen ? "yes" : "no",
-            "devices-pio": getSettings().devices.pio ?? "none",
-            "devices-pic": getSettings().devices.pic ? "yes" : "no",
-            "devices-handshake": getSettings().devices.handshake ? "yes" : "no",
+            "devices-keyboard": devices.keyboardAndScreen ? "yes" : "no",
+            "devices-pio": devices.pio ?? "none",
+            "devices-pic": devices.pic ? "yes" : "no",
+            "devices-handshake": devices.handshake ? "yes" : "no",
             language: getSettings().language,
             animations: getSettings().animations ? "yes" : "no",
           });
