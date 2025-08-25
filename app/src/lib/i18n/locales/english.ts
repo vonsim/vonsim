@@ -143,6 +143,10 @@ export const english = {
     timer: "Timer",
   },
 
+  examples: {
+    title: "Examples",
+  },
+
   settings: {
     title: "Settings",
 

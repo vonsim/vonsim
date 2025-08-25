@@ -142,6 +142,10 @@ export const spanish: Locale = {
     timer: "Timer",
   },
 
+  examples: {
+    title: "Ejemplos",
+  },
+
   settings: {
     title: "Configuración",
 

@@ -13,7 +13,7 @@ import { DEVICES_SCHEMA_KEYS, devicesSchema } from "@/computer/schemas";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
-import { getSettings, setSettings, useDevices } from "@/lib/settings";
+import { getSettings, setDevices, useDevices } from "@/lib/settings";
 import { toast } from "@/lib/toast";
 
 import { cycleAtom, resetCPUState } from "./cpu/state";
@@ -171,7 +171,7 @@ async function dispatch(...args: Action) {
             devices[key] = parsed.data;
           }
         }
-        setSettings({ devices });
+        setDevices(devices);
 
         // Reset the simulator
         simulator.loadProgram({

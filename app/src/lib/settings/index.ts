@@ -46,8 +46,6 @@ const settingsAtom = atomWithStorage<Settings>(
 );
 
 export const getSettings = () => store.get(settingsAtom);
-export const setSettings = (settings: Partial<Settings>) =>
-  store.set(settingsAtom, prev => ({ ...prev, ...settings }));
 
 export const useSettings = () => useAtom(settingsAtom);
 
@@ -65,6 +63,8 @@ export const useDataOnLoad = () => useAtomValue(dataOnLoadAtom);
 
 const devicesAtom = atom(get => get(settingsAtom).devices);
 export const useDevices = () => useAtomValue(devicesAtom);
+export const setDevices = (devices: Partial<Settings["devices"]>) =>
+  store.set(settingsAtom, prev => ({ ...prev, devices: { ...prev.devices, devices } }));
 
 const speedsAtom = atom(get => {
   const settings = get(settingsAtom);

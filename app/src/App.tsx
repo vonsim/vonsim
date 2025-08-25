@@ -1,9 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import clsx from "clsx";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
+import { Examples, examplesOpenAtom } from "@/components/Examples";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Settings, settingsOpenAtom } from "@/components/Settings";
@@ -64,6 +66,7 @@ export default function App() {
 
 function DesktopLayout() {
   const [settingsOpen] = useAtom(settingsOpenAtom);
+  const [examplesOpen] = useAtom(examplesOpenAtom);
 
   return (
     <PanelGroup
@@ -87,9 +90,12 @@ function DesktopLayout() {
         order={2}
         minSize={20}
         tagName="section"
-        className="computer-background border-border rounded-lg border"
+        className={clsx(
+          "border-border rounded-lg border",
+          examplesOpen ? "bg-background-1" : "computer-background",
+        )}
       >
-        <ComputerContainer />
+        {examplesOpen ? <Examples className="size-full" /> : <ComputerContainer />}
       </Panel>
       {settingsOpen && (
         <>
@@ -114,10 +120,12 @@ function MobileLayout() {
 
   const [selectedTab, setSelectedTab] = useState<"editor" | "computer">("editor");
   const [settingsOpen, setSettingsOpen] = useAtom(settingsOpenAtom);
+  const [examplesOpen, setExamplesOpen] = useAtom(examplesOpenAtom);
 
-  const tab = settingsOpen ? "settings" : selectedTab;
+  const tab = settingsOpen ? "settings" : examplesOpen ? "examples" : selectedTab;
   const setTab = (tab: string) => {
     if (settingsOpen) setSettingsOpen(false);
+    if (examplesOpen) setExamplesOpen(false);
     setSelectedTab(tab as typeof selectedTab);
   };
 
@@ -137,6 +145,11 @@ function MobileLayout() {
         <TabsContent value="settings" asChild>
           <section className="border-border bg-background-1 mx-2 grow overflow-hidden rounded-lg border data-[state=inactive]:hidden">
             <Settings className="size-full" />
+          </section>
+        </TabsContent>
+        <TabsContent value="examples" asChild>
+          <section className="border-border bg-background-1 mx-2 grow overflow-hidden rounded-lg border data-[state=inactive]:hidden">
+            <Examples className="size-full" />
           </section>
         </TabsContent>
 
