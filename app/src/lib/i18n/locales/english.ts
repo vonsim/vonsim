@@ -74,14 +74,10 @@ export const english = {
 
   control: {
     action: {
-      start: "Start",
-      continue: "Continue",
-      running: "Running...",
-      run: {
-        "cycle-change": "One cycle",
-        "end-of-instruction": "One instruction",
-        infinity: "Until stop",
-      },
+      "cycle-change": "Cycle",
+      "end-of-instruction": "Instruction",
+      infinity: "End",
+      pause: "Pause",
       stop: "Stop",
     },
     tabs: {

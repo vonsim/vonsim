@@ -2,7 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { useMedia } from "react-use";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { Footer } from "@/components/Footer";
@@ -14,13 +13,14 @@ import { resetAllSprings } from "@/computer/shared/springs";
 import { Editor } from "@/editor";
 import { useTranslate } from "@/lib/i18n";
 import { useLanguage, useTheme } from "@/lib/settings";
+import { useIsMobile } from "@/lib/tailwind";
 import { toast } from "@/lib/toast";
 
 export default function App() {
   const lang = useLanguage();
   const translate = useTranslate();
   const theme = useTheme();
-  const isMobile = useMedia("(max-width: 640px)"); // tailwind sm breakpoint
+  const isMobile = useIsMobile();
 
   const { updateServiceWorker } = useRegisterSW({
     onNeedRefresh() {

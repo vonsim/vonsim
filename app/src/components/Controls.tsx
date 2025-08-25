@@ -2,117 +2,129 @@ import clsx from "clsx";
 import { useCallback } from "react";
 import { useKey } from "react-use";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
-import { useSimulation } from "@/computer/simulation";
+import { RunUntil, useSimulation } from "@/computer/simulation";
 import { useTranslate } from "@/lib/i18n";
 
 export function Controls({ className }: { className?: string }) {
+  return (
+    <div className={clsx("flex items-center justify-center", className)}>
+      <div className="bg-background-1 border-border flex h-12 grid-cols-4 items-center rounded-md border">
+        <RunButton until="cycle-change" shortcut="F7" icon="icon-[lucide--play]" />
+        <RunButton until="end-of-instruction" shortcut="F8" icon="icon-[lucide--skip-forward]" />
+        <RunButton until="infinity" shortcut="F4" icon="icon-[lucide--infinity]" />
+        <StopButton />
+      </div>
+    </div>
+  );
+}
+
+function PauseButton({ shortcut }: { shortcut: string }) {
   const translate = useTranslate();
   const { status, dispatch } = useSimulation();
 
-  const runCycle = useCallback(() => {
-    if (status.type === "running") return;
-    dispatch("cpu.run", "cycle-change");
+  const pause = useCallback(() => {
+    if (status.type !== "running") return;
+    dispatch("cpu.pause");
   }, [status.type, dispatch]);
-  useKey(
-    "F7",
-    ev => {
-      ev.preventDefault();
-      runCycle();
-    },
-    undefined,
-    [runCycle],
-  );
 
-  const runInstruction = useCallback(() => {
-    if (status.type === "running") return;
-    dispatch("cpu.run", "end-of-instruction");
-  }, [status.type, dispatch]);
   useKey(
-    "F8",
+    shortcut,
     ev => {
       ev.preventDefault();
-      runInstruction();
+      pause();
     },
     undefined,
-    [runInstruction],
-  );
-
-  const runInfinity = useCallback(() => {
-    if (status.type === "running") return;
-    dispatch("cpu.run", "infinity");
-  }, [status.type, dispatch]);
-  useKey(
-    "F4",
-    ev => {
-      ev.preventDefault();
-      runInfinity();
-    },
-    undefined,
-    [runInfinity],
+    [pause, shortcut],
   );
 
   return (
-    <div className={clsx("flex items-center justify-center gap-4", className)}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            disabled={status.type === "running"}
-            className="bg-primary-0 focus-visible:outline-hidden focus-visible:ring-primary-0 text-foreground ring-offset-background-0 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-          >
-            {status.type === "stopped" ? (
-              <>
-                <span className="icon-[lucide--play] mr-2 size-4" />
-                {translate("control.action.start")}
-              </>
-            ) : status.type === "paused" ? (
-              <>
-                <span className="icon-[lucide--play] mr-2 size-4" />
-                {translate("control.action.continue")}
-              </>
-            ) : (
-              <>
-                <span className="icon-[lucide--refresh-cw] mr-2 size-4 animate-spin" />
-                {translate("control.action.running")}
-              </>
-            )}
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="start">
-          <DropdownMenuItem disabled={status.type === "running"} onClick={runCycle}>
-            <span className="icon-[lucide--chevron-right] mr-2 size-4" />
-            {translate("control.action.run.cycle-change")}
-            <div className="grow" />
-            <kbd className="text-stone-600">F7</kbd>
-          </DropdownMenuItem>
-          <DropdownMenuItem disabled={status.type === "running"} onClick={runInstruction}>
-            <span className="icon-[lucide--chevrons-right] mr-2 size-4" />
-            {translate("control.action.run.end-of-instruction")}
-            <div className="grow" />
-            <kbd className="text-stone-600">F8</kbd>
-          </DropdownMenuItem>
-          <DropdownMenuItem disabled={status.type === "running"} onClick={runInfinity}>
-            <span className="icon-[lucide--infinity] mr-2 size-4" />
-            {translate("control.action.run.infinity")}
-            <div className="grow" />
-            <kbd className="text-stone-600">F4</kbd>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <button
+      className="hover:bg-background-2 size-full rounded-md transition-colors"
+      onClick={pause}
+    >
+      <div className="flex items-center justify-center gap-1">
+        <span className="icon-[lucide--pause] size-5 text-amber-600" />
+        <kbd className="hidden font-mono text-[0.6rem] leading-none text-stone-600 sm:block dark:text-stone-400">
+          {shortcut}
+        </kbd>
+      </div>
+      <span className="text-xs">{translate("control.action.pause")}</span>
+    </button>
+  );
+}
 
-      <button
-        disabled={status.type === "stopped"}
-        onClick={() => dispatch("cpu.stop")}
-        className="bg-primary-0 focus-visible:outline-hidden focus-visible:ring-primary-0 text-foreground ring-offset-background-0 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-      >
-        <span className="icon-[lucide--stop-circle] mr-2 size-4" />
-        {translate("control.action.stop")}
-      </button>
-    </div>
+function RunButton({ until, shortcut, icon }: { until: RunUntil; shortcut: string; icon: string }) {
+  const translate = useTranslate();
+  const { status, dispatch } = useSimulation();
+
+  const run = useCallback(() => {
+    if (status.type === "running") return;
+    dispatch("cpu.run", until);
+  }, [status.type, dispatch, until]);
+
+  useKey(
+    shortcut,
+    ev => {
+      ev.preventDefault();
+      run();
+    },
+    undefined,
+    [run, shortcut],
+  );
+
+  if (status.type === "running" && status.until === until) {
+    return <PauseButton shortcut={shortcut} />;
+  }
+
+  return (
+    <button
+      className="enabled:hover:bg-background-2 size-full rounded-md transition-colors disabled:opacity-50"
+      onClick={run}
+      disabled={status.type === "running"}
+    >
+      <div className="flex items-center justify-center gap-1">
+        <span className={clsx(icon, "text-primary-1 size-5")} />
+        <kbd className="hidden font-mono text-[0.6rem] leading-none text-stone-600 sm:block dark:text-stone-400">
+          {shortcut}
+        </kbd>
+      </div>
+      <span className="text-xs">{translate(`control.action.${until}`)}</span>
+    </button>
+  );
+}
+
+function StopButton() {
+  const translate = useTranslate();
+  const { status, dispatch } = useSimulation();
+
+  const stop = useCallback(() => {
+    if (status.type === "stopped") return;
+    dispatch("cpu.stop");
+  }, [status.type, dispatch]);
+
+  useKey(
+    "F9",
+    ev => {
+      ev.preventDefault();
+      stop();
+    },
+    undefined,
+    [stop],
+  );
+
+  return (
+    <button
+      className="enabled:hover:bg-background-2 size-full rounded-md transition-colors disabled:opacity-50"
+      onClick={stop}
+      disabled={status.type === "stopped"}
+    >
+      <div className="flex items-center justify-center gap-1">
+        <span className="icon-[lucide--ban] text-destructive size-5" />
+        <kbd className="hidden font-mono text-[0.6rem] leading-none text-stone-600 sm:block dark:text-stone-400">
+          F9
+        </kbd>
+      </div>
+      <span className="text-xs">{translate("control.action.stop")}</span>
+    </button>
   );
 }

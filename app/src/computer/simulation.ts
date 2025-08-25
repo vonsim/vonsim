@@ -30,8 +30,8 @@ import { resetTimerState } from "./timer/state";
 
 const simulator = new Simulator();
 
-type RunUntil = "cycle-change" | "end-of-instruction" | "infinity";
-type SimulationStatus =
+export type RunUntil = "cycle-change" | "end-of-instruction" | "infinity";
+export type SimulationStatus =
   | { type: "running"; until: RunUntil; waitingForInput: boolean }
   | { type: "paused" }
   | { type: "stopped"; error?: SimulatorError<any> };
@@ -133,6 +133,7 @@ async function startThread(generator: EventGenerator): Promise<void> {
 
 type Action =
   | [action: "cpu.run", until: RunUntil]
+  | [action: "cpu.pause"]
   | [action: "cpu.stop"]
   | [action: "f10.press"]
   | [action: "switch.toggle", index: number]
@@ -200,6 +201,11 @@ async function dispatch(...args: Action) {
         resumeAllAnimations();
       }
 
+      return;
+    }
+
+    case "cpu.pause": {
+      pauseSimulation();
       return;
     }
 

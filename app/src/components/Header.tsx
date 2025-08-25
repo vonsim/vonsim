@@ -10,8 +10,8 @@ export function Header() {
   const [settingsOpen, setSettingsOpen] = useAtom(settingsOpenAtom);
 
   return (
-    <header className="text-foreground relative p-2 text-sm">
-      <Controls className="absolute inset-0" />
+    <header className="text-foreground relative h-28 p-2 text-sm max-sm:min-h-28 sm:h-16">
+      <Controls className="absolute inset-x-2 bottom-0 top-12 *:w-full sm:top-0 sm:*:w-80" />
 
       <div className="flex items-center justify-between">
         <div className="flex select-none items-center justify-center">
@@ -23,7 +23,7 @@ export function Header() {
 
         <button
           className={clsx(
-            "focus:outline-border size-min rounded-full p-2 transition-colors",
+            "focus:outline-border size-min rounded-md p-2 transition-colors",
             settingsOpen
               ? "bg-background-2 hover:bg-background-3 focus:bg-background-3"
               : "hover:bg-background-1 focus:bg-background-1",

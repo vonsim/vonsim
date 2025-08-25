@@ -4,6 +4,7 @@
  * Exports theme varibles used by Tailwind CSS.
  */
 import Color from "colorjs.io";
+import { useMedia } from "react-use";
 
 const getCCSVariable = (name: string) => {
   const value = window.getComputedStyle(document.body).getPropertyValue(`--${name}`);
@@ -36,3 +37,10 @@ export const colors = {
     return "#ef4444";
   },
 };
+
+/**
+ * Hook to detect if the user is on a mobile device (tailwind sm breakpoint).
+ */
+export function useIsMobile() {
+  return useMedia("(max-width: 640px)"); // tailwind sm breakpoint
+}
