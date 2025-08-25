@@ -11,17 +11,17 @@ export function ZoomControls({
   const translate = useTranslate();
 
   return (
-    <div className="absolute right-2 top-2 flex flex-col rounded-lg border border-stone-600 bg-stone-900 shadow-sm">
+    <div className="border-border bg-background-0 absolute right-2 top-2 flex flex-col rounded-lg border shadow-sm">
       <button
-        className="m-0.5 flex size-8 items-center justify-center rounded-t-lg text-white transition-colors hover:enabled:bg-stone-800"
+        className="hover:enabled:bg-background-1 text-foreground m-0.5 flex size-8 items-center justify-center rounded-t-lg transition-colors"
         onClick={() => wrapperRef.current?.zoomIn()}
         title={translate("control.zoom.in")}
       >
         <span className="icon-[lucide--zoom-in] size-4" />
       </button>
-      <hr className="border-stone-600" />
+      <hr className="border-border" />
       <button
-        className="m-0.5 flex size-8 items-center justify-center rounded-b-lg text-white transition-colors hover:enabled:bg-stone-800"
+        className="hover:enabled:bg-background-1 text-foreground m-0.5 flex size-8 items-center justify-center rounded-b-lg transition-colors"
         onClick={() => wrapperRef.current?.zoomOut()}
         title={translate("control.zoom.out")}
       >

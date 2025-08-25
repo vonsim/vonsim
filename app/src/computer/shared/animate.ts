@@ -133,7 +133,7 @@ export function stopAllAnimations() {
 
 // Utilities
 
-export async function activateRegister(key: RegisterKey, color = colors.mantis[400]) {
+export async function activateRegister(key: RegisterKey, color = colors.primary1) {
   // There's some kind of limitation when discriminating union types
   // See https://github.com/microsoft/TypeScript/issues/40803
   return await anim({ key: `${key}.backgroundColor`, to: color } as SpringAnimation, {
@@ -145,7 +145,7 @@ export async function activateRegister(key: RegisterKey, color = colors.mantis[4
 export async function deactivateRegister(key: RegisterKey) {
   // There's some kind of limitation when discriminating union types
   // See https://github.com/microsoft/TypeScript/issues/40803
-  return await anim({ key: `${key}.backgroundColor`, to: colors.stone[800] } as SpringAnimation, {
+  return await anim({ key: `${key}.backgroundColor`, to: colors.background1 } as SpringAnimation, {
     duration: 1,
     easing: "easeOutQuart",
   });
@@ -153,7 +153,7 @@ export async function deactivateRegister(key: RegisterKey) {
 
 export async function populateDataBus(data: Byte<8>) {
   await anim(
-    { key: "bus.data.stroke", to: colors.mantis[400] },
+    { key: "bus.data.stroke", to: colors.primary1 },
     { duration: 5, easing: "easeOutSine" },
   );
   await activateRegister("cpu.MBR");

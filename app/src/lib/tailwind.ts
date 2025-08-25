@@ -2,26 +2,37 @@
  * @fileoverview
  *
  * Exports theme varibles used by Tailwind CSS.
- *
- * `tailwind.config.ts` isn't used because it would increase the bundle size
- * by a lot. `babel-plugin-preval` could be used, but we are using SWC instead
- * of Babel. Until some `swc-plugin-preval` is created, this is the best solution.
  */
+import Color from "colorjs.io";
+
+const getCCSVariable = (name: string) => {
+  const value = window.getComputedStyle(document.body).getPropertyValue(`--${name}`);
+  return new Color(value).to("srgb").toString({ format: "hex" });
+};
 
 export const colors = {
-  blue: {
-    500: "#3b82f6",
+  get foreground() {
+    return getCCSVariable("color-foreground");
   },
-  mantis: {
-    400: "#82bd69",
+  get background0() {
+    return getCCSVariable("color-background-0");
   },
-  red: {
-    500: "#ef4444",
+  get background1() {
+    return getCCSVariable("color-background-1");
   },
-  stone: {
-    600: "#57534e",
-    700: "#44403c",
-    800: "#292524",
+  get background2() {
+    return getCCSVariable("color-background-2");
   },
-  white: "#ffffff",
+  get background3() {
+    return getCCSVariable("color-background-3");
+  },
+  get primary1() {
+    return getCCSVariable("color-primary-1");
+  },
+  get blue500() {
+    return "#3b82f6";
+  },
+  get red500() {
+    return "#ef4444";
+  },
 };

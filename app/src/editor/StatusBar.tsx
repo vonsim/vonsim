@@ -13,9 +13,9 @@ export function StatusBar() {
   const lintErrors = useAtomValue(lintErrorsAtom);
 
   return (
-    <div className="flex items-center justify-between border-t border-stone-600 bg-stone-800 px-3 font-sans text-xs tracking-wider text-stone-400">
+    <div className="border-border bg-background-1 flex items-center justify-between border-t px-3 font-sans text-xs tracking-wider text-stone-600 dark:text-stone-400">
       <FileHandler />
-      <span className={clsx(lintErrors > 0 && "font-semibold text-red-400")}>
+      <span className={clsx(lintErrors > 0 && "text-destructive font-semibold")}>
         {translate("editor.lintSummary", lintErrors)}
       </span>
     </div>

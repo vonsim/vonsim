@@ -52,6 +52,9 @@ export const useSettings = () => useAtom(settingsAtom);
 const languageAtom = atom(get => get(settingsAtom).language);
 export const useLanguage = () => useAtomValue(languageAtom);
 
+const themeAtom = atom(get => get(settingsAtom).theme);
+export const useTheme = () => useAtomValue(themeAtom);
+
 const editorFontSizeAtom = atom(get => get(settingsAtom).editorFontSize);
 export const useEditorFontSize = () => useAtomValue(editorFontSizeAtom);
 
@@ -70,17 +73,3 @@ const speedsAtom = atom(get => {
   };
 });
 export const useSpeeds = () => useAtomValue(speedsAtom);
-
-const filtersAtom = atom(get => {
-  const settings = get(settingsAtom);
-
-  return [
-    `brightness(${settings.filterBightness})`,
-    `contrast(${settings.filterContrast})`,
-    `invert(${settings.filterInvert ? 1 : 0})`,
-    `saturate(${settings.filterSaturation})`,
-  ]
-    .filter(Boolean)
-    .join(" ");
-});
-export const useFilters = () => useAtomValue(filtersAtom);

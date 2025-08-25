@@ -25,8 +25,8 @@ export function Switches() {
    */
 
   return (
-    <div className="**:z-20 absolute left-[1300px] top-[590px] z-10 size-min rounded-lg border border-stone-600 bg-stone-900">
-      <span className="bg-mantis-500 block size-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 px-2 py-1 text-2xl text-white">
+    <div className="**:z-20 border-border bg-background-0 absolute left-[1300px] top-[590px] z-10 size-min rounded-lg border">
+      <span className="bg-primary-0 border-border text-foreground block size-min rounded-br-lg rounded-tl-lg border-b border-r px-2 py-1 text-2xl">
         {translate("computer.switches")}
       </span>
 
@@ -36,7 +36,7 @@ export function Switches() {
             <Switch
               checked={on}
               onCheckedChange={() => dispatch("switch.toggle", i)}
-              className="data-[state=unchecked]:bg-stone-800! -translate-x-3 -rotate-90"
+              className="data-[state=unchecked]:bg-background-1! -translate-x-3 -rotate-90"
               disabled={status.type !== "running"}
             />
           </div>

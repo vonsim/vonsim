@@ -16,12 +16,12 @@ export async function handleMemoryEvent(event: SimulatorEvent<"memory:">): Promi
     case "memory:read.ok": {
       store.set(operatingAddressAtom, MemoryAddress.from(event.address));
       await anim(
-        { key: "memory.operating-cell.color", to: colors.mantis[400] },
+        { key: "memory.operating-cell.color", to: colors.primary1 },
         { duration: 1, easing: "easeOutQuart" },
       );
       await populateDataBus(event.value);
       await anim(
-        { key: "memory.operating-cell.color", to: colors.white },
+        { key: "memory.operating-cell.color", to: colors.foreground },
         { duration: 1, easing: "easeOutQuart" },
       );
       return;
@@ -33,7 +33,7 @@ export async function handleMemoryEvent(event: SimulatorEvent<"memory:">): Promi
     case "memory:write.ok": {
       store.set(operatingAddressAtom, MemoryAddress.from(event.address));
       await anim(
-        { key: "memory.operating-cell.color", to: colors.mantis[400] },
+        { key: "memory.operating-cell.color", to: colors.primary1 },
         { duration: 1, easing: "easeOutQuart" },
       );
       store.set(memoryAtom, arr => [
@@ -42,7 +42,7 @@ export async function handleMemoryEvent(event: SimulatorEvent<"memory:">): Promi
         ...arr.slice(event.address.value + 1),
       ]);
       await anim(
-        { key: "memory.operating-cell.color", to: colors.white },
+        { key: "memory.operating-cell.color", to: colors.foreground },
         { duration: 1, easing: "easeOutQuart" },
       );
       return;

@@ -31,7 +31,11 @@ export function ControlLines() {
 
   return (
     <svg className="z-15 pointer-events-none absolute inset-0 size-full">
-      <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={rdPath} />
+      <path
+        className="stroke-background-0 fill-none stroke-[6px]"
+        strokeLinejoin="round"
+        d={rdPath}
+      />
       <animated.path
         className="fill-none stroke-[4px]"
         strokeLinejoin="round"
@@ -39,7 +43,11 @@ export function ControlLines() {
         style={getSpring("bus.rd")}
       />
 
-      <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={wrPath} />
+      <path
+        className="stroke-background-0 fill-none stroke-[6px]"
+        strokeLinejoin="round"
+        d={wrPath}
+      />
       <animated.path
         className="fill-none stroke-[4px]"
         strokeLinejoin="round"
@@ -54,7 +62,7 @@ export function ControlLines() {
           <ControlLine springs="bus.iom" d="M 380 460 H 675 V 525" />
 
           <path
-            className="fill-none stroke-stone-900 stroke-[6px]"
+            className="stroke-background-0 fill-none stroke-[6px]"
             strokeLinejoin="round"
             d={memPath}
           />
@@ -120,8 +128,8 @@ export function ControlLines() {
 function ControlLine({ d, springs }: { d: string; springs: SimplePathKey }) {
   return (
     <>
-      <path className="fill-none stroke-stone-900 stroke-[6px]" strokeLinejoin="round" d={d} />
-      <path className="fill-none stroke-stone-700 stroke-[4px]" strokeLinejoin="round" d={d} />
+      <path className="stroke-background-0 fill-none stroke-[6px]" strokeLinejoin="round" d={d} />
+      <path className="stroke-background-2 fill-none stroke-[4px]" strokeLinejoin="round" d={d} />
       <animated.path
         d={d}
         className="fill-none stroke-red-500 stroke-[4px]"
@@ -205,7 +213,7 @@ function ControlLineLegend({
   return (
     <span
       className={clsx(
-        "z-15 pointer-events-none absolute block font-mono text-xs font-bold tracking-wider text-stone-400",
+        "z-15 pointer-events-none absolute block font-mono text-xs font-bold tracking-wider text-stone-600 dark:text-stone-400",
         className,
       )}
     >

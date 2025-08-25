@@ -2,10 +2,10 @@
 
 /* Based on https://css-tricks.com/old-timey-terminal-styling/ */
 .container {
-  @apply relative m-4 h-48 rounded-lg border border-stone-600;
+  @apply border-border relative m-4 h-48 rounded-lg border;
 
   background-color: var(--color-stone-900);
-  background-image: radial-gradient(--theme(--color-mantis-500 / 75%), var(--color-stone-900) 120%);
+  background-image: radial-gradient(--theme(--color-primary-0 / 75%), var(--color-stone-900) 120%);
   text-shadow: 0 0 5px #c8c8c8;
 
   &::after {

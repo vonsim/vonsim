@@ -33,30 +33,30 @@ export function Register({
         <animated.button
           title={title}
           className={clsx(
-            "flex w-min cursor-pointer items-center rounded-md border bg-stone-800 px-2 py-1 font-mono leading-none transition-opacity",
-            emphasis ? "border-mantis-400 text-lg" : "border-stone-600 text-base",
+            "bg-background-1 flex w-min cursor-pointer items-center rounded-md border px-2 py-1 font-mono leading-none transition-opacity",
+            emphasis ? "border-primary-1 text-lg" : "border-border text-base",
             className,
           )}
           style={getSpring(springs)}
         >
           <span className="mr-2 font-bold">{name}</span>
           {high && (
-            <span className="mr-0.5 rounded-sm bg-stone-900 p-0.5 font-light">
+            <span className="bg-background-0 mr-0.5 rounded-sm p-0.5 font-light">
               {high.toString("hex")}
             </span>
           )}
-          <span className="rounded-sm bg-stone-900 p-0.5 font-light">{low.toString("hex")}</span>
+          <span className="bg-background-0 rounded-sm p-0.5 font-light">{low.toString("hex")}</span>
         </animated.button>
       </PopoverTrigger>
 
       <PopoverContent className="w-60">
-        <p className="px-4 py-2 font-medium text-white">{title}</p>
-        <hr className="border-stone-600" />
+        <p className="text-foreground px-4 py-2 font-medium">{title}</p>
+        <hr className="border-border" />
         <ul className="px-4 py-2 text-sm">
           {(["hex", "bin", "uint", "int", "safe-ascii"] as const).map(rep => (
             <li key={rep}>
               <b className="font-medium">{translate(`generics.byte-representation.${rep}`)}</b>:{" "}
-              <span className="text-mantis-400 font-mono">{reg.toString(rep)}</span>
+              <span className="text-primary-1 font-mono">{reg.toString(rep)}</span>
             </li>
           ))}
         </ul>

@@ -243,8 +243,8 @@ export function FileHandler() {
       <DropdownMenuTrigger asChild>
         <button
           className={clsx(
-            "flex items-center transition-colors hover:text-white",
-            fileHandle && "text-white",
+            "hover:text-foreground flex items-center transition-colors",
+            fileHandle && "text-foreground",
           )}
         >
           {fileHandle ? fileHandle.name : translate("editor.files.no-file")}
@@ -256,19 +256,19 @@ export function FileHandler() {
           <span className="icon-[lucide--file-search-2] mr-2 size-4" />
           {translate("editor.files.open")}
           <div className="grow" />
-          <kbd className="text-stone-600">Ctrl+O</kbd>
+          <kbd className="text-stone-400 dark:text-stone-600">Ctrl+O</kbd>
         </DropdownMenuItem>
         <DropdownMenuItem disabled={!unsavedChanges} onClick={saveFile}>
           <span className="icon-[lucide--save] mr-2 size-4" />
           {translate("editor.files.save")}
           <div className="grow" />
-          <kbd className="text-stone-600">Ctrl+S</kbd>
+          <kbd className="text-stone-400 dark:text-stone-600">Ctrl+S</kbd>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={saveFileAs}>
           <span className="icon-[lucide--save-all] mr-2 size-4" />
           {translate("editor.files.save-as")}
           <div className="grow" />
-          <kbd className="text-stone-600">Ctrl+Shift+S</kbd>
+          <kbd className="text-stone-400 dark:text-stone-600">Ctrl+Shift+S</kbd>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

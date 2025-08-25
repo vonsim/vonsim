@@ -9,12 +9,12 @@ export function Clock() {
   const angle = getSpring("clock.angle");
 
   return (
-    <div className="**:z-20 absolute left-[520px] top-[930px] z-10 size-12 rounded-full border border-stone-600 bg-stone-800 p-1">
+    <div className="**:z-20 border-border bg-background-1 absolute left-[520px] top-[930px] z-10 size-12 rounded-full border p-1">
       <svg
         viewBox="0 0 24 24"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="size-full fill-none stroke-white stroke-2"
+        className="stroke-foreground size-full fill-none stroke-2"
       >
         <circle cx="12" cy="12" r="10" />
         <animated.line

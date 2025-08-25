@@ -23,7 +23,7 @@ const DropdownMenuSubTrigger = forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={clsx(
-      "rounded-xs outline-hidden focus:bg-mantis-500 data-[state=open]:bg-mantis-500 flex cursor-default select-none items-center px-2 py-1.5 text-sm",
+      "rounded-xs outline-hidden focus:bg-primary-0 data-[state=open]:bg-primary-0 flex cursor-default select-none items-center px-2 py-1.5 text-sm",
       inset && "pl-8",
       className,
     )}
@@ -42,7 +42,7 @@ const DropdownMenuSubContent = forwardRef<
   <DropdownMenuPrimitive.SubContent
     ref={ref}
     className={clsx(
-      "z-50 min-w-32 overflow-hidden rounded-md border bg-stone-900 p-1 text-white shadow-lg transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+      "bg-background-0 text-foreground z-50 min-w-32 overflow-hidden rounded-md border p-1 shadow-lg transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
       className,
     )}
     {...props}
@@ -59,7 +59,7 @@ const DropdownMenuContent = forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={clsx(
-        "z-50 min-w-32 overflow-hidden rounded-md border border-stone-600 bg-stone-900 p-1 text-white shadow-md transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+        "border-border bg-background-0 text-foreground z-50 min-w-32 overflow-hidden rounded-md border p-1 shadow-md transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
         className,
       )}
       {...props}
@@ -77,7 +77,7 @@ const DropdownMenuItem = forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={clsx(
-      "rounded-xs outline-hidden focus:bg-mantis-500 data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center px-2 py-1.5 text-sm transition-colors focus:text-white",
+      "rounded-xs outline-hidden focus:bg-primary-0 data-disabled:pointer-events-none data-disabled:opacity-50 focus:text-foreground relative flex cursor-default select-none items-center px-2 py-1.5 text-sm transition-colors",
       inset && "pl-8",
       className,
     )}
@@ -93,7 +93,7 @@ const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={clsx(
-      "rounded-xs outline-hidden focus:bg-mantis-500 data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors focus:text-white",
+      "rounded-xs outline-hidden focus:bg-primary-0 data-disabled:pointer-events-none data-disabled:opacity-50 focus:text-foreground relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors",
       className,
     )}
     checked={checked}
@@ -116,7 +116,7 @@ const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={clsx(
-      "rounded-xs outline-hidden focus:bg-mantis-500 data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors focus:text-white",
+      "rounded-xs outline-hidden focus:bg-primary-0 data-disabled:pointer-events-none data-disabled:opacity-50 focus:text-foreground relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors",
       className,
     )}
     {...props}
@@ -151,7 +151,7 @@ const DropdownMenuSeparator = forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
-    className={clsx("-mx-1 my-1 h-px bg-stone-600", className)}
+    className={clsx("bg-background-3 -mx-1 my-1 h-px", className)}
     {...props}
   />
 ));

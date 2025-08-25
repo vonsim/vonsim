@@ -8,7 +8,7 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
     case "bus:io.selected": {
       await Promise.all([
         anim(
-          { key: "bus.mem.stroke", to: colors.stone[700] },
+          { key: "bus.mem.stroke", to: colors.background2 },
           { duration: 1, easing: "easeInSine" },
         ),
         turnLineOn(`bus.${event.chip}`, 15),
@@ -25,17 +25,14 @@ export async function handleBusEvent(event: SimulatorEvent<"bus:">): Promise<voi
       await Promise.all([
         anim(
           [
-            { key: "bus.address.stroke", to: colors.stone[700] },
-            { key: "bus.data.stroke", to: colors.stone[700] },
-            { key: "bus.rd.stroke", to: colors.stone[700] },
-            { key: "bus.wr.stroke", to: colors.stone[700] },
+            { key: "bus.address.stroke", to: colors.background2 },
+            { key: "bus.data.stroke", to: colors.background2 },
+            { key: "bus.rd.stroke", to: colors.background2 },
+            { key: "bus.wr.stroke", to: colors.background2 },
           ],
           { duration: 1, easing: "easeInSine" },
         ),
-        anim(
-          { key: "bus.mem.stroke", to: colors.red[500] },
-          { duration: 1, easing: "easeOutSine" },
-        ),
+        anim({ key: "bus.mem.stroke", to: colors.red500 }, { duration: 1, easing: "easeOutSine" }),
         turnLineOff("bus.iom"),
         turnLineOff("bus.handshake"),
         turnLineOff("bus.pio"),

@@ -86,8 +86,8 @@ export function Memory() {
   );
 
   return (
-    <div className="**:z-20 absolute left-[800px] top-0 z-10 h-[460px] w-[250px] rounded-lg border border-stone-600 bg-stone-900">
-      <span className="bg-mantis-500 block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 px-2 py-1 text-3xl text-white">
+    <div className="**:z-20 border-border bg-background-0 absolute left-[800px] top-0 z-10 h-[460px] w-[250px] rounded-lg border">
+      <span className="bg-primary-0 border-border text-foreground block w-min rounded-br-lg rounded-tl-lg border-b border-r px-2 py-1 text-3xl">
         {translate("computer.memory.name")}
       </span>
 
@@ -95,7 +95,7 @@ export function Memory() {
         <Label htmlFor={inputId}>{translate("computer.memory.fix-address")}</Label>
         <div className="mt-1 flex items-center gap-1">
           <button
-            className="bg-mantis-500 focus-visible:outline-hidden focus-visible:ring-mantis-500 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            className="bg-primary-0 focus-visible:outline-hidden focus-visible:ring-primary-0 text-foreground ring-offset-background-0 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-2 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             disabled={memory.at(0)!.address.value === MemoryAddress.MIN_ADDRESS}
             title={translate("computer.memory.address-decrement")}
             onClick={pageDown}
@@ -123,11 +123,11 @@ export function Memory() {
                 setFixedAddress(null);
               }}
             >
-              <span className="icon-[lucide--x] size-4 text-stone-500 transition-colors hover:text-stone-300" />
+              <span className="icon-[lucide--x] size-4 text-stone-500 transition-colors hover:opacity-75" />
             </button>
           </div>
           <button
-            className="bg-mantis-500 focus-visible:outline-hidden focus-visible:ring-mantis-500 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-2 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            className="bg-primary-0 focus-visible:outline-hidden focus-visible:ring-primary-0 text-foreground ring-offset-background-0 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-2 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             disabled={memory.at(-1)!.address.value === MemoryAddress.MAX_ADDRESS}
             title={translate("computer.memory.address-decrement")}
             onClick={pageUp}
@@ -137,8 +137,8 @@ export function Memory() {
         </div>
       </div>
 
-      <div className="m-4 flex w-min items-start overflow-hidden rounded-lg border border-stone-600">
-        <table className="border-r border-stone-600 font-mono text-lg">
+      <div className="border-border m-4 flex w-min items-start overflow-hidden rounded-lg border">
+        <table className="border-border border-r font-mono text-lg">
           <tbody>
             {memory.slice(0, halfMemory).map((cell, i) => (
               <MemoryCell {...cell} key={i} />
@@ -168,28 +168,28 @@ function MemoryCell({ address, value }: { address: MemoryAddress; value: Byte<8>
       <PopoverTrigger asChild>
         <animated.tr
           title={title}
-          className="cursor-pointer border-b border-stone-600 odd:bg-stone-900 even:bg-stone-800 last-of-type:border-b-0"
+          className="border-border odd:bg-background-0 even:bg-background-1 cursor-pointer border-b last-of-type:border-b-0"
           style={
             address.value === operatingAddress.value
               ? getSpring("memory.operating-cell")
               : undefined
           }
         >
-          <td className="border-r border-stone-600 px-2 py-1 font-thin">{address.toString()}</td>
-          <td className="border-r border-stone-600 px-2 py-1 last-of-type:border-r-0">
+          <td className="border-border border-r px-2 py-1 font-thin">{address.toString()}</td>
+          <td className="border-border border-r px-2 py-1 last-of-type:border-r-0">
             {value.toString("hex")}
           </td>
         </animated.tr>
       </PopoverTrigger>
 
       <PopoverContent className="w-60">
-        <p className="px-4 py-2 font-medium text-white">{title}</p>
-        <hr className="border-stone-600" />
+        <p className="text-foreground px-4 py-2 font-medium">{title}</p>
+        <hr className="border-border" />
         <ul className="px-4 py-2 text-sm">
           {(["hex", "bin", "uint", "int", "safe-ascii"] as const).map(rep => (
             <li key={rep}>
               <b className="font-medium">{translate(`generics.byte-representation.${rep}`)}</b>:{" "}
-              <span className="text-mantis-400 font-mono">{value.toString(rep)}</span>
+              <span className="text-primary-1 font-mono">{value.toString(rep)}</span>
             </li>
           ))}
         </ul>

@@ -29,8 +29,8 @@ export function Settings({ className }: { className?: string }) {
   const { status } = useSimulation();
 
   return (
-    <div className={clsx("scrollbar-stone-700 overflow-auto", className)}>
-      <h3 className="flex items-center gap-2 border-b border-stone-600 py-2 pl-4 text-xl font-semibold">
+    <div className={clsx("scrollbar-border overflow-auto", className)}>
+      <h3 className="border-border flex items-center gap-2 border-b py-2 pl-4 text-xl font-semibold">
         <span className="icon-[lucide--settings] size-6" /> {translate("settings.title")}
       </h3>
 
@@ -67,14 +67,45 @@ export function Settings({ className }: { className?: string }) {
       <Setting>
         <SettingInfo>
           <SettingTitle>
+            <span className="icon-[lucide--palette] size-6" />
+            {translate("settings.theme.label")}
+          </SettingTitle>
+        </SettingInfo>
+
+        <Select
+          value={settings.theme}
+          onValueChange={value => setSettings(prev => ({ ...prev, theme: value as any }))}
+          disabled={status.type !== "stopped"}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="light">
+              <span className="inline-flex items-center gap-2">
+                <span className="icon-[lucide--sun] size-4" /> {translate("settings.theme.light")}
+              </span>
+            </SelectItem>
+            <SelectItem value="dark">
+              <span className="inline-flex items-center gap-2">
+                <span className="icon-[lucide--moon] size-4" /> {translate("settings.theme.dark")}
+              </span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </Setting>
+
+      <Setting>
+        <SettingInfo>
+          <SettingTitle>
             <span className="icon-[lucide--pilcrow-square] size-6" />
             {translate("settings.editorFontSize.label")}
           </SettingTitle>
         </SettingInfo>
 
-        <div className="flex items-center rounded-lg border border-stone-600 bg-stone-900">
+        <div className="border-border bg-background-0 flex items-center rounded-lg border">
           <button
-            className="m-0.5 flex size-8 items-center justify-center rounded-lg text-white transition-colors hover:enabled:bg-stone-800 disabled:cursor-not-allowed"
+            className="hover:enabled:bg-background-1 text-foreground m-0.5 flex size-8 items-center justify-center rounded-lg transition-colors disabled:cursor-not-allowed"
             disabled={settings.editorFontSize <= 8}
             onClick={() =>
               setSettings(prev => ({ ...prev, editorFontSize: prev.editorFontSize - 1 }))
@@ -85,7 +116,7 @@ export function Settings({ className }: { className?: string }) {
           </button>
           <span className="w-8 text-center text-sm font-normal">{settings.editorFontSize}</span>
           <button
-            className="m-0.5 flex size-8 items-center justify-center rounded-lg text-white transition-colors hover:enabled:bg-stone-800 disabled:cursor-not-allowed"
+            className="hover:enabled:bg-background-1 text-foreground m-0.5 flex size-8 items-center justify-center rounded-lg transition-colors disabled:cursor-not-allowed"
             disabled={settings.editorFontSize >= 64}
             onClick={() =>
               setSettings(prev => ({ ...prev, editorFontSize: prev.editorFontSize + 1 }))
@@ -97,7 +128,7 @@ export function Settings({ className }: { className?: string }) {
         </div>
       </Setting>
 
-      <hr className="border-stone-600" />
+      <hr className="border-border" />
 
       <Setting>
         <SettingInfo>
@@ -125,7 +156,7 @@ export function Settings({ className }: { className?: string }) {
         </Select>
       </Setting>
 
-      <hr className="border-stone-600" />
+      <hr className="border-border" />
 
       <Setting>
         <SettingInfo>
@@ -238,7 +269,7 @@ export function Settings({ className }: { className?: string }) {
         </Select>
       </Setting>
 
-      <hr className="border-stone-600" />
+      <hr className="border-border" />
 
       <Setting>
         <SettingInfo>
@@ -318,79 +349,18 @@ export function Settings({ className }: { className?: string }) {
         />
       </Setting>
 
-      <hr className="border-stone-600" />
-
-      <Setting>
-        <SettingInfo>
-          <SettingTitle>
-            <span className="icon-[lucide--contrast] size-6" />
-            {translate("settings.filters.label")}
-          </SettingTitle>
-          <SettingSubtitle>
-            {translate("settings.filters.description")}
-            <button
-              className="text-mantis-400 hover:text-mantis-300 mt-1 block transition-colors"
-              onClick={() =>
-                setSettings(prev => ({
-                  ...prev,
-                  filterBightness: defaultSettings.filterBightness,
-                  filterContrast: defaultSettings.filterContrast,
-                  filterInvert: defaultSettings.filterInvert,
-                  filterSaturation: defaultSettings.filterSaturation,
-                }))
-              }
-            >
-              {translate("settings.filters.revert")}
-            </button>
-          </SettingSubtitle>
-        </SettingInfo>
-
-        <div className="ml-8 grid w-64 grid-cols-[min-content_auto] items-center gap-2">
-          <span className="text-xs">{translate("settings.filters.brightness")}</span>
-          <Slider
-            value={[settings.filterBightness]}
-            onValueChange={([value]) => setSettings(prev => ({ ...prev, filterBightness: value }))}
-            min={0}
-            max={5}
-            step={0.05}
-          />
-
-          <span className="text-xs">{translate("settings.filters.contrast")}</span>
-          <Slider
-            value={[settings.filterContrast]}
-            onValueChange={([value]) => setSettings(prev => ({ ...prev, filterContrast: value }))}
-            min={0}
-            max={5}
-            step={0.05}
-          />
-
-          <span className="text-xs">{translate("settings.filters.invert")}</span>
-          <Switch
-            checked={settings.filterInvert}
-            onCheckedChange={value => setSettings(prev => ({ ...prev, filterInvert: value }))}
-          />
-
-          <span className="text-xs">{translate("settings.filters.saturation")}</span>
-          <Slider
-            value={[settings.filterSaturation]}
-            onValueChange={([value]) => setSettings(prev => ({ ...prev, filterSaturation: value }))}
-            min={0}
-            max={5}
-            step={0.05}
-          />
-        </div>
-      </Setting>
-
-      <hr className="border-stone-600" />
+      <hr className="border-border" />
 
       <div className="flex justify-end p-4">
         <button
-          className="inline-flex items-center gap-1 text-sm text-red-500 transition-colors hover:text-red-400"
+          className="text-destructive inline-flex items-center gap-1 text-sm transition-opacity hover:opacity-75"
           onClick={() =>
             setSettings(prev => ({
               ...defaultSettings,
               // Keep language because, why would you want to reset it?
               language: prev.language,
+              // Keep language because, why would you want to reset it?
+              theme: prev.theme,
               // Keep devices because it could break the simulation
               devices: prev.devices,
             }))
@@ -417,7 +387,7 @@ function SettingTitle({ children }: { children?: React.ReactNode }) {
 }
 
 function SettingSubtitle({ children }: { children?: React.ReactNode }) {
-  return <p className="mt-1 text-xs text-stone-400">{children}</p>;
+  return <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">{children}</p>;
 }
 
 function logSlider({

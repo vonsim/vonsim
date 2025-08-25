@@ -2,14 +2,14 @@
 
 /* Class names taken from react-simple-keyboard/build/css/index.css */
 .hg-theme-vonsim {
-  @apply w-full touch-manipulation select-none overflow-hidden rounded-lg bg-stone-900 px-1 py-2 font-sans text-sm;
+  @apply bg-background-0 w-full touch-manipulation select-none overflow-hidden rounded-lg px-1 py-2 font-sans text-sm;
 
   button.hg-button {
     @apply border-0 outline-0;
   }
 
   .hg-button {
-    @apply shadow-xs flex h-8 grow cursor-pointer items-center justify-center rounded-md border-b border-stone-700 bg-stone-800 p-1;
+    @apply shadow-xs bg-background-1 flex h-8 grow cursor-pointer items-center justify-center rounded-md border-b border-stone-700 p-1;
 
     span {
       @apply pointer-events-none;
@@ -20,11 +20,11 @@
     }
 
     &.hg-functionBtn {
-      @apply border-mantis-400 text-xs;
+      @apply border-primary-1 text-xs;
     }
 
     &.hg-activeButton {
-      @apply bg-mantis-400;
+      @apply bg-primary-1;
     }
   }
 
@@ -53,12 +53,12 @@
 .hg-shift-once {
   .hg-button.hg-button-shiftleft,
   .hg-button.hg-button-shiftright {
-    @apply bg-mantis-400;
+    @apply bg-primary-1;
   }
 }
 
 .hg-shift-lock .hg-button.hg-button-lock {
-  @apply bg-mantis-400;
+  @apply bg-primary-1;
 }
 
 .hg-accentDeadKey .hg-button {

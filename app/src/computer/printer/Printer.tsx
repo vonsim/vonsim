@@ -21,7 +21,7 @@ export function Printer() {
   if (!devices.printer) return null;
 
   return (
-    <div className="**:z-20 absolute left-[1300px] top-[975px] z-10 flex h-min w-80 flex-col rounded-lg border border-stone-600 bg-stone-900 pl-16">
+    <div className="**:z-20 border-border bg-background-0 absolute left-[1300px] top-[975px] z-10 flex h-min w-80 flex-col rounded-lg border pl-16">
       <div className={styles.printer} title={translate("computer.printer.name")}>
         <div className={styles.shadow} />
         <div className={styles.sides} />
@@ -40,8 +40,8 @@ export function Printer() {
                 <span
                   key={i}
                   className={clsx(
-                    "flex h-6 w-full items-center justify-center border-r border-zinc-300 text-center font-mono text-base font-medium leading-none text-white first-of-type:rounded-l-xl last-of-type:rounded-r-xl last-of-type:border-r-0",
-                    char === null ? "bg-zinc-400" : "bg-mantis-500",
+                    "text-foreground flex h-6 w-full items-center justify-center border-r border-zinc-300 text-center font-mono text-base font-medium leading-none first-of-type:rounded-l-xl last-of-type:rounded-r-xl last-of-type:border-r-0",
+                    char === null ? "bg-zinc-400" : "bg-primary-0",
                   )}
                 >
                   {char}
@@ -52,7 +52,7 @@ export function Printer() {
 
           <div className="mx-auto mt-4 h-1 w-[70%] overflow-hidden rounded-full bg-zinc-600">
             <animated.div
-              className="bg-mantis-400 h-full"
+              className="bg-primary-1 h-full"
               style={{
                 width: getSpring("printer.printing.progress").to(t => `${t * 100}%`),
                 opacity: getSpring("printer.printing.opacity"),

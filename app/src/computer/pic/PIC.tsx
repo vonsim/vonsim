@@ -11,9 +11,9 @@ export function PIC() {
   if (!devices.pic) return null;
 
   return (
-    <div className="**:z-20 absolute left-0 top-[700px] z-10 flex h-[200px] w-[450px] flex-col rounded-lg border border-stone-600 bg-stone-900">
+    <div className="**:z-20 border-border bg-background-0 absolute left-0 top-[700px] z-10 flex h-[200px] w-[450px] flex-col rounded-lg border">
       <div className="flex items-start">
-        <span className="bg-mantis-500 block w-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 px-2 py-1 text-2xl text-white">
+        <span className="bg-primary-0 border-border text-foreground block w-min rounded-br-lg rounded-tl-lg border-b border-r px-2 py-1 text-2xl">
           {translate("computer.pic")}
         </span>
 
@@ -42,7 +42,7 @@ export function PIC() {
         </div>
       </div>
 
-      <hr className="mb-2 border-stone-600" />
+      <hr className="border-border mb-2" />
 
       <div className="grid size-full grid-cols-4 items-center">
         {linesAtoms.map((atom, i) => (

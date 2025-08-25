@@ -13,7 +13,7 @@ const SelectTrigger = forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={clsx(
-      "focus:outline-hidden flex h-10 items-center justify-between rounded-md border border-stone-600 bg-stone-900 px-3 py-2 text-sm ring-offset-stone-800 placeholder:text-stone-500 focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      "focus:outline-hidden border-border bg-background-0 ring-offset-background-1 focus:ring-border flex h-10 items-center justify-between rounded-md border px-3 py-2 text-sm placeholder:text-stone-500 focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}
@@ -34,7 +34,7 @@ const SelectContent = forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={clsx(
-        "relative z-50 min-w-32 overflow-hidden rounded-md border border-stone-600 bg-stone-900 text-white shadow-md",
+        "border-border bg-background-0 text-foreground relative z-50 min-w-32 overflow-hidden rounded-md border shadow-md",
         className,
       )}
       position={position}
@@ -53,7 +53,7 @@ const SelectItem = forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={clsx(
-      "rounded-xs outline-hidden focus:text-mantis-400 data-disabled:pointer-events-none data-disabled:opacity-50 w-full cursor-default select-none px-2 py-1.5 text-sm transition-colors duration-75 focus:bg-stone-800",
+      "rounded-xs outline-hidden focus:text-primary-1 data-disabled:pointer-events-none data-disabled:opacity-50 focus:bg-background-1 w-full cursor-default select-none px-2 py-1.5 text-sm transition-colors duration-75",
       className,
     )}
     {...props}

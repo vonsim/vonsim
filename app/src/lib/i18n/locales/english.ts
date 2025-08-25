@@ -154,6 +154,12 @@ export const english = {
       label: "Language",
     },
 
+    theme: {
+      label: "Theme",
+      light: "Light",
+      dark: "Dark",
+    },
+
     editorFontSize: {
       label: "Editor font size",
       increase: "Increase font size",
@@ -205,16 +211,6 @@ export const english = {
       executionUnit: "Simulation speed",
       clockSpeed: "Clock speed",
       printerSpeed: "Printer speed",
-    },
-
-    filters: {
-      label: "Filters",
-      description: "Filters applied to the page. Useful when you're using a projector.",
-      revert: "Revert to default filters",
-      brightness: "Brightness",
-      contrast: "Contrast",
-      invert: "Invert",
-      saturation: "Saturation",
     },
 
     reset: "Reset settings",

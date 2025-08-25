@@ -16,7 +16,7 @@ const PopoverContent = forwardRef<
       align={align}
       sideOffset={sideOffset}
       className={clsx(
-        "outline-hidden z-50 w-72 rounded-md border border-stone-600 bg-stone-900 text-white shadow-md transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+        "outline-hidden border-border bg-background-0 text-foreground z-50 w-72 rounded-md border shadow-md transition-opacity data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
         className,
       )}
       {...props}

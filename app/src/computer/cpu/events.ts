@@ -47,14 +47,14 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       store.set(aluOperationAtom, event.operation);
       await Promise.all([
         anim(
-          { key: "cpu.alu.operation.backgroundColor", to: colors.mantis[400] },
+          { key: "cpu.alu.operation.backgroundColor", to: colors.primary1 },
           { duration: 1, easing: "easeOutQuart" },
         ),
         anim({ key: "cpu.alu.cog.rot", to: 6 }, { duration: 10, easing: "easeInOutCubic" }),
       ]);
       await Promise.all([
         anim(
-          { key: "cpu.alu.operation.backgroundColor", to: colors.stone[800] },
+          { key: "cpu.alu.operation.backgroundColor", to: colors.background1 },
           { duration: 1, easing: "easeOutQuart" },
         ),
         anim(
@@ -200,7 +200,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
     case "cpu:wr.on": {
       const line = event.type.slice(4, 6) as "rd" | "wr";
       await anim(
-        { key: `bus.${line}.stroke`, to: colors.red[500] },
+        { key: `bus.${line}.stroke`, to: colors.red500 },
         { duration: 5, easing: "easeOutSine" },
       );
       return;
@@ -220,10 +220,10 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
         ],
         { duration: 5, easing: "easeInOutSine" },
       );
-      await activateRegister("cpu.MAR", colors.blue[500]);
+      await activateRegister("cpu.MAR", colors.blue500);
       store.set(MARAtom, store.get(registerAtoms[event.register]));
       await anim(
-        { key: "bus.address.stroke", to: colors.blue[500] },
+        { key: "bus.address.stroke", to: colors.blue500 },
         { duration: 5, easing: "easeOutSine" },
       );
       await Promise.all([
@@ -251,7 +251,7 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       await activateRegister("cpu.MBR");
       store.set(MBRAtom, store.get(registerAtoms[event.register]));
       await anim(
-        { key: "bus.data.stroke", to: colors.mantis[400] },
+        { key: "bus.data.stroke", to: colors.primary1 },
         { duration: 5, easing: "easeOutSine" },
       );
       await Promise.all([deactivateRegister("cpu.MBR"), resetDataPath()]);

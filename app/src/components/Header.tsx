@@ -10,23 +10,23 @@ export function Header() {
   const [settingsOpen, setSettingsOpen] = useAtom(settingsOpenAtom);
 
   return (
-    <header className="relative p-2 text-sm text-white">
+    <header className="text-foreground relative p-2 text-sm">
       <Controls className="absolute inset-0" />
 
       <div className="flex items-center justify-between">
         <div className="flex select-none items-center justify-center">
           <img src="/favicon.svg" className="mr-2 size-10" />
           <h1 className="text-xl font-bold max-sm:hidden">
-            Von<span className="text-mantis-400">Sim</span>
+            Von<span className="text-primary-1">Sim</span>
           </h1>
         </div>
 
         <button
           className={clsx(
-            "size-min rounded-full p-2 transition-colors focus:outline-stone-400",
+            "focus:outline-border size-min rounded-full p-2 transition-colors",
             settingsOpen
-              ? "bg-stone-700 hover:bg-stone-600 focus:bg-stone-600"
-              : "hover:bg-stone-800 focus:bg-stone-800",
+              ? "bg-background-2 hover:bg-background-3 focus:bg-background-3"
+              : "hover:bg-background-1 focus:bg-background-1",
           )}
           title={translate("settings.title")}
           onClick={() => setSettingsOpen(!settingsOpen)}

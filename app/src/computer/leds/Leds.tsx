@@ -25,8 +25,8 @@ export function Leds() {
    */
 
   return (
-    <div className="**:z-20 absolute left-[1300px] top-[700px] z-10 size-min rounded-lg border border-stone-600 bg-stone-900">
-      <span className="bg-mantis-500 block size-min rounded-br-lg rounded-tl-lg border-b border-r border-stone-600 px-2 py-1 text-2xl text-white">
+    <div className="**:z-20 border-border bg-background-0 absolute left-[1300px] top-[700px] z-10 size-min rounded-lg border">
+      <span className="bg-primary-0 border-border text-foreground block size-min rounded-br-lg rounded-tl-lg border-b border-r px-2 py-1 text-2xl">
         {translate("computer.leds")}
       </span>
 
@@ -36,12 +36,14 @@ export function Leds() {
             key={i}
             className={clsx(
               "relative size-7 rounded-full transition",
-              on ? "bg-mantis-400" : "bg-stone-700 shadow-inner shadow-stone-900",
+              on
+                ? "bg-primary-1"
+                : "bg-background-2 shadow-background-3 dark:shadow-background-0 shadow-inner",
             )}
           >
             <div
               className={clsx(
-                "bg-mantis-400 blur-xs absolute inset-0 rounded-full transition",
+                "bg-primary-1 blur-xs absolute inset-0 rounded-full transition",
                 on ? "opacity-100" : "opacity-0",
               )}
             />

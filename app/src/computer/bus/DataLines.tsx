@@ -28,7 +28,7 @@ export function DataLines() {
     <svg className="z-5 pointer-events-none absolute inset-0 size-full">
       {/* Data lines */}
       <path
-        className="fill-none stroke-stone-900 stroke-[14px]"
+        className="stroke-background-0 fill-none stroke-[14px]"
         strokeLinejoin="round"
         d={dataPath}
       />
@@ -41,7 +41,7 @@ export function DataLines() {
 
       {/* Address lines */}
       <path
-        className="fill-none stroke-stone-900 stroke-[14px]"
+        className="stroke-background-0 fill-none stroke-[14px]"
         strokeLinejoin="round"
         d={addressPath}
       />

@@ -63,7 +63,7 @@ export function Controls({ className }: { className?: string }) {
         <DropdownMenuTrigger asChild>
           <button
             disabled={status.type === "running"}
-            className="bg-mantis-500 focus-visible:outline-hidden focus-visible:ring-mantis-500 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            className="bg-primary-0 focus-visible:outline-hidden focus-visible:ring-primary-0 text-foreground ring-offset-background-0 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           >
             {status.type === "stopped" ? (
               <>
@@ -108,7 +108,7 @@ export function Controls({ className }: { className?: string }) {
       <button
         disabled={status.type === "stopped"}
         onClick={() => dispatch("cpu.stop")}
-        className="bg-mantis-500 focus-visible:outline-hidden focus-visible:ring-mantis-500 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm text-white ring-offset-stone-900 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+        className="bg-primary-0 focus-visible:outline-hidden focus-visible:ring-primary-0 text-foreground ring-offset-background-0 inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
       >
         <span className="icon-[lucide--stop-circle] mr-2 size-4" />
         {translate("control.action.stop")}

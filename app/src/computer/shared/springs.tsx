@@ -9,48 +9,43 @@
 
 import { SpringValue } from "@react-spring/web";
 import getFromPath, { Path, PathValue } from "@vonsim/common/paths";
-import type { Opaque, UnknownRecord } from "type-fest";
+import type { Tagged, UnknownRecord } from "type-fest";
 
 import { colors } from "@/lib/tailwind";
 
 // Common sets of springs
 
-// Register component.
-export type RegisterSprings = Opaque<
-  { backgroundColor: SpringValue<string>; opacity: SpringValue<number> },
+// Register component
+export type RegisterSprings = Tagged<
+  { backgroundColor: () => string; opacity: () => number },
   "RegisterSprings"
 >;
-export type RegisterKey = SpringPathWhere<RegisterSprings>;
+export type RegisterKey = InitialValuesPathWhere<RegisterSprings>;
 
-const Register = (initialColor = colors.stone[800]) =>
-  ({
-    backgroundColor: new SpringValue(initialColor),
-    opacity: new SpringValue(1),
-  }) as RegisterSprings;
+const Register = () =>
+  ({ backgroundColor: () => colors.background1, opacity: () => 1 }) as RegisterSprings;
 
 // Used for "lines/cables" that "fill" along a path
-export type SimplePathSprings = Opaque<
-  { strokeDashoffset: SpringValue<number>; opacity: SpringValue<number> },
+export type SimplePathSprings = Tagged<
+  { strokeDashoffset: () => number; opacity: () => number },
   "SimplePathSprings"
 >;
-export type SimplePathKey = SpringPathWhere<SimplePathSprings>;
+export type SimplePathKey = InitialValuesPathWhere<SimplePathSprings>;
 
-const SimplePath = () =>
-  ({ strokeDashoffset: new SpringValue(1), opacity: new SpringValue(1) }) as SimplePathSprings;
+const SimplePath = () => ({ strokeDashoffset: () => 1, opacity: () => 1 }) as SimplePathSprings;
 
 /**
- * Spring values
- * @see {@link https://react-spring.dev/docs/advanced/spring-value}
+ * Spring initial values
  */
-const springs = {
+const initialValues = {
   bus: {
-    address: { stroke: new SpringValue(colors.stone[700]) },
-    data: { stroke: new SpringValue(colors.stone[700]) },
-    rd: { stroke: new SpringValue(colors.stone[700]) },
-    wr: { stroke: new SpringValue(colors.stone[700]) },
+    address: { stroke: () => colors.background2 },
+    data: { stroke: () => colors.background2 },
+    rd: { stroke: () => colors.background2 },
+    wr: { stroke: () => colors.background2 },
 
     iom: SimplePath(),
-    mem: { stroke: new SpringValue(colors.red[500]) },
+    mem: { stroke: () => colors.red500 },
 
     handshake: SimplePath(),
     pic: SimplePath(),
@@ -73,29 +68,29 @@ const springs = {
       busy: SimplePath(),
     },
   },
-  clock: { angle: new SpringValue(0) },
+  clock: { angle: () => 0 },
   cpu: {
     internalBus: {
       address: {
-        strokeDashoffset: new SpringValue(1),
-        opacity: new SpringValue(1),
-        path: new SpringValue(""),
+        strokeDashoffset: () => 1,
+        opacity: () => 1,
+        path: () => "",
       },
       data: {
-        strokeDashoffset: new SpringValue(1),
-        opacity: new SpringValue(1),
-        path: new SpringValue(""),
+        strokeDashoffset: () => 1,
+        opacity: () => 1,
+        path: () => "",
       },
     },
     alu: {
       operands: SimplePath(),
       results: SimplePath(),
-      cog: { rot: new SpringValue(0) },
-      operation: { backgroundColor: new SpringValue(colors.stone[800]) },
+      cog: { rot: () => 0 },
+      operation: { backgroundColor: () => colors.background1 },
     },
     decoder: {
       path: SimplePath(),
-      progress: { progress: new SpringValue(0), opacity: new SpringValue(1) },
+      progress: { progress: () => 0, opacity: () => 1 },
     },
     AX: Register(),
     BX: Register(),
@@ -117,7 +112,7 @@ const springs = {
     DATA: Register(),
     STATE: Register(),
   },
-  memory: { "operating-cell": { color: new SpringValue(colors.white) } },
+  memory: { "operating-cell": { color: () => colors.foreground } },
   pic: {
     IMR: Register(),
     IRR: Register(),
@@ -138,22 +133,51 @@ const springs = {
     CB: Register(),
   },
   printer: {
-    printing: { progress: new SpringValue(0), opacity: new SpringValue(1) },
+    printing: { progress: () => 0, opacity: () => 1 },
   },
   timer: {
     CONT: Register(),
     COMP: Register(),
   },
-} as const;
+};
 
-type Springs = typeof springs;
+type InitialValues = typeof initialValues;
+type InitialValuesPath = Path<InitialValues, () => any>;
+type InitialValuesPathValue<P extends InitialValuesPath> = PathValue<InitialValues, P, () => any>;
+type InitialValuesPathWhere<T> = {
+  [K in InitialValuesPath]: InitialValuesPathValue<K> extends T ? K : never;
+}[InitialValuesPath];
 
+// Generate SpringValue instances from the initial values
+function recursiveGenerateSprings(obj: UnknownRecord) {
+  const ret: UnknownRecord = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const element = obj[key];
+      if (typeof element === "function") ret[key] = new SpringValue(element());
+      else ret[key] = recursiveGenerateSprings(element as any);
+    }
+  }
+  return ret;
+}
+
+/**
+ * All spring values used in the computer, referenced by different components.
+ * @see {@link https://react-spring.dev/docs/advanced/spring-value}
+ */
+const springs = recursiveGenerateSprings(initialValues) as Springs;
+
+type DeepReplace<T extends Record<string, any>> = {
+  [K in keyof T]: T[K] extends () => infer S
+    ? SpringValue<S>
+    : T[K] extends Record<string, any>
+      ? DeepReplace<T[K]>
+      : T[K];
+};
+
+export type Springs = DeepReplace<InitialValues>;
 export type SpringPath = Path<Springs, SpringValue<any>>;
 export type SpringPathValue<P extends SpringPath> = PathValue<Springs, P, SpringValue<any>>;
-
-export type SpringPathWhere<T> = {
-  [K in SpringPath]: SpringPathValue<K> extends T ? K : never;
-}[SpringPath];
 
 /**
  * Retrieve a spring by its path
@@ -166,35 +190,16 @@ export function getSpring<const Key extends SpringPath>(key: Key) {
   return getFromPath<Springs, Key, SpringValue<any>>(springs, key);
 }
 
-// This final section programatically saves the intial
-// values (once on load) of the springs and exposes a
-// function `resetAllSprings` which reverts all of them
-// to their initial state.
-
-function recursiveDefaultValues(obj: UnknownRecord) {
-  const ret: UnknownRecord = {};
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      const element = obj[key];
-      if (element instanceof SpringValue) ret[key] = element.get();
-      else ret[key] = recursiveDefaultValues(element as any);
-    }
-  }
-  return ret;
-}
-
-const defaultValues = recursiveDefaultValues(springs);
-
 function recursiveReset(springs: UnknownRecord, defaults: UnknownRecord) {
   for (const key in springs) {
     if (Object.prototype.hasOwnProperty.call(springs, key)) {
       const element = springs[key];
-      if (element instanceof SpringValue) element.set(defaults[key]);
+      if (element instanceof SpringValue) element.set((defaults[key] as () => any)());
       else recursiveReset(springs[key] as any, defaults[key] as any);
     }
   }
 }
 
-export const resetAllSprings = () => recursiveReset(springs, defaultValues);
+export const resetAllSprings = () => recursiveReset(springs, initialValues);
 
 export { animated } from "@react-spring/web";

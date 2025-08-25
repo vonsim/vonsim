@@ -1,13 +1,21 @@
-import type { Language } from "@vonsim/common/i18n";
+import { TupleToUnion } from "type-fest";
 import { z } from "zod";
 
-import { DATA_ON_LOAD_VALUES, LANGUAGES } from "./consts";
+import { DATA_ON_LOAD_VALUES, LANGUAGES, THEMES } from "./consts";
+
+type Language = TupleToUnion<typeof LANGUAGES>;
+type Theme = TupleToUnion<typeof THEMES>;
 
 export const settingsSchema = z.object({
   /**
    * Interface language.
    */
   language: z.enum(LANGUAGES).catch(getDefaultLanguage),
+
+  /**
+   * Color theme.
+   */
+  theme: z.enum(THEMES).catch(getDefaultTheme),
 
   /**
    * Font size of the editor. Default is 14.
@@ -57,14 +65,6 @@ export const settingsSchema = z.object({
    * to print a character.
    */
   printerSpeed: z.number().min(500).max(20000).catch(5000),
-
-  /**
-   * CSS filter applied to the page.
-   */
-  filterBightness: z.number().min(0).catch(1),
-  filterContrast: z.number().min(0).catch(1),
-  filterInvert: z.boolean().catch(false),
-  filterSaturation: z.number().min(0).catch(1),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
@@ -79,4 +79,8 @@ function getDefaultLanguage(): Language {
     if (userLang.startsWith(lang)) return lang;
   }
   return "en";
+}
+
+function getDefaultTheme(): Theme {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }

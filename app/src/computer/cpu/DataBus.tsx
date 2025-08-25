@@ -125,7 +125,7 @@ export function DataBus() {
   return (
     <svg viewBox="0 0 650 500" className="pointer-events-none absolute inset-0">
       <path
-        className="stroke-bus fill-none stroke-stone-700"
+        className="stroke-bus stroke-background-2 fill-none"
         strokeLinejoin="round"
         d={[
           // ALU registers
@@ -159,7 +159,7 @@ export function DataBus() {
 
       <animated.path
         d={path}
-        className="stroke-mantis-400 stroke-bus fill-none"
+        className="stroke-primary-1 stroke-bus fill-none"
         strokeLinejoin="round"
         pathLength={1}
         strokeDasharray={1}

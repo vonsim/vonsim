@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root {
+  --color-foreground: theme(--color-black);
+  --color-background-0: theme(--color-stone-100);
+  --color-background-1: theme(--color-stone-200);
+  --color-background-2: theme(--color-stone-300);
+  --color-background-3: theme(--color-stone-400);
+  --color-border: theme(--color-stone-400);
+  --color-primary-0: theme(--color-mantis-400);
+  --color-primary-1: theme(--color-mantis-500);
+  --color-destructive: theme(--color-red-600);
+}
+
+html[data-theme="dark"] {
+  --color-foreground: theme(--color-white);
+  --color-background-0: theme(--color-stone-900);
+  --color-background-1: theme(--color-stone-800);
+  --color-background-2: theme(--color-stone-700);
+  --color-background-3: theme(--color-stone-600);
+  --color-border: theme(--color-stone-600);
+  --color-primary-0: theme(--color-mantis-500);
+  --color-primary-1: theme(--color-mantis-400);
+  --color-destructive: theme(--color-red-500);
+}
+
 @theme {
   --font-sans:
     Chivo, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
@@ -19,6 +45,16 @@
   --color-mantis-800: #345427;
   --color-mantis-900: #2b4522;
   --color-mantis-950: #13250e;
+
+  --color-foreground: var(--color-foreground);
+  --color-background-0: var(--color-background-0);
+  --color-background-1: var(--color-background-1);
+  --color-background-2: var(--color-background-2);
+  --color-background-3: var(--color-background-3);
+  --color-border: var(--color-border);
+  --color-primary-0: var(--color-primary-0);
+  --color-primary-1: var(--color-primary-1);
+  --color-destructive: var(--color-destructive);
 
   --stroke-width-bus: 10px;
 
@@ -57,7 +93,7 @@
     border-style: solid;
     border-width: 4px;
     border-color: transparent;
-    background-color: --value(--color- *);
+    background-color: --value(--color-*);
     background-clip: content-box;
     padding: 1px;
   }
@@ -71,9 +107,9 @@
 }
 
 .computer-background {
-  background-color: var(--color-stone-800);
+  background-color: var(--color-background-1);
   background-image:
-    radial-gradient(circle at 12.5px 12.5px, var(--color-stone-600) 2%, transparent 0%),
-    radial-gradient(circle at 37.5px 37.5px, var(--color-stone-600) 2%, transparent 0%);
+    radial-gradient(circle at 12.5px 12.5px, var(--color-background-3) 2%, transparent 0%),
+    radial-gradient(circle at 37.5px 37.5px, var(--color-background-3) 2%, transparent 0%);
   background-size: 50px 50px;
 }

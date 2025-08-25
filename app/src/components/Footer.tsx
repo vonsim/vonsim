@@ -11,7 +11,7 @@ export function Footer() {
     <footer className="px-2 py-1 text-center text-xs tracking-wider text-stone-500">
       <a
         href={`/${lang}`}
-        className="transition-colors hover:text-stone-400"
+        className="transition-colors hover:text-stone-600 dark:hover:text-stone-400"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -20,7 +20,7 @@ export function Footer() {
       <span className="px-2">&middot;</span>
       <a
         href="https://github.com/vonsim/vonsim"
-        className="transition-colors hover:text-stone-400"
+        className="transition-colors hover:text-stone-600 dark:hover:text-stone-400"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -29,7 +29,7 @@ export function Footer() {
       <span className="px-2">&middot;</span>
       <a
         href={issueLink}
-        className="transition-colors hover:text-stone-400"
+        className="transition-colors hover:text-stone-600 dark:hover:text-stone-400"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -39,7 +39,7 @@ export function Footer() {
       <br className="sm:hidden" />
       <a
         href={lang === "es" ? "/es#licencia" : "/en#license"}
-        className="transition-colors hover:text-stone-400"
+        className="transition-colors hover:text-stone-600 dark:hover:text-stone-400"
         target="_blank"
         rel="noopener noreferrer"
       >

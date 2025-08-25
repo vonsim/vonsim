@@ -52,7 +52,7 @@ export async function generateOpenGraphs(md, outDir) {
 
     const markup = html`
       <div
-        tw="w-[1200px] h-[630px] bg-stone-900 flex flex-col p-6"
+        tw="w-[1200px] h-[630px] bg-background-0 flex flex-col p-6"
         style="
         background-image: radial-gradient(circle at 25px 25px, #44403c 2%, transparent 0%), radial-gradient(circle at 75px 75px, #44403c 2%, transparent 0%);
         background-size: 100px 100px;
@@ -61,13 +61,13 @@ export async function generateOpenGraphs(md, outDir) {
         <header tw="flex flex-row w-full items-center">
           <img src="${logo}" tw="w-24 h-24 mr-4" />
           <p tw="font-bold text-5xl mr-4">
-            <span tw="text-white">Von</span>
+            <span tw="text-foreground">Von</span>
             <span tw="text-[#82bd69]">Sim</span>
           </p>
-          <p tw="text-4xl text-white">Documentación</p>
+          <p tw="text-4xl text-foreground">Documentación</p>
         </header>
         <main tw="flex flex-col justify-center grow pb-20">
-          <h1 tw="text-8xl text-white font-bold" style="text-wrap: pretty;">${title}</h1>
+          <h1 tw="text-8xl text-foreground font-bold" style="text-wrap: pretty;">${title}</h1>
         </main>
       </div>
     `;

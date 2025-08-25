@@ -1,14 +1,14 @@
 @reference "#tailwind-main";
 
 .cm-editor {
-  @apply h-full w-full bg-stone-800 text-white;
+  @apply bg-background-1 text-foreground h-full w-full;
 
   .cm-scroller {
-    @apply scrollbar-stone-700 overflow-auto font-mono;
+    @apply scrollbar-border overflow-auto font-mono;
   }
 
   .cm-activeLine {
-    @apply bg-stone-700/50;
+    @apply bg-background-2/50;
   }
 
   &:not(.cm-focused) .cm-activeLine {
@@ -24,40 +24,40 @@
   }
 
   &.cm-focused .cm-cursor {
-    @apply border-l-stone-50;
+    @apply border-l-stone-950 dark:border-l-stone-50;
   }
 
   &.cm-focused .cm-selectionBackground,
   ::selection {
-    @apply !bg-stone-700;
+    @apply !bg-background-2;
   }
 
   &:not(.cm-focused) .cm-selectionBackground {
-    @apply bg-stone-700/50;
+    @apply bg-background-2/50;
   }
 
   .cm-gutters {
-    @apply border-none bg-stone-800;
+    @apply bg-background-1 border-none;
   }
 
   .cm-gutterElement {
-    @apply !px-2 font-thin text-stone-400;
+    @apply !px-2 font-thin text-stone-600 dark:text-stone-400;
   }
 
   .cm-activeLineGutter {
-    @apply border-none bg-stone-500/50 font-normal text-stone-200;
+    @apply border-none bg-stone-500/50 font-normal text-stone-800 dark:text-stone-200;
   }
 
   &:not(.cm-focused) .cm-activeLineGutter {
-    @apply bg-stone-800 text-stone-400;
+    @apply bg-background-1 text-stone-600 dark:text-stone-400;
   }
 
   .cm-tooltip {
-    @apply scrollbar-stone-700 max-w-sm overflow-y-auto rounded-lg border border-stone-600 bg-stone-900 font-sans font-light leading-tight text-white shadow-sm;
+    @apply scrollbar-border border-border bg-background-0 text-foreground max-w-sm overflow-y-auto rounded-lg border font-sans font-light leading-tight shadow-sm;
   }
 
   .cm-diagnostic-error {
-    @apply border-l-4 border-red-500;
+    @apply border-destructive border-l-4;
   }
 
   .cm-lintRange-error {
@@ -65,7 +65,7 @@
   }
 
   .cm-lintPoint-error:after {
-    @apply border-b-red-500;
+    @apply border-b-destructive;
   }
 
   .cm-panels {

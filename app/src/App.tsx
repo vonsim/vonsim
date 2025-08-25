@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useMedia } from "react-use";
 import { useRegisterSW } from "virtual:pwa-register/react";
@@ -10,15 +10,16 @@ import { Header } from "@/components/Header";
 import { Settings, settingsOpenAtom } from "@/components/Settings";
 import { ToastAction } from "@/components/ui/Toast";
 import { ComputerContainer } from "@/computer";
+import { resetAllSprings } from "@/computer/shared/springs";
 import { Editor } from "@/editor";
 import { useTranslate } from "@/lib/i18n";
-import { useFilters, useLanguage } from "@/lib/settings";
+import { useLanguage, useTheme } from "@/lib/settings";
 import { toast } from "@/lib/toast";
 
 export default function App() {
   const lang = useLanguage();
   const translate = useTranslate();
-  const filter = useFilters();
+  const theme = useTheme();
   const isMobile = useMedia("(max-width: 640px)"); // tailwind sm breakpoint
 
   const { updateServiceWorker } = useRegisterSW({
@@ -38,12 +39,20 @@ export default function App() {
     },
   });
 
+  // Update <html /> when language  changes
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  // Update <html /> when  theme changes
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    // Reset springs after a short delay to avoid animation glitches when switching themes
+    setTimeout(() => resetAllSprings(), 10);
+  }, [theme]);
+
   return (
-    <div
-      className="flex h-screen w-screen flex-col bg-stone-900 text-white"
-      lang={lang}
-      style={{ filter }}
-    >
+    <div className="bg-background-0 text-foreground flex h-screen w-screen flex-col">
       <Header />
 
       {isMobile ? <MobileLayout /> : <DesktopLayout />}
@@ -68,7 +77,7 @@ function DesktopLayout() {
         order={1}
         minSize={30}
         tagName="section"
-        className="rounded-lg border border-stone-600 bg-stone-800"
+        className="border-border bg-background-1 rounded-lg border"
       >
         <Editor className="size-full" />
       </Panel>
@@ -78,7 +87,7 @@ function DesktopLayout() {
         order={2}
         minSize={20}
         tagName="section"
-        className="computer-background rounded-lg border border-stone-600"
+        className="computer-background border-border rounded-lg border"
       >
         <ComputerContainer />
       </Panel>
@@ -90,7 +99,7 @@ function DesktopLayout() {
             order={3}
             minSize={30}
             tagName="section"
-            className="rounded-lg border border-stone-600 bg-stone-800"
+            className="border-border bg-background-1 rounded-lg border"
           >
             <Settings className="size-full" />
           </Panel>
@@ -116,17 +125,17 @@ function MobileLayout() {
     <Tabs value={tab} onValueChange={setTab} asChild>
       <>
         <TabsContent value="editor" asChild>
-          <section className="mx-2 grow overflow-hidden rounded-lg border border-stone-600 bg-stone-800 data-[state=inactive]:hidden">
+          <section className="border-border bg-background-1 mx-2 grow overflow-hidden rounded-lg border data-[state=inactive]:hidden">
             <Editor className="size-full" />
           </section>
         </TabsContent>
         <TabsContent value="computer" asChild>
-          <section className="computer-background mx-2 grow overflow-hidden rounded-lg border border-stone-600 bg-stone-800 data-[state=inactive]:hidden">
+          <section className="computer-background border-border bg-background-1 mx-2 grow overflow-hidden rounded-lg border data-[state=inactive]:hidden">
             <ComputerContainer />
           </section>
         </TabsContent>
         <TabsContent value="settings" asChild>
-          <section className="mx-2 grow overflow-hidden rounded-lg border border-stone-600 bg-stone-800 data-[state=inactive]:hidden">
+          <section className="border-border bg-background-1 mx-2 grow overflow-hidden rounded-lg border data-[state=inactive]:hidden">
             <Settings className="size-full" />
           </section>
         </TabsContent>
@@ -134,14 +143,14 @@ function MobileLayout() {
         <TabsList className="grid grid-cols-2 gap-2 p-2">
           <TabsTrigger
             value="editor"
-            className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
+            className="hover:bg-background-1 data-[state=active]:bg-background-2 hover:text-foreground data-[state=active]:text-foreground inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-600 transition-colors dark:text-stone-400"
           >
             <span className="icon-[lucide--file-terminal] mr-2 size-4" />
             {translate("control.tabs.editor")}
           </TabsTrigger>
           <TabsTrigger
             value="computer"
-            className="inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-400 transition-colors hover:bg-stone-800 hover:text-white data-[state=active]:bg-stone-700 data-[state=active]:text-white"
+            className="hover:bg-background-1 data-[state=active]:bg-background-2 hover:text-foreground data-[state=active]:text-foreground inline-flex items-center justify-center rounded-lg py-2 text-sm font-semibold text-stone-600 transition-colors dark:text-stone-400"
           >
             <span className="icon-[lucide--computer] mr-2 size-4" />
             {translate("control.tabs.computer")}
