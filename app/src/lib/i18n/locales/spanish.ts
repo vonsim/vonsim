@@ -71,6 +71,10 @@ export const spanish: Locale = {
     `,
   },
 
+  header: {
+    documentation: "Documentación",
+  },
+
   control: {
     action: {
       "cycle-change": "Ciclo",
@@ -216,9 +220,7 @@ export const spanish: Locale = {
   },
 
   footer: {
-    documentation: "Documentación",
     copyright: "III-LIDI, FI, UNLP",
-
     issue: {
       report: "Reportar un error",
       body: (settings, program) => dedent`

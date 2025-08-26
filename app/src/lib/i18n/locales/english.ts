@@ -72,6 +72,10 @@ export const english = {
     `,
   },
 
+  header: {
+    documentation: "Documentation",
+  },
+
   control: {
     action: {
       "cycle-change": "Cycle",
@@ -217,9 +221,7 @@ export const english = {
   },
 
   footer: {
-    documentation: "Documentation",
     copyright: "III-LIDI, FI, UNLP",
-
     issue: {
       report: "Report an issue",
       body: (settings: JsonValue, program: string) => dedent`

@@ -10,15 +10,6 @@ export function Footer() {
   return (
     <footer className="px-2 py-1 text-center text-xs tracking-wider text-stone-500">
       <a
-        href={`/${lang}`}
-        className="transition-colors hover:text-stone-600 dark:hover:text-stone-400"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {translate("footer.documentation")}
-      </a>
-      <span className="px-2">&middot;</span>
-      <a
         href="https://github.com/vonsim/vonsim"
         className="transition-colors hover:text-stone-600 dark:hover:text-stone-400"
         target="_blank"

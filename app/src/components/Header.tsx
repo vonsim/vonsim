@@ -5,8 +5,10 @@ import { Controls } from "@/components/Controls";
 import { examplesOpenAtom } from "@/components/Examples";
 import { settingsOpenAtom } from "@/components/Settings";
 import { useTranslate } from "@/lib/i18n";
+import { useLanguage } from "@/lib/settings";
 
 export function Header() {
+  const lang = useLanguage();
   const translate = useTranslate();
   const [settingsOpen, setSettingsOpen] = useAtom(settingsOpenAtom);
   const [examplesOpen, setExamplesOpen] = useAtom(examplesOpenAtom);
@@ -25,6 +27,15 @@ export function Header() {
 
         <div className="flex-grow" />
 
+        <a
+          href={`/${lang}`}
+          className="focus:outline-border hover:bg-background-1 focus:bg-background-1 size-min rounded-md p-2 transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+          title={translate("header.documentation")}
+        >
+          <span className="icon-[lucide--book-text] block size-6" />
+        </a>
         <button
           className={clsx(
             "focus:outline-border size-min rounded-md p-2 transition-colors",
