@@ -106,6 +106,7 @@ export const es = {
             items: [
               { text: "Tabla ASCII", link: "reference/ascii" },
               { text: "Codificación", link: "reference/encoding" },
+              { text: "Metadata", link: "reference/metadata" },
               { text: "Notas de versión", link: "changelog" },
             ],
           },

@@ -148,6 +148,17 @@ export const spanish: Locale = {
 
   examples: {
     title: "Ejemplos",
+    "format-date": date => {
+      const diff = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24)); // in days
+      const rtf = new Intl.RelativeTimeFormat("es", { numeric: "auto" });
+      if (diff < 30) return rtf.format(-diff, "day");
+      if (diff < 365) return rtf.format(-Math.floor(diff / 30), "month");
+      return rtf.format(-Math.floor(diff / 365), "year");
+    },
+    "keyboard-and-screen": "Teclado y pantalla",
+    pic: "Interrupciones",
+    "switches-and-leds": "Llaves y luces",
+    printer: "Impresora",
   },
 
   settings: {

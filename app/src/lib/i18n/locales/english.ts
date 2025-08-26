@@ -149,6 +149,17 @@ export const english = {
 
   examples: {
     title: "Examples",
+    "format-date": (date: Date) => {
+      const diff = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24)); // in days
+      const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+      if (diff < 30) return rtf.format(-diff, "day");
+      if (diff < 365) return rtf.format(-Math.floor(diff / 30), "month");
+      return rtf.format(-Math.floor(diff / 365), "year");
+    },
+    "keyboard-and-screen": "Keyboard and screen",
+    pic: "Interrups",
+    "switches-and-leds": "Switches and LEDs",
+    printer: "Printer",
   },
 
   settings: {

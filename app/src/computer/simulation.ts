@@ -9,7 +9,7 @@ import { ComputerState, EventGenerator, Simulator, SimulatorError } from "@vonsi
 import { atom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { DEVICES_SCHEMA_KEYS, devicesSchema } from "@/computer/schemas";
+import { devicesMetadataSchema } from "@/computer/schemas";
 import { highlightLine, setReadOnly } from "@/editor/methods";
 import { translate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
@@ -163,14 +163,10 @@ async function dispatch(...args: Action) {
         setReadOnly(true);
 
         // Update settings
-        const devices = { ...getSettings().devices };
-        for (const key of DEVICES_SCHEMA_KEYS) {
-          const parsed = devicesSchema.shape[key].safeParse(result.metadata[key]);
-          if (parsed.success) {
-            // @ts-expect-error this works fine, thanks to `DEVICES_SCHEMA_KEYS` being described manually
-            devices[key] = parsed.data;
-          }
-        }
+        const devices = {
+          ...getSettings().devices,
+          ...devicesMetadataSchema.parse(result.metadata.devices),
+        };
         setDevices(devices);
 
         // Reset the simulator

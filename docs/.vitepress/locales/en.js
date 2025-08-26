@@ -63,6 +63,7 @@ export const en = {
             items: [
               { text: "ASCII Table", link: "reference/ascii" },
               { text: "Encoding", link: "reference/encoding" },
+              { text: "Metadata", link: "reference/metadata" },
               { text: "Release Notes", link: "changelog" },
             ],
           },
