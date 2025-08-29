@@ -109,7 +109,7 @@ const vonsimHighlighter = syntaxHighlighting(
     { tag: vonsimTags.operator, class: "text-rose-600 dark:text-rose-300" },
     { tag: vonsimTags.offset, class: "text-rose-600 dark:text-rose-400/80 italic" },
     { tag: vonsimTags["ptr-size"], class: "text-rose-600 dark:text-rose-400/80 italic" },
-    { tag: vonsimTags.punctuation, class: "text-stone-300 dark:text-stone-600" },
+    { tag: vonsimTags.punctuation, class: "text-stone-500" },
     { tag: vonsimTags.register, class: "text-emerald-600 dark:text-emerald-400/80" },
     { tag: vonsimTags.special, class: "text-yellow-600 dark:text-yellow-300/80" },
     { tag: vonsimTags.string, class: "text-orange-600 dark:text-orange-300" },
