@@ -40,11 +40,12 @@ export function CPU() {
 
       <Control />
 
-      <Reg name="IP" emphasis className="left-[450px] top-[292px]" />
-      <Reg name="SP" emphasis className="left-[450px] top-[332px]" />
-      <Reg name="ri" className="left-[450px] top-[372px]" />
+      <Reg name="IP" emphasis className="left-[450px] top-[260px]" />
+      <Reg name="SP" emphasis className="left-[450px] top-[300px]" />
+      <Reg name="BP" emphasis className="left-[450px] top-[340px]" />
+      <Reg name="ri" className="left-[450px] top-[380px]" />
 
-      <Reg name="MAR" className="right-[-51px] top-[333px]" />
+      <Reg name="MAR" className="right-[-51px] top-[321px]" />
     </div>
   );
 }

@@ -49,7 +49,7 @@ export type Register = ByteRegister | WordRegister;
 /**
  * The registers that has a connection to the Memory Address Register (MAR).
  */
-export type MARRegister = "IP" | "SP" | "ri";
+export type MARRegister = "IP" | "SP" | "BP" | "ri";
 
 /**
  * Metadata about an instruction emitted along with the `cpu:cycle.start` event.
