@@ -58,12 +58,12 @@ Finally, the [documentation](https://vonsim.github.io/en/) is inside [`@vonsim/d
 
 ### Visual Studio Code Extension
 
-When using [Visual Studio Code](https://code.visualstudio.com/), you can use the [recommended extensions](./.vscode/extensions.json) to get the best experience. Some extensions might have trouble finding the `tailwind.config.ts` file for auto-completion and linting. This can be solved by creating a `.vscode/settings.json` file with the following content:
+When using [Visual Studio Code](https://code.visualstudio.com/), you can use the [recommended extensions](./.vscode/extensions.json) to get the best experience. Some extensions might have trouble finding the `main.css` file for auto-completion and linting. This can be solved by creating a `.vscode/settings.json` file with the following content:
 
 ```json
 {
   "eslint.workingDirectories": [{ "mode": "auto" }],
-  "tailwindCSS.experimental.configFile": "./app/tailwind.config.ts"
+  "tailwindCSS.experimental.configFile": "./app/src/styles/main.css"
 }
 ```
 
