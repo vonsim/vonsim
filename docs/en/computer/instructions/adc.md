@@ -61,6 +61,6 @@ Where `w` is the operand size bit. `w=0` indicates 8-bit operands, and `w=1` ind
 | `010` | `DL`  | `DX`  |
 | `011` | `BL`  | `BX`  |
 | `100` | `AH`  | `SP`  |
-| `101` | `CH`  |  --   |
+| `101` | `CH`  | `BP`  |
 | `110` | `DH`  |  --   |
 | `111` | `BH`  |  --   |
