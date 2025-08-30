@@ -9,9 +9,9 @@ export function Controls({ className }: { className?: string }) {
   return (
     <div className={clsx("flex items-center justify-center", className)}>
       <div className="bg-background-1 border-border flex h-12 grid-cols-4 items-center rounded-md border">
-        <RunButton until="cycle-change" shortcut="F7" icon="icon-[lucide--play]" />
-        <RunButton until="end-of-instruction" shortcut="F8" icon="icon-[lucide--skip-forward]" />
-        <RunButton until="infinity" shortcut="F4" icon="icon-[lucide--infinity]" />
+        <RunButton until="cycle-change" shortcut="F1" icon="icon-[lucide--play]" />
+        <RunButton until="end-of-instruction" shortcut="F2" icon="icon-[lucide--skip-forward]" />
+        <RunButton until="infinity" shortcut="F3" icon="icon-[lucide--infinity]" />
         <StopButton />
       </div>
     </div>
@@ -103,7 +103,7 @@ function StopButton() {
   }, [status.type, dispatch]);
 
   useKey(
-    "F9",
+    "F4",
     ev => {
       ev.preventDefault();
       stop();
@@ -121,7 +121,7 @@ function StopButton() {
       <div className="flex items-center justify-center gap-1">
         <span className="icon-[lucide--octagon-x] text-destructive size-5" />
         <kbd className="hidden font-mono text-[0.6rem] leading-none text-stone-600 sm:block dark:text-stone-400">
-          F9
+          F4
         </kbd>
       </div>
       <span className="block text-xs leading-none">{translate("control.action.abort")}</span>
