@@ -5,8 +5,8 @@ import type { Position } from "@vonsim/common/position";
 import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
-import type { ByteRegister, Register, WordRegister } from "../../../types";
-import { registerToBits } from "../encoding";
+import type { ByteRegister, IndirectionRegister, Register, WordRegister } from "../../../types";
+import { indirectRegisterToBits, registerToBits } from "../encoding";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
@@ -15,13 +15,18 @@ type UnaryInstructionName = "NEG" | "INC" | "DEC" | "NOT";
 type InitialOperation =
   | { mode: "reg"; size: ByteSize; reg: Register }
   | { mode: "mem-direct"; size: ByteSize; address: NumberExpression }
-  | { mode: "mem-indirect"; size: ByteSize; offset: NumberExpression | null };
+  | {
+      mode: "mem-indirect";
+      size: ByteSize;
+      reg: IndirectionRegister;
+      offset: NumberExpression | null;
+    };
 
 type Operation =
   | { mode: "reg"; size: 8; reg: ByteRegister }
   | { mode: "reg"; size: 16; reg: WordRegister }
   | { mode: "mem-direct"; size: ByteSize; address: MemoryAddress }
-  | { mode: "mem-indirect"; size: ByteSize; offset: Byte<16> | null };
+  | { mode: "mem-indirect"; size: ByteSize; reg: IndirectionRegister; offset: Byte<16> | null };
 
 /**
  * UnaryInstruction:
@@ -100,7 +105,7 @@ export class UnaryInstruction extends InstructionStatement {
       }
 
       case "mem-direct": {
-        bytes[1] = 0b11000000;
+        bytes[1] = 0b11000000; // 11000000
         const address = this.operation.address.byte;
         bytes.push(address.low.unsigned);
         bytes.push(address.high.unsigned);
@@ -110,12 +115,13 @@ export class UnaryInstruction extends InstructionStatement {
       case "mem-indirect": {
         const offset = this.operation.offset;
         if (offset) {
-          bytes[1] = 0b11100000;
+          bytes[1] = 0b11110000; // 1111B000
           bytes.push(offset.low.unsigned);
           bytes.push(offset.high.unsigned);
         } else {
-          bytes[1] = 0b11010000;
+          bytes[1] = 0b11100000; // 1110B000
         }
+        bytes[1] |= indirectRegisterToBits(this.operation.reg) << 3;
         break;
       }
 
@@ -169,7 +175,12 @@ export class UnaryInstruction extends InstructionStatement {
         throw new AssemblerError("unknown-size").at(out);
       }
 
-      this.#initialOperation = { mode: "mem-indirect", size: out.size, offset: out.offset };
+      this.#initialOperation = {
+        mode: "mem-indirect",
+        size: out.size,
+        reg: out.reg,
+        offset: out.offset,
+      };
       return;
     }
 
@@ -230,7 +241,7 @@ export class UnaryInstruction extends InstructionStatement {
           offset = Byte.fromSigned(computed, 16);
         }
 
-        this.#operation = { mode: "mem-indirect", size: op.size, offset };
+        this.#operation = { mode: "mem-indirect", size: op.size, reg: op.reg, offset };
         return;
       }
 

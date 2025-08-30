@@ -33,7 +33,7 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       }
 
       case "mem-indirect": {
-        let addr = "BX";
+        let addr = this.operation.reg;
         const offset = this.operation.offset;
         if (offset) {
           if (offset.signed > 0) {
@@ -89,13 +89,13 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
         yield* this.consumeInstruction(computer, "ri.l");
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
-        // Move BX to ri
-        yield* computer.cpu.copyWordRegister("BX", "ri");
+        // Move indirect to ri
+        yield* computer.cpu.copyWordRegister(this.operation.reg, "ri");
         if (this.operation.offset) {
           // Fetch offset
           yield* this.consumeInstruction(computer, "id.l");
           yield* this.consumeInstruction(computer, "id.h");
-          // Add offset to BX
+          // Add offset to indirect
           const offset = this.operation.offset.signed;
           yield* computer.cpu.updateWordRegister("ri", ri => ri.add(offset));
         }
