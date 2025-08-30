@@ -84,7 +84,7 @@ export const spanish: Messages = {
     "expected-literal-after-literal": (expected, after) => `Se esperaba "${expected}" después de "${after}".`,
     "expected-type": (expected, got) => `Se esperaba ${expected}, se obtuvo ${got}.`,
     // prettier-ignore
-    "indirect-addressing-must-be-bx": "El único registro válido para el direccionamiento indirecto es BX.",
+    "indirect-addressing-invalid": "Los únicos registros válidos para el direccionamiento indirecto son BX y BP.",
     "unclosed-parenthesis": "Paréntesis sin cerrar.",
     // prettier-ignore
     "unexpected-identifier": "Identificador inesperado. Tal vez te olvidaste agregar dos puntos (:) para hacerlo una etiqueta.",
