@@ -243,7 +243,7 @@ export function FileHandler() {
       <DropdownMenuTrigger asChild>
         <button
           className={clsx(
-            "hover:text-foreground flex items-center transition-colors",
+            "hover:text-foreground flex items-center transition-colors max-sm:hidden",
             fileHandle && "text-foreground",
           )}
         >

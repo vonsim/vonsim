@@ -94,7 +94,7 @@ export function Settings({ className }: { className?: string }) {
       <Setting>
         <SettingInfo>
           <SettingTitle>
-            <span className="icon-[lucide--pilcrow-square] size-6" />
+            <span className="icon-[lucide--square-pilcrow] size-6" />
             {translate("settings.editorFontSize.label")}
           </SettingTitle>
         </SettingInfo>
