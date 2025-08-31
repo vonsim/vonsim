@@ -131,7 +131,7 @@ function MobileLayout() {
 
   return (
     <Tabs value={tab} onValueChange={setTab} asChild>
-      <>
+      <div className="contents">
         <TabsContent value="editor" asChild>
           <section className="border-border bg-background-1 mx-2 grow overflow-hidden rounded-lg border data-[state=inactive]:hidden">
             <Editor className="size-full" />
@@ -169,7 +169,7 @@ function MobileLayout() {
             {translate("control.tabs.computer")}
           </TabsTrigger>
         </TabsList>
-      </>
+      </div>
     </Tabs>
   );
 }

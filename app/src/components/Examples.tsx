@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { atom, useSetAtom } from "jotai";
 
 import { programMetadataSchema } from "@/computer/schemas";
+import { setProgram } from "@/editor/contents";
 import { useTranslate } from "@/lib/i18n";
-import { setDevices } from "@/lib/settings";
 
 const rawExamples = import.meta.glob("./*.asm", {
   query: "?raw",
@@ -40,14 +40,7 @@ export function Examples({ className }: { className?: string }) {
           <li
             key={example.id}
             onClick={() => {
-              if (example.devices) setDevices(example.devices);
-              window.codemirror!.dispatch({
-                changes: {
-                  from: 0,
-                  to: window.codemirror!.state.doc.length,
-                  insert: example.source,
-                },
-              });
+              setProgram({ source: example.source, devices: example.devices });
               setExamplesOpen(false);
             }}
             className="border-border bg-background-0 hover:bg-background-1 w-64 select-none rounded-md border p-4 transition-colors"

@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
+import { getProgram, setProgram } from "@/editor/contents";
 import { translate, useTranslate } from "@/lib/i18n";
 import { store } from "@/lib/jotai";
 import { getSettings } from "@/lib/settings";
@@ -75,9 +76,7 @@ export function FileHandler() {
       const file = await fileHandle.getFile();
       const source = await file.text();
       setLastSavedProgram(source);
-      window.codemirror!.dispatch({
-        changes: { from: 0, to: window.codemirror!.state.doc.length, insert: source },
-      });
+      setProgram({ source, devices: "infer" });
     } catch (error) {
       console.error(error);
       toast({ title: translate("editor.files.open-error"), variant: "error" });
@@ -121,9 +120,7 @@ export function FileHandler() {
         const file = await fileHandle.getFile();
         const source = await file.text();
         setLastSavedProgram(source);
-        window.codemirror!.dispatch({
-          changes: { from: 0, to: window.codemirror!.state.doc.length, insert: source },
-        });
+        setProgram({ source, devices: "infer" });
       } catch (error) {
         console.error(error);
         toast({ title: translate("editor.files.open-error"), variant: "error" });
@@ -151,7 +148,7 @@ export function FileHandler() {
     if (!unsavedChanges) return;
 
     try {
-      const source = window.codemirror!.state.doc.toString();
+      const source = getProgram()!;
       const writable = await fileHandle.createWritable({ keepExistingData: false });
       await writable.write(source);
       await writable.close();
@@ -163,7 +160,7 @@ export function FileHandler() {
   }, [translate, unsavedChanges, fileHandle, setLastSavedProgram]);
 
   const saveFileAs = useCallback(async () => {
-    const source = window.codemirror!.state.doc.toString();
+    const source = getProgram()!;
     const filename = fileHandle?.name || `vonsim-${new Date().toISOString().slice(0, 10)}.asm`;
     if (supportsNativeFileSystem) {
       try {

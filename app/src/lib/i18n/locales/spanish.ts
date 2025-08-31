@@ -28,6 +28,21 @@ export const spanish: Locale = {
     "invalid-action": "Acción inválida.",
   },
 
+  share: {
+    button: {
+      label: "Compartir programa",
+      copy: "Copiar al portapapeles",
+      copied: "¡Copiado!",
+      qr: "Mostrar código QR",
+    },
+    prompt: {
+      title: "¡Te compartieron un programa!",
+      description: "¿Deseas abrir el programa? Esto reemplazará tu programa actual.",
+      open: "Abrir",
+      cancel: "Cancelar",
+    },
+  },
+
   editor: {
     lintSummary: n =>
       n === 0 ? "Listo para compilar" : n === 1 ? "Hay un error" : `Hay ${n} errores`,

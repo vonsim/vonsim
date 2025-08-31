@@ -5,7 +5,7 @@ import {
   syntaxHighlighting,
 } from "@codemirror/language";
 import { Diagnostic, linter } from "@codemirror/lint";
-import { Tag, tags } from "@lezer/highlight";
+import { highlightTree, Tag, tags } from "@lezer/highlight";
 import { assemble, DATA_DIRECTIVES, INSTRUCTIONS, REGISTERS } from "@vonsim/assembler";
 
 import { store } from "@/lib/jotai";
@@ -97,25 +97,23 @@ const vonsimLanguage = StreamLanguage.define({
   tokenTable: vonsimTags,
 });
 
-const vonsimHighlighter = syntaxHighlighting(
-  HighlightStyle.define([
-    { tag: vonsimTags.character, class: "text-orange-600 dark:text-orange-300" },
-    { tag: vonsimTags.comment, class: "text-stone-500 italic" },
-    { tag: vonsimTags["data-directive"], class: "text-rose-600 dark:text-rose-400/80" },
-    // { tag: vonsimTags.identifier, class: "" },
-    { tag: vonsimTags.instruction, class: "text-mantis-500 dark:text-mantis-400" },
-    // { tag: vonsimTags.label, class: "" },
-    { tag: vonsimTags.number, class: "text-cyan-600 dark:text-cyan-300/60" },
-    { tag: vonsimTags.operator, class: "text-rose-600 dark:text-rose-300" },
-    { tag: vonsimTags.offset, class: "text-rose-600 dark:text-rose-400/80 italic" },
-    { tag: vonsimTags["ptr-size"], class: "text-rose-600 dark:text-rose-400/80 italic" },
-    { tag: vonsimTags.punctuation, class: "text-stone-500" },
-    { tag: vonsimTags.register, class: "text-emerald-600 dark:text-emerald-400/80" },
-    { tag: vonsimTags.special, class: "text-yellow-600 dark:text-yellow-300/80" },
-    { tag: vonsimTags.string, class: "text-orange-600 dark:text-orange-300" },
-    { tag: vonsimTags.unassigned, class: "text-rose-600 dark:text-rose-400/80" },
-  ]),
-);
+const vonsimHighlighter = HighlightStyle.define([
+  { tag: vonsimTags.character, class: "text-orange-600 dark:text-orange-300" },
+  { tag: vonsimTags.comment, class: "text-stone-500 italic" },
+  { tag: vonsimTags["data-directive"], class: "text-rose-600 dark:text-rose-400/80" },
+  // { tag: vonsimTags.identifier, class: "" },
+  { tag: vonsimTags.instruction, class: "text-mantis-500 dark:text-mantis-400" },
+  // { tag: vonsimTags.label, class: "" },
+  { tag: vonsimTags.number, class: "text-cyan-600 dark:text-cyan-300/60" },
+  { tag: vonsimTags.operator, class: "text-rose-600 dark:text-rose-300" },
+  { tag: vonsimTags.offset, class: "text-rose-600 dark:text-rose-400/80 italic" },
+  { tag: vonsimTags["ptr-size"], class: "text-rose-600 dark:text-rose-400/80 italic" },
+  { tag: vonsimTags.punctuation, class: "text-stone-500" },
+  { tag: vonsimTags.register, class: "text-emerald-600 dark:text-emerald-400/80" },
+  { tag: vonsimTags.special, class: "text-yellow-600 dark:text-yellow-300/80" },
+  { tag: vonsimTags.string, class: "text-orange-600 dark:text-orange-300" },
+  { tag: vonsimTags.unassigned, class: "text-rose-600 dark:text-rose-400/80" },
+]);
 
 const vonsimLinter = linter(
   view => {
@@ -142,5 +140,25 @@ const vonsimLinter = linter(
 );
 
 export function VonSim() {
-  return new LanguageSupport(vonsimLanguage, [vonsimHighlighter, vonsimLinter]);
+  return new LanguageSupport(vonsimLanguage, [syntaxHighlighting(vonsimHighlighter), vonsimLinter]);
+}
+
+function sanitize(html: string) {
+  return html.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+export function highlightVonSim(source: string) {
+  const tree = vonsimLanguage.parser.parse(source);
+  let pos = 0;
+  let out = "";
+  highlightTree(tree, vonsimHighlighter, (from, to, classes) => {
+    console.log();
+    if (from > pos) {
+      out += sanitize(source.slice(pos, from));
+    }
+    out += `<span class="${classes}">` + sanitize(source.slice(from, to)) + "</span>";
+    pos = to;
+  });
+  if (pos !== tree.length) out += sanitize(source.slice(pos, tree.length));
+  return out;
 }

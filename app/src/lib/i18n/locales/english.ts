@@ -29,6 +29,21 @@ export const english = {
     "invalid-action": "Invalid action.",
   },
 
+  share: {
+    button: {
+      label: "Share program",
+      copy: "Copy to clipboard",
+      copied: "Copied!",
+      qr: "Show QR code",
+    },
+    prompt: {
+      title: "Someone shared a program with you!",
+      description: "Do you want to open the program? This will replace your current program.",
+      open: "Open",
+      cancel: "Cancel",
+    },
+  },
+
   editor: {
     lintSummary: (n: number) =>
       n === 0 ? "Ready to compile" : n === 1 ? "There's an error" : `There're ${n} errors`,

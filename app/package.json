@@ -9,6 +9,7 @@
     "lint": "tsc --noEmit && eslint ."
   },
   "dependencies": {
+    "@base-ui-components/react": "1.0.0-beta.2",
     "@codemirror/autocomplete": "^6.18.6",
     "@codemirror/commands": "^6.8.1",
     "@codemirror/language": "^6.11.3",
@@ -37,6 +38,7 @@
     "graphology": "^0.26.0",
     "graphology-shortest-path": "^2.1.0",
     "jotai": "^2.13.1",
+    "qrcode.react": "^4.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-resizable-panels": "^1.0.8",

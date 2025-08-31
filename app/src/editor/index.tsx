@@ -19,6 +19,7 @@ import { useEditorFontSize } from "@/lib/settings";
 
 import { getSavedProgram, syncStatePlugin } from "./files";
 import { lineHighlightField, readOnly } from "./methods";
+import { SharePrompt } from "./share";
 import { StatusBar } from "./StatusBar";
 import { VonSim } from "./vonsim";
 
@@ -103,7 +104,7 @@ export function Editor({ className }: { className?: string }) {
   }, [element]);
 
   return (
-    <div className={clsx("flex flex-col", className)}>
+    <div className={clsx("relative flex flex-col", className)}>
       <div
         ref={ref}
         className="grow overflow-auto font-mono"
@@ -113,6 +114,7 @@ export function Editor({ className }: { className?: string }) {
         }}
       />
       <StatusBar />
+      <SharePrompt />
     </div>
   );
 }
