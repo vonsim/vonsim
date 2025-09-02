@@ -27,13 +27,14 @@ const programAtom = atomWithStorage(
 
 export const useSavedProgram = () => useAtomValue(programAtom);
 export const getSavedProgram = () => store.get(programAtom);
+export const setSavedProgram = (source: string) => store.set(programAtom, source);
 
 export const syncStatePlugin = ViewPlugin.fromClass(
   class {
     constructor(readonly view: EditorView) {}
     update(update: ViewUpdate) {
       if (update.docChanged) {
-        store.set(programAtom, this.view.state.doc.toString());
+        setSavedProgram(this.view.state.doc.toString());
       }
     }
   },

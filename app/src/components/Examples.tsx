@@ -37,55 +37,57 @@ export function Examples({ className }: { className?: string }) {
       </h3>
       <ul className="flex flex-wrap justify-evenly gap-x-0.5 gap-y-4 py-4">
         {examples.map(example => (
-          <li
-            key={example.id}
-            onClick={() => {
-              setProgram({ source: example.source, devices: example.devices });
-              setExamplesOpen(false);
-            }}
-            className="border-border bg-background-0 hover:bg-background-1 w-64 select-none rounded-md border p-4 transition-colors"
-          >
-            <p className="text-base">{example.name}</p>
-            <p className="text-xs italic">
-              {example.author && <span>{example.author}</span>}
-              {example.author && example.date && <span> — </span>}
-              {example.date && (
-                <span title={example.date}>
-                  {translate("examples.format-date", new Date(`${example.date}T00:00:00`))}
-                </span>
-              )}
-            </p>
-            <div className="flex items-center gap-2 pt-2">
-              <span
-                title={translate("examples.keyboard-and-screen")}
-                className={clsx(
-                  "icon-[lucide--monitor-smartphone] size-5",
-                  !example.devices.keyboardAndScreen && "opacity-20",
+          <li key={example.id}>
+            <button
+              onClick={() => {
+                setProgram({ source: example.source, devices: example.devices });
+                setExamplesOpen(false);
+              }}
+              className="border-border bg-background-0 hover:bg-background-1 w-64 select-none rounded-md border p-4 text-left transition-colors"
+            >
+              <p className="text-base">{example.name}</p>
+              <p className="text-xs italic">
+                {example.author && <span>{example.author}</span>}
+                {example.author && example.date && <span> — </span>}
+                {example.date && (
+                  <span title={example.date}>
+                    {translate("examples.format-date", new Date(`${example.date}T00:00:00`))}
+                  </span>
                 )}
-              />
-              <span
-                title={translate("examples.pic")}
-                className={clsx(
-                  "icon-[lucide--arrow-up-down] size-5",
-                  !example.devices.pic && "opacity-20",
-                )}
-              />
-              <span
-                title={translate("examples.switches-and-leds")}
-                className={clsx(
-                  "icon-[lucide--lightbulb] size-5",
-                  !(example.devices.pio === "switches-and-leds") && "opacity-20",
-                )}
-              />
-              <span
-                title={translate("examples.printer")}
-                className={clsx(
-                  "icon-[lucide--printer] size-5",
-                  !(example.devices.pio === "printer" || example.devices.handshake === "printer") &&
-                    "opacity-20",
-                )}
-              />
-            </div>
+              </p>
+              <div className="flex items-center gap-2 pt-2">
+                <span
+                  title={translate("examples.keyboard-and-screen")}
+                  className={clsx(
+                    "icon-[lucide--monitor-smartphone] size-5",
+                    !example.devices.keyboardAndScreen && "opacity-20",
+                  )}
+                />
+                <span
+                  title={translate("examples.pic")}
+                  className={clsx(
+                    "icon-[lucide--arrow-up-down] size-5",
+                    !example.devices.pic && "opacity-20",
+                  )}
+                />
+                <span
+                  title={translate("examples.switches-and-leds")}
+                  className={clsx(
+                    "icon-[lucide--lightbulb] size-5",
+                    !(example.devices.pio === "switches-and-leds") && "opacity-20",
+                  )}
+                />
+                <span
+                  title={translate("examples.printer")}
+                  className={clsx(
+                    "icon-[lucide--printer] size-5",
+                    !(
+                      example.devices.pio === "printer" || example.devices.handshake === "printer"
+                    ) && "opacity-20",
+                  )}
+                />
+              </div>
+            </button>
           </li>
         ))}
       </ul>

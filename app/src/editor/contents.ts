@@ -4,6 +4,8 @@ import { programMetadataSchema } from "@/computer/schemas";
 import { setDevices } from "@/lib/settings";
 import type { Settings } from "@/lib/settings/schema";
 
+import { setSavedProgram } from "./files";
+
 /**
  * Gets editor program source code
  */
@@ -31,10 +33,11 @@ export function setProgram({
   } else if (typeof devices === "object") {
     setDevices(devices);
   }
+  setSavedProgram(source);
   window.codemirror.dispatch({
     changes: {
       from: 0,
-      to: window.codemirror!.state.doc.length,
+      to: window.codemirror.state.doc.length,
       insert: source,
     },
   });
