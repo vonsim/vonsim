@@ -97,6 +97,7 @@ const initialValues = {
     CX: Register(),
     DX: Register(),
     SP: Register(),
+    BP: Register(),
     IP: Register(),
     IR: Register(),
     ri: Register(),

@@ -73,7 +73,7 @@ Las instrucciones pueden recibir varios tipos de operandos.
 
 ### Registros
 
-Los registros accesibles por el usuario de 16 bits son `AX`, `BX`, `CX`, `DX` y `SP`. Los registros accesibles por el usuario de 8 bits son `AL`, `AH`, `BL`, `BH`, `CL`, `CH`, `DL` y `DH`. Al utilizar cualquiera de estos registros, el ensamblador puede inferir automáticamente si se tratará de una operación de 8 o 16 bits.
+Los registros accesibles por el usuario de 16 bits son `AX`, `BX`, `CX`, `DX`, `SP` y `BP`. Los registros accesibles por el usuario de 8 bits son `AL`, `AH`, `BL`, `BH`, `CL`, `CH`, `DL` y `DH`. Al utilizar cualquiera de estos registros, el ensamblador puede inferir automáticamente si se tratará de una operación de 8 o 16 bits.
 
 ### Direcciones de memoria
 
@@ -85,10 +85,10 @@ Las direcciones de memoria se pueden expresar de varias formas:
 [bx+43] ; Dirección de memoria indirecta con desplazamiento
 ```
 
-En el primer caso, se accede directamente a la dirección de memoria `1234h`. En el segundo caso, se accede a la dirección de memoria almacenada en `BX`. Para el modo de direccionamiento indirecto solo se puede utilizar el registro `BX`. Lo mismo aplica al tercer caso, donde se accede a la dirección de memoria almacenada en `BX` con un desplazamiento de `43`; el desplazamiento siempre debe ser la forma `+/- constante`. Nótese que el ensamblador no siempre puede inferir si la operación será de 8 o 16 bits. Por ejemplo:
+En el primer caso, se accede directamente a la dirección de memoria `1234h`. En el segundo caso, se accede a la dirección de memoria almacenada en `BX`. Para el modo de direccionamiento indirecto solo se pueden utilizar los registros `BX` y `BP`. Lo mismo aplica al tercer caso, donde se accede a la dirección de memoria almacenada en `BX` con un desplazamiento de `43`; el desplazamiento siempre debe ser la forma `+/- constante`. Nótese que el ensamblador no siempre puede inferir si la operación será de 8 o 16 bits. Por ejemplo:
 
 ```vonsim
-mov [bx], 6h ; ¿Se quiere escribir 06h o 0006h?
+mov [bp], 6h ; ¿Se quiere escribir 06h o 0006h?
 ```
 
 En este caso, se debe especificar el tamaño de la operación:
@@ -117,7 +117,7 @@ En este caso, la etiqueta `dato` hace referencia a la dirección de memoria `100
 
 ### Valores inmediatos
 
-Los valores inmediatos son valores que se pueden determinar al momento de ensamblar el programa. Por ejemplo, en `mov ax, 5` se sabe que se debe copiar el número `5` en `AX`, por lo que el número `5` es un valor inmediato que se almacena en memoria. En cambio, en `mov ax, [bx]` no se sabe qué valor se debe copiar en `AX`, ya que depende del contenido de `BX`. Por lo tanto, `[bx]` no es un valor inmediato.
+Los valores inmediatos son valores que se pueden determinar al momento de ensamblar el programa. Por ejemplo, en `mov ax, 5` se sabe que se debe copiar el número `5` en `AX`, por lo que el número `5` es un valor inmediato que se almacena en memoria. En cambio, en `mov ax, [bp]` no se sabe qué valor se debe copiar en `AX`, ya que depende del contenido de `BP`. Por lo tanto, `[bp]` no es un valor inmediato.
 
 Estos valores inmediatos son números, que se pueden escribir de la siguiente forma:
 

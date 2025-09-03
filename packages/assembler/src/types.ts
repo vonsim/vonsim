@@ -7,11 +7,14 @@ import type { TupleToUnion } from "type-fest";
 export const BYTE_REGISTERS = ["AL", "BL", "CL", "DL", "AH", "BH", "CH", "DH"] as const;
 export type ByteRegister = TupleToUnion<typeof BYTE_REGISTERS>;
 
-export const WORD_REGISTERS = ["AX", "BX", "CX", "DX", "SP"] as const;
+export const WORD_REGISTERS = ["AX", "BX", "CX", "DX", "SP", "BP"] as const;
 export type WordRegister = TupleToUnion<typeof WORD_REGISTERS>;
 
 export const REGISTERS = [...BYTE_REGISTERS, ...WORD_REGISTERS] as const;
 export type Register = TupleToUnion<typeof REGISTERS>;
+
+export const INDIRECTION_REGISTERS = ["BX", "BP"] as const;
+export type IndirectionRegister = TupleToUnion<typeof INDIRECTION_REGISTERS>;
 
 // #=========================================================================#
 // # Data directives                                                         #

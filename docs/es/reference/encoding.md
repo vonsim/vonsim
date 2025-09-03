@@ -8,10 +8,10 @@ A lo largo de la codificación se usan las siguientes abreviaturas:
 
 - `w`: indica el tamaño de los operandos.
 
-  | `w` | Tamaño  |
-  | :-: | :------ |
-  | `0` | 8 bits  |
-  | `1` | 16 bits |
+  |  `w`  | Tamaño  |
+  | :---: | :------ |
+  |  `0`  | 8 bits  |
+  |  `1`  | 16 bits |
 
 - `rrr` o `RRR`: referencian registros, y dependen de `w`.
 
@@ -22,7 +22,7 @@ A lo largo de la codificación se usan las siguientes abreviaturas:
   | `010` | `DL`  | `DX`  |
   | `011` | `BL`  | `BX`  |
   | `100` | `AH`  | `SP`  |
-  | `101` | `CH`  |   —   |
+  | `101` | `CH`  | `BP`  |
   | `110` | `DH`  |   —   |
   | `111` | `BH`  |   —   |
 
@@ -53,17 +53,17 @@ Estas instrucciones reciben dos operandos y soportan varios modos de direccionam
 | :------------------------------------- | :------------------------------------- | :----------: | :--------------------------------------- |
 | Registro                               | Registro                               |  `00RRRrrr`  | —                                        |
 | Registro                               | Memoria (directo)                      |  `01000rrr`  | dir-low, dir-high                        |
-| Registro                               | Memoria (indirecto)                    |  `01010rrr`  | —                                        |
-| Registro                               | Memoria (indirecto con desplazamiento) |  `01100rrr`  | desp-low, desp-high                      |
+| Registro                               | Memoria (indirecto)                    |  `0110Brrr`  | —                                        |
+| Registro                               | Memoria (indirecto con desplazamiento) |  `0111Brrr`  | desp-low, desp-high                      |
 | Registro                               | Inmediato                              |  `01001rrr`  | dato-low, dato-high                      |
-| Memoria (directo)                      | Registro                               |  `11000rrr`  | dir-low, dir-high                        |
-| Memoria (indirecto)                    | Registro                               |  `11010rrr`  | —                                        |
-| Memoria (indirecto con desplazamiento) | Registro                               |  `11100rrr`  | desp-low, desp-high                      |
-| Memoria (directo)                      | Inmediato                              |  `11001000`  | dir-low, dir-high, dato-low, dato-high   |
-| Memoria (indirecto)                    | Inmediato                              |  `11011000`  | dato-low, dato-high                      |
-| Memoria (indirecto con desplazamiento) | Inmediato                              |  `11101000`  | desp-low, desp-high, dato-low, dato-high |
+| Memoria (directo)                      | Registro                               |  `10000rrr`  | dir-low, dir-high                        |
+| Memoria (indirecto)                    | Registro                               |  `1010Brrr`  | —                                        |
+| Memoria (indirecto con desplazamiento) | Registro                               |  `1011Brrr`  | desp-low, desp-high                      |
+| Memoria (directo)                      | Inmediato                              |  `11000000`  | dir-low, dir-high, dato-low, dato-high   |
+| Memoria (indirecto)                    | Inmediato                              |  `1110B000`  | dato-low, dato-high                      |
+| Memoria (indirecto con desplazamiento) | Inmediato                              |  `1111B000`  | desp-low, desp-high, dato-low, dato-high |
 
-Para las instrucciones con un registro como operando, `rrr` codifica este registro. En el caso registro a registro, `RRR` codifica el registro fuente y `rrr` el registro destino.
+Para las instrucciones con un registro como operando, `rrr` codifica este registro. En el caso registro a registro, `RRR` codifica el registro fuente y `rrr` el registro destino. `B` indica el registro para direccionamiento indirecto: `B=0` para `BP` y `B=1` para `BX`.
 
 ## Instrucciones unarias de la ALU
 
@@ -80,8 +80,8 @@ Estas instrucciones reciben un operando y soportan varios modos de direccionamie
 | :------------------------------------- | :----------: | :------------------ |
 | Registro                               |  `00000rrr`  | —                   |
 | Memoria (directo)                      |  `11000000`  | dir-low, dir-high   |
-| Memoria (indirecto)                    |  `11010000`  | —                   |
-| Memoria (indirecto con desplazamiento) |  `11100000`  | desp-low, desp-high |
+| Memoria (indirecto)                    |  `1110B000`  | —                   |
+| Memoria (indirecto con desplazamiento) |  `1111B000`  | desp-low, desp-high |
 
 ## Instrucciones de E/S
 

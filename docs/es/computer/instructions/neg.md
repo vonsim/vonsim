@@ -39,6 +39,6 @@ Donde `w` es el bit de tamaño de los operandos. `w=0` indica operandos de 8 bit
 | `010` | `DL`  | `DX`  |
 | `011` | `BL`  | `BX`  |
 | `100` | `AH`  | `SP`  |
-| `101` | `CH`  |  --   |
+| `101` | `CH`  | `BP`  |
 | `110` | `DH`  |  --   |
 | `111` | `BH`  |  --   |

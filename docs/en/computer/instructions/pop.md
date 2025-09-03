@@ -25,6 +25,6 @@ Where `rrr` encodes the destination register as follows:
 | `010` |  `DX`  |
 | `011` |  `BX`  |
 | `100` |  `SP`  |
-| `101` |   --   |
+| `101` |  `BP`  |
 | `110` |   --   |
 | `111` |   --   |
