@@ -19,10 +19,9 @@ export abstract class Switches extends Component {
 
   constructor(options: ComponentInit) {
     super(options);
-    if (options.data === "unchanged" && options.previous.io.switches) {
+    // Since switches are user-controlled, we don't want to reset them
+    if (options.previous?.io.switches) {
       this.#state = options.previous.io.switches.#state;
-    } else if (options.data === "randomize") {
-      this.#state = Byte.random(8);
     } else {
       this.#state = Byte.zero(8);
     }

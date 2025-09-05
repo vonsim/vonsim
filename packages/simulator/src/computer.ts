@@ -8,7 +8,10 @@ import { Memory } from "./memory";
 export type ComputerOptions = {
   program: Program;
   devices: DevicesConfiguration;
-} & ({ data: "clean" | "randomize" } | { data: "unchanged"; previous: Computer });
+} & (
+  | { data: "clean" | "randomize"; previous: Computer | null }
+  | { data: "unchanged"; previous: Computer }
+);
 
 export type DevicesConfiguration = {
   keyboardAndScreen: boolean;

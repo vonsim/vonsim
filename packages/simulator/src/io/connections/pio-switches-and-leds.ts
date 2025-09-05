@@ -32,6 +32,12 @@ export class PIOSwitchesAndLeds extends PIO {
         yield* self.updatePort("A");
       }
     })(options);
+
+    // Initialize the ports according to the initial state of the switches and leds
+    const updatePortA = this.updatePort("A");
+    while (!updatePortA.next().done);
+    const updatePortB = this.updatePort("B");
+    while (!updatePortB.next().done);
   }
 
   *updatePort(port: PIOPort): EventGenerator {

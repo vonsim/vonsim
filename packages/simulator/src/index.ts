@@ -25,6 +25,7 @@ export class Simulator {
     program: { data: [], instructions: [] },
     devices: { keyboardAndScreen: false, pic: false, pio: null, handshake: null },
     data: "clean",
+    previous: null,
   });
 
   /**
