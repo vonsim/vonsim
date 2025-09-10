@@ -8,10 +8,10 @@ Throughout the encoding, the following abbreviations are used:
 
 - `w`: indicates the size of the operands.
 
-  | `w` | Size    |
-  | :-: | :------ |
-  | `0` | 8 bits  |
-  | `1` | 16 bits |
+  |  `w`  | Size    |
+  | :---: | :------ |
+  |  `0`  | 8 bits  |
+  |  `1`  | 16 bits |
 
 - `rrr` or `RRR`: reference registers, and depend on `w`.
 
@@ -22,7 +22,7 @@ Throughout the encoding, the following abbreviations are used:
   | `010` | `DL`  | `DX`  |
   | `011` | `BL`  | `BX`  |
   | `100` | `AH`  | `SP`  |
-  | `101` | `CH`  |   —   |
+  | `101` | `CH`  | `BP`  |
   | `110` | `DH`  |   —   |
   | `111` | `BH`  |   —   |
 
@@ -53,17 +53,17 @@ These instructions receive two operands and support various addressing modes. Th
 | :---------------------------- | :---------------------------- | :---------: | :--------------------------------------- |
 | Register                      | Register                      | `00RRRrrr`  | —                                        |
 | Register                      | Memory (direct)               | `01000rrr`  | addr-low, addr-high                      |
-| Register                      | Memory (indirect)             | `01010rrr`  | —                                        |
-| Register                      | Memory (indirect with offset) | `01100rrr`  | disp-low, disp-high                      |
+| Register                      | Memory (indirect)             | `0110Brrr`  | —                                        |
+| Register                      | Memory (indirect with offset) | `0111Brrr`  | disp-low, disp-high                      |
 | Register                      | Immediate                     | `01001rrr`  | data-low, data-high                      |
-| Memory (direct)               | Register                      | `11000rrr`  | addr-low, addr-high                      |
-| Memory (indirect)             | Register                      | `11010rrr`  | —                                        |
-| Memory (indirect with offset) | Register                      | `11100rrr`  | disp-low, disp-high                      |
-| Memory (direct)               | Immediate                     | `11001000`  | addr-low, addr-high, data-low, data-high |
-| Memory (indirect)             | Immediate                     | `11011000`  | data-low, data-high                      |
-| Memory (indirect with offset) | Immediate                     | `11101000`  | disp-low, disp-high, data-low, data-high |
+| Memory (direct)               | Register                      | `10000rrr`  | addr-low, addr-high                      |
+| Memory (indirect)             | Register                      | `1010Brrr`  | —                                        |
+| Memory (indirect with offset) | Register                      | `1011Brrr`  | disp-low, disp-high                      |
+| Memory (direct)               | Immediate                     | `11000000`  | addr-low, addr-high, data-low, data-high |
+| Memory (indirect)             | Immediate                     | `1110B000`  | data-low, data-high                      |
+| Memory (indirect with offset) | Immediate                     | `1111B000`  | disp-low, disp-high, data-low, data-high |
 
-For instructions with a register as an operand, `rrr` encodes this register. In the case of register to register, `RRR` encodes the source register and `rrr` the destination register.
+For instructions with a register as an operand, `rrr` encodes this register. In the case of register to register, `RRR` encodes the source register and `rrr` the destination register. `B` indicates the register for indirect addressing: `B=0` for `BP` and `B=1` for `BX`.
 
 ## ALU Unary Instructions
 
@@ -80,8 +80,8 @@ These instructions receive one operand and support various addressing modes. Thi
 | :---------------------------- | :---------: | :------------------ |
 | Register                      | `00000rrr`  | —                   |
 | Memory (direct)               | `11000000`  | addr-low, addr-high |
-| Memory (indirect)             | `11010000`  | —                   |
-| Memory (indirect with offset) | `11100000`  | disp-low, disp-high |
+| Memory (indirect)             | `1110B000`  | —                   |
+| Memory (indirect with offset) | `1111B000`  | disp-low, disp-high |
 
 ## I/O Instructions
 

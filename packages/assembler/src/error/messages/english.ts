@@ -87,7 +87,7 @@ export const english = {
     // prettier-ignore
     "expected-type": (expected: LiteralUnion<TokenType, string>, got: TokenType) => `Expected ${expected}, got ${got}.`,
     // prettier-ignore
-    "indirect-addressing-must-be-bx": "The only register supported for indirect addressing is BX.",
+    "indirect-addressing-invalid": "The only registers supported for indirect addressing are BX and BP.",
     "unclosed-parenthesis": "Unclosed parenthesis.",
     // prettier-ignore
     "unexpected-identifier": "Unexpected identifier. You may have forgotten a colon (:) to make it a label.",

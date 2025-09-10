@@ -70,7 +70,7 @@ Instructions can receive various types of operands.
 
 ### Registers
 
-The user-accessible 16-bit registers are `AX`, `BX`, `CX`, `DX`, and `SP`. The user-accessible 8-bit registers are `AL`, `AH`, `BL`, `BH`, `CL`, `CH`, `DL`, and `DH`. When using any of these registers, the assembler can automatically infer whether it will be an 8-bit or 16-bit operation.
+The user-accessible 16-bit registers are `AX`, `BX`, `CX`, `DX`, `SP` and `BP`. The user-accessible 8-bit registers are `AL`, `AH`, `BL`, `BH`, `CL`, `CH`, `DL`, and `DH`. When using any of these registers, the assembler can automatically infer whether it will be an 8-bit or 16-bit operation.
 
 ### Memory Addresses
 
@@ -82,10 +82,10 @@ Memory addresses can be expressed in several ways:
 [bx+43] ; Indirect memory address with offset
 ```
 
-In the first case, it accesses the memory address `1234h` directly. In the second case, it accesses the memory address stored in `BX`. For the indirect addressing mode, only the `BX` register can be used. The same applies to the third case, where it accesses the memory address stored in `BX` displaced by `43`; the offset must be of the form `+/- constant`. Note that the assembler cannot always infer whether the operation will be 8 or 16 bits. For example:
+In the first case, it accesses the memory address `1234h` directly. In the second case, it accesses the memory address stored in `BX`. For the indirect addressing mode, only `BX` and `BP` registers can be used. The same applies to the third case, where it accesses the memory address stored in `BX` displaced by `43`; the offset must be of the form `+/- constant`. Note that the assembler cannot always infer whether the operation will be 8 or 16 bits. For example:
 
 ```vonsim
-mov [bx], 6h ; Is it intended to write 06h or 0006h?
+mov [bp], 6h ; Is it intended to write 06h or 0006h?
 ```
 
 In this case, the size of the operation must be specified:
@@ -114,7 +114,7 @@ In this case, the label `foo` refers to the memory address `1000h`. Therefore, `
 
 ### Immediate Values
 
-Immediate values are values that can be determined at the time of assembling the program. For example, in `mov ax, 5`, it is known that the number `5` should be copied into `AX`, so the number `5` is an immediate value that is stored in memory. In contrast, in `mov ax, [bx]`, it is not known what value should be copied into `AX`, as it depends on the content of `BX`. Therefore, `[bx]` is not an immediate value.
+Immediate values are values that can be determined at the time of assembling the program. For example, in `mov ax, 5`, it is known that the number `5` should be copied into `AX`, so the number `5` is an immediate value that is stored in memory. In contrast, in `mov ax, [bp]`, it is not known what value should be copied into `AX`, as it depends on the content of `BP`. Therefore, `[bp]` is not an immediate value.
 
 These immediate values are numbers that can be written as follows:
 

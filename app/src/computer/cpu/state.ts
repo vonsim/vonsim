@@ -11,6 +11,7 @@ const BXAtom = atom(Byte.zero(16)); // Base
 const CXAtom = atom(Byte.zero(16)); // Counter
 const DXAtom = atom(Byte.zero(16)); // Data
 const SPAtom = atom(Byte.zero(16)); // Stack Pointer
+const BPAtom = atom(Byte.zero(16)); // Base Pointer
 const IPAtom = atom(Byte.zero(16)); // Instruction Pointer
 const IRAtom = atom(Byte.zero(8)); // Instruction Register
 const riAtom = atom(Byte.zero(16)); // Register Index
@@ -65,6 +66,9 @@ export const registerAtoms: RegistersMap = {
   SP: SPAtom,
   "SP.l": lowAtom(SPAtom),
   "SP.h": highAtom(SPAtom),
+  BP: BPAtom,
+  "BP.l": lowAtom(BPAtom),
+  "BP.h": highAtom(BPAtom),
   IP: IPAtom,
   "IP.l": lowAtom(IPAtom),
   "IP.h": highAtom(IPAtom),
@@ -110,6 +114,7 @@ export function resetCPUState(computer: ComputerState) {
   store.set(registerAtoms.CX, Byte.fromUnsigned(computer.cpu.CX, 16));
   store.set(registerAtoms.DX, Byte.fromUnsigned(computer.cpu.DX, 16));
   store.set(registerAtoms.SP, Byte.fromUnsigned(computer.cpu.SP, 16));
+  store.set(registerAtoms.BP, Byte.fromUnsigned(computer.cpu.BP, 16));
   store.set(registerAtoms.IP, Byte.fromUnsigned(computer.cpu.IP, 16));
   store.set(registerAtoms.IR, Byte.fromUnsigned(computer.cpu.IR, 8));
   store.set(registerAtoms.ri, Byte.fromUnsigned(computer.cpu.ri, 16));

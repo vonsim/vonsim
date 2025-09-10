@@ -1,7 +1,7 @@
 import type { Byte, ByteSize } from "@vonsim/common/byte";
 
 import type { SimulatorError } from "../error";
-import type { ByteRegister, InstructionMetadata, WordRegister } from "./types";
+import type { ByteRegister, InstructionMetadata, MARRegister, WordRegister } from "./types";
 
 /**
  * All events that can be emitted by the CPU.
@@ -22,7 +22,7 @@ export type CPUMicroOperation =
       flags: Byte<16>;
     }
   | { type: "cpu:decode" }
-  | { type: "cpu:mar.set"; register: "IP" | "SP" | "ri" }
+  | { type: "cpu:mar.set"; register: MARRegister }
   | { type: "cpu:mbr.get"; register: ByteRegister }
   | { type: "cpu:mbr.set"; register: ByteRegister }
   | { type: "cpu:register.copy"; size: 8; src: ByteRegister; dest: ByteRegister }

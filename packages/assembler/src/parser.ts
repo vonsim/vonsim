@@ -22,7 +22,7 @@ import {
   StringDirectiveValue,
   UnassignedDirectiveValue,
 } from "./statements";
-import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "./types";
+import { DATA_DIRECTIVES, INDIRECTION_REGISTERS, INSTRUCTIONS, Register, REGISTERS } from "./types";
 
 /**
  * The Parser
@@ -225,16 +225,20 @@ export class Parser {
       const start = this.previous();
 
       if (this.check(...REGISTERS)) {
-        this.consume("BX", new AssemblerError("parser.indirect-addressing-must-be-bx"));
+        const register = this.consume(
+          [...INDIRECTION_REGISTERS],
+          new AssemblerError("parser.indirect-addressing-invalid"),
+        );
         const offset = this.check("RIGHT_BRACKET") ? null : this.numberExpression();
         const end = this.consume(
           "RIGHT_BRACKET",
-          new AssemblerError("parser.expected-literal-after-literal", "]", "BX"),
+          new AssemblerError("parser.expected-literal-after-literal", "]", register.type),
         );
 
         return new IndirectAddressOperand(
           sizeToken?.type,
           Position.merge(sizeToken?.position, start.position, end.position),
+          register.type,
           offset,
         );
       } else {

@@ -52,6 +52,8 @@ export function splitRegister(register: Register): [low: ByteRegister, high: Byt
       return ["DL", "DH"];
     case "SP":
       return ["SP.l", "SP.h"];
+    case "BP":
+      return ["BP.l", "BP.h"];
     case "IP":
       return ["IP.l", "IP.h"];
     case "ri":
