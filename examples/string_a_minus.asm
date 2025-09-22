@@ -1,6 +1,6 @@
 ;; name    = Convertir un string a minúscula y mostrar en pantalla
 ;; author  = Facundo Quiroga
-;; date    = 2025-08-25
+;; date    = 2025-09-01
 ;; devices = keyboard, screen
 ;; tags = string, minúscula, mostrar
 
