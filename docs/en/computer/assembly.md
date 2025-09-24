@@ -54,6 +54,10 @@ mov al, bl ; Instructions are written with mnemonics. In this case, it
 inst: mov ax, 5 ; Labels can be used to reference an instruction. The label
                 ; 'inst' can be used to reference the memory location of this MOV.
 
+and ax, 1111_0010b  ; The underscore character can be used in numbers for better
+                    ; readability. In this case, the binary number 11110010b
+                    ; (F2h) is used.
+
 jmp inst        ; Here it jumps to the address 'inst'.
 
 END

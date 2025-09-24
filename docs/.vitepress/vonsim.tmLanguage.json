@@ -21,10 +21,10 @@
     { "name": "keyword.operator.unassigned.asm.vonsim", "match": "(\\?)" },
     {
       "name": "constant.numeric.integer.hexadecimal.asm.vonsim",
-      "match": "(?i)\\b(\\d+[\\da-f]*h)\\b"
+      "match": "(?i)\\b(\\d+[\\da-f_]*h)\\b"
     },
-    { "name": "constant.numeric.integer.binary.asm.vonsim", "match": "(?i)\\b([01]+b)\\b" },
-    { "name": "constant.numeric.integer.decimal.asm.vonsim", "match": "\\b(\\d+)\\b" },
+    { "name": "constant.numeric.integer.binary.asm.vonsim", "match": "(?i)\\b([01][01_]*b)\\b" },
+    { "name": "constant.numeric.integer.decimal.asm.vonsim", "match": "\\b(\\d[\\d_]*)\\b" },
     { "name": "punctuation.asm.vonsim", "match": "([\\(\\),\\[\\]])" },
     { "name": "string.quoted.single.asm.vonsim", "match": "('[^']')" },
     { "name": "string.quoted.double.asm.vonsim", "match": "(\"[^\"]*\")" }

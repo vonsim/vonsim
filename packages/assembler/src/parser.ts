@@ -311,12 +311,13 @@ export class Parser {
   }
 
   private parseNumber(t: Token) {
-    if (t.lexeme.at(-1) === "h" || t.lexeme.at(-1) === "H") {
-      return parseInt(t.lexeme.slice(0, -1), 16);
-    } else if (t.lexeme.at(-1) === "b" || t.lexeme.at(-1) === "B") {
-      return parseInt(t.lexeme.slice(0, -1), 2);
+    const raw = t.lexeme.replace(/_/g, ""); // Allow underscores in numbers for readability
+    if (raw.at(-1) === "h" || raw.at(-1) === "H") {
+      return parseInt(raw.slice(0, -1), 16);
+    } else if (raw.at(-1) === "b" || raw.at(-1) === "B") {
+      return parseInt(raw.slice(0, -1), 2);
     } else {
-      return parseInt(t.lexeme, 10);
+      return parseInt(raw, 10);
     }
   }
 

@@ -42,9 +42,9 @@ const vonsimLanguage = StreamLanguage.define({
   token: (stream): keyof typeof vonsimTags | null => {
     if (stream.eatSpace()) return null;
 
-    if (stream.match(/[01]+b\b/i)) return "number";
-    if (stream.match(/\d[a-f\d]*h\b/i)) return "number";
-    if (stream.match(/\d+\b/)) return "number";
+    if (stream.match(/[01][01_]*b\b/i)) return "number";
+    if (stream.match(/\d[a-f\d_]*h\b/i)) return "number";
+    if (stream.match(/\d[\d_]*\b/)) return "number";
 
     if (stream.match(/'[^'\n]'/)) {
       return "character";

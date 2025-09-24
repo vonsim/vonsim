@@ -137,6 +137,7 @@ export class Scanner {
       if (this.isDigit(c)) {
         while (
           this.isDigit(this.peek()) ||
+          this.peek() === "_" ||
           (this.peek() >= "a" && this.peek() <= "f") ||
           (this.peek() >= "A" && this.peek() <= "F")
         ) {
@@ -150,12 +151,12 @@ export class Scanner {
           const text = this.source.slice(this.position.start, this.position.end);
           if (text.at(-1) === "b" || text.at(-1) === "B") {
             // Should be a binary number.
-            if (!/^[01]+b$/i.test(text)) {
+            if (!/^[01_]+b$/i.test(text)) {
               throw new AssemblerError("lexer.invalid-binary").at(this.position);
             }
           } else {
             // Should be a decimal number.
-            if (!/^\d+$/.test(text)) {
+            if (!/^[\d_]+$/.test(text)) {
               throw new AssemblerError("lexer.invalid-decimal").at(this.position);
             }
           }

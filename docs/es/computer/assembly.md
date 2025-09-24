@@ -57,6 +57,10 @@ inst: mov ax, 5 ; Las etiquetas se pueden utilizar para referenciar una
                 ; instrucción. La etiqueta 'inst' se puede utilizar para
                 ; referenciar la ubicación en memoria de este MOV.
 
+and ax, 1111_0010b  ; El carácter guion bajo se puede utilizar en los
+                    ; números para mejorar su legibilidad. En este caso, se
+                    ; utiliza el número binario 11110010b (F2h).
+
 jmp inst        ; Aquí se salta a la dirección 'inst'.
 
 END
