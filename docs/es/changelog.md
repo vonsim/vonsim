@@ -1,5 +1,9 @@
 # Notas de versión
 
+### UNRELEASED
+
+- Se agregó el registro [`FP`](./computer/cpu#registros).
+
 ### 20 de septiembre de 2024
 
 - Se agregó la instrucción [`TEST`](./computer/instructions/test).

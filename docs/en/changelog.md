@@ -1,5 +1,9 @@
 # Release Notes
 
+### UNRELEASED
+
+- Added [`FP`](./computer/cpu#registers) register.
+
 ### September 20, 2024
 
 - The [`TEST`](./computer/instructions/test) instruction has been added.
