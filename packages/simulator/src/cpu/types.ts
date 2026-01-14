@@ -21,7 +21,7 @@ export type RegistersMap = {
   CX: Byte<16>; // Counter
   DX: Byte<16>; // Data
   SP: Byte<16>; // Stack Pointer
-  BP: Byte<16>; // Base Pointer
+  FP: Byte<16>; // Frame Pointer
   IP: Byte<16>; // Instruction Pointer
   IR: Byte<8>; // Instruction Register
   ri: Byte<16>; // Register Index
@@ -40,7 +40,7 @@ export type PhysicalRegister = keyof RegistersMap;
  */
 export type PartialRegisters =
   | `${"A" | "B" | "C" | "D"}${"L" | "H"}`
-  | `${"SP" | "BP" | "IP" | "ri" | "id" | "left" | "right" | "result" | "FLAGS"}.${"l" | "h"}`;
+  | `${"SP" | "FP" | "IP" | "ri" | "id" | "left" | "right" | "result" | "FLAGS"}.${"l" | "h"}`;
 
 export type ByteRegister = ConditionalKeys<RegistersMap, Byte<8>> | PartialRegisters;
 export type WordRegister = ConditionalKeys<RegistersMap, Byte<16>>;
@@ -49,7 +49,7 @@ export type Register = ByteRegister | WordRegister;
 /**
  * The registers that has a connection to the Memory Address Register (MAR).
  */
-export type MARRegister = "IP" | "SP" | "BP" | "ri";
+export type MARRegister = "IP" | "SP" | "FP" | "ri";
 
 /**
  * Metadata about an instruction emitted along with the `cpu:cycle.start` event.

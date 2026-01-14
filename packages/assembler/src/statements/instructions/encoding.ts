@@ -23,7 +23,7 @@ export function registerToBits(reg: Register): number {
     case "SP":
       return 0b100;
     case "CH":
-    case "BP":
+    case "FP":
       return 0b101;
     case "DH":
       return 0b110;
@@ -38,5 +38,5 @@ export function registerToBits(reg: Register): number {
  * @see https://vonsim.github.io/en/reference/encoding
  */
 export function indirectRegisterToBits(reg: IndirectionRegister): number {
-  return reg === "BP" ? 0b0 : 0b1;
+  return reg === "FP" ? 0b0 : 0b1;
 }

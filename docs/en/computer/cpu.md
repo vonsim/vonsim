@@ -20,7 +20,11 @@ The processor has the following ports:
 
 The processor has four 16-bit general-purpose registers: `AX`, `BX`, `CX`, and `DX`. These can also be partially accessed as 8-bit registers: `AH`, `AL`, `BH`, `BL`, `CH`, `CL`, `DH`, and `DL`.
 
-Additionally, for the operation of the [stack](#stack), it has a 16-bit `SP` (stack pointer) register. Also, there is a 16-bit `BP` (base pointer) register which can be used for indirect addressing. These registers can be accessed by the user.
+Additionally, for the operation of the [stack](#stack), it has a 16-bit `SP` (stack pointer) register. Also, there is a 16-bit `FP` (frame pointer) register which can be used for indirect addressing. These registers can be accessed by the user.
+
+::: info Historical note
+The 8088 processor called the `FP` register `BP` (base pointer). However, in this simulator, it has been renamed to `FP` to avoid confusion with the `BX` register.
+:::
 
 Among the internal registers that cannot be accessed by the user, there is the [`FLAGS`](#flags) register (16 bits), the `IP` (instruction pointer, 16 bits) that stores the address of the next instruction to be executed, the `IR` (instruction register, 8 bits) that stores the byte of the instruction being analyzed/decoded at a given moment, and the `MAR` (memory address register, 16 bits) that stores the memory address to be propagated through the address bus, and the `MBR` (memory buffer register, 8 bits) that stores the byte to be propagated or received through the data bus.
 

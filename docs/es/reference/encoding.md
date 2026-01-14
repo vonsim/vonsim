@@ -22,7 +22,7 @@ A lo largo de la codificación se usan las siguientes abreviaturas:
   | `010` | `DL`  | `DX`  |
   | `011` | `BL`  | `BX`  |
   | `100` | `AH`  | `SP`  |
-  | `101` | `CH`  | `BP`  |
+  | `101` | `CH`  | `FP`  |
   | `110` | `DH`  |   —   |
   | `111` | `BH`  |   —   |
 
@@ -63,7 +63,7 @@ Estas instrucciones reciben dos operandos y soportan varios modos de direccionam
 | Memoria (indirecto)                    | Inmediato                              |  `1110B000`  | dato-low, dato-high                      |
 | Memoria (indirecto con desplazamiento) | Inmediato                              |  `1111B000`  | desp-low, desp-high, dato-low, dato-high |
 
-Para las instrucciones con un registro como operando, `rrr` codifica este registro. En el caso registro a registro, `RRR` codifica el registro fuente y `rrr` el registro destino. `B` indica el registro para direccionamiento indirecto: `B=0` para `BP` y `B=1` para `BX`.
+Para las instrucciones con un registro como operando, `rrr` codifica este registro. En el caso registro a registro, `RRR` codifica el registro fuente y `rrr` el registro destino. `B` indica el registro para direccionamiento indirecto: `B=0` para `FP` y `B=1` para `BX`.
 
 ## Instrucciones unarias de la ALU
 

@@ -32,7 +32,7 @@ dataBus.addNode("DX", { position: [522, 165] });
 dataBus.addNode("id", { position: [522, 205] });
 dataBus.addNode("IP", { position: [451, 277] });
 dataBus.addNode("SP", { position: [451, 317] });
-dataBus.addNode("BP", { position: [451, 357] });
+dataBus.addNode("FP", { position: [451, 357] });
 dataBus.addNode("ri", { position: [451, 397] });
 dataBus.addNode("result", { position: [370, 130] });
 dataBus.addNode("FLAGS", { position: [250, 225] });
@@ -49,7 +49,7 @@ dataBus.addNode("id join", { position: [492, 205] });
 dataBus.addNode("data mbr join", { position: [492, 250] });
 dataBus.addNode("IP join", { position: [421, 277] });
 dataBus.addNode("SP join", { position: [421, 317] });
-dataBus.addNode("BP join", { position: [421, 357] });
+dataBus.addNode("FP join", { position: [421, 357] });
 dataBus.addNode("ri join", { position: [421, 397] });
 dataBus.addNode("addresses mbr join", { position: [421, 250] });
 dataBus.addNode("result mbr join", { position: [370, 250] });
@@ -74,11 +74,11 @@ dataBus.addUndirectedEdge("data mbr join", "MBR");
 
 dataBus.addUndirectedEdge("IP", "IP join");
 dataBus.addUndirectedEdge("SP", "SP join");
-dataBus.addUndirectedEdge("BP", "BP join");
+dataBus.addUndirectedEdge("FP", "FP join");
 dataBus.addUndirectedEdge("ri", "ri join");
 dataBus.addUndirectedEdge("IP join", "SP join");
-dataBus.addUndirectedEdge("SP join", "BP join");
-dataBus.addUndirectedEdge("BP join", "ri join");
+dataBus.addUndirectedEdge("SP join", "FP join");
+dataBus.addUndirectedEdge("FP join", "ri join");
 dataBus.addUndirectedEdge("IP join", "addresses mbr join");
 dataBus.addUndirectedEdge("addresses mbr join", "data mbr join");
 
@@ -149,7 +149,7 @@ export function DataBus() {
           // Address registers
           "M 451 397 H 421", // ri
           "V 250", // Long path to MBR, here to get nice joins
-          "M 451 357 H 421", // BP
+          "M 451 357 H 421", // FP
           "M 451 317 H 421", // SP
           "M 451 277 H 421", // IP
           // Data registers

@@ -18,7 +18,7 @@ export function generateAddressPath(from: MARRegister): string {
     case "SP":
       return "M 551 317 H 575 V 337 H 598";
 
-    case "BP":
+    case "FP":
       return "M 551 357 H 575 V 337 H 598";
 
     case "ri":
@@ -43,7 +43,7 @@ export function AddressBus() {
         d={[
           "M 551 277 H 575 V 337", // IP
           "M 551 317 H 575", // SP
-          "M 551 357 H 575", // BP
+          "M 551 357 H 575", // FP
           "M 544 397 H 575 V 337", // ri
           "M 575 337 H 598", // Connection to MAR
         ].join(" ")}

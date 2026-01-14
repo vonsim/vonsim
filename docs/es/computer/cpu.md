@@ -20,7 +20,11 @@ El procesador cuenta con los siguientes puertos:
 
 El procesador cuenta con cuatro registros de propósito general de 16 bits: `AX`, `BX`, `CX` y `DX`. Los mismos también pueden ser accedidos parcialmente como registros de 8 bits: `AH`, `AL`, `BH`, `BL`, `CH`, `CL`, `DH` y `DL`.
 
-Además, para el funcionamiento de la [pila](#pila), cuenta con un registro `SP` (_stack pointer_) de 16 bits. Tamibén se cuenta con un registro `BP` (_base pointer_) para realizar direccionamiento indirecto. Estos registros pueden ser accedidos por el usuario.
+Además, para el funcionamiento de la [pila](#pila), cuenta con un registro `SP` (_stack pointer_) de 16 bits. Tamibén se cuenta con un registro `FP` (_frame pointer_) para realizar direccionamiento indirecto. Estos registros pueden ser accedidos por el usuario.
+
+::: info Nota histórica
+El procesador 8088 denominaba al registro `FP` como `BP` (_base pointer_). Sin embargo, en este simulador se lo ha renombrado a `FP` para evitar confusiones con el registro `BX`.
+:::
 
 Dentro de los registros internos que no pueden ser accedidos por el usuario, se encuentra el registro [`FLAGS`](#flags) (_flags register_, 16 bits), el `IP` (_instruction pointer_, 16 bits) que almacena la dirección de la próxima instrucción a ejecutar, el `IR` (_instruction register_, 8 bits) que almacena el byte de la instrucción que se está analizando/decodificando en un instante dado, y el `MAR` (_memory address register_, 16 bits) que almacena la dirección de memoria que se quiere propagar por el bus de direcciones, y el `MBR` (_memory buffer register_, 8 bits) que almacena el byte que se quiere propagar o se ha recibido por el bus de datos.
 

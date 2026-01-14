@@ -22,7 +22,7 @@ Throughout the encoding, the following abbreviations are used:
   | `010` | `DL`  | `DX`  |
   | `011` | `BL`  | `BX`  |
   | `100` | `AH`  | `SP`  |
-  | `101` | `CH`  | `BP`  |
+  | `101` | `CH`  | `FP`  |
   | `110` | `DH`  |   —   |
   | `111` | `BH`  |   —   |
 
@@ -63,7 +63,7 @@ These instructions receive two operands and support various addressing modes. Th
 | Memory (indirect)             | Immediate                     | `1110B000`  | data-low, data-high                      |
 | Memory (indirect with offset) | Immediate                     | `1111B000`  | disp-low, disp-high, data-low, data-high |
 
-For instructions with a register as an operand, `rrr` encodes this register. In the case of register to register, `RRR` encodes the source register and `rrr` the destination register. `B` indicates the register for indirect addressing: `B=0` for `BP` and `B=1` for `BX`.
+For instructions with a register as an operand, `rrr` encodes this register. In the case of register to register, `RRR` encodes the source register and `rrr` the destination register. `B` indicates the register for indirect addressing: `B=0` for `FP` and `B=1` for `BX`.
 
 ## ALU Unary Instructions
 
