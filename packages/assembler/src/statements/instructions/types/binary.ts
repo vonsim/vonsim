@@ -360,7 +360,7 @@ export class BinaryInstruction extends InstructionStatement {
 
       if (src.isRegister()) {
         if (size !== "auto" && size !== src.size) {
-          throw new AssemblerError("size-mismatch", size, src.size).at(this);
+          throw new AssemblerError("size-mismatch", src.size, size).at(this);
         }
 
         this.#initialOperation = {
