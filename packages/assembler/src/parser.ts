@@ -149,26 +149,53 @@ export class Parser {
     const label = labelToken?.lexeme.toUpperCase() || null;
 
     // There must be at least one value
-    const values: DataDirectiveValue[] = [this.dataDirectiveValue()];
-
-    while (this.match("COMMA")) values.push(this.dataDirectiveValue());
+    const values: DataDirectiveValue[] = this.dataDirectiveValues();
 
     this.endOfStatement();
     return createDataDirectiveStatement(directiveToken, values, label);
   }
 
-  private dataDirectiveValue(): DataDirectiveValue {
-    if (this.match("STRING")) {
+  private dataDirectiveValues(): DataDirectiveValue[] {
+    // There must be at least one value
+    const values: DataDirectiveValue[] = this.dataDirectiveValue();
+
+    while (this.match("COMMA")) values.push(...this.dataDirectiveValue());
+
+    return values;
+  }
+
+  private dataDirectiveValue(): DataDirectiveValue[] {
+      if (this.match("STRING")) {
       const stringToken = this.previous();
-      return new StringDirectiveValue(this.parseString(stringToken), stringToken.position);
+      return [new StringDirectiveValue(this.parseString(stringToken), stringToken.position)];
     }
 
     if (this.match("QUESTION_MARK")) {
       const questionMarkToken = this.previous();
-      return new UnassignedDirectiveValue(questionMarkToken.position);
+      return [new UnassignedDirectiveValue(questionMarkToken.position)];
     }
 
-    return new NumberExpressionDirectiveValue(this.numberExpression());
+    const numberToken = this.numberExpression();
+
+    if (this.match("DUP")) {
+      if (numberToken.isNumberLiteral()) {
+        const timesNumber = numberToken.evaluate();
+
+        if (this.match("LEFT_PAREN")) {
+          const dupValues = this.dataDirectiveValues();
+          this.consume("RIGHT_PAREN", new AssemblerError("parser.unclosed-parenthesis"));
+
+          const expandedValues: DataDirectiveValue[] = [];
+          for (let i = 0; i < timesNumber; i++) {
+            expandedValues.push(...dupValues);
+          }
+
+          return expandedValues;
+        }
+      }
+    }
+
+    return [new NumberExpressionDirectiveValue(numberToken)];
   }
 
   private instructionStatement(): InstructionStatement | null {

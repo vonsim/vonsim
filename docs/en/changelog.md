@@ -1,5 +1,9 @@
 # Release Notes
 
+## Unreleased
+
+- The `DUP` modifier has been added to `DB` and `DW` directives to repeat data patterns.
+
 ### September 20, 2024
 
 - The [`TEST`](./computer/instructions/test) instruction has been added.
