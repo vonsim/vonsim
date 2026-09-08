@@ -26,7 +26,7 @@ export class MOVInstruction extends Instruction<"MOV"> {
     ): string => {
       if (access.mode === "direct") return access.address.toString();
 
-      let out = "BX";
+      let out = access.reg;
       if (access.offset) {
         if (access.offset.signed > 0) {
           out += `+${access.offset.toString("hex")}h`;
@@ -96,13 +96,13 @@ export class MOVInstruction extends Instruction<"MOV"> {
         yield* super.consumeInstruction(computer, "ri.l");
         yield* super.consumeInstruction(computer, "ri.h");
       } else {
-        // Move BX to ri
-        yield* computer.cpu.copyWordRegister("BX", "ri");
+        // Move indirect to ri
+        yield* computer.cpu.copyWordRegister(mem.reg, "ri");
         if (mem.offset) {
           // Fetch offset
           yield* this.consumeInstruction(computer, "id.l");
           yield* this.consumeInstruction(computer, "id.h");
-          // Add offset to BX
+          // Add offset to indirect
           yield* computer.cpu.updateWordRegister("ri", ri => ri.add(mem.offset!.signed));
         }
       }

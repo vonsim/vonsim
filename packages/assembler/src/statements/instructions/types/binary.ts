@@ -5,8 +5,8 @@ import type { Position } from "@vonsim/common/position";
 import { AssemblerError } from "../../../error";
 import type { GlobalStore } from "../../../global-store";
 import { NumberExpression } from "../../../number-expression";
-import type { ByteRegister, Register, WordRegister } from "../../../types";
-import { registerToBits } from "../encoding";
+import type { ByteRegister, IndirectionRegister, Register, WordRegister } from "../../../types";
+import { indirectRegisterToBits, registerToBits } from "../encoding";
 import type { Operand } from "../operands";
 import { InstructionStatement } from "../statement";
 
@@ -24,7 +24,7 @@ type BinaryInstructionName =
 
 type InitialMemoryAccess =
   | { mode: "direct"; address: NumberExpression }
-  | { mode: "indirect"; offset: NumberExpression | null };
+  | { mode: "indirect"; reg: IndirectionRegister; offset: NumberExpression | null };
 
 type InitialOperation =
   | { mode: "reg<-reg"; size: ByteSize; out: Register; src: Register }
@@ -35,7 +35,7 @@ type InitialOperation =
 
 type MemoryAccess =
   | { mode: "direct"; address: MemoryAddress }
-  | { mode: "indirect"; offset: Byte<16> | null };
+  | { mode: "indirect"; reg: IndirectionRegister; offset: Byte<16> | null };
 
 type Operation =
   | { mode: "reg<-reg"; size: 8; out: ByteRegister; src: ByteRegister }
@@ -168,11 +168,13 @@ export class BinaryInstruction extends InstructionStatement {
           bytes.push(src.address.byte.low.unsigned);
           bytes.push(src.address.byte.high.unsigned);
         } else if (src.offset) {
-          bytes[1] = 0b01100_000; // 01100rrr
+          bytes[1] = 0b0111_0_000; // 0111Brrr
+          bytes[1] |= indirectRegisterToBits(src.reg) << 3;
           bytes.push(src.offset.low.unsigned);
           bytes.push(src.offset.high.unsigned);
         } else {
-          bytes[1] = 0b01010_000; // 01010rrr
+          bytes[1] = 0b0110_0_000; // 01010rrr
+          bytes[1] |= indirectRegisterToBits(src.reg) << 3;
         }
         bytes[1] |= registerToBits(out) << 0;
         break;
@@ -188,15 +190,17 @@ export class BinaryInstruction extends InstructionStatement {
 
       case "mem<-reg": {
         if (out.mode === "direct") {
-          bytes[1] = 0b11000_000; // 11000rrr
+          bytes[1] = 0b10000_000; // 10000rrr
           bytes.push(out.address.byte.low.unsigned);
           bytes.push(out.address.byte.high.unsigned);
         } else if (out.offset) {
-          bytes[1] = 0b11100_000; // 11100rrr
+          bytes[1] = 0b1011_0_000; // 1011Brrr
+          bytes[1] |= indirectRegisterToBits(out.reg) << 3;
           bytes.push(out.offset.low.unsigned);
           bytes.push(out.offset.high.unsigned);
         } else {
-          bytes[1] = 0b11010_000; // 11010rrr
+          bytes[1] = 0b1010_0_000; // 1010Brrr
+          bytes[1] |= indirectRegisterToBits(out.reg) << 3;
         }
         bytes[1] |= registerToBits(src) << 0;
         break;
@@ -204,15 +208,17 @@ export class BinaryInstruction extends InstructionStatement {
 
       case "mem<-imd": {
         if (out.mode === "direct") {
-          bytes[1] = 0b11001000;
+          bytes[1] = 0b11000000; // 11000000
           bytes.push(out.address.byte.low.unsigned);
           bytes.push(out.address.byte.high.unsigned);
         } else if (out.offset) {
-          bytes[1] = 0b11101000;
+          bytes[1] = 0b11110000; // 1111B000
+          bytes[1] |= indirectRegisterToBits(out.reg) << 3;
           bytes.push(out.offset.low.unsigned);
           bytes.push(out.offset.high.unsigned);
         } else {
-          bytes[1] = 0b11011000;
+          bytes[1] = 0b11100000; // 1110B000
+          bytes[1] |= indirectRegisterToBits(out.reg) << 3;
         }
         bytes.push(src.low.unsigned);
         if (size === 16) bytes.push(src.high.unsigned);
@@ -287,7 +293,7 @@ export class BinaryInstruction extends InstructionStatement {
           mode: "reg<-mem",
           size: out.size,
           out: out.value,
-          src: { mode: "indirect", offset: src.offset },
+          src: { mode: "indirect", reg: src.reg, offset: src.offset },
         };
         return;
       }
@@ -334,7 +340,7 @@ export class BinaryInstruction extends InstructionStatement {
 
       if (out.isIndirectAddress()) {
         size = out.size;
-        address = { mode: "indirect", offset: out.offset };
+        address = { mode: "indirect", reg: out.reg, offset: out.offset };
       } else if (out.isDirectAddress()) {
         size = out.size;
         address = { mode: "direct", address: out.value };
@@ -425,7 +431,7 @@ export class BinaryInstruction extends InstructionStatement {
           offset = Byte.fromSigned(computed, 16);
         }
 
-        return { mode: "indirect", offset };
+        return { mode: "indirect", reg: op.reg, offset };
       }
     };
 

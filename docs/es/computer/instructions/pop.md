@@ -25,6 +25,6 @@ Donde `rrr` codifica el registro fuente según esta tabla:
 | `010` |  `DX`  |
 | `011` |  `BX`  |
 | `100` |  `SP`  |
-| `101` |   --   |
+| `101` |  `FP`  |
 | `110` |   --   |
 | `111` |   --   |

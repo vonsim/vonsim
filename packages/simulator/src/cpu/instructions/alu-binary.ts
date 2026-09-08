@@ -37,7 +37,7 @@ export class ALUBinaryInstruction extends Instruction<
     ): string => {
       if (access.mode === "direct") return access.address.toString();
 
-      let out = "BX";
+      let out = access.reg;
       if (access.offset) {
         if (access.offset.signed > 0) {
           out += `+${access.offset.toString("hex")}h`;
@@ -107,13 +107,13 @@ export class ALUBinaryInstruction extends Instruction<
         yield* this.consumeInstruction(computer, "ri.l");
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
-        // Move BX to ri
-        yield* computer.cpu.copyWordRegister("BX", "ri");
+        // Move indirect to ri
+        yield* computer.cpu.copyWordRegister(out.reg, "ri");
         if (out.offset) {
           // Fetch offset
           yield* this.consumeInstruction(computer, "id.l");
           yield* this.consumeInstruction(computer, "id.h");
-          // Add offset to BX
+          // Add offset to indirect
           yield* computer.cpu.updateWordRegister("ri", ri => ri.add(out.offset!.signed));
         }
       }
@@ -145,13 +145,13 @@ export class ALUBinaryInstruction extends Instruction<
         yield* this.consumeInstruction(computer, "ri.l");
         yield* this.consumeInstruction(computer, "ri.h");
       } else {
-        // Move BX to ri
-        yield* computer.cpu.copyWordRegister("BX", "ri");
+        // Move indirect to ri
+        yield* computer.cpu.copyWordRegister(src.reg, "ri");
         if (src.offset) {
           // Fetch offset
           yield* this.consumeInstruction(computer, "id.l");
           yield* this.consumeInstruction(computer, "id.h");
-          // Add offset to BX
+          // Add offset to indirect
           yield* computer.cpu.updateWordRegister("ri", ri => ri.add(src.offset!.signed));
         }
       }

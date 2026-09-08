@@ -5,7 +5,7 @@ import { AssemblerError } from "../../error";
 import type { GlobalStore } from "../../global-store";
 import type { Token } from "../../lexer/tokens";
 import { NumberExpression } from "../../number-expression";
-import { Register, WORD_REGISTERS } from "../../types";
+import { IndirectionRegister, Register, WORD_REGISTERS } from "../../types";
 
 /**
  * An operand of an instruction.
@@ -78,6 +78,7 @@ export class IndirectAddressOperand extends Operand {
   constructor(
     size: "BYTE" | "WORD" | undefined,
     position: Position,
+    readonly reg: IndirectionRegister,
     readonly offset: NumberExpression | null,
   ) {
     super(position);

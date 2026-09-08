@@ -5,11 +5,11 @@ export function DataLines() {
   const { devices } = useSimulation();
 
   const addressPath = [
-    "M 699 349 H 800", // CPU -> Memory
-    devices.pic && "M 725 349 V 770 H 450",
-    devices.pio && "M 725 349 V 670 H 900",
-    devices.timer && "M 725 349 V 770 H 618 V 875",
-    devices.handshake && "M 725 349 V 980 H 900",
+    "M 699 337 H 800", // CPU -> Memory
+    devices.pic && "M 725 337 V 770 H 450",
+    devices.pio && "M 725 337 V 670 H 900",
+    devices.timer && "M 725 337 V 770 H 618 V 875",
+    devices.handshake && "M 725 337 V 980 H 900",
   ]
     .filter(Boolean)
     .join(" ");
