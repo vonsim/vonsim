@@ -177,3 +177,39 @@ it("unassigned", () => {
     `[Error: Expected end of statement. (4:5)]`,
   );
 });
+
+it("DUP", () => {
+  expect(parse("DB 3 DUP(1, 2), 3")[0]).toMatchObject({
+    directive: "DB",
+    values: [
+      { type: "number-expression", value: { type: "number-literal", value: 1 } },
+      { type: "number-expression", value: { type: "number-literal", value: 2 } },
+      { type: "number-expression", value: { type: "number-literal", value: 1 } },
+      { type: "number-expression", value: { type: "number-literal", value: 2 } },
+      { type: "number-expression", value: { type: "number-literal", value: 1 } },
+      { type: "number-expression", value: { type: "number-literal", value: 2 } },
+      { type: "number-expression", value: { type: "number-literal", value: 3 } },
+    ],
+  });
+  expect(parse('DW 2 DUP(?, "a")')[0]).toMatchObject({
+    directive: "DW",
+    values: [
+      { type: "unassigned" },
+      { type: "string", value: "a" },
+      { type: "unassigned" },
+      { type: "string", value: "a" },
+    ],
+  });
+  expect(parse("DB 2 DUP(2 DUP(1))")[0]).toMatchObject({
+    directive: "DB",
+    values: [
+      { type: "number-expression", value: { type: "number-literal", value: 1 } },
+      { type: "number-expression", value: { type: "number-literal", value: 1 } },
+      { type: "number-expression", value: { type: "number-literal", value: 1 } },
+      { type: "number-expression", value: { type: "number-literal", value: 1 } },
+    ],
+  });
+  expect(() => parse("DB 2 DUP(1, 2")).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Unclosed parenthesis. (13)]`,
+  );
+});

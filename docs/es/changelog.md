@@ -1,5 +1,9 @@
 # Notas de versión
 
+## Sin publicar
+
+- Se agregó el modificador `DUP` a las directivas `DB` y `DW` para repetir patrones de datos.
+
 ### 20 de septiembre de 2024
 
 - Se agregó la instrucción [`TEST`](./computer/instructions/test).

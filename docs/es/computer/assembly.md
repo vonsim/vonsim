@@ -42,6 +42,11 @@ str db "Hola, Mundo!" ; También se pueden escribir cadenas de texto en ASCII,
 
 db 1, 2, 3, 4 ; Se pueden escribir varios bytes en una misma línea.
 
+db 3 dup(0)       ; DUP repite un patrón de datos entre paréntesis. Esto
+                   ; reserva tres bytes inicializados en 0.
+dw 4 dup(1, 2)     ; El patrón puede contener varios valores. Esto escribe las
+                   ; palabras 1, 2, 1, 2, 1, 2, 1, y 2.
+
 cinco equ 5 ; EQU es la directiva de equivalencia. Se utiliza para definir
             ; constantes. En este caso, se define la constante 'cinco' con
             ; el valor 5. No se reserva memoria para esta constante.

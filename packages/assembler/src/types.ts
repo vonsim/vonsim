@@ -81,6 +81,7 @@ export const KEYWORDS = [
   "WORD",
   "PTR",
   "END",
+  "DUP",
   ...REGISTERS,
   ...INSTRUCTIONS,
   ...DATA_DIRECTIVES,
