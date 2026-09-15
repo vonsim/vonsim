@@ -31,8 +31,8 @@ type AssembleResultSuccess = {
   program: {
     data: Data[];
     instructions: InstructionStatement[];
-  },
-  metadata: Metadata
+  };
+  metadata: Metadata;
 };
 ```
 

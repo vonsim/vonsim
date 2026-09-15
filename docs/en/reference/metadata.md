@@ -10,8 +10,8 @@ For example, the following assembly code includes metadata comments:
 ;; date    = 2025-08-25
 ;; devices = screen
 
-; Escribir un programa que muestre en 
-; pantalla las letras mayúsculas (“A” a la “Z”). 
+; Escribir un programa que muestre en
+; pantalla las letras mayúsculas (“A” a la “Z”).
 
 LETRA_INICIO equ 'A'
 LETRA_FIN equ 'Z'
