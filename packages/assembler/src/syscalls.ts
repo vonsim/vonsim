@@ -8,6 +8,7 @@ import { Byte } from "@vonsim/common/byte";
 export const syscalls = [
   [0, Byte.fromUnsigned(0xa000, 16)],
   [3, Byte.fromUnsigned(0xa300, 16)],
+  [5, Byte.fromUnsigned(0xa500, 16)],
   [6, Byte.fromUnsigned(0xa600, 16)],
   [7, Byte.fromUnsigned(0xa700, 16)],
 ] as const;

@@ -176,6 +176,10 @@ export async function handleCPUEvent(event: SimulatorEvent<"cpu:">): Promise<voi
       return;
     }
 
+    case "cpu:int.5": {
+      return;
+    }
+
     case "cpu:int.6": {
       store.set(cycleAtom, { phase: "int6" });
       return;

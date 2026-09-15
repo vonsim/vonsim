@@ -94,9 +94,10 @@ The simulator allows system calls or _syscalls_. In the simulator, these calls a
 
 - `INT 0`: terminates the program execution, equivalent to the [`HLT`](./instructions/hlt) instruction;
 - `INT 3`: starts debugging mode (_breakpoint_);
+- `INT 5`: generates a random number between 0 and AL (inclusive) and stores it in AL;
 - `INT 6`: reads a character from the [keyboard](../io/devices/keyboard);
 - `INT 7`: writes a string of characters to the [screen](../io/devices/screen).
 
 The interrupt vector addresses associated with these numbers are protected by the system, preventing the user from modifying them.
 
-The content of these routines is stored in the [system monitor](./memory) at addresses `A000h`, `A300h`, `A600h`, and `A700h` respectively.
+The content of these routines is stored in the [system monitor](./memory) at addresses `A000h`, `A300h`, `A500h`, `A600h`, and `A700h` respectively.

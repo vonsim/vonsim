@@ -44,6 +44,19 @@ export function* handleSyscall(
       break;
     }
 
+    case 5: {
+      // INT 5 - Random integer between 0 and AL, stored in AL
+      yield { type: "cpu:int.5" };
+
+      const max = computer.cpu.getRegister("AL").unsigned;
+      const random = Byte.fromUnsigned(Math.round(Math.random() * max), 8);
+
+      yield* computer.cpu.updateByteRegister("AL", random);
+
+      // Doesn't return -- retrieves machine state
+      break;
+    }
+
     case 6: {
       // INT 6 - Read character from the keyboard and store it in [BX]
       yield { type: "cpu:int.6" };

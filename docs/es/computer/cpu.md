@@ -94,9 +94,10 @@ El simulador permite realizar llamadas al sistema o _syscalls_. En el simulador,
 
 - `INT 0`: termina la ejecución del programa, equivalente a la instrucción [`HLT`](./instructions/hlt);
 - `INT 3`: incia el modo de depuración (_breakpoint_);
+- `INT 5`: genera un número aleatorio entre 0 y AL (inclusive) y lo almacena en AL;
 - `INT 6`: lee un carácter del [teclado](../io/devices/keyboard);
 - `INT 7`: escribe una cadena de caracteres en [pantalla](../io/devices/screen).
 
 Las direcciones del vector de interrupciones asociadas a estos números están protegidas por el sistema, impidiendo que el usuario las modifique.
 
-El contenido de estas rutinas se encuentran almacenadas en el [monitor del sistema](./memory) en las direcciones `A000h`, `A300h`, `A600h` y `A700h` respectivamente.
+El contenido de estas rutinas se encuentran almacenadas en el [monitor del sistema](./memory) en las direcciones `A000h`, `A300h`, `A500h`, `A600h` y `A700h` respectivamente.
