@@ -1,5 +1,31 @@
 # Notas de versión
 
+### 15 de septiembre de 2026
+
+- Se agregó la llamada al sistema `INT 5` para generar un número aleatorio entre 0 y `AL` (inclusive), almacenado en `AL`.
+
+### 24 de septiembre de 2025
+
+- Se agregó soporte para guiones bajos (`_`) como separadores de dígitos en números para mejorar la legibilidad, como `1111_0010b` o `1_000`.
+
+### 30 de agosto de 2025
+
+- Se agregó la posibilidad de compartir programas mediante enlaces URL con el código fuente codificado.
+- Se agregó el control de tamaño de fuente directamente desde la barra de estado del editor.
+- Se actualizaron los atajos de teclado para el control de la simulación (`F1` para ciclo, `F2` para instrucción, `F3` para ejecución continua, `F4` para detener).
+
+### 25 de agosto de 2025
+
+- Se agregó un modo claro junto con modo oscuro.
+- Se rediseñaron los controles de la simulación para avanzar paso a paso.
+- Se agregó soporte para comentarios de [`metadatos`](./reference/metadata) de programas en el código fuente para configurar dispositivos requeridos automáticamente y documentar información del programa.
+- Se agregó una galería integrada de programas de ejemplo.
+
+### 26 de diciembre de 2024
+
+- El temporizador ahora comienza a contar después de la primera escritura en el registro `CONT`.
+- El búfer de la impresora se vacía automáticamente al finalizar la simulación.
+
 ### 20 de septiembre de 2024
 
 - Se agregó la instrucción [`TEST`](./computer/instructions/test).

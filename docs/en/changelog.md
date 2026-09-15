@@ -1,5 +1,31 @@
 # Release Notes
 
+### September 15, 2026
+
+- Added the `INT 5` system call to generate a random number between 0 and `AL` (inclusive), stored in `AL`.
+
+### September 24, 2025
+
+- Added support for underscores (`_`) as digit separators in numbers for improved readability, such as `1111_0010b` or `1_000`.
+
+### August 30, 2025
+
+- Added the ability to share programs via URL links with encoded source code.
+- Added font size controls directly in the editor status bar.
+- Updated keyboard shortcuts for simulator execution controls (`F1` for cycle, `F2` for instruction, `F3` for continuous run, `F4` to stop).
+
+### August 25, 2025
+
+- Added Light mode support alongside Dark mode.
+- Redesigned simulation controls for stepping through execution.
+- Added support for program [`metadata`](./reference/metadata) comments in source code to automatically configure devices and specify program details.
+- Added a built-in gallery of example programs.
+
+### December 26, 2024
+
+- The timer now begins counting after the first write to the `CONT` register.
+- The printer buffer is automatically flushed when the simulation stops.
+
 ### September 20, 2024
 
 - The [`TEST`](./computer/instructions/test) instruction has been added.
