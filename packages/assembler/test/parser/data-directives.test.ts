@@ -179,36 +179,268 @@ it("unassigned", () => {
 });
 
 it("DUP", () => {
-  expect(parse("DB 3 DUP(1, 2), 3")[0]).toMatchObject({
-    directive: "DB",
-    values: [
-      { type: "number-expression", value: { type: "number-literal", value: 1 } },
-      { type: "number-expression", value: { type: "number-literal", value: 2 } },
-      { type: "number-expression", value: { type: "number-literal", value: 1 } },
-      { type: "number-expression", value: { type: "number-literal", value: 2 } },
-      { type: "number-expression", value: { type: "number-literal", value: 1 } },
-      { type: "number-expression", value: { type: "number-literal", value: 2 } },
-      { type: "number-expression", value: { type: "number-literal", value: 3 } },
-    ],
-  });
-  expect(parse('DW 2 DUP(?, "a")')[0]).toMatchObject({
-    directive: "DW",
-    values: [
-      { type: "unassigned" },
-      { type: "string", value: "a" },
-      { type: "unassigned" },
-      { type: "string", value: "a" },
-    ],
-  });
-  expect(parse("DB 2 DUP(2 DUP(1))")[0]).toMatchObject({
-    directive: "DB",
-    values: [
-      { type: "number-expression", value: { type: "number-literal", value: 1 } },
-      { type: "number-expression", value: { type: "number-literal", value: 1 } },
-      { type: "number-expression", value: { type: "number-literal", value: 1 } },
-      { type: "number-expression", value: { type: "number-literal", value: 1 } },
-    ],
-  });
+  expect(parse("DB 3 DUP(1, 2), 3")).toMatchInlineSnapshot(`
+    [
+      {
+        "directive": "DB",
+        "label": null,
+        "position": [
+          0,
+          17,
+        ],
+        "type": "data-directive",
+        "values": [
+          {
+            "count": {
+              "position": [
+                3,
+                4,
+              ],
+              "type": "number-literal",
+              "value": 3,
+            },
+            "position": [
+              3,
+              14,
+            ],
+            "type": "duplicate",
+            "values": [
+              {
+                "position": [
+                  9,
+                  10,
+                ],
+                "type": "number-expression",
+                "value": {
+                  "position": [
+                    9,
+                    10,
+                  ],
+                  "type": "number-literal",
+                  "value": 1,
+                },
+              },
+              {
+                "position": [
+                  12,
+                  13,
+                ],
+                "type": "number-expression",
+                "value": {
+                  "position": [
+                    12,
+                    13,
+                  ],
+                  "type": "number-literal",
+                  "value": 2,
+                },
+              },
+            ],
+          },
+          {
+            "position": [
+              16,
+              17,
+            ],
+            "type": "number-expression",
+            "value": {
+              "position": [
+                16,
+                17,
+              ],
+              "type": "number-literal",
+              "value": 3,
+            },
+          },
+        ],
+      },
+    ]
+  `);
+  expect(parse('DW 2 DUP(?, "a")')).toMatchInlineSnapshot(`
+    [
+      {
+        "directive": "DW",
+        "label": null,
+        "position": [
+          0,
+          16,
+        ],
+        "type": "data-directive",
+        "values": [
+          {
+            "count": {
+              "position": [
+                3,
+                4,
+              ],
+              "type": "number-literal",
+              "value": 2,
+            },
+            "position": [
+              3,
+              16,
+            ],
+            "type": "duplicate",
+            "values": [
+              {
+                "position": [
+                  9,
+                  10,
+                ],
+                "type": "unassigned",
+              },
+              {
+                "position": [
+                  12,
+                  15,
+                ],
+                "type": "string",
+                "value": "a",
+              },
+            ],
+          },
+        ],
+      },
+    ]
+  `);
+  expect(parse("DB 2 DUP(2 DUP(1))")).toMatchInlineSnapshot(`
+    [
+      {
+        "directive": "DB",
+        "label": null,
+        "position": [
+          0,
+          18,
+        ],
+        "type": "data-directive",
+        "values": [
+          {
+            "count": {
+              "position": [
+                3,
+                4,
+              ],
+              "type": "number-literal",
+              "value": 2,
+            },
+            "position": [
+              3,
+              18,
+            ],
+            "type": "duplicate",
+            "values": [
+              {
+                "count": {
+                  "position": [
+                    9,
+                    10,
+                  ],
+                  "type": "number-literal",
+                  "value": 2,
+                },
+                "position": [
+                  9,
+                  17,
+                ],
+                "type": "duplicate",
+                "values": [
+                  {
+                    "position": [
+                      15,
+                      16,
+                    ],
+                    "type": "number-expression",
+                    "value": {
+                      "position": [
+                        15,
+                        16,
+                      ],
+                      "type": "number-literal",
+                      "value": 1,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]
+  `);
+  expect(parse("len equ 5\nDB len DUP(0)")).toMatchInlineSnapshot(`
+    [
+      {
+        "directive": "EQU",
+        "label": "LEN",
+        "position": [
+          4,
+          9,
+        ],
+        "type": "data-directive",
+        "value": [
+          {
+            "position": [
+              8,
+              9,
+            ],
+            "type": "number-expression",
+            "value": {
+              "position": [
+                8,
+                9,
+              ],
+              "type": "number-literal",
+              "value": 5,
+            },
+          },
+        ],
+      },
+      {
+        "directive": "DB",
+        "label": null,
+        "position": [
+          10,
+          23,
+        ],
+        "type": "data-directive",
+        "values": [
+          {
+            "count": {
+              "offset": false,
+              "position": [
+                13,
+                16,
+              ],
+              "type": "label",
+              "value": "LEN",
+            },
+            "position": [
+              13,
+              23,
+            ],
+            "type": "duplicate",
+            "values": [
+              {
+                "position": [
+                  21,
+                  22,
+                ],
+                "type": "number-expression",
+                "value": {
+                  "position": [
+                    21,
+                    22,
+                  ],
+                  "type": "number-literal",
+                  "value": 0,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ]
+  `);
   expect(() => parse("DB 2 DUP(1, 2")).toThrowErrorMatchingInlineSnapshot(
     `[Error: Unclosed parenthesis. (13)]`,
   );
