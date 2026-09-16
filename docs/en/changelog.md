@@ -1,8 +1,8 @@
 # Release Notes
 
-### Unreleased
+### September 17, 2026
 
-- The `DUP` modifier has been added to `DB` and `DW` directives to repeat data patterns.
+- The `DUP` directive has been added to repeat data patterns.
 
 ### September 15, 2026
 

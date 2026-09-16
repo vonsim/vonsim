@@ -1,8 +1,8 @@
 # Notas de versión
 
-### Sin publicar
+### 17 de septiembre de 2026
 
-- Se agregó el modificador `DUP` a las directivas `DB` y `DW` para repetir patrones de datos.
+- Se agregó la directiva `DUP` para repetir patrones de datos.
 
 ### 15 de septiembre de 2026
 
