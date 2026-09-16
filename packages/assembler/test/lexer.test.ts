@@ -75,11 +75,15 @@ describe("Characters", () => {
   });
 
   it("unterminated characters", () => {
-    expect(() => lex("'0")).toThrowErrorMatchingInlineSnapshot(`[Error: Unterminated character. (0:2)]`);
+    expect(() => lex("'0")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Unterminated character. (0:2)]`,
+    );
     expect(() => lex("'asdf")).toThrowErrorMatchingInlineSnapshot(
       `[Error: Unterminated character. (0:5)]`,
     );
-    expect(() => lex("'\n'")).toThrowErrorMatchingInlineSnapshot(`[Error: Unterminated character. (0:1)]`);
+    expect(() => lex("'\n'")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Unterminated character. (0:1)]`,
+    );
   });
 
   it("only ASCII", () => {

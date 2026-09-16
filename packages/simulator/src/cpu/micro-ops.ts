@@ -1,3 +1,4 @@
+import type { SyscallNumber } from "@vonsim/assembler";
 import type { Byte, ByteSize } from "@vonsim/common/byte";
 
 import type { SimulatorError } from "../error";
@@ -34,6 +35,6 @@ export type CPUMicroOperation =
   | { type: "cpu:iom.on" }
   | { type: "cpu:inta.on" }
   | { type: "cpu:inta.off" }
-  | { type: `cpu:int.${0 | 3 | 6 | 7}` }
+  | { type: `cpu:int.${SyscallNumber}` }
   | { type: "cpu:error"; error: SimulatorError<any> }
   | { type: "cpu:halt" };

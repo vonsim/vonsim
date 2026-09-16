@@ -169,7 +169,9 @@ it("label", () => {
       },
     ]
   `);
-  expect(() => parse("DB label:")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (3:9)]`);
+  expect(() => parse("DB label:")).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Expected argument. (3:9)]`,
+  );
   expect(() => parse("DB 1abel")).toThrowErrorMatchingInlineSnapshot(
     `[Error: Invalid decimal number. It should only contain digits. (3:7)]`,
   );
@@ -817,7 +819,9 @@ it("binary", () => {
       },
     ]
   `);
-  expect(() => parse("DB 2 -* 1")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (6:7)]`);
+  expect(() => parse("DB 2 -* 1")).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Expected argument. (6:7)]`,
+  );
 });
 
 it("parentheses", () => {
@@ -859,9 +863,15 @@ it("parentheses", () => {
       },
     ]
   `);
-  expect(() => parse("DB ()")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (4:5)]`);
-  expect(() => parse("DB ())")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (4:5)]`);
-  expect(() => parse("DB (()")).toThrowErrorMatchingInlineSnapshot(`[Error: Expected argument. (5:6)]`);
+  expect(() => parse("DB ()")).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Expected argument. (4:5)]`,
+  );
+  expect(() => parse("DB ())")).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Expected argument. (4:5)]`,
+  );
+  expect(() => parse("DB (()")).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Expected argument. (5:6)]`,
+  );
   expect(() => parse("DB -(+(-()))")).toThrowErrorMatchingInlineSnapshot(
     `[Error: Expected argument. (9:10)]`,
   );
