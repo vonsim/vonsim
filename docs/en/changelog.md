@@ -1,5 +1,9 @@
 # Release Notes
 
+### September 17, 2026
+
+- The `DUP` directive has been added to repeat data patterns.
+
 ### September 15, 2026
 
 - Added the `INT 5` system call to generate a random number between 0 and `AL` (inclusive), stored in `AL`.

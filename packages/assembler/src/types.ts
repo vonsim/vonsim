@@ -77,6 +77,7 @@ export type Instruction = TupleToUnion<typeof INSTRUCTIONS>;
 export const KEYWORDS = [
   "OFFSET",
   "ORG",
+  "DUP",
   "BYTE",
   "WORD",
   "PTR",

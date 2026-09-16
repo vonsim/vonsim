@@ -10,9 +10,52 @@ import type { DataDirective as AllDataDirectives } from "../../../types";
 import { DataDirectiveStatement } from "../statement";
 import type { DataDirectiveValue } from "../value";
 
+/**
+ * A symbol representing an unassigned (`?`) value.
+ */
 export const unassigned = Symbol("unassigned");
 type Unassigned = typeof unassigned;
+
+/**
+ * A DUP directive, which is used to repeat a value a certain number of times.
+ *
+ * ```vonsim
+ * DB 5 DUP(1)  ; Creates 5 bytes with the value 1
+ * ```
+ *
+ * A DUP directive can repeat multiple values and can also be nested.
+ *
+ * ---
+ * This class is: IMMUTABLE
+ */
+class DuplicateExpression {
+  constructor(
+    readonly count: NumberExpression,
+    readonly values: InitialValueType[],
+  ) {}
+
+  toJSON(): DuplicateExpressionJSON {
+    return {
+      count: this.count.toJSON(),
+      values: this.values.map(initialValueTypeToJSON),
+    };
+  }
+}
+type DuplicateExpressionJSON = {
+  count: ReturnType<NumberExpression["toJSON"]>;
+  values: InitialValueTypeJSON[];
+};
+
+// Extra types and helper functions
+
 type DataDirective = Exclude<AllDataDirectives, "EQU">;
+type InitialValueType = Unassigned | DuplicateExpression | NumberExpression;
+
+type InitialValueTypeJSON = "?" | ReturnType<NumberExpression["toJSON"]> | DuplicateExpressionJSON;
+const initialValueTypeToJSON = (value: InitialValueType): InitialValueTypeJSON => {
+  if (value === unassigned) return "?";
+  return value.toJSON();
+};
 
 /**
  * A data directive.
@@ -30,6 +73,7 @@ type DataDirective = Exclude<AllDataDirectives, "EQU">;
  * DB accepts numbers (signed or unsigned), strings and unassigned bytes.
  * DW accepts numbers (signed or unsigned) and unassigned bytes.
  * Unassigned bytes are used to reserve space without initializing it.
+ * Both types can also accept a DUP directive, which repeats a value a certain number of times.
  *
  * Also, they can have labels, which can be used to reference them. These labels
  * can be can be used anywhere in the program.
@@ -47,7 +91,7 @@ type DataDirective = Exclude<AllDataDirectives, "EQU">;
  */
 export class Data extends DataDirectiveStatement {
   readonly size: ByteSize;
-  #initialValues: (NumberExpression | Unassigned)[] | null = null;
+  #initialValues: InitialValueType[] | null = null;
   #values: (AnyByte | Unassigned)[] | null = null;
 
   constructor(
@@ -84,38 +128,67 @@ export class Data extends DataDirectiveStatement {
     };
   }
 
+  #validateValue(value: DataDirectiveValue): InitialValueType[] {
+    if (value.isUnassigned()) {
+      return [unassigned];
+    } else if (value.isString()) {
+      if (this.directive !== "DB") {
+        throw new AssemblerError("cannot-accept-strings", this.directive).at(value);
+      }
+
+      const str = value.value;
+      const values: NumberExpression[] = [];
+      for (let i = 0; i < str.length; i++) {
+        const decimal = charToDecimal(str[i]);
+        if (decimal === null) throw new Error("Invalid character, should not happen");
+
+        const position = new Position(value.position.start + i, value.position.start + i + 1);
+        const expr = NumberExpression.numberLiteral(decimal, position);
+        values.push(expr);
+      }
+      return values;
+    } else if (value.isDuplicate()) {
+      return [
+        new DuplicateExpression(
+          value.count,
+          value.values.flatMap(v => this.#validateValue(v)),
+        ),
+      ];
+    } else {
+      return [value.value];
+    }
+  }
+
   /**
    * Creates a data directive from a statement.
    */
   validate() {
     if (this.#initialValues) throw new Error("Data directive already validated");
 
-    this.#initialValues = [];
-
-    for (const value of this.values) {
-      if (value.isUnassigned()) {
-        this.#initialValues.push(unassigned);
-      } else if (value.isString()) {
-        if (this.directive !== "DB") {
-          throw new AssemblerError("cannot-accept-strings", this.directive).at(value);
-        }
-
-        const str = value.value;
-        for (let i = 0; i < str.length; i++) {
-          const decimal = charToDecimal(str[i]);
-          if (decimal === null) throw new Error("Invalid character, should not happen");
-
-          const position = new Position(value.position.start + i, value.position.start + i + 1);
-          const expr = NumberExpression.numberLiteral(decimal, position);
-          this.#initialValues.push(expr);
-        }
-      } else {
-        this.#initialValues.push(value.value);
-      }
-    }
+    this.#initialValues = this.values.flatMap(value => this.#validateValue(value));
 
     if (this.#initialValues.length === 0) {
       throw new AssemblerError("must-have-one-or-more-values", this.directive).at(this);
+    }
+  }
+
+  #evaluateExpression(store: GlobalStore, value: InitialValueType): (AnyByte | Unassigned)[] {
+    if (value === unassigned) {
+      return [unassigned];
+    } else if (value instanceof DuplicateExpression) {
+      const count = value.count.evaluate(store);
+      if (count < 0) {
+        throw new AssemblerError("dup-count-positive").at(value.count);
+      }
+      const bytes = value.values.flatMap(v => this.#evaluateExpression(store, v));
+      return Array(count).fill(bytes).flat();
+    } else {
+      const evaluated = value.evaluate(store);
+      if (!Byte.fits(evaluated, this.size)) {
+        throw new AssemblerError("value-out-of-range", evaluated, this.size).at(this);
+      }
+      const byte = Byte.fromNumber(evaluated, this.size) as AnyByte;
+      return [byte];
     }
   }
 
@@ -131,16 +204,7 @@ export class Data extends DataDirectiveStatement {
     const errors = forEachWithErrors(
       this.#initialValues,
       value => {
-        if (value === unassigned) {
-          this.#values!.push(unassigned);
-        } else {
-          const evaluated = value.evaluate(store);
-          if (!Byte.fits(evaluated, this.size)) {
-            throw new AssemblerError("value-out-of-range", evaluated, this.size).at(this);
-          }
-          const byte = Byte.fromNumber(evaluated, this.size) as AnyByte;
-          this.#values!.push(byte);
-        }
+        this.#values!.push(...this.#evaluateExpression(store, value));
       },
       AssemblerError.from,
     );

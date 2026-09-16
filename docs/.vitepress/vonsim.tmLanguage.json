@@ -16,7 +16,7 @@
       "name": "constant.language.register.asm.vonsim",
       "match": "(?i)\\b([abcd][lhx]|[is]p|m[ab]r)\\b"
     },
-    { "name": "storage.type.asm.vonsim", "match": "(?i)\\b(d[bw]|equ)\\b" },
+    { "name": "storage.type.asm.vonsim", "match": "(?i)\\b(d[bw]|equ|dup)\\b" },
     { "name": "keyword.operator.arithmetic.asm.vonsim", "match": "([*+-])" },
     { "name": "keyword.operator.unassigned.asm.vonsim", "match": "(\\?)" },
     {

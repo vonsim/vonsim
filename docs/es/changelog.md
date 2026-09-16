@@ -1,5 +1,9 @@
 # Notas de versión
 
+### 17 de septiembre de 2026
+
+- Se agregó la directiva `DUP` para repetir patrones de datos.
+
 ### 15 de septiembre de 2026
 
 - Se agregó la llamada al sistema `INT 5` para generar un número aleatorio entre 0 y `AL` (inclusive), almacenado en `AL`.

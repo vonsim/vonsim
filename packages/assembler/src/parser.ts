@@ -10,6 +10,7 @@ import {
   DataDirectiveStatement,
   DataDirectiveValue,
   DirectAddressOperand,
+  DuplicateDirectiveValue,
   EndStatement,
   IndirectAddressOperand,
   InstructionStatement,
@@ -148,13 +149,19 @@ export class Parser {
     // Labels always uppercase
     const label = labelToken?.lexeme.toUpperCase() || null;
 
+    const values = this.dataDirectiveValues();
+
+    this.endOfStatement();
+    return createDataDirectiveStatement(directiveToken, values, label);
+  }
+
+  private dataDirectiveValues(): DataDirectiveValue[] {
     // There must be at least one value
     const values: DataDirectiveValue[] = [this.dataDirectiveValue()];
 
     while (this.match("COMMA")) values.push(this.dataDirectiveValue());
 
-    this.endOfStatement();
-    return createDataDirectiveStatement(directiveToken, values, label);
+    return values;
   }
 
   private dataDirectiveValue(): DataDirectiveValue {
@@ -168,7 +175,26 @@ export class Parser {
       return new UnassignedDirectiveValue(questionMarkToken.position);
     }
 
-    return new NumberExpressionDirectiveValue(this.numberExpression());
+    // If it's not a string or a question mark, it must be a number expression.
+    // It might be a number by itself or part of a DUP directive.
+    const numberToken = this.numberExpression();
+
+    if (this.match("DUP")) {
+      this.consume(
+        "LEFT_PAREN",
+        new AssemblerError("parser.expected-literal-after-literal", "(", "DUP"),
+      );
+      const values = this.dataDirectiveValues();
+      this.consume("RIGHT_PAREN", new AssemblerError("parser.unclosed-parenthesis"));
+
+      return new DuplicateDirectiveValue(
+        numberToken,
+        values,
+        Position.merge(numberToken.position, this.previous().position),
+      );
+    }
+
+    return new NumberExpressionDirectiveValue(numberToken);
   }
 
   private instructionStatement(): InstructionStatement | null {
