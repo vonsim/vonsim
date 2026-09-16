@@ -10,6 +10,7 @@ import {
   DataDirectiveStatement,
   DataDirectiveValue,
   DirectAddressOperand,
+  DuplicateDirectiveValue,
   EndStatement,
   IndirectAddressOperand,
   InstructionStatement,
@@ -148,8 +149,7 @@ export class Parser {
     // Labels always uppercase
     const label = labelToken?.lexeme.toUpperCase() || null;
 
-    // There must be at least one value
-    const values: DataDirectiveValue[] = this.dataDirectiveValues();
+    const values = this.dataDirectiveValues();
 
     this.endOfStatement();
     return createDataDirectiveStatement(directiveToken, values, label);
@@ -157,45 +157,44 @@ export class Parser {
 
   private dataDirectiveValues(): DataDirectiveValue[] {
     // There must be at least one value
-    const values: DataDirectiveValue[] = this.dataDirectiveValue();
+    const values: DataDirectiveValue[] = [this.dataDirectiveValue()];
 
-    while (this.match("COMMA")) values.push(...this.dataDirectiveValue());
+    while (this.match("COMMA")) values.push(this.dataDirectiveValue());
 
     return values;
   }
 
-  private dataDirectiveValue(): DataDirectiveValue[] {
-      if (this.match("STRING")) {
+  private dataDirectiveValue(): DataDirectiveValue {
+    if (this.match("STRING")) {
       const stringToken = this.previous();
-      return [new StringDirectiveValue(this.parseString(stringToken), stringToken.position)];
+      return new StringDirectiveValue(this.parseString(stringToken), stringToken.position);
     }
 
     if (this.match("QUESTION_MARK")) {
       const questionMarkToken = this.previous();
-      return [new UnassignedDirectiveValue(questionMarkToken.position)];
+      return new UnassignedDirectiveValue(questionMarkToken.position);
     }
 
+    // If it's not a string or a question mark, it must be a number expression.
+    // It might be a number by itself or part of a DUP directive.
     const numberToken = this.numberExpression();
 
     if (this.match("DUP")) {
-      if (numberToken.isNumberLiteral()) {
-        const timesNumber = numberToken.evaluate();
+      this.consume(
+        "LEFT_PAREN",
+        new AssemblerError("parser.expected-literal-after-literal", "(", "DUP"),
+      );
+      const values = this.dataDirectiveValues();
+      this.consume("RIGHT_PAREN", new AssemblerError("parser.unclosed-parenthesis"));
 
-        if (this.match("LEFT_PAREN")) {
-          const dupValues = this.dataDirectiveValues();
-          this.consume("RIGHT_PAREN", new AssemblerError("parser.unclosed-parenthesis"));
-
-          const expandedValues: DataDirectiveValue[] = [];
-          for (let i = 0; i < timesNumber; i++) {
-            expandedValues.push(...dupValues);
-          }
-
-          return expandedValues;
-        }
-      }
+      return new DuplicateDirectiveValue(
+        numberToken,
+        values,
+        Position.merge(numberToken.position, this.previous().position),
+      );
     }
 
-    return [new NumberExpressionDirectiveValue(numberToken)];
+    return new NumberExpressionDirectiveValue(numberToken);
   }
 
   private instructionStatement(): InstructionStatement | null {

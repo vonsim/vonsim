@@ -2,6 +2,12 @@ import type { Position } from "@vonsim/common/position";
 
 import type { NumberExpression } from "../../number-expression";
 
+type DataDirectiveValueJSON =
+  | ReturnType<StringDirectiveValue["toJSON"]>
+  | ReturnType<UnassignedDirectiveValue["toJSON"]>
+  | ReturnType<NumberExpressionDirectiveValue["toJSON"]>
+  | DuplicateDirectiveValueJSON;
+
 /**
  * An argument of a data directive.
  *
@@ -9,12 +15,13 @@ import type { NumberExpression } from "../../number-expression";
  * - A string
  * - An unassigned value (just reserves space)
  * - A number expression (literal value, defined at assemble time)
+ * - A fixed repetition (number-expression) of a value (any data directive value)
  *
  * ---
  * This class is: IMMUTABLE
  */
 abstract class DataDirectiveValue {
-  abstract readonly type: "string" | "unassigned" | "number-expression";
+  abstract readonly type: "string" | "unassigned" | "number-expression" | "duplicate";
 
   constructor(readonly position: Position) {}
 
@@ -28,6 +35,10 @@ abstract class DataDirectiveValue {
 
   isNumberExpression(): this is NumberExpressionDirectiveValue {
     return this.type === "number-expression";
+  }
+
+  isDuplicate(): this is DuplicateDirectiveValue {
+    return this.type === "duplicate";
   }
 
   toJSON() {
@@ -75,9 +86,36 @@ export class NumberExpressionDirectiveValue extends DataDirectiveValue {
   }
 }
 
+type DuplicateDirectiveValueJSON = {
+  type: DataDirectiveValue["type"];
+  position: ReturnType<Position["toJSON"]>;
+  count: ReturnType<NumberExpression["toJSON"]>;
+  values: DataDirectiveValueJSON[];
+};
+export class DuplicateDirectiveValue extends DataDirectiveValue {
+  readonly type = "duplicate";
+
+  constructor(
+    readonly count: NumberExpression,
+    readonly values: DataDirectiveValueType[],
+    position: Position,
+  ) {
+    super(position);
+  }
+
+  toJSON(): DataDirectiveValueJSON {
+    return {
+      ...super.toJSON(),
+      count: this.count.toJSON(),
+      values: this.values.map(value => value.toJSON()),
+    };
+  }
+}
+
 type DataDirectiveValueType =
   | StringDirectiveValue
   | UnassignedDirectiveValue
-  | NumberExpressionDirectiveValue;
+  | NumberExpressionDirectiveValue
+  | DuplicateDirectiveValue;
 
 export type { DataDirectiveValueType as DataDirectiveValue };

@@ -41,10 +41,10 @@ str db "Hello, World!"  ; Text strings can also be written in ASCII,
 
 db 1, 2, 3, 4 ; Multiple bytes can be written on the same line.
 
-db 3 dup(0)       ; DUP repeats a parenthesized data pattern. This reserves
-                   ; three bytes initialized to 0.
-dw 4 dup(1, 2)     ; The pattern can contain multiple values. This writes the
-                   ; words 1, 2, 1, 2, 1, 2, 1, and 2.
+db 3 dup (0)    ; DUP repeats a parenthesized data pattern. This reserves
+                ; three bytes initialized to 0.
+dw 4 dup (1, 2) ; The pattern can contain multiple values. This writes the
+                ; words 1, 2, 1, 2, 1, 2, 1, 2.
 
 five equ 5  ; EQU is the equivalence directive. It is used to define
             ; constants. In this case, the constant 'five' is defined with

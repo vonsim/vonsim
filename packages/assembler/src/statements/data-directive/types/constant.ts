@@ -60,6 +60,9 @@ export class Constant extends DataDirectiveStatement {
     if (value.type === "unassigned") {
       throw new AssemblerError("cannot-be-unassinged", "EQU").at(value);
     }
+    if (value.type === "duplicate") {
+      throw new AssemblerError("constant-must-have-one-value").at(this);
+    }
     this.#initialValue = value.value;
   }
 

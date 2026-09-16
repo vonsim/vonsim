@@ -23,6 +23,7 @@ const vonsimTags = {
   character: tags.character,
   comment: tags.comment,
   "data-directive": Tag.define(),
+  duplicate: Tag.define(),
   identifier: tags.variableName,
   instruction: Tag.define(),
   label: tags.labelName,
@@ -79,6 +80,7 @@ const vonsimLanguage = StreamLanguage.define({
       if (word === "ORG" || word === "END") return "special";
       if (word === "OFFSET") return "offset";
       if (word === "BYTE" || word === "WORD" || word === "PTR") return "ptr-size";
+      if (word === "DUP") return "duplicate";
       if (DATA_DIRECTIVES.includes(word)) return "data-directive";
       if (INSTRUCTIONS.includes(word)) return "instruction";
       if (REGISTERS.includes(word)) return "register";
@@ -101,6 +103,7 @@ const vonsimHighlighter = HighlightStyle.define([
   { tag: vonsimTags.character, class: "text-orange-600 dark:text-orange-300" },
   { tag: vonsimTags.comment, class: "text-stone-500 italic" },
   { tag: vonsimTags["data-directive"], class: "text-rose-600 dark:text-rose-400/80" },
+  { tag: vonsimTags.duplicate, class: "text-rose-600 dark:text-rose-400/80 italic" },
   // { tag: vonsimTags.identifier, class: "" },
   { tag: vonsimTags.instruction, class: "text-mantis-500 dark:text-mantis-400" },
   // { tag: vonsimTags.label, class: "" },
