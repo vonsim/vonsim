@@ -75,6 +75,26 @@ END
 ; it should end with a HLT or INT 0.
 ```
 
+## Local Labels
+
+Labels that start with a dot (`.`) are local labels. They belong to the last label without a dot defined before them, and they can only be used from there until the next label without a dot (or `END`). This way, the same name can be reused in different subroutines:
+
+```vonsim
+org 3000h
+first:  mov cx, 3
+.loop:  dec cx     ; This '.loop' belongs to 'first'
+        jnz .loop  ; Jumps to the '.loop' of 'first'
+        ret
+
+second: mov cx, 5
+.loop:  dec cx     ; Another '.loop', which belongs to 'second'
+        jnz .loop  ; Jumps to the '.loop' of 'second'
+        ret
+end
+```
+
+Local labels can only be used on instructions, and they need a label without a dot before them. In error messages, local labels are shown with the label they belong to, such as `FIRST.LOOP`.
+
 ## Operands
 
 Instructions can receive various types of operands.

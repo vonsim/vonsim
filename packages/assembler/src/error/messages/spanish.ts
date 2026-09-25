@@ -44,6 +44,10 @@ export const spanish: Messages = {
   // prettier-ignore
   "label-should-be-an-instruction": label => `La etiqueta ${label} debería apuntar a una instrucción.`,
   // prettier-ignore
+  "local-label-only-for-instructions": label => `La etiqueta local "${label}" solo puede apuntar a una instrucción.`,
+  // prettier-ignore
+  "local-label-without-parent": label => `La etiqueta local "${label}" debe estar después de una etiqueta sin punto.`,
+  // prettier-ignore
   "missing-org": "No hay ningún ORG antes de esta instrucción, por lo que no se puede determinar su ubicación en memoria.",
   "must-have-one-or-more-values": directive => `${directive} debe tener al menos un valor.`,
   // prettier-ignore

@@ -113,3 +113,122 @@ describe("DUP", () => {
     expect(result.errors.map(e => e.code)).toEqual(["dup-count-positive"]);
   });
 });
+
+describe("Local labels", () => {
+  it("should belong to the previous label without a dot", () => {
+    const result = assemble(`
+      org 2000h
+      call subrutine
+      hlt
+
+      org 3000h
+      subrutine:
+        nop
+        nop
+      .loop:
+        nop
+        nop
+        jmp .loop
+        ret
+      end
+    `);
+
+    if (!result.success) throw new Error("Expected program to assemble");
+    const { instructions } = result.program;
+    const loop = instructions.find(i => i.label === "SUBRUTINE.LOOP");
+    const jmp = instructions.find(i => i.instruction === "JMP");
+
+    expect(loop?.start.value).toBe(0x3002);
+    expect(jmp?.toJSON()).toMatchObject({ address: 0x3002 });
+  });
+
+  it("should be reusable after each label without a dot", () => {
+    const result = assemble(`
+      org 3000h
+      first: mov cx, 3
+      .loop: dec cx
+        jnz .loop
+        ret
+
+      second: mov cx, 5
+      .loop: dec cx
+        jnz .loop
+        ret
+      end
+    `);
+
+    if (!result.success) throw new Error("Expected program to assemble");
+    const { instructions } = result.program;
+    const firstLoop = instructions.find(i => i.label === "FIRST.LOOP")!;
+    const secondLoop = instructions.find(i => i.label === "SECOND.LOOP")!;
+    const [firstJnz, secondJnz] = instructions.filter(i => i.instruction === "JNZ");
+
+    expect(firstLoop.start.value).not.toBe(secondLoop.start.value);
+    expect(firstJnz.toJSON()).toMatchObject({ address: firstLoop.start.value });
+    expect(secondJnz.toJSON()).toMatchObject({ address: secondLoop.start.value });
+  });
+
+  it("should be unique between two labels without a dot", () => {
+    const result = assemble(`
+      org 3000h
+      first: nop
+      .loop: nop
+      .loop: nop
+      second: nop
+      .loop: jmp .loop
+      end
+    `);
+
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    expect(result.errors.map(e => e.translate("en"))).toEqual(['Duplicated label "FIRST.LOOP".']);
+  });
+
+  it("should not be visible after the next label without a dot", () => {
+    const result = assemble(`
+      org 3000h
+      first: nop
+      .loop: jmp .loop
+      second: jmp .loop
+      end
+    `);
+
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    expect(result.errors.map(e => e.translate("en"))).toEqual([
+      'Label "SECOND.LOOP" has not been defined.',
+    ]);
+  });
+
+  it("should not care about labels of data directives and constants", () => {
+    const result = assemble(`
+      org 2000h
+      main: jmp .skip
+      msg db "hi"
+      five equ 5
+      .skip: hlt
+      end
+    `);
+
+    if (!result.success) throw new Error("Expected program to assemble");
+    const { instructions } = result.program;
+    const skip = instructions.find(i => i.label === "MAIN.SKIP");
+    const jmp = instructions.find(i => i.instruction === "JMP");
+
+    expect(skip?.start.value).toBe(0x2005); // After the JMP (3 bytes) and "hi" (2 bytes)
+    expect(jmp?.toJSON()).toMatchObject({ address: 0x2005 });
+
+    // Local labels can't belong to them either
+    const withoutParent = assemble(`
+      org 1000h
+      msg db "hi"
+      org 2000h
+      .loop: jmp .loop
+      end
+    `);
+
+    expect(withoutParent.success).toBe(false);
+    if (withoutParent.success) return;
+    expect(withoutParent.errors.map(e => e.code)).toEqual(["local-label-without-parent"]);
+  });
+});

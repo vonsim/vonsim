@@ -46,6 +46,10 @@ export const english = {
   "label-should-be-a-number": (label: string) => `Label ${label} should point to a EQU declaration or to a instruction. Maybe you ment to write OFFSET ${label}.`,
   // prettier-ignore
   "label-should-be-an-instruction": (label: string) => `Label ${label} should point to a instruction.`,
+  // prettier-ignore
+  "local-label-only-for-instructions": (label: string) => `Local label "${label}" can only point to an instruction.`,
+  // prettier-ignore
+  "local-label-without-parent": (label: string) => `Local label "${label}" must come after a label without a dot.`,
   "missing-org": "No ORG before this instruction — cannot determine its location in memory.",
   // prettier-ignore
   "must-have-one-or-more-values": (directive: string) => `${directive} must have at least one value.`,

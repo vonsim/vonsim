@@ -166,7 +166,25 @@ export class Scanner {
         continue;
       }
 
-      // Identifiers
+      // Local identifiers/labels
+      if (c === ".") {
+        if (!this.isAlpha(this.peek())) {
+          // Throw error at the dot
+          throw new AssemblerError("lexer.unexpected-character", c).at(this.position);
+        }
+        while (this.isAlphaNumeric(this.peek())) {
+          this.advance();
+        }
+        if(this.peek() === ":") {
+          this.advance();
+          this.addToken("LABEL");
+        } else {
+          this.addToken("IDENTIFIER");
+        }
+        continue;
+      }
+
+      // Identifiers and keywords
       if (this.isAlpha(c)) {
         while (this.isAlphaNumeric(this.peek())) {
           this.advance();

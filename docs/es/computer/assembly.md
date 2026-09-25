@@ -78,6 +78,26 @@ END
 ; debería terminar con un HLT o INT 0.
 ```
 
+## Etiquetas locales
+
+Las etiquetas que empiezan con un punto (`.`) son etiquetas locales. Pertenecen a la última etiqueta sin punto definida antes que ellas, y solo se pueden usar desde ahí hasta la siguiente etiqueta sin punto (o hasta `END`). De esta forma, se puede reutilizar el mismo nombre en distintas subrutinas:
+
+```vonsim
+org 3000h
+primera: mov cx, 3
+.loop:   dec cx     ; Este '.loop' pertenece a 'primera'
+         jnz .loop  ; Salta al '.loop' de 'primera'
+         ret
+
+segunda: mov cx, 5
+.loop:   dec cx     ; Otro '.loop', que pertenece a 'segunda'
+         jnz .loop  ; Salta al '.loop' de 'segunda'
+         ret
+end
+```
+
+Las etiquetas locales solo se pueden usar en instrucciones y necesitan una etiqueta sin punto antes. En los mensajes de error, las etiquetas locales se muestran junto a la etiqueta a la que pertenecen, como `PRIMERA.LOOP`.
+
 ## Operandos
 
 Las instrucciones pueden recibir varios tipos de operandos.

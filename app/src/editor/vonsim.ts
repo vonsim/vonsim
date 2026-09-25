@@ -27,6 +27,7 @@ const vonsimTags = {
   identifier: tags.variableName,
   instruction: Tag.define(),
   label: tags.labelName,
+  "local-indicator": Tag.define(),
   number: tags.number,
   operator: tags.operator,
   offset: Tag.define(),
@@ -65,6 +66,10 @@ const vonsimLanguage = StreamLanguage.define({
       return "punctuation";
     }
 
+    if (stream.eat(".")) {
+      return "local-indicator";
+    }
+
     if (stream.eat("?")) {
       return "unassigned";
     }
@@ -76,14 +81,19 @@ const vonsimLanguage = StreamLanguage.define({
 
     if (stream.eat(/[a-z_]/i)) {
       stream.eatWhile(/\w/);
-      const word = stream.current().toUpperCase();
-      if (word === "ORG" || word === "END") return "special";
-      if (word === "OFFSET") return "offset";
-      if (word === "BYTE" || word === "WORD" || word === "PTR") return "ptr-size";
-      if (word === "DUP") return "duplicate";
-      if (DATA_DIRECTIVES.includes(word)) return "data-directive";
-      if (INSTRUCTIONS.includes(word)) return "instruction";
-      if (REGISTERS.includes(word)) return "register";
+
+      if (stream.string.charAt(stream.start - 1) !== ".") {
+        // The name of a local label is never a keyword (e.g. `.end:`)
+
+        const word = stream.current().toUpperCase();
+        if (word === "ORG" || word === "END") return "special";
+        if (word === "OFFSET") return "offset";
+        if (word === "BYTE" || word === "WORD" || word === "PTR") return "ptr-size";
+        if (word === "DUP") return "duplicate";
+        if (DATA_DIRECTIVES.includes(word)) return "data-directive";
+        if (INSTRUCTIONS.includes(word)) return "instruction";
+        if (REGISTERS.includes(word)) return "register";
+      }
 
       if (stream.eat(":")) return "label";
       return "identifier";
@@ -107,6 +117,7 @@ const vonsimHighlighter = HighlightStyle.define([
   // { tag: vonsimTags.identifier, class: "" },
   { tag: vonsimTags.instruction, class: "text-mantis-500 dark:text-mantis-400" },
   // { tag: vonsimTags.label, class: "" },
+  { tag: vonsimTags["local-indicator"], class: "text-yellow-600 dark:text-yellow-300/80" },
   { tag: vonsimTags.number, class: "text-cyan-600 dark:text-cyan-300/60" },
   { tag: vonsimTags.operator, class: "text-rose-600 dark:text-rose-300" },
   { tag: vonsimTags.offset, class: "text-rose-600 dark:text-rose-400/80 italic" },

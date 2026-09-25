@@ -1,5 +1,9 @@
 # Release Notes
 
+### September 25, 2026
+
+- Added local labels: labels starting with a dot (such as `.loop`) belong to the previous label without a dot, so the same name can be reused in different subroutines.
+
 ### September 17, 2026
 
 - The `DUP` directive has been added to repeat data patterns.

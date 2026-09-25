@@ -240,4 +240,65 @@ describe("Labels", () => {
       ]
     `);
   });
+
+  it("local labels belong to the previous label without a dot", () => {
+    expect(parse("main: NOP\n.loop: JMP .loop")).toMatchInlineSnapshot(`
+      [
+        {
+          "instruction": "NOP",
+          "label": "MAIN",
+          "position": [
+            6,
+            9,
+          ],
+          "type": "instruction",
+        },
+        {
+          "instruction": "JMP",
+          "label": "MAIN.LOOP",
+          "operands": [
+            {
+              "position": [
+                21,
+                26,
+              ],
+              "type": "number-expression",
+              "value": {
+                "offset": false,
+                "position": [
+                  21,
+                  26,
+                ],
+                "type": "label",
+                "value": "MAIN.LOOP",
+              },
+            },
+          ],
+          "position": [
+            17,
+            26,
+          ],
+          "type": "instruction",
+        },
+      ]
+    `);
+  });
+
+  it("local labels need a previous label without a dot", () => {
+    expect(() => parse(".loop: NOP")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Local label ".LOOP" must come after a label without a dot. (0:6)]`,
+    );
+    expect(() => parse("JMP .loop")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Local label ".LOOP" must come after a label without a dot. (4:9)]`,
+    );
+  });
+
+  it("local labels can only point to instructions", () => {
+    expect(() => parse("main: NOP\n.data DB 1")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Local label ".DATA" can only point to an instruction. (10:15)]`,
+    );
+    expect(() => parse("main: NOP\n.five EQU 5")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Local label ".FIVE" can only point to an instruction. (10:15)]`,
+    );
+  });
 });

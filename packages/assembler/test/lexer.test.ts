@@ -406,3 +406,53 @@ describe("Numbers", () => {
     `);
   });
 });
+
+describe("Local labels", () => {
+  it("start with a dot", () => {
+    expect(lex(".loop: jmp .loop")).toMatchInlineSnapshot(`
+      [
+        {
+          "lexeme": ".loop:",
+          "position": [
+            0,
+            6,
+          ],
+          "type": "LABEL",
+        },
+        {
+          "lexeme": "jmp",
+          "position": [
+            7,
+            10,
+          ],
+          "type": "JMP",
+        },
+        {
+          "lexeme": ".loop",
+          "position": [
+            11,
+            16,
+          ],
+          "type": "IDENTIFIER",
+        },
+        {
+          "lexeme": "",
+          "position": [
+            16,
+            16,
+          ],
+          "type": "EOF",
+        },
+      ]
+    `);
+  });
+
+  it("need a letter or underscore after the dot", () => {
+    expect(() => lex(".5")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Unexpected character ".". (0:1)]`,
+    );
+    expect(() => lex(". loop")).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Unexpected character ".". (0:1)]`,
+    );
+  });
+});

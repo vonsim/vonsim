@@ -1,5 +1,9 @@
 # Notas de versión
 
+### 25 de septiembre de 2026
+
+- Se agregaron las etiquetas locales: las etiquetas que empiezan con punto (como `.loop`) pertenecen a la etiqueta sin punto anterior, por lo que se puede reutilizar el mismo nombre en distintas subrutinas.
+
 ### 17 de septiembre de 2026
 
 - Se agregó la directiva `DUP` para repetir patrones de datos.

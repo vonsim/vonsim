@@ -57,6 +57,9 @@ import { DATA_DIRECTIVES, INSTRUCTIONS, Register, REGISTERS } from "./types";
  * For example, it will throw an error if it encounters a token that it doesn't
  * expect. More extensive validation is done later (see the index.ts).
  *
+ * It also gives local labels (the ones starting with a dot) their full name.
+ * @see {@link Parser#qualifyLocalLabel}.
+ *
  * ---
  * This class is: MUTABLE
  */
@@ -71,12 +74,18 @@ export class Parser {
    */
   private current = 0;
 
+  /**
+   * The last label without a dot defined so far, which local labels belong to.
+   */
+  private lastGlobalLabel: string | null = null;
+
   constructor(tokens: Token[]) {
     this.tokens = tokens;
   }
 
   parse(): Statement[] {
     this.current = 0;
+    this.lastGlobalLabel = null;
     const statements: Statement[] = [];
 
     while (!this.isAtEnd()) {
@@ -148,6 +157,9 @@ export class Parser {
 
     // Labels always uppercase
     const label = labelToken?.lexeme.toUpperCase() || null;
+    if (label?.startsWith(".")) {
+      throw new AssemblerError("local-label-only-for-instructions", label).at(labelToken!);
+    }
 
     const values = this.dataDirectiveValues();
 
@@ -214,8 +226,14 @@ export class Parser {
 
     if (!instructionToken) return null;
 
-    // Label is the lexeme without the colon. Always uppercase
-    const label = labelToken?.lexeme.toUpperCase().slice(0, -1) || null;
+    let label: string | null = null;
+    if (labelToken) {
+      // Label is the lexeme without the colon. Always uppercase
+      label = labelToken.lexeme.toUpperCase().slice(0, -1);
+
+      if (label.startsWith(".")) label = this.qualifyLocalLabel(label, labelToken);
+      else this.lastGlobalLabel = label;
+    }
 
     // Check for zeroary instructions
     if (this.isAtEndOfStatement()) {
@@ -351,6 +369,16 @@ export class Parser {
     return t.lexeme.slice(1, -1);
   }
 
+  private qualifyLocalLabel(label: string, token: Token): string {
+    if (this.lastGlobalLabel === null) {
+      throw new AssemblerError("local-label-without-parent", label).at(token);
+    }
+
+    // Local labels start with a dot and belong to the last label without a dot defined
+    // before them. Since other labels can't have dots, these full names can't clash with them.
+    return this.lastGlobalLabel + label;
+  }
+
   private peek() {
     return this.tokens[this.current];
   }
@@ -394,8 +422,11 @@ export class Parser {
       throw new AssemblerError("parser.expected-argument").at(this.peek());
     }
 
+    let label = identifierToken.lexeme.toUpperCase();
+    if (label.startsWith(".")) label = this.qualifyLocalLabel(label, identifierToken);
+
     return NumberExpression.label(
-      identifierToken.lexeme.toUpperCase(),
+      label,
       offsetToken !== null,
       Position.merge(offsetToken?.position, identifierToken.position),
     );
