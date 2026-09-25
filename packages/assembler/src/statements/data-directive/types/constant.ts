@@ -76,11 +76,17 @@ export class Constant extends DataDirectiveStatement {
       throw new AssemblerError("circular-reference").at(this.position);
     }
 
-    this.#status = "processed";
-    const result = this.#initialValue.evaluate(store);
-    this.#status = "processed";
-    this.#value = result;
-    return result;
+    try {
+      this.#status = "processing";
+      this.#value = this.#initialValue.evaluate(store);
+      this.#status = "processed";
+      return this.#value;
+    } catch (error) {
+      // The constant is no longer being evaluated. Without this reset,
+      // its next use would report a circular reference instead of the actual error.
+      this.#status = "not-processed";
+      throw error;
+    }
   }
 
   // Alias for evaluateExpressions

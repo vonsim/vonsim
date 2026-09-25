@@ -42,6 +42,10 @@ type LabelsMap = Map<
  *
  * The second one computes the addresses of the labels and stores them in the store.
  *
+ * Between them, there is a phase where the store can only evaluate constants: that's when
+ * {@link Data} computes its length, since it needs to evaluate the counts of its DUPs
+ * (see `Data#computeLength`). Hence, these counts can't depend on addresses.
+ *
  * By the end of the second method, the store is ready to be used by {@link DataDirective}
  * and {@link Instruction} to evaluate their operands.
  */
@@ -155,6 +159,14 @@ export class GlobalStore {
     );
 
     return errors;
+  }
+
+  /**
+   * Whether the addresses of the labels have been computed.
+   * Until then, only constants (EQU) can be evaluated.
+   */
+  get addressesComputed() {
+    return this.#computedAddresses;
   }
 
   /**

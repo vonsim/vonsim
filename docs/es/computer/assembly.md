@@ -46,6 +46,8 @@ db 3 dup (0)    ; DUP repite un patrón de datos entre paréntesis. Esto
                 ; reserva tres bytes inicializados en 0.
 dw 4 dup (1, 2) ; El patrón puede contener varios valores. Esto escribe las
                 ; palabras 1, 2, 1, 2, 1, 2, 1, 2.
+                ; La cantidad puede ser una expresión, pero solo puede usar números
+                ; y constantes (no direcciones, como OFFSET o etiquetas de instrucciones).
 
 cinco equ 5 ; EQU es la directiva de equivalencia. Se utiliza para definir
             ; constantes. En este caso, se define la constante 'cinco' con

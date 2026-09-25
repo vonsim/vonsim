@@ -64,6 +64,20 @@ export function assemble(source: string): AssembleResult {
     );
     if (errors.length > 0) return { success: false, errors };
 
+    // Compute the length of each data directive.
+    // Instructions already know their length, but data directives need to evaluate
+    // the counts of their DUPs, which may reference constants validated above.
+    errors = forEachWithErrors(
+      statements,
+      statement => {
+        if (statement.isDataDirective() && statement.directive !== "EQU") {
+          statement.computeLength(store);
+        }
+      },
+      AssemblerError.from,
+    );
+    if (errors.length > 0) return { success: false, errors };
+
     // Compute the addresses of each instruction and data directive.
     errors = store.computeAddresses(statements);
     if (errors.length > 0) return { success: false, errors };

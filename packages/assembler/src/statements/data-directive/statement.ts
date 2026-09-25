@@ -32,6 +32,7 @@ import type { DataDirectiveValue } from "./value";
  * With that in mind, the flow of "assembling" an data directive is:
  * - Create the data directive with values.
  * - Validate it with `DataDirectiveStatement#validate`, getting generic {@link NumberExpression}s.
+ * - {@link Data} computes its length with `Data#computeLength`, evaluating the counts of its DUPs.
  * - {@link GlobalStore} computes the address of the data directive.
  * - With these addresses, {@link GlobalStore} can compute the addresses of the labels.
  * - We use `DataDirectiveStatement#evaluateExpressions` to get the actual operand values.

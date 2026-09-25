@@ -92,6 +92,7 @@ const initialValueTypeToJSON = (value: InitialValueType): InitialValueTypeJSON =
 export class Data extends DataDirectiveStatement {
   readonly size: ByteSize;
   #initialValues: InitialValueType[] | null = null;
+  #length: number | null = null;
   #values: (AnyByte | Unassigned)[] | null = null;
 
   constructor(
@@ -108,9 +109,9 @@ export class Data extends DataDirectiveStatement {
    * Returns the length of the data directive in bytes.
    */
   get length(): number {
-    if (!this.#initialValues) throw new Error("Data directive not validated");
+    if (this.#length === null) throw new Error("Data directive length not computed");
 
-    return this.#initialValues.length * (this.size / 8);
+    return this.#length;
   }
 
   getValues(): (AnyByte | Unassigned)[] {
@@ -172,14 +173,63 @@ export class Data extends DataDirectiveStatement {
     }
   }
 
+  /**
+   * Evaluates the count of a DUP.
+   *
+   * This is needed to compute the length of the data directive, which happens before the
+   * {@link GlobalStore} has computed the addresses of the labels. The count can only depend
+   * on number literals and constants that don't depend on addresses.
+   */
+  #evaluateCount(store: GlobalStore, duplicate: DuplicateExpression): number {
+    let count: number;
+    try {
+      count = duplicate.count.evaluate(store);
+    } catch (error) {
+      // Point to the count rather than to the label (which may be inside a constant)
+      if (error instanceof AssemblerError && error.code === "dup-count-depends-on-address") {
+        error.at(duplicate.count);
+      }
+      throw error;
+    }
+
+    if (count < 0) {
+      throw new AssemblerError("dup-count-positive").at(duplicate.count);
+    }
+    return count;
+  }
+
+  /**
+   * @returns How many elements (bytes for DB, words for DW) the value takes once expanded.
+   */
+  #countElements(store: GlobalStore, value: InitialValueType): number {
+    if (!(value instanceof DuplicateExpression)) return 1;
+
+    const count = this.#evaluateCount(store, value);
+    if (count === 0) return 0;
+
+    let elements = 0;
+    for (const v of value.values) elements += this.#countElements(store, v);
+    return count * elements;
+  }
+
+  /**
+   * Computes the length of the data directive. Must be called after all the statements have been
+   * validated and before the {@link GlobalStore} computes the addresses.
+   */
+  computeLength(store: GlobalStore) {
+    if (!this.#initialValues) throw new Error("Data directive not validated");
+    if (this.#length !== null) throw new Error("Data directive length already computed");
+
+    let elements = 0;
+    for (const value of this.#initialValues) elements += this.#countElements(store, value);
+    this.#length = elements * (this.size / 8);
+  }
+
   #evaluateExpression(store: GlobalStore, value: InitialValueType): (AnyByte | Unassigned)[] {
     if (value === unassigned) {
       return [unassigned];
     } else if (value instanceof DuplicateExpression) {
-      const count = value.count.evaluate(store);
-      if (count < 0) {
-        throw new AssemblerError("dup-count-positive").at(value.count);
-      }
+      const count = this.#evaluateCount(store, value);
       const bytes = value.values.flatMap(v => this.#evaluateExpression(store, v));
       return Array(count).fill(bytes).flat();
     } else {

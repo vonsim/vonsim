@@ -19,6 +19,7 @@ export const spanish: Messages = {
   "constant-must-have-one-value": "La constante debe tener una exactamente un valor.",
   "destination-cannot-be-immediate": "El destino no puede ser un valor inmediato.",
   "double-memory-access": "No se puede acceder a una memoria dos veces en la misma instrucción.",
+  "dup-count-depends-on-address": label => `Las repeticiones de un DUP no pueden depender de la dirección de "${label}".`,
   "dup-count-positive": "Las repeticiones de un DUP deben ser positivas.",
   "duplicated-label": label => `Etiqueta duplicada "${label}".`,
   "empty-program": "Programa vacío. El programa debe tener, al menos, una instrucción END.",

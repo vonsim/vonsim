@@ -45,6 +45,8 @@ db 3 dup (0)    ; DUP repeats a parenthesized data pattern. This reserves
                 ; three bytes initialized to 0.
 dw 4 dup (1, 2) ; The pattern can contain multiple values. This writes the
                 ; words 1, 2, 1, 2, 1, 2, 1, 2.
+                ; The count can be an expression, but it can only use numbers
+                ; and constants (not addresses, like OFFSET or instruction labels).
 
 five equ 5  ; EQU is the equivalence directive. It is used to define
             ; constants. In this case, the constant 'five' is defined with
