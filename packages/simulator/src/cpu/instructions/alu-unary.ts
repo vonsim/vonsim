@@ -131,7 +131,10 @@ export class ALUUnaryInstruction extends Instruction<"NOT" | "NEG" | "INC" | "DE
       }
 
       case "NEG": {
-        result = Byte.fromSigned(-left.signed, this.operation.size) as AnyByte;
+        result = Byte.fromUnsigned(
+          -left.unsigned & Byte.maxValue(this.operation.size),
+          this.operation.size,
+        ) as AnyByte;
         flags.CF = !left.isZero();
         flags.OF = left.signed === Byte.minSignedValue(this.operation.size);
         break;
