@@ -6,7 +6,7 @@ Los [_flags_](../cpu#flags) se modifican de la siguiente manera:
 
 - Si la suma no entra en el operando destino, entonces `CF=1`. De lo contrario, `CF=0`.
 - Si el resultado es cero, entonces `ZF=1`. De lo contrario, `ZF=0`.
-- Si el el bit más significativo del resultado es `1`, entonces `SF=1`. De lo contrario, `SF=0`.
+- Si el bit más significativo del resultado es `1`, entonces `SF=1`. De lo contrario, `SF=0`.
 - Si la suma de dos números positivos da un número negativo o la suma de dos números negativos da un número positivo, entonces `OF=1`. De lo contrario, `OF=0`.
 
 ## Uso
