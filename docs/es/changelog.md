@@ -1,5 +1,9 @@
 # Notas de versión
 
+### 11 de octubre de 2026
+
+- Como en el MSX88, una etiqueta de un `DB` o `DW` se puede usar con un registro de otro tamaño: prevalece el tamaño del registro. Por ejemplo, `mov dato, ax` con `dato db ?` escribe dos bytes.
+
 ### 25 de septiembre de 2026
 
 - Se agregaron las etiquetas locales: las etiquetas que empiezan con punto (como `.loop`) pertenecen a la etiqueta sin punto anterior, por lo que se puede reutilizar el mismo nombre en distintas subrutinas.

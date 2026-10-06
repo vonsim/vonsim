@@ -299,11 +299,6 @@ export class BinaryInstruction extends InstructionStatement {
         // Is a direct address to a data directive pointed by a label,
         // like `mov al, dataLabel` or `mov al, dataLabel + 1`
 
-        // Check if the size of the data directive pointed is the same as the size of the register
-        if (directAddress.size !== out.size) {
-          throw new AssemblerError("size-mismatch", directAddress.size, out.size).at(this);
-        }
-
         this.#initialOperation = {
           mode: "reg<-mem",
           size: out.size,
@@ -331,6 +326,7 @@ export class BinaryInstruction extends InstructionStatement {
       // mem <- imd
       let size: ByteSize | "auto";
       let address: InitialMemoryAccess;
+      let sizeFromLabel = false;
 
       if (out.isIndirectAddress()) {
         size = out.size;
@@ -347,6 +343,7 @@ export class BinaryInstruction extends InstructionStatement {
           // like `mov dataLabel, al` or `mov dataLabel + 1, al`
 
           size = directAddress.size;
+          sizeFromLabel = true;
           address = {
             mode: "direct",
             // Since doing `mov dataLabel, al` is equivalent to `mov [OFFSET dataLabel], al`,
@@ -359,7 +356,7 @@ export class BinaryInstruction extends InstructionStatement {
       }
 
       if (src.isRegister()) {
-        if (size !== "auto" && size !== src.size) {
+        if (size !== "auto" && !sizeFromLabel && size !== src.size) {
           throw new AssemblerError("size-mismatch", src.size, size).at(this);
         }
 

@@ -146,6 +146,20 @@ mov dato+1, 6h
 
 En este caso, la etiqueta `dato` hace referencia a la dirección de memoria `1000h`. Por lo tanto, `dato+1` hace referencia a la dirección de memoria `1001h`. Esto funcionará siempre y cuando el operando sea de la forma `etiqueta +/- constante`. Por ejemplo, `dato+bx` no funcionará, pero `dato - 6*8 + offset otra_etiqueta` sí (pero no es recomendable; se recomienda utilizar `etiqueta +/- número` para una mejor lectura y entendimiento del código).
 
+El tamaño del `DB` o `DW` determina el tamaño de la operación cuando el otro operando es un valor inmediato, como en el ejemplo anterior. Cuando el otro operando es un registro, prevalece el tamaño del registro, como en el MSX88:
+
+```vonsim
+org 1000h
+dato db ?
+otro db ?
+
+org 2000h
+mov dato, ax
+; Equivalente a
+; mov word ptr [1000h], ax
+; (escribe dato y otro)
+```
+
 ### Valores inmediatos
 
 Los valores inmediatos son valores que se pueden determinar al momento de ensamblar el programa. Por ejemplo, en `mov ax, 5` se sabe que se debe copiar el número `5` en `AX`, por lo que el número `5` es un valor inmediato que se almacena en memoria. En cambio, en `mov ax, [bx]` no se sabe qué valor se debe copiar en `AX`, ya que depende del contenido de `BX`. Por lo tanto, `[bx]` no es un valor inmediato.

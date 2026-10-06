@@ -1,5 +1,9 @@
 # Release Notes
 
+### October 11, 2026
+
+- As in the MSX88, a label of a `DB` or `DW` can be used with a register of a different size: the size of the register prevails. For example, `mov foo, ax` with `foo db ?` writes two bytes.
+
 ### September 25, 2026
 
 - Added local labels: labels starting with a dot (such as `.loop`) belong to the previous label without a dot, so the same name can be reused in different subroutines.
