@@ -69,24 +69,69 @@ describe("DUP", () => {
     expect(result.errors.map(e => e.code)).toEqual(["occupied-address"]);
   });
 
-  it("should not allow the count to depend on an address", () => {
+  it("should allow the count to depend on addresses of labels defined before", () => {
+    const result = assemble(`
+      org 2000h
+      first: mov ax, 1
+      last: hlt
+      org 1000h
+      table db 1, 2, 3
+      tableEnd db 0
+      copy db (offset tableEnd - offset table) dup(0)
+      length equ offset tableEnd - offset table
+      words dw length dup(?)
+      code db (last - first) dup(0)
+      end
+    `);
+
+    if (!result.success) throw new Error("Expected program to assemble");
+    const [, , copy, words, code] = result.program.data;
+
+    expect(copy.length).toBe(3);
+    expect(words.start.value).toBe(0x1007);
+    expect(words.length).toBe(6);
+    expect(code.start.value).toBe(0x100d);
+    expect(code.length).toBe(4);
+  });
+
+  it("should not allow the count to depend on addresses of labels defined after", () => {
     const result = assemble(`
       org 1000h
-      a db 1
-      size equ offset a
-      db size dup(0)
+      a db (offset c - offset b) dup(0)
+      b db 1
+      c db 2
+      size equ offset later
+      d db size dup(0)
+      e db lbl dup(0)
+      later db 0
       org 2000h
       lbl: hlt
-      db lbl dup(0)
       end
     `);
 
     expect(result.success).toBe(false);
     if (result.success) return;
     expect(result.errors.map(e => e.code)).toEqual([
-      "dup-count-depends-on-address",
-      "dup-count-depends-on-address",
+      "dup-count-depends-on-later-label",
+      "dup-count-depends-on-later-label",
+      "dup-count-depends-on-later-label",
     ]);
+  });
+
+  it("should allow the count to depend on its own label", () => {
+    const result = assemble(`
+      org 1000h
+      a db 1
+      b db (offset b - offset a + 2) dup(0)
+      c db 2
+      end
+    `);
+
+    if (!result.success) throw new Error("Expected program to assemble");
+    const [, b, c] = result.program.data;
+
+    expect(b.length).toBe(3);
+    expect(c.start.value).toBe(0x1004);
   });
 
   it("should not allocate huge DUPs", () => {
@@ -101,16 +146,22 @@ describe("DUP", () => {
     expect(result.errors.map(e => e.code)).toEqual(["instruction-out-of-range"]);
   });
 
-  it("should reject negative counts", () => {
+  it("should reject counts that are zero or negative", () => {
     const result = assemble(`
       org 1000h
       db -1 dup(0)
+      db 0 dup(0)
+      db 2 dup(1, 0 dup(0))
       end
     `);
 
     expect(result.success).toBe(false);
     if (result.success) return;
-    expect(result.errors.map(e => e.code)).toEqual(["dup-count-positive"]);
+    expect(result.errors.map(e => e.code)).toEqual([
+      "dup-count-positive",
+      "dup-count-positive",
+      "dup-count-positive",
+    ]);
   });
 });
 

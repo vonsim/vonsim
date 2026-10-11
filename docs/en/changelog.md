@@ -1,5 +1,9 @@
 # Release Notes
 
+### October 11, 2026
+
+- As in the MSX88, the count of a `DUP` can use the addresses of labels defined before it or in the same line, such as `copy db (offset last - offset first) dup (0)`. Its count must be positive: `0 dup (...)` is no longer accepted.
+
 ### September 25, 2026
 
 - Added local labels: labels starting with a dot (such as `.loop`) belong to the previous label without a dot, so the same name can be reused in different subroutines.
