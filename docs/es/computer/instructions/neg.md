@@ -6,7 +6,7 @@ Los [_flags_](../cpu#flags) se modifican de la siguiente manera:
 
 - Como internamente, `NEG dest` es idéntico a ejecutar `SUB 0, dest`, si _dest_ es 0, entonces `CF=0`. De lo contrario, `CF=1`.
 - Si el resultado es cero, entonces `ZF=1`. De lo contrario, `ZF=0`.
-- Si el el bit más significativo del resultado es `1`, entonces `SF=1`. De lo contrario, `SF=0`.
+- Si el bit más significativo del resultado es `1`, entonces `SF=1`. De lo contrario, `SF=0`.
 - Si el operando destino es `80h` u `8000h`, entonces `OF=1`. De lo contrario, `OF=0`.
 
 ## Uso
