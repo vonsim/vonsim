@@ -176,9 +176,9 @@ export class Data extends DataDirectiveStatement {
   /**
    * Evaluates the count of a DUP.
    *
-   * This is needed to compute the length of the data directive, which happens before the
-   * {@link GlobalStore} has computed the addresses of the labels. The count can only depend
-   * on number literals and constants that don't depend on addresses.
+   * This is needed to compute the length of the data directive, which happens while the
+   * {@link GlobalStore} computes the addresses of the labels. The count can only depend
+   * on the addresses of the labels defined before the data directive (or its own label).
    */
   #evaluateCount(store: GlobalStore, duplicate: DuplicateExpression): number {
     let count: number;
@@ -186,13 +186,13 @@ export class Data extends DataDirectiveStatement {
       count = duplicate.count.evaluate(store);
     } catch (error) {
       // Point to the count rather than to the label (which may be inside a constant)
-      if (error instanceof AssemblerError && error.code === "dup-count-depends-on-address") {
+      if (error instanceof AssemblerError && error.code === "dup-count-depends-on-later-label") {
         error.at(duplicate.count);
       }
       throw error;
     }
 
-    if (count < 0) {
+    if (count <= 0) {
       throw new AssemblerError("dup-count-positive").at(duplicate.count);
     }
     return count;
@@ -205,16 +205,14 @@ export class Data extends DataDirectiveStatement {
     if (!(value instanceof DuplicateExpression)) return 1;
 
     const count = this.#evaluateCount(store, value);
-    if (count === 0) return 0;
-
     let elements = 0;
     for (const v of value.values) elements += this.#countElements(store, v);
     return count * elements;
   }
 
   /**
-   * Computes the length of the data directive. Must be called after all the statements have been
-   * validated and before the {@link GlobalStore} computes the addresses.
+   * Computes the length of the data directive. Called by the {@link GlobalStore} while it
+   * computes the addresses.
    */
   computeLength(store: GlobalStore) {
     if (!this.#initialValues) throw new Error("Data directive not validated");

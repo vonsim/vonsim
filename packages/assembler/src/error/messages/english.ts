@@ -22,7 +22,7 @@ export const english = {
   "constant-must-have-one-value": "Constant must have exactly one value.",
   "destination-cannot-be-immediate": "The destination can't be an immediate value.",
   "double-memory-access": "Can't access to a memory location twice in the same instruction.",
-  "dup-count-depends-on-address": (label: string) => `The count of a DUP can't depend on the address of "${label}".`,
+  "dup-count-depends-on-later-label": (label: string) => `The count of a DUP can only depend on the addresses of labels defined before it, and "${label}" isn't.`,
   "dup-count-positive": "The count of a DUP must be a positive number.",
   "duplicated-label": (label: string) => `Duplicated label "${label}".`,
   "empty-program": "Empty program. The program must have, at least, an END statement.",

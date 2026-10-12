@@ -1,5 +1,9 @@
 # Notas de versión
 
+### 11 de octubre de 2026
+
+- Como en el MSX88, la cantidad de un `DUP` puede usar las direcciones de etiquetas definidas antes o en la misma línea, como `copia db (offset fin - offset inicio) dup (0)`. La cantidad debe ser positiva: ya no se acepta `0 dup (...)`.
+
 ### 25 de septiembre de 2026
 
 - Se agregaron las etiquetas locales: las etiquetas que empiezan con punto (como `.loop`) pertenecen a la etiqueta sin punto anterior, por lo que se puede reutilizar el mismo nombre en distintas subrutinas.

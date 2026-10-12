@@ -119,8 +119,8 @@ class Label extends NumberExpression {
       throw new AssemblerError("offset-only-with-data-directive").at(this.position);
     }
 
-    if (type !== "EQU" && !store.addressesComputed) {
-      throw new AssemblerError("dup-count-depends-on-address", this.value).at(this.position);
+    if (type !== "EQU" && !store.labelHasAddress(this.value)) {
+      throw new AssemblerError("dup-count-depends-on-later-label", this.value).at(this.position);
     }
 
     return store.getLabelValue(this.value)!;

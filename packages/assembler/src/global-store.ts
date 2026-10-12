@@ -7,7 +7,7 @@ import { reservedAddressesForSyscalls } from "./syscalls";
 
 type LabelsMap = Map<
   string,
-  | { type: "DB" | "DW" | "instruction"; address: MemoryAddress }
+  | { type: "DB" | "DW" | "instruction"; address: MemoryAddress | null }
   | { type: "EQU"; constant: Constant }
 >;
 
@@ -42,9 +42,9 @@ type LabelsMap = Map<
  *
  * The second one computes the addresses of the labels and stores them in the store.
  *
- * Between them, there is a phase where the store can only evaluate constants: that's when
- * {@link Data} computes its length, since it needs to evaluate the counts of its DUPs
- * (see `Data#computeLength`). Hence, these counts can't depend on addresses.
+ * While computing the addresses, {@link Data} computes its length, since it needs to evaluate
+ * the counts of its DUPs (see `Data#computeLength`). Hence, these counts can only depend on
+ * the addresses of the labels defined before them or in the same line (as in ASM88).
  *
  * By the end of the second method, the store is ready to be used by {@link DataDirective}
  * and {@link Instruction} to evaluate their operands.
@@ -81,7 +81,7 @@ export class GlobalStore {
       if (statement.isInstruction()) {
         this.labels.set(statement.label, {
           type: "instruction",
-          address: MemoryAddress.from(0),
+          address: null,
         });
       } else if (statement.directive === "EQU") {
         this.labels.set(statement.label, {
@@ -91,7 +91,7 @@ export class GlobalStore {
       } else {
         this.labels.set(statement.label, {
           type: statement.directive,
-          address: MemoryAddress.from(0),
+          address: null,
         });
       }
     }
@@ -125,6 +125,18 @@ export class GlobalStore {
           throw new AssemblerError("missing-org").at(statement);
         }
 
+        if (!MemoryAddress.inRange(pointer)) {
+          throw new AssemblerError("instruction-out-of-range", pointer).at(statement);
+        }
+        const startAddress = MemoryAddress.from(pointer);
+        if (statement.label) {
+          this.labels.set(statement.label, {
+            type: statement.isInstruction() ? "instruction" : statement.directive,
+            address: startAddress,
+          });
+        }
+
+        if (statement.isDataDirective()) statement.computeLength(this);
         const length = statement.length;
 
         for (let i = 0; i < length; i++) {
@@ -145,14 +157,7 @@ export class GlobalStore {
           if (statement.isInstruction()) this.codeMemory.add(address.value);
         }
 
-        const startAddress = MemoryAddress.from(pointer);
         statement.setStart(startAddress);
-        if (statement.label) {
-          this.labels.set(statement.label, {
-            type: statement.isInstruction() ? "instruction" : statement.directive,
-            address: startAddress,
-          });
-        }
         pointer += length;
       },
       AssemblerError.from,
@@ -162,11 +167,11 @@ export class GlobalStore {
   }
 
   /**
-   * Whether the addresses of the labels have been computed.
-   * Until then, only constants (EQU) can be evaluated.
+   * @returns Whether the address of the label has been computed.
    */
-  get addressesComputed() {
-    return this.#computedAddresses;
+  labelHasAddress(label: string) {
+    const data = this.labels.get(label);
+    return data !== undefined && data.type !== "EQU" && data.address !== null;
   }
 
   /**
@@ -207,8 +212,8 @@ export class GlobalStore {
     if (data.type === "EQU") {
       return data.constant.evaluate(this);
     } else {
-      if (!this.#computedAddresses) {
-        throw new Error("Tried to get address of label before computing addresses");
+      if (!data.address) {
+        throw new Error("Tried to get address of label before computing it");
       }
 
       return data.address.value;
