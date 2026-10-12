@@ -143,6 +143,20 @@ mov foo+1, 6h
 
 In this case, the label `foo` refers to the memory address `1000h`. Therefore, `foo+1` refers to the memory address `1001h`. This will work as long as the operand is of the form `label +/- constant`. For example, `foo+bx` will not work, but `foo - 6*8 + offset another_label` will (though it is not recommended; it is advisable to use `label +/- number` for better readability and understanding of the code).
 
+The size of the `DB` or `DW` determines the size of the operation when the other operand is an immediate value, as in the previous example. When the other operand is a register, the size of the register prevails, as in the MSX88:
+
+```vonsim
+org 1000h
+foo db ?
+bar db ?
+
+org 2000h
+mov foo, ax
+; Equivalent to
+; mov word ptr [1000h], ax
+; (writes foo and bar)
+```
+
 ### Immediate Values
 
 Immediate values are values that can be determined at the time of assembling the program. For example, in `mov ax, 5`, it is known that the number `5` should be copied into `AX`, so the number `5` is an immediate value that is stored in memory. In contrast, in `mov ax, [bx]`, it is not known what value should be copied into `AX`, as it depends on the content of `BX`. Therefore, `[bx]` is not an immediate value.

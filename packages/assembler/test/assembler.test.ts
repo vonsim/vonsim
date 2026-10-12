@@ -232,3 +232,61 @@ describe("Local labels", () => {
     expect(withoutParent.errors.map(e => e.code)).toEqual(["local-label-without-parent"]);
   });
 });
+
+describe("Labels of data directives with registers", () => {
+  it("should use the size of the register, like ASM88", () => {
+    const result = assemble(`
+      org 1000h
+      b db 1
+      w dw 2
+      org 2000h
+      mov b, ax
+      mov ax, b
+      mov w, al
+      add al, w
+      cmp w + 1, bl
+      hlt
+      end
+    `);
+
+    if (!result.success) throw new Error("Expected program to assemble");
+    const sizes = result.program.instructions
+      .filter(i => i.instruction !== "HLT")
+      .map(i => "operation" in i && i.operation.size);
+    expect(sizes).toEqual([16, 16, 8, 8, 8]);
+  });
+
+  it("should still use the size of the label with immediates", () => {
+    const result = assemble(`
+      org 1000h
+      b db 1
+      org 2000h
+      mov b, 1234h
+      hlt
+      end
+    `);
+
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    expect(result.errors.map(e => e.code)).toEqual(["value-out-of-range"]);
+  });
+
+  it("should still check explicit sizes", () => {
+    const result = assemble(`
+      org 2000h
+      mov al, word ptr [bx]
+      mov byte ptr [bx], ax
+      mov al, bx
+      hlt
+      end
+    `);
+
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    expect(result.errors.map(e => e.code)).toEqual([
+      "size-mismatch",
+      "size-mismatch",
+      "size-mismatch",
+    ]);
+  });
+});
