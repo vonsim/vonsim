@@ -38,6 +38,7 @@ export class MiscInstruction extends Instruction<"CLI" | "STI" | "NOP" | "HLT"> 
     } else if (this.name === "HLT") {
       yield { type: "cpu:cycle.update", phase: "decoded", next: "execute" };
       yield { type: "cpu:halt" };
+      yield { type: "cpu:cycle.end" };
       return false;
     }
 
